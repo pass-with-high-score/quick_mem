@@ -5,12 +5,11 @@ on:
     branches:
       - main
       - 'feature/*'
-      - 'develop/*'
   pull_request:
     branches:
       - main
       - 'feature/*'
-      - 'develop/*'
+      - develop
 
 jobs:
   build:
@@ -19,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: ['8.0.382+5', '11.0.24+8', '17'] 
+        java-version: ['11', '17']  # Use Java 11 or 17, compatible with Gradle 8.x
 
     steps:
     - uses: actions/checkout@v4
