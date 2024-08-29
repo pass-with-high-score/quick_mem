@@ -1,7 +1,13 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -16,6 +22,19 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val supabaseConfigFile = project.rootProject.file("supabase.properties")
+        val properties = Properties()
+        properties.load(supabaseConfigFile.inputStream())
+
+        val supabaseAnoKey: String = properties.getProperty("SUPABASE_ANON_KEY") ?: ""
+        val supabaseUrl: String = properties.getProperty("SUPABASE_URL") ?: ""
+        val supabaseRole: String = properties.getProperty("SUPABASE_ROLE") ?: ""
+        val secret: String = properties.getProperty("SECRET") ?: ""
+        buildConfigField("String", "API_KEY", "\"$supabaseAnoKey\"")
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_ROLE", "\"$supabaseRole\"")
+        buildConfigField("String", "SECRET", "\"$secret\"")
     }
 
     buildTypes {
@@ -36,24 +55,60 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    // Compose
+    implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    // Serialization
+    implementation(libs.bundles.serialization)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work)
+
+    // Superbase
+    implementation(libs.bundles.supabase)
+
+    // Ktor
+    implementation(libs.bundles.ktor)
+
+    // Coil
+    implementation(libs.coil.kt.coil.compose)
+
+    // Compose Destination
+    implementation(libs.accompanist.flowlayout)
+    implementation(libs.compose.destination.core)
+    ksp(libs.compose.destination.ksp)
+
+    // Paging Compose
+    implementation(libs.bundles.paging.compose)
+
+    // RichEditor
+    implementation(libs.rich.editor)
+
+    // WorkManager
+    implementation(libs.androidx.work.runtime)
+
+    // Timber
+    implementation(libs.jakewharton.timber)
+
+    implementation(libs.androidx.material.icons.extended)
+
+    // Unit Test
+    testImplementation(libs.bundles.testing)
+
+    // Android Test
+    androidTestImplementation(libs.bundles.android.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Debug Test
+    debugImplementation(libs.bundles.debugging)
 }

@@ -4,25 +4,41 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.pwhs.quickmem.presentation.StandardScaffold
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.rememberNavHostEngine
+import dagger.hilt.android.AndroidEntryPoint
+import io.github.jan.supabase.SupabaseClient
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var supabaseClient: SupabaseClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             QuickMemTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                val navController = rememberNavController()
+                val navHostEngine = rememberNavHostEngine()
+
+                val newBackStackEntry by navController.currentBackStackEntryAsState()
+                val route = newBackStackEntry?.destination?.route
+                StandardScaffold(
+                    navController = navController,
+                    showBottomBar = false
+                ) { innerPadding ->
+                    DestinationsNavHost(
+                        modifier = Modifier.padding(innerPadding),
+                        navGraph = NavGraphs.root,
+                        navController = navController,
+                        engine = navHostEngine,
                     )
                 }
             }
@@ -30,18 +46,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    QuickMemTheme {
-        Greeting("Android")
-    }
-}
