@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: ['11', '17']  # Use Java 11 or 17, compatible with Gradle 8.x
+        java-version: ['17']
 
     steps:
     - uses: actions/checkout@v4
