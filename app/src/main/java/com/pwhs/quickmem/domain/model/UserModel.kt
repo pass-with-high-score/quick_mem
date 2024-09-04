@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.domain.model
 
-import java.util.Date
-
+import com.pwhs.quickmem.core.data.UserRole
 data class UserModel(
     val id: String,
     val fullName: String,
@@ -9,5 +8,5 @@ data class UserModel(
     val email: String,
     val userName: String,
     val role: UserRole,
-    val birthDay: Date,
+    val birthDay: String,
 )

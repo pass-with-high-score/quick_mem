@@ -1,10 +1,13 @@
 package com.pwhs.quickmem.domain.repository
 
-import com.pwhs.quickmem.domain.model.UserRole
+import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.UserModel
+import com.pwhs.quickmem.core.data.UserRole
+import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
 interface AuthRepository {
-    suspend fun login(email: String, password: String): Boolean
+    suspend fun login(email: String, password: String): Flow<Resources<UserModel>>
     suspend fun register(
         email: String,
         userName: String,
@@ -12,5 +15,5 @@ interface AuthRepository {
         fullName: String,
         birthDay: Date,
         role: UserRole
-    ): Boolean
+    ): Flow<Resources<Boolean>>
 }
