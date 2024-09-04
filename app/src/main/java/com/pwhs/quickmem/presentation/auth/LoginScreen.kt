@@ -1,32 +1,34 @@
 package com.pwhs.quickmem.presentation.auth
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import timber.log.Timber
+import com.ramcosta.composedestinations.generated.destinations.RegisterScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>(start = true)
-fun LoginScreen(modifier: Modifier = Modifier) {
-    var email by remember { mutableStateOf("") }
-    Timber.d("LoginScreen")
-    Column {
-        TextField(
-            onValueChange = {
-                email = it
-            },
-            value = email,
-            label = {
-                Text("Email")
-            },
-        )
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    navigator: DestinationsNavigator
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Button(
+            onClick = {
+                navigator.navigate(RegisterScreenDestination)
+            }
+        ) {
+            Text("Go to Register")
+        }
     }
 }
