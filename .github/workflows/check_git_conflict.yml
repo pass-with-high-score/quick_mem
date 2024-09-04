@@ -25,7 +25,7 @@ jobs:
         run: |
           git fetch origin main
           MERGE_BASE=$(git merge-base HEAD origin/main)
-          git merge-tree --check $MERGE_BASE HEAD origin/main
+          git merge-tree $MERGE_BASE HEAD origin/main
           if [[ $? -ne 0 ]]; then
             echo "Code conflicts detected. Please resolve them before merging."
             exit 1
