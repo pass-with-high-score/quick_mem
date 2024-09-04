@@ -1,0 +1,45 @@
+name: Check for Code Conflicts
+
+on:
+  pull_request:
+    branches:
+      - main
+      - "develop/*"
+      - "feature/*"
+  push:
+    branches:
+      - main
+      - "develop/*"
+      - "feature/*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check for Conflicts
+        run: |
+          git fetch origin main
+          MERGE_BASE=$(git merge-base HEAD origin/main)
+          git merge-tree --check $MERGE_BASE HEAD origin/main
+          if [[ $? -ne 0 ]]; then
+            echo "Code conflicts detected. Please resolve them before merging."
+            exit 1
+          fi
+
+      - name: Notify about Conflicts
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.APP_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Code conflicts detected. Please resolve them before merging.'
+            })
