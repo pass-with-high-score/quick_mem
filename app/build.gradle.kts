@@ -1,4 +1,5 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.Properties
 
 plugins {
@@ -57,10 +58,18 @@ android {
         compose = true
         buildConfig = true
     }
+
+    tasks.whenTaskAdded {
+        if (name == "assembleDebug") {
+            doLast {
+                println("\u0007")
+                println("Telegram message sent")
+            }
+        }
+    }
 }
 
 dependencies {
-
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
