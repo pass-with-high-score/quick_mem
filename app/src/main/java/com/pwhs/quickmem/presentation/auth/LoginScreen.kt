@@ -13,7 +13,7 @@ import com.ramcosta.composedestinations.generated.destinations.RegisterScreenDes
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
-@Destination<RootGraph>(start = true)
+@Destination<RootGraph>
 fun LoginScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator

@@ -33,9 +33,8 @@ class MainActivity : ComponentActivity() {
                 StandardScaffold(
                     navController = navController,
                     showBottomBar = false
-                ) { innerPadding ->
+                ) {
                     DestinationsNavHost(
-                        modifier = Modifier.padding(innerPadding),
                         navGraph = NavGraphs.root,
                         navController = navController,
                         engine = navHostEngine,
