@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth
+package com.pwhs.quickmem.presentation.auth.signup
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,10 +28,10 @@ import java.util.Date
 
 @Composable
 @Destination<RootGraph>
-fun RegisterScreen(
+fun SignupScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: RegisterViewModel = hiltViewModel()
+    viewModel: SignupViewModel = hiltViewModel()
 ) {
 
     var email by remember { mutableStateOf("") }

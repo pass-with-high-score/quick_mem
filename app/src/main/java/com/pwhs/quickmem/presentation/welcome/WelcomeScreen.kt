@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.welcome
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,22 +30,54 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.welcome.component.WelComeButton
+import com.pwhs.quickmem.presentation.welcome.component.WelcomeScrollingText
+import com.pwhs.quickmem.ui.theme.blue
+import com.pwhs.quickmem.ui.theme.neutral400
+import com.pwhs.quickmem.ui.theme.textColor
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SignupScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Destination<RootGraph>
-fun WelcomeScreen(modifier: Modifier = Modifier) {
+fun WelcomeScreen(
+    modifier: Modifier = Modifier,
+    navigator: DestinationsNavigator
+) {
     val sheetLanguageState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheetLanguage by remember {
         mutableStateOf(false)
+    }
+    val textList = listOf(
+        "Flashcards",
+        "Spaced Repetition",
+        "Study Sets",
+        "AI Tools"
+    )
+    val displayCount = 4
+
+    var currentIndex by remember { mutableStateOf(0) }
+
+    LaunchedEffect(key1 = currentIndex) {
+        delay(2000)
+        currentIndex = (currentIndex + 1) % textList.size
     }
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -70,10 +102,15 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                     tint = Color.White
                 )
                 ElevatedButton(
-                    onClick = {},
+                    onClick = {
+                        scope.launch {
+                            showBottomSheetLanguage = true
+                            sheetLanguageState.show()
+                        }
+                    },
                     modifier = Modifier
-                        .width(150.dp)
-                        .height(45.dp),
+                        .width(140.dp)
+                        .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF93b3fc)
                     )
@@ -90,35 +127,82 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                 }
             }
 
-        }
+            WelcomeScrollingText(
+                textList = textList,
+                displayCount = displayCount,
+                currentIndex = currentIndex
+            )
 
-        if (showBottomSheetLanguage) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheetLanguage = false
-                },
-                sheetState = sheetLanguageState,
-            ) {
-                Button(
-                    onClick = {
-                        scope.launch {
-                            sheetLanguageState.hide()
-                        }.invokeOnCompletion {
-                            if (!sheetLanguageState.isVisible) {
-                                showBottomSheetLanguage = false
+            Text(
+                buildAnnotatedString {
+                    withStyle(
+                        style = ParagraphStyle(
+                            textAlign = TextAlign.Start,
+                            lineHeight = 40.sp
+                        )
+                    ) {
+                        withStyle(
+                            style = SpanStyle(
+                                color = textColor,
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Black
+                            )
+                        ) {
+                            append("All the tools for \nlearning success.\n")
+                            withStyle(
+                                style = SpanStyle(
+                                    color = blue,
+                                )
+                            ) {
+                                append("In one app.")
                             }
                         }
                     }
-                ) {
-                    Text("Close")
+                },
+                modifier = Modifier.padding(top = 60.dp)
+            )
+
+            WelComeButton(
+                modifier = Modifier.padding(top = 50.dp),
+                onClick = {
+                    navigator.navigate(SignupScreenDestination)
+                },
+                text = "Get started for free"
+            )
+            WelComeButton(
+                modifier = Modifier.padding(top = 16.dp),
+                onClick = {
+                    navigator.navigate(LoginScreenDestination)
+                },
+                text = "Already have an account",
+                colors = Color.White,
+                borderColor = neutral400,
+                textColor = textColor
+            )
+        }
+
+    }
+
+    if (showBottomSheetLanguage) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showBottomSheetLanguage = false
+            },
+            sheetState = sheetLanguageState,
+        ) {
+            Button(
+                onClick = {
+                    scope.launch {
+                        sheetLanguageState.hide()
+                    }.invokeOnCompletion {
+                        if (!sheetLanguageState.isVisible) {
+                            showBottomSheetLanguage = false
+                        }
+                    }
                 }
+            ) {
+                Text("Close")
             }
         }
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun WelcomeScreenPreview() {
-    WelcomeScreen()
 }

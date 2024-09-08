@@ -1,17 +1,16 @@
-package com.pwhs.quickmem.presentation.auth
+package com.pwhs.quickmem.presentation.auth.signup
 
 import androidx.lifecycle.ViewModel
 import com.pwhs.quickmem.core.data.UserRole
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(
+class SignupViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 

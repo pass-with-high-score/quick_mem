@@ -13,7 +13,7 @@ fun Modifier.gradientBackground(): Modifier {
                 Color(0xFF608dfd),
                 Color(0xFFFFFFFF)
             ),
-            tileMode = TileMode.Repeated
+            tileMode = TileMode.Clamp
         )
     )
 }

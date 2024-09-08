@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Button
@@ -31,6 +32,7 @@ fun OnboardingButton(
     onClick: () -> Unit,
     showIcon: Boolean = false,
     backgroundColor: Color = blue,
+    buttonShape: CornerBasedShape = MaterialTheme.shapes.large,
     borderColor: Color = Color.White,
     textColor: Color = Color.White
 ) {
@@ -42,7 +44,7 @@ fun OnboardingButton(
         modifier = modifier
             .width(150.dp)
             .height(50.dp),
-        shape = MaterialTheme.shapes.large,
+        shape = buttonShape,
         border = BorderStroke(1.dp, borderColor),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 10.dp,
