@@ -23,7 +23,7 @@ class SignupWithEmailViewModel @Inject constructor(
         role: UserRole
     ) {
         Timber.d("Registering user with email: $email")
-        return authRepository.register(email, userName, password, fullName, birthDay, role)
+        return authRepository.signup(email, userName, password, fullName, birthDay, role)
             .collect {
                 when (it) {
                     is Resources.Success -> {

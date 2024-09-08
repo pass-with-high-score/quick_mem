@@ -1,5 +1,3 @@
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.Properties
 
 plugins {
@@ -73,6 +71,10 @@ dependencies {
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
+
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
 
     // Serialization
     implementation(libs.bundles.serialization)

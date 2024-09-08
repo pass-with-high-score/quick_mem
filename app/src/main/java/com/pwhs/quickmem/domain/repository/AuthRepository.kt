@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
+import android.content.Context
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.UserModel
 import com.pwhs.quickmem.core.data.UserRole
@@ -8,7 +9,7 @@ import java.util.Date
 
 interface AuthRepository {
     suspend fun login(email: String, password: String): Flow<Resources<UserModel>>
-    suspend fun register(
+    suspend fun signup(
         email: String,
         userName: String,
         password: String,
@@ -16,4 +17,6 @@ interface AuthRepository {
         birthDay: Date,
         role: UserRole
     ): Flow<Resources<Boolean>>
+
+    suspend fun signupWithGoogle(context: Context): Flow<Resources<Boolean>>
 }
