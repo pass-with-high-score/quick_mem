@@ -28,12 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
@@ -46,7 +44,11 @@ import com.pwhs.quickmem.ui.theme.textColor
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SignupScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SignupWithEmailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,7 +68,14 @@ fun LoginScreen(
                 ),
                 navigationIcon = {
                     IconButton(
-                        onClick = {},
+                        onClick = {
+                            navigator.navigate(WelcomeScreenDestination) {
+                                popUpTo(LoginScreenDestination) {
+                                    inclusive = true
+                                    launchSingleTop = true
+                                }
+                            }
+                        },
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = Color.White
                         )
@@ -109,7 +118,9 @@ fun LoginScreen(
 
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
-                onClick = {},
+                onClick = {
+                    navigator.navigate(LoginWithEmailScreenDestination)
+                },
                 text = "Log in with email",
                 colors = blue,
                 textColor = Color.White,
@@ -163,7 +174,7 @@ fun LoginScreen(
                     withStyle(
                         style = SpanStyle(
                             color = neutral900,
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                         )
                     ) {
                         append("Don't have an account?")
@@ -180,7 +191,12 @@ fun LoginScreen(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .clickable {
-                        navigator.navigate(SignupScreenDestination)
+                        navigator.navigate(SignupScreenDestination) {
+                            popUpTo(SignupWithEmailScreenDestination) {
+                                inclusive = true
+                                launchSingleTop = true
+                            }
+                        }
                     }
             )
         }

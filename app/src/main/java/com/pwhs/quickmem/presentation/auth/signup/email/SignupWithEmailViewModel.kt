@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.signup
+package com.pwhs.quickmem.presentation.auth.signup.email
 
 import androidx.lifecycle.ViewModel
 import com.pwhs.quickmem.core.data.UserRole
@@ -10,7 +10,7 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class SignupViewModel @Inject constructor(
+class SignupWithEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
