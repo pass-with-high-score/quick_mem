@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.welcome.component
+package com.pwhs.quickmem.presentation.auth.welcome.component
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState

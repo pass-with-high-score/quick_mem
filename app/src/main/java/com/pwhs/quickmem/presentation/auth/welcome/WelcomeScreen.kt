@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.welcome
+package com.pwhs.quickmem.presentation.auth.welcome
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,9 +39,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.presentation.welcome.component.WelComeButton
-import com.pwhs.quickmem.presentation.welcome.component.WelcomeScrollingText
-import com.pwhs.quickmem.ui.theme.blue
+import com.pwhs.quickmem.presentation.auth.component.AuthButton
+import com.pwhs.quickmem.presentation.auth.welcome.component.WelcomeScrollingText
 import com.pwhs.quickmem.ui.theme.neutral400
 import com.pwhs.quickmem.ui.theme.textColor
 import com.pwhs.quickmem.util.gradientBackground
@@ -151,7 +150,7 @@ fun WelcomeScreen(
                             append("All the tools for \nlearning success.\n")
                             withStyle(
                                 style = SpanStyle(
-                                    color = blue,
+                                    color = Color(0xFFfa6c3e),
                                 )
                             ) {
                                 append("In one app.")
@@ -162,14 +161,14 @@ fun WelcomeScreen(
                 modifier = Modifier.padding(top = 60.dp)
             )
 
-            WelComeButton(
+            AuthButton(
                 modifier = Modifier.padding(top = 50.dp),
                 onClick = {
                     navigator.navigate(SignupScreenDestination)
                 },
                 text = "Get started for free"
             )
-            WelComeButton(
+            AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = {
                     navigator.navigate(LoginScreenDestination)

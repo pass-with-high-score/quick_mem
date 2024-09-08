@@ -1,28 +1,37 @@
-package com.pwhs.quickmem.presentation.welcome.component
+package com.pwhs.quickmem.presentation.auth.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.ui.theme.blue
 
 @Composable
-fun WelComeButton(
+fun AuthButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     colors: Color = blue,
     borderColor: Color = Color.Transparent,
     textColor: Color = Color.White,
-    text: String
+    text: String,
+    @DrawableRes icon: Int? = null
 ) {
     ElevatedButton(
         onClick = onClick,
@@ -44,12 +53,24 @@ fun WelComeButton(
             disabledElevation = 5.dp
         )
     ) {
-        Text(
-            text, style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = textColor
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            icon?.let {
+                Image(
+                    painter = painterResource(id = icon),
+                    contentDescription = null,
+                )
+            }
+            Text(
+                text, style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = textColor
+                )
             )
-        )
+
+        }
     }
 }
