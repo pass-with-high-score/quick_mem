@@ -86,7 +86,7 @@ jobs:
         
       - name: Verify Checksum
         run: |
-          sha256sum app/build.gradle
+          sha256sum app/build.gradle.kts
           sha256sum app/src/main/java/com/pwhs/**/*.kt
           
       - name: Upload checksum results
