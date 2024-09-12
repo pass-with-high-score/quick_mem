@@ -83,6 +83,17 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+        
+      - name: Verify Checksum
+        run: |
+          sha256sum app/build.gradle
+          sha256sum app/src/main/java/com/pwhs/**/*.kt
+          
+      - name: Upload checksum results
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksum-results
+          path: checksum.txt
 
       - name: Build with Gradle
         run: ./gradlew build
