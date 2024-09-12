@@ -140,7 +140,7 @@ jobs:
 
   notify:
     runs-on: ubuntu-latest
-    needs: [ check_conflict, build, test ]
+    needs: [ build, test ]
     if: always()
 
     steps:
