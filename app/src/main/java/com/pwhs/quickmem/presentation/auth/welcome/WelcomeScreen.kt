@@ -15,6 +15,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -41,8 +43,6 @@ import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.welcome.component.WelcomeScrollingText
-import com.pwhs.quickmem.ui.theme.neutral400
-import com.pwhs.quickmem.ui.theme.textColor
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -131,7 +131,7 @@ fun WelcomeScreen(
                 displayCount = displayCount,
                 currentIndex = currentIndex
             )
-
+            val color = MaterialTheme.colorScheme.onSurface
             Text(
                 buildAnnotatedString {
                     withStyle(
@@ -142,7 +142,7 @@ fun WelcomeScreen(
                     ) {
                         withStyle(
                             style = SpanStyle(
-                                color = textColor,
+                                color = color,
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight.Black
                             )
@@ -175,8 +175,8 @@ fun WelcomeScreen(
                 },
                 text = "Already have an account",
                 colors = Color.White,
-                borderColor = neutral400,
-                textColor = textColor
+                borderColor = colorScheme.primary,
+                textColor = colorScheme.primary
             )
         }
 

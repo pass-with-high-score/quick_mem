@@ -21,7 +21,10 @@ fun OnboardingIndicator(isSelected: Boolean) {
         targetValue = if (isSelected) 30.dp else 15.dp,
         label = "Indicator"
     )
-    val color = if (isSelected) Color(0xFF4d50e2) else Color(0xFFfa6c3e)
+    val color =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
+            alpha = 0.5f
+        )
 
     Box(
         modifier = Modifier

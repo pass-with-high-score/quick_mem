@@ -18,5 +18,4 @@ interface AuthRepository {
         role: UserRole
     ): Flow<Resources<Boolean>>
 
-    suspend fun signupWithGoogle(context: Context): Flow<Resources<Boolean>>
 }

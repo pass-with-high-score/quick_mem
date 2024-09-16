@@ -82,6 +82,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.work)
 
@@ -110,6 +111,11 @@ dependencies {
 
     // Timber
     implementation(libs.jakewharton.timber)
+
+    // Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
 
     implementation(libs.androidx.material.icons.extended)
 

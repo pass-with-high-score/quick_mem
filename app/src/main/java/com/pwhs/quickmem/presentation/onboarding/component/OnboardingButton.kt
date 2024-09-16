@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.ui.theme.blue
 
 @Composable
 fun OnboardingButton(
@@ -31,7 +30,7 @@ fun OnboardingButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     showIcon: Boolean = false,
-    backgroundColor: Color = blue,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
     buttonShape: CornerBasedShape = MaterialTheme.shapes.large,
     borderColor: Color = Color.White,
     textColor: Color = Color.White

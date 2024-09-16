@@ -19,7 +19,6 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingButton
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingIndicator
 import com.pwhs.quickmem.presentation.onboarding.data.onboardingPagesList
-import com.pwhs.quickmem.ui.theme.blue
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -72,8 +71,8 @@ fun OnboardingScreen(
                         }
                     },
                     backgroundColor = Color.White,
-                    borderColor = blue,
-                    textColor = blue,
+                    borderColor = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.primary,
                     buttonShape = CircleShape,
                     modifier = Modifier
                         .width(80.dp)

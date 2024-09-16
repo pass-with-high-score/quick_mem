@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,14 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.ui.theme.blue
-import com.pwhs.quickmem.ui.theme.neutral400
-import com.pwhs.quickmem.ui.theme.neutral500
-import com.pwhs.quickmem.ui.theme.neutral900
-import com.pwhs.quickmem.ui.theme.textColor
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -48,7 +45,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination<RootGraph>
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -87,7 +85,7 @@ fun LoginScreen(
                 text = "Log in",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = colorScheme.primary
                 )
             )
 
@@ -97,7 +95,7 @@ fun LoginScreen(
                     navigator.navigate(LoginWithEmailScreenDestination)
                 },
                 text = "Log in with email",
-                colors = blue,
+                colors = colorScheme.primary,
                 textColor = Color.White,
                 icon = R.drawable.ic_email
             )
@@ -112,35 +110,39 @@ fun LoginScreen(
                         .weight(1f)
                         .padding(8.dp)
                         .height(1.dp)
-                        .background(neutral400)
+                        .background(colorScheme.onSurface)
                 )
                 Text(
                     text = "OR",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = neutral500)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface)
                 )
                 Spacer(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
                         .height(1.dp)
-                        .background(neutral400)
+                        .background(colorScheme.onSurface)
                 )
             }
 
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
-                onClick = {},
+                onClick = {
+                    viewModel.loginWithGoogle()
+                },
                 text = "Continue with Google",
                 colors = Color.White,
-                textColor = neutral900,
+                textColor = colorScheme.onSurface,
                 icon = R.drawable.ic_google
             )
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
-                onClick = {},
+                onClick = {
+                    viewModel.loginWithFacebook()
+                },
                 text = "Continue with Facebook",
                 colors = Color.White,
-                textColor = neutral900,
+                textColor = colorScheme.onSurface,
                 icon = R.drawable.ic_facebook
             )
 
@@ -148,14 +150,14 @@ fun LoginScreen(
                 buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
-                            color = neutral900,
+                            color = colorScheme.onSurface,
                             fontSize = 16.sp,
                         )
                     ) {
                         append("Don't have an account?")
                         withStyle(
                             style = SpanStyle(
-                                color = blue,
+                                color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         ) {

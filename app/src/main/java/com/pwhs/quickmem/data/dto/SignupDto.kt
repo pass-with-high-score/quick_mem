@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserDto(
+data class SignupDto(
     @SerialName("id")
     val id: String,
     @SerialName("full_name")
@@ -14,10 +14,14 @@ data class UserDto(
     val avatarUrl: String?,
     @SerialName("email")
     val email: String?,
-    @SerialName("user_name")
+    @SerialName("username")
     val userName: String?,
     @SerialName("role")
     val role: UserRole?,
-    @SerialName("birth_day")
+    @SerialName("birthday")
     val birthDay: String?,
+    @SerialName("created_at")
+    val createdAt: String?,
+    @SerialName("updated_at")
+    val updatedAt: String?,
 )

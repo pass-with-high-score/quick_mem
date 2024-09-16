@@ -26,9 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.onboarding.data.OnboardingPage
-import com.pwhs.quickmem.ui.theme.blue
-import com.pwhs.quickmem.ui.theme.textColor
-
 @Composable
 fun OnboardingPageView(page: OnboardingPage) {
     var isVisible by remember { mutableStateOf(false) }
@@ -61,7 +58,7 @@ fun OnboardingPageView(page: OnboardingPage) {
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
-                color = textColor
+                color = MaterialTheme.colorScheme.primary
             ),
             textAlign = TextAlign.Center
         )
@@ -69,7 +66,7 @@ fun OnboardingPageView(page: OnboardingPage) {
         Text(
             text = '"' + page.description + '"',
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = blue,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 fontSize = 16.sp
             ),
             textAlign = TextAlign.Center

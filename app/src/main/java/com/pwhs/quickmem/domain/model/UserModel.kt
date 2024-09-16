@@ -9,4 +9,6 @@ data class UserModel(
     val userName: String,
     val role: UserRole,
     val birthDay: String,
+    val createdAt: String,
+    val updatedAt: String,
 )
