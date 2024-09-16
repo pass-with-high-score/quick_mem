@@ -95,6 +95,7 @@ fun SignupWithEmailScreen(
             viewModel.onEvent(SignUpWithEmailUiAction.PasswordChanged(password))
         },
         birthday = uiState.value.birthday,
+        birthdayError = uiState.value.birthdayError,
         onBirthdayChanged = { birthday ->
             viewModel.onEvent(SignUpWithEmailUiAction.BirthdayChanged(birthday))
         },
@@ -118,6 +119,7 @@ private fun SignupWithEmail(
     passwordError: String = "",
     onPasswordChanged: (String) -> Unit = {},
     birthday: String = "",
+    birthdayError: String = "",
     onBirthdayChanged: (String) -> Unit = {},
     onRoleChanged: (UserRole) -> Unit = {},
     onSignUpClick: () -> Unit = {}
@@ -168,6 +170,7 @@ private fun SignupWithEmail(
                 enabled = false,
                 onClick = { isDatePickerVisible = true },
                 type = TextFieldType.BIRTHDAY,
+                error = birthdayError
             )
             AuthTextField(
                 value = email,

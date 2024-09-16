@@ -119,6 +119,9 @@ dependencies {
 
     implementation(libs.androidx.material.icons.extended)
 
+    // Easy validator
+    implementation ("com.wajahatkarim:easyvalidation-core:1.0.4")
+
     // Unit Test
     testImplementation(libs.bundles.testing)
 

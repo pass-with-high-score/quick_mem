@@ -1,5 +1,7 @@
 package com.pwhs.quickmem.util
 
+import com.wajahatkarim3.easyvalidation.core.view_ktx.minLength
+import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -10,13 +12,13 @@ fun String.upperCaseFirstLetter(): String {
 }
 
 fun String.toDateFormatted(): String {
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val date = dateFormat.parse(this) ?: return this
     return dateFormat.format(date)
 }
 
 fun String.isDateSmallerThan(date: String): Boolean {
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     // Parse the current string (birth date) and the comparison date
     val birthDate: Date = dateFormat.parse(this) ?: return false
@@ -51,11 +53,10 @@ fun String.getNameFromEmail(): String {
 }
 
 fun String.emailIsValid(): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+    return this.validEmail()
 }
 
 fun String.strongPassword(): Boolean {
-    val passwordPattern =
-        "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$".toRegex()
-    return passwordPattern.matches(this)
+    val regex = "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8}$".toRegex()
+    return this.matches(regex)
 }

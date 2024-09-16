@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.util.upperCaseFirstLetter
+import timber.log.Timber
 
 @Composable
 fun AuthTextField(
@@ -46,6 +47,7 @@ fun AuthTextField(
     error: String? = null
 ) {
     var showPassword by rememberSaveable { mutableStateOf(false) }
+    Timber.d("Is Error: ${error.isNullOrEmpty().not()}")
     Column {
         TextField(
             value = value,
@@ -109,6 +111,7 @@ fun AuthTextField(
                 focusedPlaceholderColor = colorScheme.onSurface,
                 cursorColor = colorScheme.onSurface,
                 errorContainerColor = Color.Transparent,
+                disabledIndicatorColor = if (!error.isNullOrEmpty()) colorScheme.error else colorScheme.onSurface,
             ),
 
             modifier = modifier
@@ -126,7 +129,8 @@ fun AuthTextField(
         Text(
             text = error?.upperCaseFirstLetter() ?: type.name.lowercase().upperCaseFirstLetter(),
             style = typography.bodyMedium.copy(
-                color = colorScheme.onSurface.copy(alpha = 0.6f),
+                color = error?.let { colorScheme.error }
+                    ?: colorScheme.onSurface.copy(alpha = 0.6f),
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(top = 4.dp)
