@@ -5,6 +5,11 @@ import com.pwhs.quickmem.core.data.UserRole
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import java.util.Date
 import javax.inject.Inject
@@ -13,32 +18,33 @@ import javax.inject.Inject
 class SignupWithEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
+    private val _uiState = MutableStateFlow(SignUpWithEmailUiState())
+    val uiState = _uiState.asStateFlow()
 
-    suspend fun register(
-        email: String,
-        userName: String,
-        password: String,
-        fullName: String,
-        birthDay: Date,
-        role: UserRole
-    ) {
-        Timber.d("Registering user with email: $email")
-        return authRepository.signup(email, userName, password, fullName, birthDay, role)
-            .collect {
-                when (it) {
-                    is Resources.Success -> {
-                        Timber.d("User registered")
-                    }
+    private val _uiEvent = Channel<SignUpWithEmailUiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
-                    is Resources.Error -> {
-                        Timber.e(it.message)
-                    }
-
-                    is Resources.Loading -> {
-                        Timber.d("Loading")
-                    }
-                }
+    fun onEvent(event: SignUpWithEmailUiAction) {
+        when (event) {
+            is SignUpWithEmailUiAction.BirthdayChanged -> {
+                _uiState.update { it.copy(birthday = event.birthday) }
             }
 
+            is SignUpWithEmailUiAction.EmailChanged -> {
+                _uiState.update { it.copy(email = event.email) }
+            }
+
+            is SignUpWithEmailUiAction.PasswordChanged -> {
+                _uiState.update { it.copy(password = event.password) }
+            }
+
+            is SignUpWithEmailUiAction.UserRoleChanged -> {
+                _uiState.update { it.copy(userRole = event.userRole) }
+            }
+
+            is SignUpWithEmailUiAction.SignUp -> {
+                TODO()
+            }
+        }
     }
 }

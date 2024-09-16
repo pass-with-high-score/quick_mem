@@ -22,7 +22,6 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         userName: String,
         password: String,
-        fullName: String,
         birthDay: Date,
         role: UserRole
     ): Flow<Resources<Boolean>> {
