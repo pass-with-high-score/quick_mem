@@ -7,22 +7,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.TextFieldType
+import com.pwhs.quickmem.util.upperCaseFirstLetter
 
 @Composable
 fun AuthTextField(
@@ -35,13 +42,24 @@ fun AuthTextField(
     enabled: Boolean = true,
     type: TextFieldType = TextFieldType.TEXT,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+    error: String? = null
 ) {
+    var showPassword by rememberSaveable { mutableStateOf(false) }
     Column {
         TextField(
             value = value,
+            isError = error.isNullOrEmpty().not(),
             onValueChange = onValueChange,
-            placeholder = { Text(label) },
+            placeholder = {
+                Text(
+                    text = label,
+                    style = typography.bodyLarge.copy(
+                        color = colorScheme.onSurface.copy(alpha = 0.6f),
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            },
             readOnly = readOnly,
             enabled = enabled,
             maxLines = 1,
@@ -61,7 +79,21 @@ fun AuthTextField(
                     tint = colorScheme.onSurface
                 )
             },
-            visualTransformation = if (type == TextFieldType.PASSWORD) {
+            trailingIcon = {
+                if (type == TextFieldType.PASSWORD) {
+                    Icon(
+                        painter = painterResource(id = if (showPassword) R.drawable.ic_eye else R.drawable.ic_eye_off),
+                        contentDescription = "Show password",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                showPassword = !showPassword
+                            },
+                        tint = colorScheme.onSurface,
+                    )
+                }
+            },
+            visualTransformation = if (type == TextFieldType.PASSWORD && !showPassword) {
                 PasswordVisualTransformation()
             } else {
                 VisualTransformation.None
@@ -76,15 +108,28 @@ fun AuthTextField(
                 focusedTextColor = colorScheme.onSurface,
                 focusedPlaceholderColor = colorScheme.onSurface,
                 cursorColor = colorScheme.onSurface,
-
-                ),
+                errorContainerColor = Color.Transparent,
+            ),
 
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
                 .then(
                     if (onClick != null) Modifier.clickable { onClick() } else Modifier
-                )
+                ),
+            textStyle = typography.bodyLarge.copy(
+                color = colorScheme.onSurface,
+                fontWeight = FontWeight.Bold
+            )
+        )
+
+        Text(
+            text = error?.upperCaseFirstLetter() ?: type.name.lowercase().upperCaseFirstLetter(),
+            style = typography.bodyMedium.copy(
+                color = colorScheme.onSurface.copy(alpha = 0.6f),
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(top = 4.dp)
         )
     }
 }

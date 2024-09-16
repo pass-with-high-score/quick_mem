@@ -15,7 +15,12 @@ fun DatePickerModalInput(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+    val datePickerState = rememberDatePickerState(
+        initialDisplayMode = DisplayMode.Input,
+        yearRange = 1930..2024,
+        initialSelectedDateMillis = System.currentTimeMillis(),
+        initialDisplayedMonthMillis = System.currentTimeMillis()
+    )
 
     DatePickerDialog(
         onDismissRequest = onDismiss,

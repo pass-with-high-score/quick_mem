@@ -85,10 +85,12 @@ fun SignupWithEmailScreen(
             navigator.popBackStack()
         },
         email = uiState.value.email,
+        emailError = uiState.value.emailError,
         onEmailChanged = { email ->
             viewModel.onEvent(SignUpWithEmailUiAction.EmailChanged(email))
         },
         password = uiState.value.password,
+        passwordError = uiState.value.passwordError,
         onPasswordChanged = { password ->
             viewModel.onEvent(SignUpWithEmailUiAction.PasswordChanged(password))
         },
@@ -110,8 +112,10 @@ private fun SignupWithEmail(
     modifier: Modifier = Modifier,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
+    emailError: String = "",
     onEmailChanged: (String) -> Unit = {},
     password: String = "",
+    passwordError: String = "",
     onPasswordChanged: (String) -> Unit = {},
     birthday: String = "",
     onBirthdayChanged: (String) -> Unit = {},
@@ -157,29 +161,31 @@ private fun SignupWithEmail(
             AuthTextField(
                 value = birthday,
                 onValueChange = onBirthdayChanged,
-                label = "Birthday",
+                label = "Select your birthday",
                 iconId = R.drawable.ic_calendar,
                 contentDescription = "Birthday",
                 readOnly = true,
                 enabled = false,
                 onClick = { isDatePickerVisible = true },
-                type = TextFieldType.DATE
+                type = TextFieldType.BIRTHDAY,
             )
             AuthTextField(
                 value = email,
                 onValueChange = onEmailChanged,
-                label = "Email",
+                label = "example@email.com",
                 iconId = R.drawable.ic_email,
                 contentDescription = "Email",
-                type = TextFieldType.EMAIL
+                type = TextFieldType.EMAIL,
+                error = emailError
             )
             AuthTextField(
                 value = password,
                 onValueChange = onPasswordChanged,
-                label = "Password",
+                label = "Create your password",
                 iconId = R.drawable.ic_lock,
                 contentDescription = "Password",
-                type = TextFieldType.PASSWORD
+                type = TextFieldType.PASSWORD,
+                error = passwordError
             )
 
             if (!isRoleVisible) {

@@ -49,3 +49,13 @@ fun String.getUsernameFromEmail(): String {
 fun String.getNameFromEmail(): String {
     return this.substringBefore("@").replace(".", " ")
 }
+
+fun String.emailIsValid(): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
+
+fun String.strongPassword(): Boolean {
+    val passwordPattern =
+        "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$".toRegex()
+    return passwordPattern.matches(this)
+}

@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.getNameFromEmail
 import com.pwhs.quickmem.util.getUsernameFromEmail
+import com.pwhs.quickmem.util.strongPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,11 +38,23 @@ class SignupWithEmailViewModel @Inject constructor(
             }
 
             is SignUpWithEmailUiAction.EmailChanged -> {
-                _uiState.update { it.copy(email = event.email) }
+                if (!event.email.emailIsValid()) {
+                    _uiState.update { it.copy(emailError = "Invalid email") }
+                    _uiState.update { it.copy(email = event.email) }
+                } else {
+                    _uiState.update { it.copy(emailError = "") }
+                    _uiState.update { it.copy(email = event.email) }
+                }
             }
 
             is SignUpWithEmailUiAction.PasswordChanged -> {
-                _uiState.update { it.copy(password = event.password) }
+                if (!event.password.strongPassword()) {
+                    _uiState.update { it.copy(passwordError = "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character") }
+                    _uiState.update { it.copy(password = event.password) }
+                } else {
+                    _uiState.update { it.copy(passwordError = "") }
+                    _uiState.update { it.copy(password = event.password) }
+                }
             }
 
             is SignUpWithEmailUiAction.UserRoleChanged -> {
