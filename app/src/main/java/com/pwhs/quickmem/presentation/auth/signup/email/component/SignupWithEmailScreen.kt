@@ -41,6 +41,7 @@ import com.pwhs.quickmem.presentation.auth.signup.email.SignupWithEmailViewModel
 import com.pwhs.quickmem.util.gradientBackground
 import com.pwhs.quickmem.util.isDateSmallerThan
 import com.pwhs.quickmem.util.toFormattedString
+import com.pwhs.quickmem.util.toTimestamp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -191,7 +192,7 @@ private fun SignupWithEmail(
                 error = passwordError
             )
 
-            if (!isRoleVisible) {
+            if (isRoleVisible) {
                 RadioGroup(
                     modifier = Modifier.fillMaxWidth(),
                     onRoleChanged = onRoleChanged
@@ -200,7 +201,8 @@ private fun SignupWithEmail(
 
             AuthButton(
                 text = "Sign up",
-                onClick = onSignUpClick
+                onClick = onSignUpClick,
+                modifier = Modifier.padding(top = 16.dp)
             )
 
         }
@@ -212,13 +214,15 @@ private fun SignupWithEmail(
                 if (it != null) {
                     onBirthdayChanged(it.toFormattedString())
                     Timber.d("Less than 18: ${it.isDateSmallerThan()}")
-                    isRoleVisible = it.isDateSmallerThan()
+                    isRoleVisible = !it.isDateSmallerThan()
+                    Timber.d("isRoleVisible: $isRoleVisible")
                 }
                 isDatePickerVisible = false
             },
             onDismiss = {
                 isDatePickerVisible = false
-            }
+            },
+            initialDate = birthday.toTimestamp()
         )
     }
 }

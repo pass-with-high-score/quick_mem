@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.util
 
-import com.wajahatkarim3.easyvalidation.core.view_ktx.minLength
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -59,4 +58,11 @@ fun String.emailIsValid(): Boolean {
 fun String.strongPassword(): Boolean {
     val regex = "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8}$".toRegex()
     return this.matches(regex)
+}
+
+fun String.toTimestamp(): Long? {
+    if (this.isEmpty()) return null
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val date = dateFormat.parse(this) ?: return 0
+    return date.time
 }
