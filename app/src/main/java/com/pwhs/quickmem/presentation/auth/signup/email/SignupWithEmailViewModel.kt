@@ -3,8 +3,8 @@ package com.pwhs.quickmem.presentation.auth.signup.email
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -28,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupWithEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val tokenManager: TokenManager,
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(SignUpWithEmailUiState())
@@ -116,6 +117,8 @@ class SignupWithEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
+                        tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
+                        tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
                         _uiEvent.send(SignUpWithEmailUiEvent.SignUpSuccess)
                     }
                 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingButton
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingIndicator
@@ -30,8 +31,10 @@ import kotlinx.coroutines.launch
 @Destination<RootGraph>(start = true)
 fun OnboardingScreen(
     modifier: Modifier = Modifier,
+    viewModel: OnboardingViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+    viewModel
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,

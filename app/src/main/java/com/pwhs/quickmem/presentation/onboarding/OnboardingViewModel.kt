@@ -2,20 +2,28 @@ package com.pwhs.quickmem.presentation.onboarding
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.pwhs.quickmem.core.utils.SharedPrefUtils
+import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
+    private val tokenManager: TokenManager,
     private val application: Application
 ) : AndroidViewModel(application) {
-    fun checkAuth(){
-       val isLoggedIn = SharedPrefUtils.getBoolean(application.applicationContext, "is_logged_in")
-        if (isLoggedIn) {
-            // Navigate to Home
-        } else {
-            // Navigate to Auth
+    init {
+        checkAuth()
+    }
+
+    private fun checkAuth() {
+        Timber.d("Checking auth")
+        viewModelScope.launch {
+            tokenManager.accessToken.collect {
+                Timber.d("Access token: ${it?.length}")
+            }
         }
     }
 }
