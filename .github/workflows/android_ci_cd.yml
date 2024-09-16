@@ -2,25 +2,18 @@ on:
   push:
     branches:
       - main
-      - 'feature/*'
-      - 'develop/*'
-    paths:
-      - "**/*.kt"
-      - ".github/workflows/android_ci_cd.yml"
+      - 'feat/*'
+      - 'dev/*'
   pull_request:
     branches:
       - main
-      - 'feature/*'
-      - 'develop/*'
-    paths:
-      - "**/*.kt"
-      - ".github/workflows/android_ci_cd.yml"
+      - 'feat/*'
+      - 'dev/*'
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
-    # needs: check_conflict
 
     strategy:
       matrix:
