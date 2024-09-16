@@ -1,5 +1,3 @@
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.Properties
 
 plugins {
@@ -74,12 +72,17 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
 
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+
     // Serialization
     implementation(libs.bundles.serialization)
 
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.work)
 
@@ -108,6 +111,11 @@ dependencies {
 
     // Timber
     implementation(libs.jakewharton.timber)
+
+    // Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
 
     implementation(libs.androidx.material.icons.extended)
 

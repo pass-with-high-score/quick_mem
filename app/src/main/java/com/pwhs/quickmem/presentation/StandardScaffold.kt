@@ -22,7 +22,7 @@ fun StandardScaffold(
     navController: NavController,
     showBottomBar: Boolean = true,
     items: List<BottomNavItem> = emptyList(),
-    content: @Composable (paddingValues: PaddingValues) -> Unit,
+    content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         bottomBar = {

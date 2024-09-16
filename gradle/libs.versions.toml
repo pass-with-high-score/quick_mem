@@ -49,6 +49,11 @@ workRuntime = "2.9.0"
 navigationCompose = "2.7.7"
 accompanist = "0.34.0"
 jakewhartonTimber = "5.0.1"
+uiTextGoogleFonts = "1.7.1"
+
+retrofit = "2.11.0"
+loggingInterceptor = "4.12.0"
+converterGson = "2.11.0"
 
 
 [libraries]
@@ -114,7 +119,10 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 
 # Timber
 jakewharton-timber = { module = "com.jakewharton.timber:timber", version.ref = "jakewhartonTimber" }
-
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 
 [bundles]
 compose = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx", "androidx-activity-compose", "androidx-ui", "androidx-ui-graphics", "androidx-ui-tooling-preview", "androidx-material3"]
@@ -126,6 +134,7 @@ paging-compose = ["androidx-paging-compose", "androidx-paging-runtime"]
 android-testing = ["androidx-junit", "androidx-espresso-core", "androidx-ui-test-junit4"]
 testing = ["junit"]
 debugging = ["androidx-ui-tooling", "androidx-ui-test-manifest"]
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
