@@ -37,3 +37,15 @@ fun String.isDateSmallerThan(date: String): Boolean {
     // Check if the age is smaller than 18
     return age < 18
 }
+
+fun String.getUsernameFromEmail(): String {
+    return if (this.length < 8) {
+        "user${(1000..9999).random()}"
+    } else {
+        this.substringBefore("@")
+    }
+}
+
+fun String.getNameFromEmail(): String {
+    return this.substringBefore("@").replace(".", " ")
+}

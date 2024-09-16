@@ -6,6 +6,6 @@ data class SignUpWithEmailUiState (
     val email: String = "",
     val password: String = "",
     val birthday: String = "",
-    val userRole: UserRole = UserRole.STUDENT,
+    val userRole: UserRole = UserRole.Student,
     val isLoading: Boolean = false,
 )

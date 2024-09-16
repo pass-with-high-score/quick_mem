@@ -1,5 +1,5 @@
 package com.pwhs.quickmem.core.utils
 
 object AppConstant {
-    const val BASE_URL = "http://192.168.0.199/api/"
+    const val BASE_URL = "http://192.168.29.157:3009/"
 }
