@@ -1,103 +1,91 @@
 package com.pwhs.quickmem.presentation.auth.component
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.core.data.TextFieldType
 
 @Composable
 fun AuthTextField(
-    modifier: Modifier = Modifier,
-    label: String,
-    isError: Boolean = false,
-    errorMessage: String = "",
-    leadingIcon: ImageVector = Icons.Outlined.Email,
     value: String,
     onValueChange: (String) -> Unit,
-    isSecure: Boolean = false
+    label: String,
+    iconId: Int,
+    contentDescription: String,
+    readOnly: Boolean = false,
+    enabled: Boolean = true,
+    type: TextFieldType = TextFieldType.TEXT,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null
 ) {
     Column {
         TextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(text = label) },
+            placeholder = { Text(label) },
+            readOnly = readOnly,
+            enabled = enabled,
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next,
+                keyboardType = when (type) {
+                    TextFieldType.EMAIL -> KeyboardType.Email
+                    TextFieldType.PASSWORD -> KeyboardType.Password
+                    else -> KeyboardType.Text
+                }
+            ),
             leadingIcon = {
                 Icon(
-                    imageVector = leadingIcon,
-                    contentDescription = null,
+                    painter = painterResource(id = iconId),
+                    contentDescription = contentDescription,
+                    modifier = Modifier.size(24.dp),
                     tint = colorScheme.onSurface
                 )
             },
+            visualTransformation = if (type == TextFieldType.PASSWORD) {
+                PasswordVisualTransformation()
+            } else {
+                VisualTransformation.None
+            },
+            shape = shapes.medium,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                disabledTextColor = colorScheme.onSurface,
+                disabledPlaceholderColor = colorScheme.onSurface,
+                focusedTextColor = colorScheme.onSurface,
+                focusedPlaceholderColor = colorScheme.onSurface,
+                cursorColor = colorScheme.onSurface,
+
+                ),
+
             modifier = modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            isError = isError,
-            colors = TextFieldDefaults.run {
-                colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-
-                    errorContainerColor = Color.Transparent,
-
-                    focusedIndicatorColor = colorScheme.primary,
-                    unfocusedIndicatorColor = colorScheme.onSurface,
+                .padding(top = 10.dp)
+                .then(
+                    if (onClick != null) Modifier.clickable { onClick() } else Modifier
                 )
-            },
-            visualTransformation = if (isSecure) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Done
-            )
         )
-        if (isError) {
-            Text(
-                text = errorMessage,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = colorScheme.error,
-                    fontWeight = FontWeight.Normal
-                ),
-            )
-        }
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun AuthTextFieldPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp), contentAlignment = Alignment.Center
-    ) {
-        AuthTextField(
-            label = "Email",
-            value = "",
-            onValueChange = {},
-            leadingIcon = Icons.Outlined.Email,
-            errorMessage = "Invalid email",
-            isError = true
-        )
-    }
-}

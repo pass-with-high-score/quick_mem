@@ -71,19 +71,7 @@ fun LoginWithEmailScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(16.dp)
             )
 
-            AuthTextField(
-                label = "Email",
-                value = email,
-                onValueChange = { email = it },
-                leadingIcon = Icons.Outlined.Email
-            )
-            AuthTextField(
-                label = "Password",
-                value = password,
-                isSecure = true,
-                onValueChange = { password = it },
-                leadingIcon = Icons.Outlined.Lock
-            )
+           
             AuthButton(
                 text = "Đăng nhập",
                 onClick = {

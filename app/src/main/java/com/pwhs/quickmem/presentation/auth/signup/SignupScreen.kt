@@ -151,7 +151,7 @@ fun SignupScreen(
                             fontSize = 16.sp,
                         )
                     ) {
-                        append("By sighing up, you agree to the")
+                        append("By signing up, you agree to the")
                         withStyle(
                             style = SpanStyle(
                                 color = colorScheme.primary,

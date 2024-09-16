@@ -1,40 +1,27 @@
-package com.pwhs.quickmem.presentation.auth.signup.email
+package com.pwhs.quickmem.presentation.auth.signup.email.component
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,13 +30,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.core.data.UserRole
+import com.pwhs.quickmem.presentation.auth.component.AuthButton
+import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
+import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
+import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiEvent
+import com.pwhs.quickmem.presentation.auth.signup.email.SignupWithEmailViewModel
 import com.pwhs.quickmem.util.gradientBackground
 import com.pwhs.quickmem.util.isDateSmallerThan
-import com.pwhs.quickmem.util.toDateFormatted
 import com.pwhs.quickmem.util.toFormattedString
-import com.pwhs.quickmem.util.upperCaseFirstLetter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -105,7 +96,6 @@ fun SignupWithEmailScreen(
         onBirthdayChanged = { birthday ->
             viewModel.onEvent(SignUpWithEmailUiAction.BirthdayChanged(birthday))
         },
-        role = uiState.value.userRole,
         onRoleChanged = { role ->
             viewModel.onEvent(SignUpWithEmailUiAction.UserRoleChanged(role))
         },
@@ -125,7 +115,6 @@ private fun SignupWithEmail(
     onPasswordChanged: (String) -> Unit = {},
     birthday: String = "",
     onBirthdayChanged: (String) -> Unit = {},
-    role: UserRole = UserRole.STUDENT,
     onRoleChanged: (UserRole) -> Unit = {},
     onSignUpClick: () -> Unit = {}
 ) {
@@ -144,15 +133,17 @@ private fun SignupWithEmail(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+                .padding(16.dp)
+                .padding(top = 40.dp),
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = "Logo",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(60.dp)
+                modifier = Modifier
+                    .size(60.dp)
             )
 
             Text(
@@ -163,57 +154,32 @@ private fun SignupWithEmail(
                 ),
                 modifier = Modifier.padding(16.dp)
             )
-
-            TextField(
+            AuthTextField(
                 value = birthday,
                 onValueChange = onBirthdayChanged,
-                label = { Text("Birthday") },
+                label = "Birthday",
+                iconId = R.drawable.ic_calendar,
+                contentDescription = "Birthday",
                 readOnly = true,
                 enabled = false,
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_calendar),
-                        contentDescription = "Birthday",
-                        modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(colorScheme.onSurface)
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        isDatePickerVisible = true
-                    }
+                onClick = { isDatePickerVisible = true },
+                type = TextFieldType.DATE
             )
-            TextField(
+            AuthTextField(
                 value = email,
                 onValueChange = onEmailChanged,
-                label = { Text("Email") },
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_email),
-                        contentDescription = "Email",
-                        modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(colorScheme.onSurface)
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-
+                label = "Email",
+                iconId = R.drawable.ic_email,
+                contentDescription = "Email",
+                type = TextFieldType.EMAIL
             )
-            TextField(
+            AuthTextField(
                 value = password,
                 onValueChange = onPasswordChanged,
-                label = { Text("Password") },
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_lock),
-                        contentDescription = "Password",
-                        modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(colorScheme.onSurface)
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+                label = "Password",
+                iconId = R.drawable.ic_lock,
+                contentDescription = "Password",
+                type = TextFieldType.PASSWORD
             )
 
             if (!isRoleVisible) {
@@ -223,11 +189,10 @@ private fun SignupWithEmail(
                 )
             }
 
-            ElevatedButton(
-                onClick = onSignUpClick,
-            ) {
-                Text("Sign up")
-            }
+            AuthButton(
+                text = "Sign up",
+                onClick = onSignUpClick
+            )
 
         }
     }
@@ -246,74 +211,6 @@ private fun SignupWithEmail(
                 isDatePickerVisible = false
             }
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerModalInput(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    ) {
-        DatePicker(state = datePickerState)
-    }
-}
-
-@Composable
-private fun RadioGroup(
-    modifier: Modifier = Modifier,
-    onRoleChanged: (UserRole) -> Unit = {}
-) {
-    val options = listOf(UserRole.TEACHER, UserRole.STUDENT)
-    val selectedOption = rememberSaveable { mutableStateOf(options[0]) }
-    Column(
-        modifier = modifier.padding(vertical = 16.dp),
-    ) {
-        Text(
-            text = "Are you a teacher or a student?",
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            options.forEach { option ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = selectedOption.value == option,
-                        onClick = {
-                            selectedOption.value = option
-                            onRoleChanged(option)
-                        }
-                    )
-                    Text(
-                        text = option.role.upperCaseFirstLetter(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-        }
     }
 }
 
