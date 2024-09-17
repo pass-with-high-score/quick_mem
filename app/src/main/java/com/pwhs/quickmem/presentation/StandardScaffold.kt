@@ -21,7 +21,12 @@ fun StandardScaffold(
     modifier: Modifier = Modifier,
     navController: NavController,
     showBottomBar: Boolean = true,
-    items: List<BottomNavItem> = emptyList(),
+    items: List<BottomNavItem> = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Explore,
+        BottomNavItem.Library,
+        BottomNavItem.Profile
+    ),
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(

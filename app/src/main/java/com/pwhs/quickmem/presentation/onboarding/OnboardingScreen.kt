@@ -3,12 +3,25 @@ package com.pwhs.quickmem.presentation.onboarding
 import OnboardingPageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +36,7 @@ import com.pwhs.quickmem.presentation.onboarding.data.onboardingPagesList
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -34,7 +48,32 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    viewModel
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = uiState) {
+        when (uiState) {
+            is OnboardingUiState.IsLoggedIn -> {
+                navigator.navigate(HomeScreenDestination) {
+                    popUpTo(HomeScreenDestination) {
+                        inclusive = true
+                        launchSingleTop = true
+                    }
+                }
+            }
+
+            is OnboardingUiState.NotFirstRun -> {
+                navigator.navigate(WelcomeScreenDestination) {
+                    popUpTo(WelcomeScreenDestination) {
+                        inclusive = true
+                        launchSingleTop = true
+                    }
+                }
+            }
+
+            else -> Unit
+        }
+    }
+
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -66,12 +105,9 @@ fun OnboardingScreen(
                 OnboardingButton(
                     text = "Skip",
                     onClick = {
-                        navigator.navigate(WelcomeScreenDestination) {
-                            popUpTo(WelcomeScreenDestination) {
-                                inclusive = true
-                                launchSingleTop = true
-                            }
-                        }
+                        viewModel.saveIsFirstRun(false)
+                        navigator.popBackStack()
+                        navigator.navigate(WelcomeScreenDestination)
                     },
                     backgroundColor = Color.White,
                     borderColor = MaterialTheme.colorScheme.primary,
@@ -119,6 +155,7 @@ fun OnboardingScreen(
                     OnboardingButton(
                         text = "Get Started",
                         onClick = {
+                            viewModel.saveIsFirstRun(false)
                             navigator.popBackStack()
                             navigator.navigate(WelcomeScreenDestination)
                         }

@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.core.di
 
 import android.content.Context
+import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import dagger.Module
 import dagger.Provides
@@ -17,5 +18,11 @@ object AppModule {
     @Singleton
     fun provideTokenManager(@ApplicationContext context: Context): TokenManager {
         return TokenManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppManager(@ApplicationContext context: Context): AppManager {
+        return AppManager(context)
     }
 }
