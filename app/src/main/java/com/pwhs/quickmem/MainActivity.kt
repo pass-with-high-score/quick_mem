@@ -7,10 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.pwhs.quickmem.presentation.BottomNavItem
 import com.pwhs.quickmem.presentation.StandardScaffold
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
+
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +36,9 @@ class MainActivity : ComponentActivity() {
                         navGraph = NavGraphs.root,
                         navController = navController,
                         engine = navHostEngine,
-                    )
+                    ) {
+
+                    }
                 }
             }
         }

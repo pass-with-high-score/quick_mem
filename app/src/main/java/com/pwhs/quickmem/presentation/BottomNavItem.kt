@@ -10,4 +10,19 @@ sealed class BottomNavItem(
         icon = 0,
         route = "home"
     )
+    data object Solution : BottomNavItem(
+        title = "Solution",
+        icon = 0,
+        route = "solution"
+    )
+    data object Library : BottomNavItem(
+        title = "Library",
+        icon = 0,
+        route = "library"
+    )
+    data object Profile : BottomNavItem(
+        title = "Profile",
+        icon = 0,
+        route = "profile"
+    )
 }

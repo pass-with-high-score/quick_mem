@@ -26,9 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.onboarding.data.OnboardingPage
+
 @Composable
 fun OnboardingPageView(page: OnboardingPage) {
-    var isVisible by remember { mutableStateOf(false) }
+    var isVisible by remember { mutableStateOf(true) }
 
     val alpha by animateFloatAsState(targetValue = if (isVisible) 1f else 0f, label = "Alpha")
 
