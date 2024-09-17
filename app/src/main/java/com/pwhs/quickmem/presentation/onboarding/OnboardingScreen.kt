@@ -3,12 +3,25 @@ package com.pwhs.quickmem.presentation.onboarding
 import OnboardingPageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +47,22 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    viewModel
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = uiState) {
+        when (uiState) {
+            is OnboardingUiState.NotFirstRun -> {
+                navigator.navigate(WelcomeScreenDestination) {
+                    popUpTo(WelcomeScreenDestination) {
+                        inclusive = true
+                        launchSingleTop = true
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -66,6 +94,7 @@ fun OnboardingScreen(
                 OnboardingButton(
                     text = "Skip",
                     onClick = {
+                        viewModel.saveIsFirstRun(false)
                         navigator.navigate(WelcomeScreenDestination) {
                             popUpTo(WelcomeScreenDestination) {
                                 inclusive = true
@@ -119,6 +148,7 @@ fun OnboardingScreen(
                     OnboardingButton(
                         text = "Get Started",
                         onClick = {
+                            viewModel.saveIsFirstRun(false)
                             navigator.popBackStack()
                             navigator.navigate(WelcomeScreenDestination)
                         }
