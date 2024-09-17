@@ -24,6 +24,7 @@ fun StandardScaffold(
     items: List<BottomNavItem> = listOf(
         BottomNavItem.Home,
         BottomNavItem.Solution,
+        BottomNavItem.Explore,
         BottomNavItem.Library,
         BottomNavItem.Profile
     ),

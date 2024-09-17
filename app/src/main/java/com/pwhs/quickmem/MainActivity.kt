@@ -12,6 +12,10 @@ import com.pwhs.quickmem.presentation.StandardScaffold
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.ExploreScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LibraryScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +34,12 @@ class MainActivity : ComponentActivity() {
                 val route = newBackStackEntry?.destination?.route
                 StandardScaffold(
                     navController = navController,
-                    showBottomBar = false
+                    showBottomBar = route in listOf(
+                        HomeScreenDestination.route,
+                        ExploreScreenDestination.route,
+                        LibraryScreenDestination.route,
+                        ProfileScreenDestination.route
+                    )
                 ) {
                     DestinationsNavHost(
                         navGraph = NavGraphs.root,
@@ -41,7 +50,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+
         }
     }
+
 }
 
