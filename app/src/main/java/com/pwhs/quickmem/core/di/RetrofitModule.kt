@@ -1,4 +1,5 @@
 package com.pwhs.quickmem.core.di
+
 import com.pwhs.quickmem.core.utils.AppConstant.BASE_URL
 import com.pwhs.quickmem.data.remote.ApiService
 import dagger.Module
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object RetrofitModule {
 
     @Provides
     @Singleton

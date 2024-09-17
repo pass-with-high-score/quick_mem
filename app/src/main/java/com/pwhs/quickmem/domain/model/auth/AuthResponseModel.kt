@@ -7,5 +7,7 @@ data class AuthResponseModel(
     val username: String? = null,
     val role: String? = null,
     val avatarUrl: String? = null,
-    val birthday: String? = null
+    val birthday: String? = null,
+    val accessToken: String? = null,
+    val refreshToken: String? = null
 )

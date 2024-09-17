@@ -17,4 +17,8 @@ class AuthResponseDto {
     val avatarUrl: String? = null
     @SerializedName("birthday")
     val birthday: String? = null
+    @SerializedName("access_token")
+    val accessToken: String? = null
+    @SerializedName("refresh_token")
+    val refreshToken: String? = null
 }

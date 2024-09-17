@@ -119,6 +119,13 @@ dependencies {
 
     implementation(libs.androidx.material.icons.extended)
 
+    // Easy validator
+    implementation ("com.wajahatkarim:easyvalidation-core:1.0.4")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences-core:1.1.1")
+
     // Unit Test
     testImplementation(libs.bundles.testing)
 
