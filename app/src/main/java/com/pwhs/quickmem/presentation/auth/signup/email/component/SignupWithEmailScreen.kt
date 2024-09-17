@@ -44,6 +44,7 @@ import com.pwhs.quickmem.util.toFormattedString
 import com.pwhs.quickmem.util.toTimestamp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber
 
@@ -60,7 +61,10 @@ fun SignupWithEmailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SignUpWithEmailUiEvent.None -> TODO()
+                SignUpWithEmailUiEvent.None -> {
+                    // Do nothing
+                }
+
                 SignUpWithEmailUiEvent.SignUpFailure -> {
                     Toast.makeText(
                         context,
@@ -70,11 +74,13 @@ fun SignupWithEmailScreen(
                 }
 
                 SignUpWithEmailUiEvent.SignUpSuccess -> {
-                    Toast.makeText(
-                        context,
-                        "Sign up success",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    navigator.popBackStack()
+                    navigator.navigate(HomeScreenDestination) {
+                        popUpTo(HomeScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
                 }
             }
 

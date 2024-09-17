@@ -27,12 +27,25 @@ class OnboardingViewModel @Inject constructor(
     private fun checkAuth() {
         Timber.d("Checking auth")
         viewModelScope.launch {
-            appManager.isFirstRun.collect { isFirstRun ->
-                Timber.d("Is first run: $isFirstRun")
-                _uiState.value = if (isFirstRun) {
-                    OnboardingUiState.FirstRun
+            appManager.isLoggedIn.collect { isLoggedIn ->
+                if (isLoggedIn) {
+                    _uiState.value = OnboardingUiState.IsLoggedIn
                 } else {
-                    OnboardingUiState.NotFirstRun
+                    _uiState.value = OnboardingUiState.NotLoggedIn
+                    checkFirstRun()
+                }
+            }
+        }
+    }
+
+    private fun checkFirstRun() {
+        Timber.d("Checking first run")
+        viewModelScope.launch {
+            appManager.isFirstRun.collect { isFirstRun ->
+                if (isFirstRun) {
+                    _uiState.value = OnboardingUiState.FirstRun
+                } else {
+                    _uiState.value = OnboardingUiState.NotFirstRun
                 }
             }
         }

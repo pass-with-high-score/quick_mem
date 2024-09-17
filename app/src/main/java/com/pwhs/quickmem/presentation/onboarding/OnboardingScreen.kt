@@ -36,6 +36,7 @@ import com.pwhs.quickmem.presentation.onboarding.data.onboardingPagesList
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -51,6 +52,15 @@ fun OnboardingScreen(
 
     LaunchedEffect(key1 = uiState) {
         when (uiState) {
+            is OnboardingUiState.IsLoggedIn -> {
+                navigator.navigate(HomeScreenDestination) {
+                    popUpTo(HomeScreenDestination) {
+                        inclusive = true
+                        launchSingleTop = true
+                    }
+                }
+            }
+
             is OnboardingUiState.NotFirstRun -> {
                 navigator.navigate(WelcomeScreenDestination) {
                     popUpTo(WelcomeScreenDestination) {
@@ -59,6 +69,7 @@ fun OnboardingScreen(
                     }
                 }
             }
+
             else -> Unit
         }
     }
@@ -95,12 +106,8 @@ fun OnboardingScreen(
                     text = "Skip",
                     onClick = {
                         viewModel.saveIsFirstRun(false)
-                        navigator.navigate(WelcomeScreenDestination) {
-                            popUpTo(WelcomeScreenDestination) {
-                                inclusive = true
-                                launchSingleTop = true
-                            }
-                        }
+                        navigator.popBackStack()
+                        navigator.navigate(WelcomeScreenDestination)
                     },
                     backgroundColor = Color.White,
                     borderColor = MaterialTheme.colorScheme.primary,
