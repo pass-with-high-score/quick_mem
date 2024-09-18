@@ -85,7 +85,7 @@ jobs:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           format: html
           message: |
-            ❌ <b>Build Failed</b><br/>
+            ❌ <b>Build Failed</b>
             <b>Repository</b>: ${{ github.repository }}
             <b>Committer</b>: ${{ github.actor }}
             <b>Commit Message</b>: ${{ github.event.head_commit.message }}
