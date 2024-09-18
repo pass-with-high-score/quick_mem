@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.verify_email.components
+package com.pwhs.quickmem.util
 
 import androidx.compose.runtime.Composable
 

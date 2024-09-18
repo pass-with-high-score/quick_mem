@@ -2,32 +2,25 @@ package com.pwhs.quickmem.presentation.auth.verify_email
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.presentation.auth.verify_email.components.Otp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import io.github.jan.supabase.gotrue.providers.builtin.OTP
 
 @Composable
 @Destination<RootGraph>
@@ -42,10 +35,17 @@ fun VerifyEmailScreen(
 @Composable
 private fun VerifyEmail(
     modifier: Modifier = Modifier,
-    email: String = "nguyenquangminh570@gmail.com"
+    email: String = "nguyenquangminh570@gmail.com",
+    onNavigationIconClick: () -> Unit = {}
 ) {
-    Scaffold { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+    Scaffold (
+        topBar = {
+            AuthTopAppBar(
+                onClick = onNavigationIconClick,
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = modifier.padding(innerPadding)) {
 //            Text("Verify Email Screen")
 //            Text("Email: $email")
             val successColor = Color(0xff17917a)
@@ -60,7 +60,7 @@ private fun VerifyEmail(
 
             val bgColor by animateColorAsState((if (success) successColor else if (error) errorColor else Color.White).copy(alpha = .2f))
 
-            Box(modifier=Modifier.fillMaxSize().background(bgColor), contentAlignment = Alignment.Center){
+            Box(modifier=Modifier.background(bgColor), contentAlignment = Alignment.Center){
                 Otp(
                     count = 5,
                     error = error,

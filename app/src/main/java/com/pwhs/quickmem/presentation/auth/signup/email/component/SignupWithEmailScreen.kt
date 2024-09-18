@@ -45,6 +45,7 @@ import com.pwhs.quickmem.util.toTimestamp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber
 
@@ -75,8 +76,8 @@ fun SignupWithEmailScreen(
 
                 SignUpWithEmailUiEvent.SignUpSuccess -> {
                     navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination) {
-                        popUpTo(HomeScreenDestination) {
+                    navigator.navigate(VerifyEmailScreenDestination(email = uiState.value.email)) {
+                        popUpTo(VerifyEmailScreenDestination(email = uiState.value.email)) {
                             inclusive = true
                             launchSingleTop = true
                         }

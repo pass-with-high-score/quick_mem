@@ -28,9 +28,9 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.core.data.OtpValue
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +93,7 @@ fun OtpBox(
             onValueChange = onValueChange,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             textStyle = textStyle.copy(color = textColor),
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = cursorColor
