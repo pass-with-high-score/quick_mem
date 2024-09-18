@@ -1,0 +1,53 @@
+name: Check for Code Conflicts
+
+on:
+  pull_request:
+    branches:
+      - main
+      - "develop/*"
+      - "feature/*"
+  push:
+    branches:
+      - main
+      - "develop/*"
+      - "feature/*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check for Conflicts
+        run: |
+          git fetch origin main
+          MERGE_BASE=$(git merge-base HEAD origin/main)
+          git merge-tree $MERGE_BASE HEAD origin/main > merge_output.txt
+          if grep -q "<<<<<<<" merge_output.txt; then
+            echo "Code conflicts detected. Please resolve them before merging."
+            echo "::warning file=merge_output.txt::Conflicts found in the following files:"
+            grep -l "<<<<<<<" merge_output.txt
+            exit 1
+          fi
+
+      - name: Notify about Conflicts
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.APP_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const conflictFiles = fs.readFileSync('merge_output.txt', 'utf-8')
+                              .split('\n')
+                              .filter(line => line.includes("<<<<<<<"))
+                              .map(line => line.split("<<<<<<<")[1].trim());
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Code conflicts detected in the following files:\n\n${conflictFiles.map(file => `- \`${file}\``).join('\n')}\n\nPlease resolve them before merging.`
+            })
