@@ -23,6 +23,12 @@ sealed class BottomNavItem(
         route = ExploreScreenDestination.route
     )
 
+    data object Center : BottomNavItem(
+        title = "Center",
+        icon = R.drawable.ic_add_circle,
+        route = "center"
+    )
+
     data object Library : BottomNavItem(
         title = "Library",
         icon = R.drawable.ic_library,
