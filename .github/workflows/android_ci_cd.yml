@@ -55,6 +55,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Run Tests
+        run: ./gradlew test
+
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
