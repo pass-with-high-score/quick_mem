@@ -24,7 +24,7 @@ import com.pwhs.quickmem.core.data.OtpValue
 @Composable
 fun Otp(
     modifier: Modifier = Modifier,
-    count: Int = 5,
+    count: Int = 6,
     onOtpChange: (value: String, finished: Boolean) -> Unit = { _, _ -> },
     onFinish: (String) -> Unit = {},
     error: Boolean = false,
@@ -34,7 +34,7 @@ fun Otp(
     focusedColor:Color = MaterialTheme.colorScheme.onSecondary,
     cursorColor: Color = MaterialTheme.colorScheme.secondary,
     unFocusedColor:Color = Color.Gray,
-    spaceBetweenBoxes: Dp = 4.dp,
+    spaceBetweenBoxes: Dp = 2.dp,
     textStyle: TextStyle = TextStyle(
         fontSize = 25.sp, textAlign = TextAlign.Center
     ),

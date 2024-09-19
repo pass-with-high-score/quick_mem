@@ -28,6 +28,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.core.data.OtpValue
@@ -76,7 +77,7 @@ fun OtpBox(
     Box(
         modifier = modifier
             .border((1.5).dp, color, RoundedCornerShape(8))
-            .size(50.dp, 70.dp),
+            .size(30.dp, 50.dp),
         contentAlignment = Alignment.Center
     ) {
         TextField(
@@ -100,4 +101,19 @@ fun OtpBox(
             ),
         )
     }
+}
+
+@Preview
+@Composable
+fun OtpBoxPreview() {
+    OtpBox(
+        otpValue = OtpValue(),
+        onValueChange = {},
+        onFocusChanged = {},
+        onBackSpace = {},
+        onFocusSet = {},
+        modifier = Modifier,
+        error = false,
+        success = false
+    )
 }
