@@ -1,7 +1,7 @@
 
 # QuickMem
 
-QuickMem is an Android application designed to help users manage their tasks and memories efficiently. The app leverages modern Android development practices, including Kotlin, Jetpack Compose, Dagger Hilt, and more.
+**QuickMem** is an Android application designed to help users learn efficiently through flashcards, similar to Quizlet. The app leverages modern Android development practices, including Kotlin, Jetpack Compose, Dagger Hilt, and more, to provide a seamless and user-friendly experience for managing and mastering various subjects.
 
 ## Features
 
