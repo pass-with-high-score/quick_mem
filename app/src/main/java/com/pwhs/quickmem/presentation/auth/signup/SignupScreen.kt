@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.signup
+ package com.pwhs.quickmem.presentation.auth.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
