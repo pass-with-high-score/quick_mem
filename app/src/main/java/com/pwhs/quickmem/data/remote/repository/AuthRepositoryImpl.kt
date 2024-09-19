@@ -24,11 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resources.Loading())
                 val params = LoginRequestModel(email, password).toDto()
                 val response = apiService.login(params)
-                if (response.isSuccessful) {
-                    emit(Resources.Success(response.body()?.toModel() ?: throw Exception("Empty response")))
-                } else {
-                    emit(Resources.Error(response.message()))
-                }
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 emit(Resources.Error(e.toString()))
             }
@@ -41,7 +37,7 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resources.Loading())
                 val params = signUpRequestModel.toDto()
                 val response = apiService.signUp(params)
-                //emit(Resources.Success(response.toModel()))
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 emit(Resources.Error(e.toString()))
             }

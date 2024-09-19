@@ -9,8 +9,8 @@ import retrofit2.http.POST
 
 interface ApiService {
     @POST("auth/signup")
-    suspend fun signUp(@Body signupRequestDto: SignupRequestDto): Response<AuthResponseDto>
+    suspend fun signUp(@Body signupRequestDto: SignupRequestDto): AuthResponseDto
 
     @POST("auth/login")
-    suspend fun login(@Body loginRequestDto: LoginRequestDto): Response<AuthResponseDto>
+    suspend fun login(@Body loginRequestDto: LoginRequestDto): AuthResponseDto
 }

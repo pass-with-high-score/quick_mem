@@ -5,11 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -93,6 +90,7 @@ private fun LoginWithEmail(
     onPasswordChanged: (String) -> Unit = {},
     onLoginClick: () -> Unit = {}
 ) {
+
     var emailError by rememberSaveable { mutableStateOf("") }
     var passwordError by rememberSaveable { mutableStateOf("") }
 
@@ -148,7 +146,6 @@ private fun LoginWithEmail(
                 Text(
                     text = emailError,
                     color = Color.Red,
-                    modifier = Modifier.align(Alignment.Start).padding(8.dp)
                 )
             }
 
@@ -164,8 +161,7 @@ private fun LoginWithEmail(
                 label = "Password",
                 iconId = R.drawable.ic_lock,
                 contentDescription = "Password",
-                type = TextFieldType.PASSWORD,
-                modifier = Modifier.padding(bottom = 20.dp)
+                type = TextFieldType.PASSWORD
             )
 
             if (passwordError.isNotEmpty()) {
@@ -178,6 +174,7 @@ private fun LoginWithEmail(
 
             AuthButton(
                 text = "Log in",
+                modifier = Modifier.align(Alignment.Start).padding(top = 18.dp),
                 onClick = {
                     if (emailError.isEmpty() && passwordError.isEmpty()) {
                         onLoginClick()
