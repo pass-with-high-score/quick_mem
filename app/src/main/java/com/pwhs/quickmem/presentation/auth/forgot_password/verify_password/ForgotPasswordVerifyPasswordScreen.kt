@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.forgot_password
+package com.pwhs.quickmem.presentation.auth.forgot_password.verify_password
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -14,10 +14,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,27 +33,27 @@ import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 @Destination<RootGraph>
-fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
+fun ForgotPasswordVerifyPasswordScreen(
+    modifier: Modifier = Modifier,
+    onNavigationIconClick: () -> Unit = {}
+) {
+    val viewModel: ForgotPasswordVerifyPasswordViewModel = viewModel()
+    val password by viewModel.password.collectAsState()
+    val confirmPassword by viewModel.confirmPassword.collectAsState()
+    val passwordError by viewModel.passwordError.collectAsState()
+    val confirmPasswordError by viewModel.confirmPasswordError.collectAsState()
 
-    var password by remember { mutableStateOf(TextFieldValue("")) }
-    var confirmpassword by remember { mutableStateOf(TextFieldValue("")) }
-    var passwordError by remember { mutableStateOf(false) }
-    var confirmPasswordError by remember { mutableStateOf(false) }
-
-    Scaffold (
+    Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
         topBar = {
-            AuthTopAppBar(
-                onClick = {
-                    //
-                }
-            )
+            AuthTopAppBar(onClick = onNavigationIconClick)
         }
-    ){ innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -65,8 +61,9 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(80.dp))
+
             Image(
-                painter = painterResource(id = R.drawable.forgot3),
+                painter = painterResource(id = R.drawable.forgot_password_verify_password),
                 contentDescription = "Forgot Password Image",
                 modifier = Modifier.size(220.dp),
                 contentScale = ContentScale.Crop
@@ -82,12 +79,10 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
                     .align(Alignment.Start)
                     .padding(start = 26.dp)
             )
+
             OutlinedTextField(
                 value = password,
-                onValueChange = {
-                    password = it
-                    passwordError = password.text.isBlank()
-                },
+                onValueChange = { viewModel.onPasswordChanged(it) },
                 label = { Text(text = "New Password") },
                 isError = passwordError,
                 visualTransformation = PasswordVisualTransformation(),
@@ -96,6 +91,7 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
                     .fillMaxWidth(0.95f)
                     .padding(horizontal = 16.dp)
             )
+
             if (passwordError) {
                 Text(
                     text = "Please enter a new password",
@@ -114,12 +110,10 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
                     .align(Alignment.Start)
                     .padding(start = 26.dp)
             )
+
             OutlinedTextField(
-                value = confirmpassword,
-                onValueChange = {
-                    confirmpassword = it
-                    confirmPasswordError = confirmpassword.text != password.text
-                },
+                value = confirmPassword,
+                onValueChange = { viewModel.onConfirmPasswordChanged(it) },
                 label = { Text(text = "Confirm Password") },
                 isError = confirmPasswordError,
                 visualTransformation = PasswordVisualTransformation(),
@@ -128,6 +122,7 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
                     .fillMaxWidth(0.95f)
                     .padding(horizontal = 16.dp)
             )
+
             if (confirmPasswordError) {
                 Text(
                     text = "Passwords do not match",
@@ -142,17 +137,10 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth(0.88f)
                     .height(48.dp),
-                onClick = {
-                    passwordError = password.text.isBlank()
-                    confirmPasswordError = confirmpassword.text != password.text
-
-                    if (!passwordError && !confirmPasswordError) {
-                        println("Password changed successfully")
-                    }
-                },
+                onClick = { viewModel.submit() },
                 text = "Done",
                 colors = colorScheme.onSecondaryContainer,
-                textColor = Color.White,
+                textColor = Color.White
             )
         }
     }
@@ -160,6 +148,6 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun ForgotPasswordScreenPreview() {
-    ForgotPasswordScreen()
+fun ForgotPasswordVerifyPasswordScreenPreview() {
+    ForgotPasswordVerifyPasswordScreen()
 }
