@@ -15,11 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.rememberScrollState
-import com.pwhs.quickmem.presentation.homescreen.components.HomeComponent.hasData.AchievementsSection
-import com.pwhs.quickmem.presentation.homescreen.components.HomeComponent.hasData.CategoriesSection
-import com.pwhs.quickmem.presentation.homescreen.components.HomeComponent.hasData.ClassesSection
-import com.pwhs.quickmem.presentation.homescreen.components.HomeComponent.hasData.FoldersSections
-import com.pwhs.quickmem.presentation.homescreen.components.HomeComponent.hasData.SetsSections
+import com.pwhs.quickmem.presentation.app.home.component.achiverment.AchievementsSection
+import com.pwhs.quickmem.presentation.app.home.component.categories.CategoriesSection
+import com.pwhs.quickmem.presentation.app.home.component.classes.ClassesSection
+import com.pwhs.quickmem.presentation.app.home.component.folder.FoldersSections
+import com.pwhs.quickmem.presentation.app.home.component.sets.SetsSections
 import com.pwhs.quickmem.presentation.homescreen.components.HomeHeader
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -61,3 +61,4 @@ fun HomeScreen(
         }
     }
 }
+
