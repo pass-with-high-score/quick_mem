@@ -7,12 +7,12 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.5"
+lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.2"
-composeBom = "2024.09.01"
+composeBom = "2024.09.02"
 ksp = "2.0.0-1.0.24"
 # Serialization
-materialIconsExtended = "1.7.1"
+materialIconsExtended = "1.7.2"
 # Serialization
 serialization = "2.0.0"
 serialization-json = "1.7.1"
@@ -29,11 +29,12 @@ ktorUtils = "2.3.12"
 coilCompose = "2.7.0"
 # Compose Destinations
 composeDestinations = "2.1.0-beta09"
+composeAnimations = "1.11.6"
 # Worker
 workRuntime = "2.9.1"
 accompanist = "0.34.0"
 jakewhartonTimber = "5.0.1"
-uiTextGoogleFonts = "1.7.1"
+uiTextGoogleFonts = "1.7.2"
 # Retrofit
 retrofit = "2.11.0"
 loggingInterceptor = "4.12.0"
@@ -71,6 +72,7 @@ ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktorUtils" }
 coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 # Compose Destinations
 compose-destination-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "composeDestinations" }
+compose-destination-animation-core = { module = "io.github.raamcosta.compose-destinations:animations-core", version.ref = "composeAnimations" }
 compose-destination-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "composeDestinations" }
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 # Worker
