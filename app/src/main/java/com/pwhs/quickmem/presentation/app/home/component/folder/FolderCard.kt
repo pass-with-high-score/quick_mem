@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.homescreen.components.data
+package com.pwhs.quickmem.presentation.app.home.component.folder
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
