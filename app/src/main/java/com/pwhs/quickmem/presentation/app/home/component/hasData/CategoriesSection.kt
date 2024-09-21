@@ -40,36 +40,16 @@ import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 
 @Composable
-fun CategoriesSection(){
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Categories",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
+fun CategoriesSection() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = "Học phần",
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
             )
-            Text(
-                text = "View more",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = Color.Blue,
-                    fontSize = 14.sp
-                ),
-                modifier = Modifier.clickable {
-
-                }
-            )
-        }
-
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         Column {
@@ -78,85 +58,77 @@ fun CategoriesSection(){
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 CategoryCard(
-                    title = "Business",
-                    icon = painterResource(id = R.drawable.ic_calendar),
-                    backgroundColor = Color(0xFF5B46F0)
+                    "Ngôn ngữ",
+                    painterResource(id = R.drawable.ic_language),
+                    Color(0xFF5B46F0)
                 )
                 CategoryCard(
-                    title = "Design",
-                    icon = painterResource(id = R.drawable.ic_facebook),
-                    backgroundColor = Color(0xFFFFD645)
+                    "Khoa học",
+                    painterResource(id = R.drawable.ic_science),
+                    Color(0xFF40B5AD)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 CategoryCard(
-                    title = "Code",
-                    icon = painterResource(id = R.drawable.ic_bear),
-                    backgroundColor = Color(0xFF40B5AD)
+                    "Nghệ thuật",
+                    painterResource(id = R.drawable.ic_art),
+                    Color(0xFFFF8E5E)
                 )
                 CategoryCard(
-                    title = "Writing",
-                    icon = painterResource(id = R.drawable.ic_lock),
-                    backgroundColor = Color(0xFFFF8E5E)
+                    "Toán học",
+                    painterResource(id = R.drawable.ic_math),
+                    Color(0xFFFFD645)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 CategoryCard(
-                    title = "Movie",
-                    icon = painterResource(id = R.drawable.ic_google),
-                    backgroundColor = Color(0xFFFFD645)
-                )
-                CategoryCard(
-                    title = "Language",
-                    icon = painterResource(id = R.drawable.ic_eye),
-                    backgroundColor = Color(0xFF5B46F0)
+                    "Khoa học xã hội",
+                    painterResource(id = R.drawable.ic_social_science),
+                    Color(0xFF5B46F0)
                 )
             }
         }
     }
 }
 
-
 @Composable
 fun CategoryCard(title: String, icon: Painter, backgroundColor: Color) {
     Surface(
         modifier = Modifier
-            .width(170.dp)
-            .height(80.dp)
-            .clip(RoundedCornerShape(8.dp)),
-        color = Color(0xFFF0F0F0),
-        shadowElevation = 4.dp
+            .width(160.dp) // Adjusted to make the cards smaller and more compact
+            .height(100.dp) // Adjusted height
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { /* Handle click here */ }
+            .background(Color(0xFF2D2D44)), // Dark background for each card
+        shadowElevation = 8.dp
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp) // Larger icon box
                     .clip(RoundedCornerShape(8.dp))
-                    .background(backgroundColor),
+                    .background(backgroundColor), // Dynamic background color based on the category
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = icon,
                     contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(24.dp)
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(32.dp) // Adjust icon size
                 )
             }
 
@@ -164,8 +136,9 @@ fun CategoryCard(title: String, icon: Painter, backgroundColor: Color) {
 
             Text(
                 text = title,
+                color = Color.White, // White text color
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp
                 )
             )

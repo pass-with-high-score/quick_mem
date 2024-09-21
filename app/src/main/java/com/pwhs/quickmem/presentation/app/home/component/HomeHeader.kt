@@ -31,11 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>
 @Composable
-fun HomeHeader() {
+fun HomeHeader(
+    navigator: DestinationsNavigator
+) {
     Box(
         modifier = Modifier
             .background(
@@ -62,13 +66,18 @@ fun HomeHeader() {
                 ) {
                     Button(
                         onClick = {
-
+                            navigator.navigate(SearchScreenDestination){
+                                popUpTo(HomeScreenDestination){
+                                    inclusive = true
+                                    launchSingleTop = true
+                                }
+                            }
                         },
                         modifier = Modifier.padding(end = 8.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCBB237))
                     ) {
-                        Text("Free trial", )
+                        Text("Free trial")
                     }
                     IconButton(
                         onClick = {
