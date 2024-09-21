@@ -124,7 +124,8 @@ private fun VerifyEmail(
                     focusedColor = Color(0xff313131),
                     unFocusedColor = Color.Gray,
                     onFinish = { otp->
-
+                        Log.d("OTP", otp)
+                        Log.d("Email", email)
                     },
                     modifier=Modifier.size(50.dp,80.dp),
                 )
@@ -186,7 +187,6 @@ fun HighlightedEmailText(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Gộp toàn bộ text với email highlight
         Text(
             text = buildAnnotatedString {
                 append("We have sent an email to\n")
