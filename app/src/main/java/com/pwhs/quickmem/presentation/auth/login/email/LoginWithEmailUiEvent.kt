@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.login
+package com.pwhs.quickmem.presentation.auth.login.email
 
 
 sealed class LoginWithEmailUiEvent {

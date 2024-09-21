@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.login.email
+package com.pwhs.quickmem.presentation.auth.login.email.component
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -32,12 +32,14 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.login.LoginWithEmailUiAction
-import com.pwhs.quickmem.presentation.auth.login.LoginWithEmailUiEvent
 import com.pwhs.quickmem.presentation.auth.login.LoginWithEmailViewModel
+import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
+import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
+import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -57,8 +59,16 @@ fun LoginWithEmailScreen(
                 LoginWithEmailUiEvent.LoginFailure -> {
                     Toast.makeText(context, "Login failure", Toast.LENGTH_SHORT).show()
                 }
+
                 LoginWithEmailUiEvent.LoginSuccess -> {
                     Toast.makeText(context, "Login success", Toast.LENGTH_SHORT).show()
+                    navigator.popBackStack()
+                    navigator.navigate(HomeScreenDestination) {
+                        popUpTo(HomeScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
                 }
             }
         }
@@ -68,15 +78,15 @@ fun LoginWithEmailScreen(
         modifier = modifier,
         onNavigationIconClick = { navigator.popBackStack() },
         email = uiState.email,
+        emailError = uiState.emailError,
         onEmailChanged = { email -> viewModel.onEvent(LoginWithEmailUiAction.EmailChanged(email)) },
         password = uiState.password,
-        onPasswordChanged = { password -> viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password)) },
+        passwordError = uiState.passwordError,
+        onPasswordChanged = { password ->
+            viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password))
+        },
         onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) }
     )
-}
-
-fun isValidEmail(email: String): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
 
 
@@ -85,14 +95,13 @@ private fun LoginWithEmail(
     modifier: Modifier = Modifier,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
+    emailError: String = "",
     onEmailChanged: (String) -> Unit = {},
     password: String = "",
+    passwordError: String = "",
     onPasswordChanged: (String) -> Unit = {},
     onLoginClick: () -> Unit = {}
 ) {
-
-    var emailError by rememberSaveable { mutableStateOf("") }
-    var passwordError by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -128,61 +137,43 @@ private fun LoginWithEmail(
 
             AuthTextField(
                 value = email,
-                onValueChange = { value ->
-                    onEmailChanged(value)
-                    emailError = when {
-                        value.isEmpty() -> "This field is required"
-                        !isValidEmail(value) -> "Invalid email address"
-                        else -> ""
-                    }
-                },
+                onValueChange = onEmailChanged,
                 label = "Email",
                 iconId = R.drawable.ic_email,
                 contentDescription = "Email",
-                type = TextFieldType.EMAIL
+                type = TextFieldType.EMAIL,
+                error = emailError
             )
-
-            if (emailError.isNotEmpty()) {
-                Text(
-                    text = emailError,
-                    color = Color.Red,
-                )
-            }
 
             AuthTextField(
                 value = password,
-                onValueChange = { value ->
-                    onPasswordChanged(value)
-                    passwordError = when {
-                        value.isEmpty() -> "This field is required"
-                        else -> ""
-                    }
-                },
+                onValueChange = onPasswordChanged,
                 label = "Password",
                 iconId = R.drawable.ic_lock,
                 contentDescription = "Password",
-                type = TextFieldType.PASSWORD
+                type = TextFieldType.PASSWORD,
+                error = passwordError
             )
-
-            if (passwordError.isNotEmpty()) {
-                Text(
-                    text = passwordError,
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.Start).padding(8.dp)
-                )
-            }
 
             AuthButton(
                 text = "Log in",
-                modifier = Modifier.align(Alignment.Start).padding(top = 18.dp),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(top = 18.dp),
                 onClick = {
                     if (emailError.isEmpty() && passwordError.isEmpty()) {
                         onLoginClick()
                     }
                 },
-                colors = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(0xFFf3f4f6),
-                borderColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(0xFFf3f4f6),
-                textColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color.White else Color(0xFF9095a0)
+                colors = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
+                    0xFFf3f4f6
+                ),
+                borderColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
+                    0xFFf3f4f6
+                ),
+                textColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color.White else Color(
+                    0xFF9095a0
+                )
             )
         }
     }

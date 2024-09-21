@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -83,7 +84,7 @@ fun LoginScreen(
 
             Text(
                 text = "Log in",
-                style = MaterialTheme.typography.headlineMedium.copy(
+                style = typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.primary
                 )
@@ -114,7 +115,7 @@ fun LoginScreen(
                 )
                 Text(
                     text = "OR",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface)
+                    style = typography.bodyMedium.copy(color = colorScheme.onSurface)
                 )
                 Spacer(
                     modifier = Modifier
@@ -178,4 +179,9 @@ fun LoginScreen(
             )
         }
     }
+}
+
+@Composable
+fun Login(modifier: Modifier = Modifier) {
+
 }
