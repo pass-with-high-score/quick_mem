@@ -5,6 +5,7 @@ import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
+import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,16 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String
     ): Flow<Resources<AuthResponseModel>> {
-        TODO("Not yet implemented")
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val params = LoginRequestModel(email, password).toDto()
+                val response = apiService.login(params)
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                emit(Resources.Error(e.toString()))
+            }
+        }
     }
 
     override suspend fun signup(signUpRequestModel: SignupRequestModel): Flow<Resources<AuthResponseModel>> {

@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.coil.kt.coil.compose)
     // Compose Destination
     implementation(libs.accompanist.flowlayout)
+    implementation(libs.compose.destination.animation.core)
     implementation(libs.compose.destination.core)
     ksp(libs.compose.destination.ksp)
     // WorkManager
