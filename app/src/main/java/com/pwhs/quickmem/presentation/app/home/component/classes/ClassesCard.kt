@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.home.data
+package com.pwhs.quickmem.presentation.app.home.component.classes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.homescreen.components.HomeComponent.notData
+package com.pwhs.quickmem.presentation.app.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

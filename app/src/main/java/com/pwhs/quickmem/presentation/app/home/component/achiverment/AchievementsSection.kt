@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.homescreen.components.HomeComponent.hasData
+package com.pwhs.quickmem.presentation.app.home.component.achiverment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
