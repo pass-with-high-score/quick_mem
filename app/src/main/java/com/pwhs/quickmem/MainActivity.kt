@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.pwhs.quickmem.presentation.StandardScaffold
@@ -26,7 +27,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             QuickMemTheme {
                 val navController = rememberNavController()
-                val navHostEngine = rememberNavHostEngine()
+                val navHostEngine = rememberNavHostEngine(
+                    navHostContentAlignment = Alignment.TopCenter,
+                )
 
                 val newBackStackEntry by navController.currentBackStackEntryAsState()
                 val route = newBackStackEntry?.destination?.route
@@ -43,6 +46,7 @@ class MainActivity : ComponentActivity() {
                         navGraph = NavGraphs.root,
                         navController = navController,
                         engine = navHostEngine,
+
                     )
                 }
             }
