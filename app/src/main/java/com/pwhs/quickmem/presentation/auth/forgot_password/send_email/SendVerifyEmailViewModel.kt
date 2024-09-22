@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.forgot_password.verify_email
+package com.pwhs.quickmem.presentation.auth.forgot_password.send_email
 
 import android.app.Application
 import android.widget.Toast
@@ -13,30 +13,32 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class ForgotPasswordVerifyEmailViewModel @Inject constructor(
+class SendVerifyEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow(ForgotPasswordVerifyEmailUiState())
+    private val _uiState = MutableStateFlow(SendVerifyEmailUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<ForgotPasswordVerifyEmailUiEvent>()
+    private val _uiEvent = Channel<SendVerifyEmailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun onEvent(event: ForgotPasswordVerifyEmailUiAction) {
+    fun onEvent(event: SendVerifyEmailUiAction) {
         when (event) {
-            is ForgotPasswordVerifyEmailUiAction.EmailChanged -> {
+            is SendVerifyEmailUiAction.EmailChangedAction -> {
                 _uiState.update {
                     it.copy(
                         email = event.email,
-                        emailError = if (android.util.Patterns.EMAIL_ADDRESS.matcher(event.email).matches()) ""
+                        emailError = if (android.util.Patterns.EMAIL_ADDRESS.matcher(event.email)
+                                .matches()
+                        ) ""
                         else "Invalid email address"
                     )
                 }
             }
 
-            is ForgotPasswordVerifyEmailUiAction.ResetPassword -> {
+            is SendVerifyEmailUiAction.ResetPassword -> {
                 if (validateInput()) {
                     resetPassword()
                 } else {
@@ -53,7 +55,7 @@ class ForgotPasswordVerifyEmailViewModel @Inject constructor(
     }
 
     private fun resetPassword() {
-        _uiEvent.trySend(ForgotPasswordVerifyEmailUiEvent.ResetSuccess)
+        _uiEvent.trySend(SendVerifyEmailUiEvent.SendEmailSuccess)
     }
 
     override fun onCleared() {

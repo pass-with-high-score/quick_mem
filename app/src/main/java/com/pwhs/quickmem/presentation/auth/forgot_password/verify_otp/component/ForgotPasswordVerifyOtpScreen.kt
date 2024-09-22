@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.forgot_password.verify_code.component
+package com.pwhs.quickmem.presentation.auth.forgot_password.verify_otp.component
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -33,22 +33,22 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.forgot_password.verify_code.ForgotPasswordVerifyCodeUiAction
-import com.pwhs.quickmem.presentation.auth.forgot_password.verify_code.ForgotPasswordVerifyCodeUiEvent
-import com.pwhs.quickmem.presentation.auth.forgot_password.verify_code.ForgotPasswordVerifyCodeUiState
-import com.pwhs.quickmem.presentation.auth.forgot_password.verify_code.ForgotPasswordVerifyCodeViewModel
+import com.pwhs.quickmem.presentation.auth.forgot_password.verify_otp.ForgotPasswordVerifyOtpUiAction
+import com.pwhs.quickmem.presentation.auth.forgot_password.verify_otp.ForgotPasswordVerifyOtpUiEvent
+import com.pwhs.quickmem.presentation.auth.forgot_password.verify_otp.ForgotPasswordVerifyOtpViewModel
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SetNewPasswordScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>
-fun ForgotPasswordVerifyCodeScreen(
+fun ForgotPasswordVerifyOtpScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: ForgotPasswordVerifyCodeViewModel = hiltViewModel()
+    viewModel: ForgotPasswordVerifyOtpViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -56,11 +56,11 @@ fun ForgotPasswordVerifyCodeScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                ForgotPasswordVerifyCodeUiEvent.None -> {
+                ForgotPasswordVerifyOtpUiEvent.None -> {
                     //
                 }
 
-                ForgotPasswordVerifyCodeUiEvent.VerifyFailure -> {
+                ForgotPasswordVerifyOtpUiEvent.VerifyFailure -> {
                     Toast.makeText(
                         context,
                         "Verification failed",
@@ -68,10 +68,10 @@ fun ForgotPasswordVerifyCodeScreen(
                     ).show()
                 }
 
-                ForgotPasswordVerifyCodeUiEvent.VerifySuccess -> {
+                ForgotPasswordVerifyOtpUiEvent.VerifySuccess -> {
                     navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination) {
-                        popUpTo(HomeScreenDestination) {
+                    navigator.navigate(SetNewPasswordScreenDestination) {
+                        popUpTo(SetNewPasswordScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }
@@ -81,24 +81,24 @@ fun ForgotPasswordVerifyCodeScreen(
         }
     }
 
-    ForgotPasswordVerifyCode(
+    ForgotPasswordVerifyOtp(
         modifier,
         onNavigationIconClick = {
             navigator.popBackStack()
         },
-        code = uiState.value.code,
-        codeError = uiState.value.codeError,
+        code = uiState.value.otp,
+        codeError = uiState.value.otpError,
         onCodeChanged = { code ->
-            viewModel.onEvent(ForgotPasswordVerifyCodeUiAction.CodeChanged(code))
+            viewModel.onEvent(ForgotPasswordVerifyOtpUiAction.OtpChanged(code))
         },
         onVerifyClick = {
-            viewModel.onEvent(ForgotPasswordVerifyCodeUiAction.VerifyCode)
+            viewModel.onEvent(ForgotPasswordVerifyOtpUiAction.VerifyOtp)
         }
     )
 }
 
 @Composable
-private fun ForgotPasswordVerifyCode(
+private fun ForgotPasswordVerifyOtp(
     modifier: Modifier = Modifier,
     onNavigationIconClick: () -> Unit = {},
     code: String = "",
@@ -127,15 +127,16 @@ private fun ForgotPasswordVerifyCode(
                 contentDescription = "Forgot Password Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(220.dp)
+                    .size(150.dp)
             )
             Spacer(modifier = Modifier.height(26.dp))
             Text(
                 text = "Email has been sent\n" +
-                        "please check your email\n" +
-                        "and enter the code",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
+                        "Please enter the OTP sent to your email",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                ),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -143,9 +144,9 @@ private fun ForgotPasswordVerifyCode(
             AuthTextField(
                 value = code,
                 onValueChange = onCodeChanged,
-                label = "Code",
+                label = "OTP",
                 iconId = R.drawable.ic_code,
-                contentDescription = "Code",
+                contentDescription = "OTP",
                 type = TextFieldType.TEXT,
                 error = codeError
             )
@@ -164,7 +165,7 @@ private fun ForgotPasswordVerifyCode(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreviewForgotPasswordVerifyCodeScreen() {
-    ForgotPasswordVerifyCode()
+    ForgotPasswordVerifyOtp()
 }
 
 

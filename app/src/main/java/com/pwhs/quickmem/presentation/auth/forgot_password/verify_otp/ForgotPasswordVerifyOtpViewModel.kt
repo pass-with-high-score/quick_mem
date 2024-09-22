@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.forgot_password.verify_code
+package com.pwhs.quickmem.presentation.auth.forgot_password.verify_otp
 
 import android.app.Application
 import android.widget.Toast
@@ -8,44 +8,43 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class ForgotPasswordVerifyCodeViewModel @Inject constructor(
+class ForgotPasswordVerifyOtpViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow(ForgotPasswordVerifyCodeUiState())
+    private val _uiState = MutableStateFlow(ForgotPasswordVerifyOtpUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<ForgotPasswordVerifyCodeUiEvent>()
+    private val _uiEvent = Channel<ForgotPasswordVerifyOtpUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun onEvent(event: ForgotPasswordVerifyCodeUiAction) {
+    fun onEvent(event: ForgotPasswordVerifyOtpUiAction) {
         when (event) {
-            is ForgotPasswordVerifyCodeUiAction.CodeChanged -> {
-                if (event.code.isBlank()) {
+            is ForgotPasswordVerifyOtpUiAction.OtpChanged -> {
+                if (event.otp.isBlank()) {
                     _uiState.update {
                         it.copy(
-                            code = event.code,
-                            codeError = "Code cannot be empty"
+                            otp = event.otp,
+                            otpError = "Code cannot be empty"
                         )
                     }
                 } else {
                     _uiState.update {
                         it.copy(
-                            code = event.code,
-                            codeError = ""
+                            otp = event.otp,
+                            otpError = ""
                         )
                     }
                 }
             }
 
-            is ForgotPasswordVerifyCodeUiAction.VerifyCode -> {
+            is ForgotPasswordVerifyOtpUiAction.VerifyOtp -> {
                 if (validateInput()) {
                     verifyCode()
                 } else {
@@ -56,17 +55,18 @@ class ForgotPasswordVerifyCodeViewModel @Inject constructor(
     }
 
     private fun verifyCode() {
+        _uiEvent.trySend(ForgotPasswordVerifyOtpUiEvent.VerifySuccess)
 
     }
 
     private fun validateInput(): Boolean {
         var isValid = true
 
-        if (uiState.value.code.isBlank()) {
-            _uiState.update { it.copy(codeError = "Code cannot be empty") }
+        if (uiState.value.otp.isBlank()) {
+            _uiState.update { it.copy(otpError = "Code cannot be empty") }
             isValid = false
         } else {
-            _uiState.update { it.copy(codeError = "") }
+            _uiState.update { it.copy(otpError = "") }
         }
 
         return isValid

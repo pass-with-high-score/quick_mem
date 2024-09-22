@@ -17,9 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,11 +36,11 @@ import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.presentation.auth.login.LoginWithEmailViewModel
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -90,7 +87,14 @@ fun LoginWithEmailScreen(
             viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password))
         },
         onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) },
-        onForgotPasswordClick = {}
+        onForgotPasswordClick = {
+            navigator.navigate(SendVerifyEmailScreenDestination) {
+                popUpTo(SendVerifyEmailScreenDestination) {
+                    inclusive = true
+                    launchSingleTop = true
+                }
+            }
+        }
     )
 }
 

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.forgot_password.verify_password
+package com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password
 
 import android.app.Application
 import android.widget.Toast
@@ -13,20 +13,20 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class ForgotPasswordVerifyPasswordViewModel @Inject constructor(
+class SetNewPasswordViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow(ForgotPasswordVerifyPasswordUiState())
+    private val _uiState = MutableStateFlow(SetNewPasswordUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<ForgotPasswordVerifyPasswordUiEvent>()
+    private val _uiEvent = Channel<SetNewPasswordUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun onEvent(event: ForgotPasswordVerifyPasswordUiAction) {
+    fun onEvent(event: SetNewPasswordUiAction) {
         when (event) {
-            is ForgotPasswordVerifyPasswordUiAction.PasswordChanged -> {
+            is SetNewPasswordUiAction.PasswordChanged -> {
                 _uiState.update {
                     it.copy(
                         password = event.password,
@@ -35,7 +35,7 @@ class ForgotPasswordVerifyPasswordViewModel @Inject constructor(
                 }
             }
 
-            is ForgotPasswordVerifyPasswordUiAction.ConfirmPasswordChanged -> {
+            is SetNewPasswordUiAction.ConfirmPasswordChanged -> {
                 _uiState.update {
                     it.copy(
                         confirmPassword = event.confirmPassword,
@@ -44,7 +44,7 @@ class ForgotPasswordVerifyPasswordViewModel @Inject constructor(
                 }
             }
 
-            is ForgotPasswordVerifyPasswordUiAction.Submit -> {
+            is SetNewPasswordUiAction.Submit -> {
                 if (validateInput()) {
                     resetPassword()
                 } else {
@@ -71,7 +71,7 @@ class ForgotPasswordVerifyPasswordViewModel @Inject constructor(
     private fun resetPassword() {
         //
         //
-        _uiEvent.trySend(ForgotPasswordVerifyPasswordUiEvent.ResetSuccess)
+        _uiEvent.trySend(SetNewPasswordUiEvent.ResetSuccess)
     }
 
     override fun onCleared() {
