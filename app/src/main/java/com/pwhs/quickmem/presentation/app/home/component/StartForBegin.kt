@@ -1,6 +1,9 @@
 package com.pwhs.quickmem.presentation.app.home.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 
 @Composable
-fun StartForBegin(){
+fun StartForBegin() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,7 +41,7 @@ fun StartForBegin(){
     ) {
         Text(
             text = "Start for begin",
-            style = MaterialTheme.typography.titleMedium.copy(
+            style = typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             ),
@@ -47,56 +51,49 @@ fun StartForBegin(){
 
         ActionButton(
             title = "Create a flashcard for yourself",
-            icon = painterResource(id = R.drawable.onboarding1),
-            onClick = {
-
-            }
+            iconResId = R.drawable.onboarding1,
+            onClick = {  }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         ActionButton(
             title = "Find a topic, class",
-            icon = painterResource(id = R.drawable.ic_launcher_foreground),
-            onClick = {
-
-            }
+            iconResId = R.drawable.ic_launcher_foreground,
+            onClick = {  }
         )
     }
 }
 
-
 @Composable
-fun ActionButton(title: String, icon: Painter, onClick: () -> Unit) {
-    Surface(
+fun ActionButton(
+    title: String,
+    @DrawableRes iconResId: Int,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .clip(RoundedCornerShape(8.dp)),
-        color = Color(0xFFF0F0F0),
-        shadowElevation = 4.dp,
-        onClick = onClick
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFF0F0F0))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-        ) {
-            Image(
-                painter = icon,
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.size(40.dp)
+        Image(
+            painter = painterResource(id = iconResId),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(40.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = title,
+            style = typography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
             )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp
-                )
-            )
-        }
+        )
     }
 }

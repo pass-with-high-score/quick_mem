@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -36,7 +37,7 @@ fun SetsSections() {
         ) {
             Text(
                 text = "Sets",
-                style = MaterialTheme.typography.titleMedium.copy(
+                style = typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
@@ -44,7 +45,7 @@ fun SetsSections() {
 
             Text(
                 text = "View more",
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = typography.bodyMedium.copy(
                     color = Color.Blue,
                     fontSize = 14.sp
                 ),

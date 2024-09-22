@@ -29,16 +29,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.pwhs.quickmem.presentation.app.home.component.home.SearchTextField
 
-@Destination<RootGraph>
 @Composable
 fun HomeHeader(
-    navigator: DestinationsNavigator
+    Onclick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -48,7 +43,9 @@ fun HomeHeader(
             )
             .padding(16.dp)
     ) {
-        Column {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -65,20 +62,14 @@ fun HomeHeader(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
-                        onClick = {
-                            navigator.navigate(SearchScreenDestination){
-                                popUpTo(HomeScreenDestination){
-                                    inclusive = true
-                                    launchSingleTop = true
-                                }
-                            }
-                        },
+                        onClick = Onclick,
                         modifier = Modifier.padding(end = 8.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCBB237))
                     ) {
                         Text("Free trial")
                     }
+
                     IconButton(
                         onClick = {
 
@@ -92,40 +83,7 @@ fun HomeHeader(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
             SearchTextField()
-            Spacer(modifier = Modifier.height(16.dp))
         }
-    }
-}
-
-
-@Composable
-fun SearchTextField() {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clickable {
-
-            },
-        shadowElevation = 4.dp,
-        shape = RoundedCornerShape(50),
-        color = Color.White
-    ) {
-        TextField(
-            value = "",
-            onValueChange = {},
-            placeholder = {
-                Icon(Icons.Default.Search, contentDescription = null)
-                Text(
-                    text = "Flashcards, textbooks, question,...",
-                    color = Color.Gray,
-                    modifier = Modifier.padding(start = 32.dp)
-                )
-            },
-            modifier = Modifier.fillMaxSize(),
-            singleLine = true,
-        )
     }
 }

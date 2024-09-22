@@ -1,8 +1,11 @@
 package com.pwhs.quickmem.presentation.app.home.component.classes
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,14 +17,13 @@ import androidx.compose.material.icons.filled.AutoAwesomeMotion
 import androidx.compose.material.icons.filled.PeopleOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,22 +32,24 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ClassesCard(
-    title: String, classname: String, sets: String, member: String
+    title: String,
+    classname: String,
+    sets: String,
+    member: String
 ) {
-    Surface(
+    Box(
         modifier = Modifier
             .width(250.dp)
             .height(150.dp)
-            .clip(RoundedCornerShape(8.dp)),
-        color = Color(0xFFF0F0F0),
-        shadowElevation = 4.dp
-    ){
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFF0F0F0))
+            .shadow(4.dp, RoundedCornerShape(8.dp))
+            .padding(10.dp)
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 10.dp),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -53,75 +57,63 @@ fun ClassesCard(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     ),
                     modifier = Modifier.weight(1f)
                 )
 
-                IconButton(
-                    onClick = {
-
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PeopleOutline,
-                        contentDescription = "Peoples"
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.PeopleOutline,
+                    contentDescription = "People"
+                )
             }
-            Text(text = classname)
+
+            Text(
+                text = classname,
+                style = typography.bodyMedium
+            )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    onClick = {
-
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AutoAwesomeMotion,
-                        contentDescription = "Peoples"
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.AutoAwesomeMotion,
+                    contentDescription = "Sets"
+                )
+                Spacer(modifier = Modifier.width(4.dp))  // Thêm khoảng trống nhỏ
                 Text(
                     text = sets,
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = typography.bodyMedium.copy(
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
-                    ),
+                    )
                 )
             }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    onClick = {
-
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Peoples"
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Members"
+                )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = member,
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = typography.bodyMedium.copy(
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
-                    ),
+                    )
                 )
             }
         }
     }
 }
+
 
 @Preview
 @Composable

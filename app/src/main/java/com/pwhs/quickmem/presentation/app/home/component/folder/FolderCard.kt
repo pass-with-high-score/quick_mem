@@ -1,7 +1,9 @@
 package com.pwhs.quickmem.presentation.app.home.component.folder
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,12 +19,14 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,19 +36,23 @@ import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 
 @Composable
-fun FolderCard(title: String, sets: String, author: String) {
-    Surface(
+fun FolderCard(
+    title: String,
+    sets: String,
+    author: String
+) {
+    // Sử dụng Box thay vì Surface
+    Box(
         modifier = Modifier
             .width(220.dp)
             .height(110.dp)
-            .clip(RoundedCornerShape(8.dp)),
-        color = Color(0xFFF0F0F0),
-        shadowElevation = 4.dp
+            .clip(RoundedCornerShape(8.dp)) // Bo góc
+            .background(Color(0xFFF0F0F0))  // Màu nền
+            .shadow(4.dp, RoundedCornerShape(8.dp))  // Bóng đổ
+            .padding(10.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 10.dp),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
@@ -61,25 +69,26 @@ fun FolderCard(title: String, sets: String, author: String) {
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
-                            .clip(RoundedCornerShape(50))
+                            .clip(RoundedCornerShape(50)) // Bo góc hình ảnh
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.bodySmall.copy(
+                        style = typography.bodySmall.copy(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         ),
                     )
                 }
+
                 IconButton(
                     onClick = {
-
+                        // Hành động khi bấm
                     },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Bookmark,
-                        contentDescription = "BookMark"
+                        contentDescription = "Bookmark"
                     )
                 }
             }
@@ -107,7 +116,7 @@ fun FolderCard(title: String, sets: String, author: String) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = author,
-                        style = MaterialTheme.typography.bodySmall.copy(
+                        style = typography.bodySmall.copy(
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
                         ),

@@ -14,23 +14,29 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.time.LocalDate
+import java.time.YearMonth
 
 @Composable
 fun AchievementsSection() {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.padding(16.dp)
+    ) {
         Text(
             text = "Achievement",
-            style = MaterialTheme.typography.titleMedium.copy(
+            style = typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             ),
@@ -39,21 +45,18 @@ fun AchievementsSection() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .background(Color.White),
+                .background(Color.White)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 text = "No streaks right now",
-                style = MaterialTheme.typography.bodyLarge.copy(
+                style = typography.bodyLarge.copy(
                     fontSize = 20.sp,
                     color = Color.Gray
                 )
             )
-            Spacer(modifier = Modifier.height(16.dp))
 
             Icon(
                 imageVector = Icons.Default.CalendarToday,
@@ -62,24 +65,22 @@ fun AchievementsSection() {
                 modifier = Modifier.size(40.dp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 text = "Study to restart your streak",
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = typography.bodyMedium.copy(
                     fontSize = 16.sp
                 )
             )
-            Spacer(modifier = Modifier.height(24.dp))
             CalendarGrid()
         }
     }
 }
 
+
 @Composable
 fun CalendarGrid() {
     val today = LocalDate.now()
-    val yearMonth = java.time.YearMonth.of(today.year, today.month)
+    val yearMonth = YearMonth.of(today.year, today.month)
     val daysInMonth = yearMonth.lengthOfMonth()
     val firstDayOfMonth = yearMonth.atDay(1)
     val dayOfWeekOfFirstDay = firstDayOfMonth.dayOfWeek.value
@@ -91,21 +92,23 @@ fun CalendarGrid() {
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 30.dp, end = 30.dp)
+            .padding(horizontal = 30.dp)
     ) {
         daysOfWeek.forEach { day ->
             Text(
                 text = day,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = androidx.compose.ui.graphics.Color.Gray
+                color = Color.Gray,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
         }
     }
 
     Spacer(modifier = Modifier.height(16.dp))
 
-
+    // Tạo lịch
     val weeks = mutableListOf<List<Int?>>()
     val firstWeek = MutableList(startOffset) { null } + (1..(7 - startOffset)).toList()
     weeks.add(firstWeek)
@@ -114,7 +117,6 @@ fun CalendarGrid() {
         weeks.add(remainingDays.take(7))
         remainingDays = remainingDays.drop(7)
     }
-
 
     weeks.forEach { week ->
         Row(
@@ -128,7 +130,12 @@ fun CalendarGrid() {
                         .size(30.dp)
                 ) {
                     if (day != null) {
-                        Text(text = day.toString(), fontSize = 14.sp, color = androidx.compose.ui.graphics.Color.Gray)
+                        Text(
+                            text = day.toString(),
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }

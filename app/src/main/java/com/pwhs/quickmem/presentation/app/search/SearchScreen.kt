@@ -51,8 +51,8 @@ import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestina
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Destination<RootGraph>
 @Composable
 fun SearchScreen(
@@ -73,7 +73,7 @@ fun SearchScreen(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp)),
                         placeholder = {
-                            Text(text = "Học phần, sách giáo khoa, câu hỏi")
+                            Text(text = "Folder, sets, question,....")
                         },
                         leadingIcon = {
                             Icon(Icons.Filled.Search, contentDescription = "Search")

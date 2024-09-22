@@ -3,8 +3,13 @@ package com.pwhs.quickmem.presentation.app.search
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SearchScreenViewModel : ViewModel() {
+@HiltViewModel
+class SearchScreenViewModel @Inject constructor(
+
+) : ViewModel() {
 
     private val _searchText = mutableStateOf("")
     val searchText: State<String> = _searchText

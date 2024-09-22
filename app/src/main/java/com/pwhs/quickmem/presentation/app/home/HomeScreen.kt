@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import com.pwhs.quickmem.presentation.app.home.component.sets.SetsSections
 import com.pwhs.quickmem.presentation.homescreen.components.HomeHeader
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -39,26 +41,19 @@ fun HomeScreen(
                 .background(Color.White)
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            HomeHeader(navigator = navigator)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Fetch and display data from ViewModel
+            HomeHeader(
+                Onclick = {
+                    navigator.navigate(SearchScreenDestination)
+                }
+            )
             SetsSections()
-            Spacer(modifier = Modifier.height(16.dp))
-
             FoldersSections()
-            Spacer(modifier = Modifier.height(16.dp))
-
             ClassesSection()
-            Spacer(modifier = Modifier.height(16.dp))
-
             AchievementsSection()
-            Spacer(modifier = Modifier.height(16.dp))
-
             CategoriesSection()
         }
     }
 }
-

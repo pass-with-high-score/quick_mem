@@ -18,12 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -38,7 +40,7 @@ fun CategoriesSection() {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = "Categories",
-            style = MaterialTheme.typography.titleMedium.copy(
+            style = typography.titleMedium.copy(
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
@@ -69,30 +71,31 @@ fun CategoriesSection() {
 }
 
 @Composable
-fun CategoryCard(title: String, icon: Painter, backgroundColor: Color) {
-    Surface(
+fun CategoryCard(
+    title: String,
+    icon: Painter,
+    backgroundColor: Color
+) {
+    Box(
         modifier = Modifier
             .width(160.dp)
             .height(100.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable {
-
-            }
-            .background(Color(0xFF2D2D44)),
-        shadowElevation = 8.dp
+            .background(Color(0xFF2D2D44))
+            .clickable { /* Handle click */ }
+            .padding(12.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(12.dp))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(backgroundColor),
+                    .background(backgroundColor),  // Màu nền cho icon
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -108,7 +111,7 @@ fun CategoryCard(title: String, icon: Painter, backgroundColor: Color) {
             Text(
                 text = title,
                 color = Color.White,
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = typography.bodyMedium.copy(
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp
                 )
@@ -116,6 +119,7 @@ fun CategoryCard(title: String, icon: Painter, backgroundColor: Color) {
         }
     }
 }
+
 
 data class Category(
     val title: String,
