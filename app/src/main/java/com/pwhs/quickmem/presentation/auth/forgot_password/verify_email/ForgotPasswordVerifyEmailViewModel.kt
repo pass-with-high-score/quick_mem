@@ -1,27 +1,63 @@
 package com.pwhs.quickmem.presentation.auth.forgot_password.verify_email
 
-
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
+import com.pwhs.quickmem.domain.repository.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class ForgotPasswordVerifyEmailViewModel : ViewModel() {
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> = _email
+@HiltViewModel
+class ForgotPasswordVerifyEmailViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
+    application: Application
+) : AndroidViewModel(application) {
 
-    private val _emailError = MutableStateFlow(false)
-    val emailError: StateFlow<Boolean> = _emailError
+    private val _uiState = MutableStateFlow(ForgotPasswordVerifyEmailUiState())
+    val uiState = _uiState.asStateFlow()
 
-    fun onEmailChanged(newEmail: String) {
-        _email.value = newEmail
-        _emailError.value = !android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()
+    private val _uiEvent = Channel<ForgotPasswordVerifyEmailUiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
+
+    fun onEvent(event: ForgotPasswordVerifyEmailUiAction) {
+        when (event) {
+            is ForgotPasswordVerifyEmailUiAction.EmailChanged -> {
+                _uiState.update {
+                    it.copy(
+                        email = event.email,
+                        emailError = if (android.util.Patterns.EMAIL_ADDRESS.matcher(event.email).matches()) ""
+                        else "Invalid email address"
+                    )
+                }
+            }
+
+            is ForgotPasswordVerifyEmailUiAction.ResetPassword -> {
+                if (validateInput()) {
+                    resetPassword()
+                } else {
+                    Toast.makeText(getApplication(), "Invalid input", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
-    fun resetPassword() {
-        _emailError.value = _email.value.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(_email.value).matches()
-        if (!_emailError.value) {
-            //
-            println("Email entered successfully")
-        }
+    private fun validateInput(): Boolean {
+        val emailValid = android.util.Patterns.EMAIL_ADDRESS.matcher(uiState.value.email).matches()
+        _uiState.update { it.copy(emailError = if (emailValid) "" else "Invalid email address") }
+        return emailValid
+    }
+
+    private fun resetPassword() {
+        _uiEvent.trySend(ForgotPasswordVerifyEmailUiEvent.ResetSuccess)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _uiEvent.close()
     }
 }

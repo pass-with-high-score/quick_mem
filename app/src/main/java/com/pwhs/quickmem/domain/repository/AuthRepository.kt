@@ -10,5 +10,4 @@ interface AuthRepository {
     suspend fun signup(
         signUpRequestModel: SignupRequestModel
     ): Flow<Resources<AuthResponseModel>>
-
 }
