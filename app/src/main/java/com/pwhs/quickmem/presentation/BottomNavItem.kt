@@ -24,9 +24,9 @@ sealed class BottomNavItem(
     )
 
     data object Center : BottomNavItem(
-        title = "Center",
+        title = "",
         icon = R.drawable.ic_add_circle,
-        route = "center"
+        route = "fab"
     )
 
     data object Library : BottomNavItem(
