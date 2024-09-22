@@ -1,27 +1,16 @@
 package com.pwhs.quickmem.presentation
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.ModalBottomSheet
@@ -33,8 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,21 +31,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pwhs.quickmem.R
-import kotlin.math.roundToInt
+import com.pwhs.quickmem.presentation.component.BottomSheetItem
+import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StandardScaffold(
-    modifier: Modifier = Modifier,
     navController: NavController,
     showBottomBar: Boolean = true,
     items: List<BottomNavItem> = listOf(
@@ -71,7 +55,7 @@ fun StandardScaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val sheetLanguageState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
     var showBottomSheetCreate by remember {
         mutableStateOf(false)
     }
@@ -115,7 +99,7 @@ fun StandardScaffold(
                                 ),
                                 icon = {
                                     Icon(
-                                        modifier = if (item.route == "center") {
+                                        modifier = if (item.route == "fab") {
                                             Modifier
                                                 .size(40.dp)
                                                 .scale(iconScale)
@@ -131,7 +115,7 @@ fun StandardScaffold(
                                 },
                                 label = {
                                     Text(
-                                        text = if (item.route == "center") {
+                                        text = if (item.route == "fab") {
                                             ""
                                         } else {
                                             item.title
@@ -152,7 +136,7 @@ fun StandardScaffold(
                                 alwaysShowLabel = true,
                                 selected = currentDestination?.route?.contains(item.route) == true,
                                 onClick = {
-                                    if (item.route == "center") {
+                                    if (item.route == "fab") {
                                         showBottomSheetCreate = true
                                     } else {
                                         navController.navigate(item.route) {
@@ -192,6 +176,7 @@ fun StandardScaffold(
                         icon = R.drawable.ic_card,
                         onClick = {
                             showBottomSheetCreate = false
+                            navController.navigate(CreateFlashCardScreenDestination.route)
                         }
                     )
                     BottomSheetItem(
@@ -215,41 +200,3 @@ fun StandardScaffold(
 
 }
 
-@Composable
-fun BottomSheetItem(
-    modifier: Modifier = Modifier,
-    title: String,
-    @DrawableRes icon: Int,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                onClick()
-            },
-        colors = CardDefaults.cardColors(
-            containerColor = colorScheme.surface.copy(alpha = 0.8f),
-        )
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .padding(vertical = 16.dp)
-        ) {
-            Image(
-                painter = painterResource(id = icon),
-                contentDescription = title,
-                colorFilter = ColorFilter.tint(colorScheme.onSurface),
-            )
-            Text(
-                text = title,
-                style = typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
-    }
-}
