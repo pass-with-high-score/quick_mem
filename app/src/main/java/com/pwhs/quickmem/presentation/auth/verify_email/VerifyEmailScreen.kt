@@ -30,12 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
-import com.pwhs.quickmem.presentation.auth.signup.email.SignupWithEmailViewModel
+import com.pwhs.quickmem.presentation.auth.verify_email.components.ConfirmEmailText
+import com.pwhs.quickmem.presentation.auth.verify_email.components.EmailCheckPromptText
 import com.pwhs.quickmem.presentation.auth.verify_email.components.HighlightedEmailText
 import com.pwhs.quickmem.presentation.auth.verify_email.components.Otp
-import com.pwhs.quickmem.presentation.auth.verify_email.components.Text1
-import com.pwhs.quickmem.presentation.auth.verify_email.components.Text3
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -144,11 +142,11 @@ private fun VerifyEmail(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text1()
+                ConfirmEmailText()
                 Spacer(modifier = Modifier.height(16.dp))
                 HighlightedEmailText(email = email)
                 Spacer(modifier = Modifier.height(16.dp))
-                Text3()
+                EmailCheckPromptText()
             }
 
             Box(
