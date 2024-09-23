@@ -39,7 +39,6 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .verticalScroll(rememberScrollState())
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
