@@ -61,19 +61,4 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
-
-    override suspend fun verifyEmail(
-        verifyEmailResponseModel: VerifyEmailResponseModel
-    ): Flow<Resources<OtpResponseModel>> {
-        return flow {
-            try {
-                emit(Resources.Loading())
-                val params = verifyEmailResponseModel.toDto()
-                val response = apiService.verifyEmail(params)
-                emit(Resources.Success(response.toModel()))
-            } catch (e: Exception) {
-                emit(Resources.Error(e.toString()))
-            }
-        }
-    }
 }

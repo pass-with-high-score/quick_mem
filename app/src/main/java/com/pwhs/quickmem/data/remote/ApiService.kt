@@ -18,4 +18,7 @@ interface ApiService {
 
     @POST("auth/verify-otp")
     suspend fun verifyEmail(@Body verifyEmailRequestDto: VerifyEmailRequestDto): OtpResponseDto
+
+    @POST("auth/resend-verification-email")
+    suspend fun resendVerificationEmail(@Body email: String): OtpResponseDto
 }

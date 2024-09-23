@@ -1,8 +1,8 @@
 package com.pwhs.quickmem.presentation.auth.verify_email
 
-import android.util.Log
+import ResendOrLogoutText
+import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,21 +24,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
+import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
+import com.pwhs.quickmem.presentation.auth.signup.email.SignupWithEmailViewModel
+import com.pwhs.quickmem.presentation.auth.verify_email.components.HighlightedEmailText
 import com.pwhs.quickmem.presentation.auth.verify_email.components.Otp
+import com.pwhs.quickmem.presentation.auth.verify_email.components.Text1
+import com.pwhs.quickmem.presentation.auth.verify_email.components.Text3
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>
@@ -47,15 +48,52 @@ fun VerifyEmailScreen(
     modifier: Modifier = Modifier,
     viewModel: VerifyEmailViewModel = hiltViewModel(),
     email: String,
-    onNavigationIconClick: () -> Unit = { /* Handle back navigation */ }
+    navigator: DestinationsNavigator,
 ) {
+    val uiState = viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                VerifyEmailUiEvent.None -> {
+                    // Do nothing
+                }
+                VerifyEmailUiEvent.VerifyFailure -> {
+                    Toast.makeText(context, "Failed to verify email", Toast.LENGTH_SHORT).show()
+                }
+                VerifyEmailUiEvent.VerifySuccess -> {
+                    navigator.popBackStack()
+                    navigator.navigate(HomeScreenDestination) {
+                        popUpTo(HomeScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            }
+
+        }
+    }
     VerifyEmail(
         modifier = modifier,
         email = email,
-        onNavigationIconClick = onNavigationIconClick,
         onVerifyClick = {
-            // Verify email
+            viewModel.onEvent(VerifyEmailUiAction.VerifyEmail)
+        },
+        onOtpChange = {
+            viewModel.onEvent(VerifyEmailUiAction.OtpChange(it))
+        },
+        onEmailChange = {
+            viewModel.onEvent(VerifyEmailUiAction.EmailChange(it))
+        },
+        onNavigationIconClick = {
+            navigator.popBackStack()
+        },
+        onResendClick = {
 
+        },
+        onLogoutClick = {
+            // logout click
         }
     )
 }
@@ -65,11 +103,15 @@ private fun VerifyEmail(
     modifier: Modifier = Modifier,
     email: String,
     onNavigationIconClick: () -> Unit = {},
-    onVerifyClick: () -> Unit = {}
+    onVerifyClick: () -> Unit = {},
+    onOtpChange: (String) -> Unit = {},
+    onEmailChange: (String) -> Unit = {},
+    onResendClick: () -> Unit = {},
+    onLogoutClick: () -> Unit = {},
 ) {
     Scaffold (
         modifier = modifier.gradientBackground(),
-        containerColor = Color.White,
+        containerColor = Color.Transparent,
         topBar = {
             AuthTopAppBar(
                 onClick = onNavigationIconClick,
@@ -110,7 +152,6 @@ private fun VerifyEmail(
             }
 
             Box(
-                modifier=Modifier.background(bgColor),
                 contentAlignment = Alignment.Center
             ){
                 Otp(
@@ -119,11 +160,11 @@ private fun VerifyEmail(
                     success = success,
                     errorColor = errorColor,
                     successColor = successColor,
-                    focusedColor = Color(0xff313131),
+                    focusedColor = Color.White,
                     unFocusedColor = Color.Gray,
                     onFinish = { otp->
-                        Log.d("OTP", otp)
-                        Log.d("Email", email)
+                        onOtpChange(otp)
+                        onEmailChange(email)
                     },
                     modifier=Modifier.size(50.dp,80.dp),
                 )
@@ -132,130 +173,24 @@ private fun VerifyEmail(
             AuthButton(
                 text = "Done",
                 onClick = onVerifyClick,
-                modifier = Modifier.padding(top = 156.dp)
+                modifier = Modifier.padding(top = 106.dp)
             )
 
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp, bottom = 20.dp),
                 onClick = {
-                    // update email
+
                 },
                 text = "Update email",
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
             )
-            ResendOrLogoutText()
+            ResendOrLogoutText(
+                onResendClick = onResendClick,
+                onLogoutClick = onLogoutClick
+            )
         }
     }
-}
-
-@Composable
-fun Text1() {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        BasicText(
-            text = "Confirm your email",
-            style = LocalTextStyle.current.copy(
-                fontSize = 30.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        BasicText(
-            text = "to continue",
-            style = LocalTextStyle.current.copy(
-                fontSize = 30.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
-        )
-    }
-}
-
-@Composable
-fun HighlightedEmailText(
-    email: String = ""
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = buildAnnotatedString {
-                append("We have sent an email to\n")
-                withStyle(style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Blue
-                )) {
-                    append("$email. ")
-                }
-                append("Please enter the correct confirmation code from the email.")
-            },
-            style = LocalTextStyle.current.copy(
-                fontSize = 18.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
-        )
-    }
-}
-
-
-
-@Composable
-fun Text3() {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-            .padding(bottom = 40.dp)
-        ,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        BasicText(
-            text = "Didn't get an email? Check your spam folder ",
-            style = LocalTextStyle.current.copy(
-                fontSize = 16.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        BasicText(
-            text = "or request another email.",
-            style = LocalTextStyle.current.copy(
-                fontSize = 16.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
-        )
-    }
-}
-
-
-@Composable
-fun ResendOrLogoutText() {
-    BasicText(
-        text = buildAnnotatedString {
-            append("Haven't received the email? ")
-            withStyle(style = SpanStyle(color = Color.Blue)) {
-                append("Resend")
-            }
-            append(" or ")
-            withStyle(style = SpanStyle(color = Color.Blue)) {
-                append("log out")
-            }
-            append(".")
-        },
-        style = LocalTextStyle.current.copy(
-            fontSize = 16.sp,
-            color = Color.Black,
-            textAlign = TextAlign.Center
-        )
-    )
 }
 
 fun String.splitAtIndex(index: Int): String {
