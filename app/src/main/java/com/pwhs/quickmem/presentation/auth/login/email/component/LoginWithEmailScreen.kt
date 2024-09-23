@@ -3,20 +3,20 @@ package com.pwhs.quickmem.presentation.auth.login.email.component
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,11 +36,11 @@ import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.presentation.auth.login.LoginWithEmailViewModel
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -85,7 +86,15 @@ fun LoginWithEmailScreen(
         onPasswordChanged = { password ->
             viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password))
         },
-        onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) }
+        onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) },
+        onForgotPasswordClick = {
+            navigator.navigate(SendVerifyEmailScreenDestination) {
+                popUpTo(SendVerifyEmailScreenDestination) {
+                    inclusive = true
+                    launchSingleTop = true
+                }
+            }
+        }
     )
 }
 
@@ -100,7 +109,8 @@ private fun LoginWithEmail(
     password: String = "",
     passwordError: String = "",
     onPasswordChanged: (String) -> Unit = {},
-    onLoginClick: () -> Unit = {}
+    onLoginClick: () -> Unit = {},
+    onForgotPasswordClick: () -> Unit = {}
 ) {
 
     Scaffold(
@@ -154,6 +164,26 @@ private fun LoginWithEmail(
                 type = TextFieldType.PASSWORD,
                 error = passwordError
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                TextButton(
+                    onClick = onForgotPasswordClick
+                ) {
+                    Text(
+                        text = "Forgot password?",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color(0xFF2d333d),
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.End
+                    )
+                }
+            }
 
             AuthButton(
                 text = "Log in",
