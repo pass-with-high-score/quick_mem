@@ -5,11 +5,14 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiState
+import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiEvent
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
@@ -27,7 +30,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginWithEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    application: Application
+    application: Application,
+    private val tokenManager: TokenManager,
+    private val appManager: AppManager,
 ) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(LoginWithEmailUiState())
@@ -88,6 +93,9 @@ class LoginWithEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
+                        tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
+                        tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
+                        appManager.saveIsLoggedIn(true)
                         _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                     }
                 }

@@ -15,5 +15,4 @@ interface AuthRepository {
     suspend fun verifyEmail(
         verifyEmailResponseModel: VerifyEmailResponseModel
     ): Flow<Resources<OtpResponseModel>>
-
 }

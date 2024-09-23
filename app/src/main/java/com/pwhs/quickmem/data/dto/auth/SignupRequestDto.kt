@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 import com.pwhs.quickmem.core.data.UserRole
 
 data class SignupRequestDto(
-    @SerializedName("avatar_url")
+    @SerializedName("avatarUrl")
     val avatarUrl: String?,
     @SerializedName("email")
     val email: String?,
     @SerializedName("username")
     val username: String?,
-    @SerializedName("full_name")
+    @SerializedName("fullName")
     val fullName: String?,
     @SerializedName("role")
     val role: UserRole?,

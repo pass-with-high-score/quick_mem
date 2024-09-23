@@ -43,6 +43,7 @@ class AuthRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 emit(Resources.Error(e.toString()))
             }
+
         }
     }
 

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 class AuthResponseDto {
     @SerializedName("id")
     val id: String? = null
-    @SerializedName("full_name")
+    @SerializedName("fullName")
     val fullName: String? = null
     @SerializedName("email")
     val email: String? = null
@@ -13,12 +13,12 @@ class AuthResponseDto {
     val username: String? = null
     @SerializedName("role")
     val role: String? = null
-    @SerializedName("avatar_url")
+    @SerializedName("avatarUrl")
     val avatarUrl: String? = null
     @SerializedName("birthday")
     val birthday: String? = null
-    @SerializedName("access_token")
+    @SerializedName("accessToken")
     val accessToken: String? = null
-    @SerializedName("refresh_token")
+    @SerializedName("refreshToken")
     val refreshToken: String? = null
 }
