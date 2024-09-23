@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Text1() {
+fun ConfirmEmailText() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -45,7 +45,7 @@ fun Text1() {
 }
 
 @Composable
-fun Text3() {
+fun EmailCheckPromptText() {
     Column(
         modifier = Modifier.fillMaxWidth()
             .padding(bottom = 40.dp)
