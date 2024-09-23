@@ -30,8 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
-import com.pwhs.quickmem.presentation.auth.signup.email.SignupWithEmailViewModel
 import com.pwhs.quickmem.presentation.auth.verify_email.components.HighlightedEmailText
 import com.pwhs.quickmem.presentation.auth.verify_email.components.Otp
 import com.pwhs.quickmem.presentation.auth.verify_email.components.Text1
@@ -70,6 +68,13 @@ fun VerifyEmailScreen(
                         }
                     }
                 }
+
+                VerifyEmailUiEvent.ResendFailure -> {
+                    Toast.makeText(context, "Failed to resend email", Toast.LENGTH_SHORT).show()
+                }
+                VerifyEmailUiEvent.ResendSuccess -> {
+                    Toast.makeText(context, "Please check your email again", Toast.LENGTH_SHORT).show()
+                }
             }
 
         }
@@ -90,10 +95,10 @@ fun VerifyEmailScreen(
             navigator.popBackStack()
         },
         onResendClick = {
-
+            viewModel.onEvent(VerifyEmailUiAction.ResendEmail(email))
         },
         onLogoutClick = {
-            // logout click
+            navigator.popBackStack()
         }
     )
 }

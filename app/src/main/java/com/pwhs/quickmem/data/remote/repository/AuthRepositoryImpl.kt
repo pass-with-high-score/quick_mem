@@ -7,6 +7,7 @@ import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
+import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -61,4 +62,21 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun resendOtp(
+        resendEmailRequestModel: ResendEmailRequestModel
+    ): Flow<Resources<OtpResponseModel>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val params = resendEmailRequestModel.toDto()
+                val response = apiService.resendVerificationEmail(params)
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+
 }
