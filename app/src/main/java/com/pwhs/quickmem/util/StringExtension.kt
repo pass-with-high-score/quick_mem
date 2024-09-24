@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.util
 
+import androidx.compose.ui.graphics.Color
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -65,4 +66,9 @@ fun String.toTimestamp(): Long? {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val date = dateFormat.parse(this) ?: return 0
     return date.time
+}
+
+fun String.toColor(): Color {
+    val color = Color(android.graphics.Color.parseColor(this))
+    return color
 }
