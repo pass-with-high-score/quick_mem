@@ -38,7 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
-import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +54,7 @@ fun StandardScaffold(
     ),
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val sheetLanguageState = rememberModalBottomSheetState()
+    val sheetSelectCreateState = rememberModalBottomSheetState()
     rememberCoroutineScope()
     var showBottomSheetCreate by remember {
         mutableStateOf(false)
@@ -163,7 +163,7 @@ fun StandardScaffold(
                 onDismissRequest = {
                     showBottomSheetCreate = false
                 },
-                sheetState = sheetLanguageState,
+                sheetState = sheetSelectCreateState,
             ) {
 
                 Column(
@@ -176,7 +176,7 @@ fun StandardScaffold(
                         icon = R.drawable.ic_card,
                         onClick = {
                             showBottomSheetCreate = false
-                            navController.navigate(CreateFlashCardScreenDestination.route)
+                            navController.navigate(CreateStudySetScreenDestination.route)
                         }
                     )
                     BottomSheetItem(
