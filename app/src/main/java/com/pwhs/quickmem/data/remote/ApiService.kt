@@ -25,7 +25,6 @@ interface ApiService {
 
     @POST("auth/resend-verification-email")
     suspend fun resendVerificationEmail(@Body resendEmailRequestDto: ResendEmailRequestDto): OtpResponseDto
-
     @POST("study-set")
     suspend fun createStudySet(
         @Header("Authorization") token: String,
