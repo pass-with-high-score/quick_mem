@@ -1,18 +1,13 @@
-package com.pwhs.quickmem.presentation.auth.login
+package com.pwhs.quickmem.presentation.auth.login.email
 
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.AuthRepository
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiState
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiEvent
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
@@ -96,6 +91,7 @@ class LoginWithEmailViewModel @Inject constructor(
                         tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
                         tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
                         appManager.saveIsLoggedIn(true)
+                        appManager.saveUserId(resource.data?.id ?: "")
                         _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                     }
                 }

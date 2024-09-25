@@ -1,5 +1,6 @@
-package com.pwhs.quickmem.presentation.app.study_set.create_study_set
+package com.pwhs.quickmem.presentation.app.study_set.create
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,7 +34,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,9 +60,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.util.loadingOverlay
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>
@@ -72,21 +75,43 @@ fun CreateStudySetScreen(
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                CreateStudySetUiEvent.CreateStudySetFailure -> TODO()
-                CreateStudySetUiEvent.CreateStudySetSuccess -> TODO()
+                CreateStudySetUiEvent.StudySetCreated -> {
+                    showLoading = false
+                    Toast.makeText(context, "Study Set Created", Toast.LENGTH_SHORT).show()
+                    navigator.navigateUp()
+                    navigator.navigate(StudySetDetailScreenDestination)
+                }
+
                 CreateStudySetUiEvent.None -> TODO()
-                CreateStudySetUiEvent.SaveClicked -> TODO()
+                CreateStudySetUiEvent.SaveClicked -> {
+                    viewModel.onEvent(CreateStudySetUiAction.SaveClicked)
+                }
+
+                is CreateStudySetUiEvent.ShowError -> {
+                    showLoading = false
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                CreateStudySetUiEvent.ShowLoading -> {
+                    showLoading = true
+                }
             }
         }
     }
 
     CreateStudySet(
-        name = uiState.name,
-        onNameChange = { viewModel.onEvent(CreateStudySetUiAction.NameChanged(it)) },
+        modifier = modifier.loadingOverlay(showLoading),
+        title = uiState.title,
+        titleError = uiState.titleError,
+        onTitleChange = { viewModel.onEvent(CreateStudySetUiAction.NameChanged(it)) },
         subjectModel = uiState.subjectModel,
         onSubjectChange = { viewModel.onEvent(CreateStudySetUiAction.SubjectChanged(it)) },
         colorModel = uiState.colorModel,
@@ -102,8 +127,9 @@ fun CreateStudySetScreen(
 @Composable
 fun CreateStudySet(
     modifier: Modifier = Modifier,
-    name: String = "",
-    onNameChange: (String) -> Unit = {},
+    title: String = "",
+    titleError: String = "",
+    onTitleChange: (String) -> Unit = {},
     subjectModel: SubjectModel? = SubjectModel.defaultSubjects.first(),
     onSubjectChange: (SubjectModel) -> Unit = {},
     colorModel: ColorModel? = ColorModel.defaultColors.first(),
@@ -127,6 +153,7 @@ fun CreateStudySet(
 
     Scaffold(
         containerColor = colorScheme.background,
+        modifier = modifier,
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -186,9 +213,15 @@ fun CreateStudySet(
                 )
                 OutlinedTextField(
                     shape = RoundedCornerShape(10.dp),
-                    value = name,
-                    onValueChange = onNameChange,
-                    placeholder = { Text("Name") },
+                    value = title,
+                    onValueChange = onTitleChange,
+                    placeholder = { Text("Title") },
+                    isError = titleError.isNotEmpty(),
+                    supportingText = {
+                        titleError.isNotEmpty().let {
+                            Text(titleError)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp),
@@ -196,6 +229,9 @@ fun CreateStudySet(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
                         focusedIndicatorColor = colorScheme.primary,
+                        focusedSupportingTextColor = colorScheme.error,
+                        unfocusedSupportingTextColor = colorScheme.error,
+                        errorContainerColor = Color.Transparent,
                         unfocusedIndicatorColor = colorScheme.onSurface.copy(alpha = 0.12f),
                     )
                 )
@@ -411,7 +447,8 @@ fun CreateStudySet(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp)
+                            .padding(horizontal = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(filteredSubjects) { subject ->
                             Row(
@@ -443,6 +480,20 @@ fun CreateStudySet(
                                         .padding(vertical = 10.dp)
                                         .padding(start = 10.dp)
 
+                                )
+                            }
+                        }
+                        item {
+                            if (filteredSubjects.isEmpty()) {
+                                Text(
+                                    text = "No subjects found",
+                                    style = typography.bodyMedium.copy(
+                                        color = colorScheme.onSurface,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 10.dp)
                                 )
                             }
                         }

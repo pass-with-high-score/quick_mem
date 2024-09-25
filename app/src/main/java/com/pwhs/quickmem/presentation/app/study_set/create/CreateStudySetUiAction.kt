@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.create_study_set
+package com.pwhs.quickmem.presentation.app.study_set.create
 
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel

@@ -18,12 +18,12 @@ class TokenManager(private val context: Context) {
 
     val accessToken: Flow<String?> = context.dataStore.data
         .map { preferences ->
-            preferences[ACCESS_TOKEN]
+            "Bearer ${preferences[ACCESS_TOKEN]}"
         }
 
     val refreshToken: Flow<String?> = context.dataStore.data
         .map { preferences ->
-            preferences[REFRESH_TOKEN]
+            "Bearer ${preferences[REFRESH_TOKEN]}"
         }
 
     suspend fun saveAccessToken(token: String) {

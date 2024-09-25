@@ -6,7 +6,10 @@ import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
+import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
+import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ApiService {
@@ -22,4 +25,10 @@ interface ApiService {
 
     @POST("auth/resend-verification-email")
     suspend fun resendVerificationEmail(@Body resendEmailRequestDto: ResendEmailRequestDto): OtpResponseDto
+
+    @POST("study-set")
+    suspend fun createStudySet(
+        @Header("Authorization") token: String,
+        @Body createStudySetRequestDto: CreateStudySetRequestDto
+    ): CreateStudySetResponseDto
 }
