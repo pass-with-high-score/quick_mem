@@ -8,11 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -24,18 +20,9 @@ fun HighlightedEmailText(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = buildAnnotatedString {
-                append("We have sent an email to\n")
-                withStyle(style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Blue
-                )) {
-                    append("$email. ")
-                }
-                append("Please enter the correct confirmation code from the email.")
-            },
+            text = "Enter the OTP sent to $email",
             style = LocalTextStyle.current.copy(
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center
             )

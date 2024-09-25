@@ -23,17 +23,7 @@ fun ConfirmEmailText() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BasicText(
-            text = "Confirm your email",
-            style = LocalTextStyle.current.copy(
-                fontSize = 30.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        BasicText(
-            text = "to continue",
+            text = "OTP Verification",
             style = LocalTextStyle.current.copy(
                 fontSize = 30.sp,
                 color = Color.Black,

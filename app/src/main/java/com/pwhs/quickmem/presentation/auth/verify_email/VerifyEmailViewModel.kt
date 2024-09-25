@@ -53,10 +53,18 @@ class VerifyEmailViewModel @Inject constructor(
 
     fun verifyEmail() {
         viewModelScope.launch {
-            var response = authRepository.verifyEmail(
+            val email = uiState.value.email
+            val otp = uiState.value.otp
+
+            if (email.isEmpty() || otp.isEmpty()) {
+                _uiEvent.send(VerifyEmailUiEvent.VerifyFailure)
+                return@launch
+            }
+
+            val response = authRepository.verifyEmail(
                 VerifyEmailResponseModel(
-                    email = uiState.value.email,
-                    otp = uiState.value.otp
+                    email = email,
+                    otp = otp
                 )
             )
 

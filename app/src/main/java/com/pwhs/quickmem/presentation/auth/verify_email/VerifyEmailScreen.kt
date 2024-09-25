@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.auth.verify_email
 import ResendOrLogoutText
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,13 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
-import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.verify_email.components.ConfirmEmailText
-import com.pwhs.quickmem.presentation.auth.verify_email.components.EmailCheckPromptText
 import com.pwhs.quickmem.presentation.auth.verify_email.components.HighlightedEmailText
 import com.pwhs.quickmem.presentation.auth.verify_email.components.Otp
 import com.pwhs.quickmem.util.gradientBackground
@@ -91,9 +91,6 @@ fun VerifyEmailScreen(
         onEmailChange = {
             viewModel.onEvent(VerifyEmailUiAction.EmailChange(it))
         },
-        onNavigationIconClick = {
-            navigator.popBackStack()
-        },
         onResendClick = {
             viewModel.onEvent(VerifyEmailUiAction.ResendEmail(email))
         },
@@ -107,7 +104,6 @@ fun VerifyEmailScreen(
 private fun VerifyEmail(
     modifier: Modifier = Modifier,
     email: String,
-    onNavigationIconClick: () -> Unit = {},
     onVerifyClick: () -> Unit = {},
     onOtpChange: (String) -> Unit = {},
     onEmailChange: (String) -> Unit = {},
@@ -117,18 +113,14 @@ private fun VerifyEmail(
     Scaffold (
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
-        topBar = {
-            AuthTopAppBar(
-                onClick = onNavigationIconClick,
-            )
-        }
     ) { innerPadding ->
         Column(
             modifier = modifier
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             val successColor = Color(0xff17917a)
             val errorColor = Color(0xFFFF6969)
@@ -140,8 +132,6 @@ private fun VerifyEmail(
                 mutableStateOf(false)
             }
 
-            val bgColor by animateColorAsState((if (success) successColor else if (error) errorColor else Color.White).copy(alpha = .2f))
-
             Column (
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,11 +139,14 @@ private fun VerifyEmail(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
+                Image(
+                    painter = painterResource(id = R.drawable.otpimage),
+                    contentDescription = "Send SMS",
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
                 ConfirmEmailText()
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 HighlightedEmailText(email = email)
-                Spacer(modifier = Modifier.height(16.dp))
-                EmailCheckPromptText()
             }
 
             Box(
@@ -165,7 +158,7 @@ private fun VerifyEmail(
                     success = success,
                     errorColor = errorColor,
                     successColor = successColor,
-                    focusedColor = Color.White,
+                    focusedColor = Color(0xFF056451),
                     unFocusedColor = Color.Gray,
                     onFinish = { otp->
                         onOtpChange(otp)
@@ -176,19 +169,9 @@ private fun VerifyEmail(
             }
 
             AuthButton(
-                text = "Done",
+                text = "Verify & Proceed",
                 onClick = onVerifyClick,
-                modifier = Modifier.padding(top = 106.dp)
-            )
-
-            AuthButton(
-                modifier = Modifier.padding(top = 16.dp, bottom = 20.dp),
-                onClick = {
-
-                },
-                text = "Update email",
-                colors = Color.White,
-                textColor = colorScheme.onSurface,
+                modifier = Modifier.padding(top = 90.dp, bottom = 15.dp)
             )
             ResendOrLogoutText(
                 onResendClick = onResendClick,
