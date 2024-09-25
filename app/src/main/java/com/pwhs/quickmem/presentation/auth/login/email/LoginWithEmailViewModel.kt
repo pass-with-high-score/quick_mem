@@ -41,6 +41,8 @@ class LoginWithEmailViewModel @Inject constructor(
     private val _uiEvent = Channel<LoginWithEmailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+
+
     fun onEvent(event: LoginWithEmailUiAction) {
         when (event) {
             is LoginWithEmailUiAction.EmailChanged -> {
@@ -96,12 +98,17 @@ class LoginWithEmailViewModel @Inject constructor(
                         tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
                         tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
                         appManager.saveIsLoggedIn(true)
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        if (resource.data?.isVerified == true) {
+                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        } else {
+                            _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerification)
+                        }
                     }
                 }
             }
         }
     }
+
 
     private fun validateInput(): Boolean {
         var isValid = true

@@ -8,3 +8,4 @@ data class LoginRequestDto(
     @SerializedName("password")
     val password: String?
 )
+

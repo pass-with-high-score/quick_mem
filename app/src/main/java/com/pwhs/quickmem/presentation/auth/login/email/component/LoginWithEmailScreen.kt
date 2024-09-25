@@ -60,7 +60,6 @@ fun LoginWithEmailScreen(
                 LoginWithEmailUiEvent.LoginFailure -> {
                     Toast.makeText(context, "Login failure", Toast.LENGTH_SHORT).show()
                 }
-
                 LoginWithEmailUiEvent.LoginSuccess -> {
                     Toast.makeText(context, "Login success", Toast.LENGTH_SHORT).show()
                     navigator.popBackStack()
@@ -71,9 +70,26 @@ fun LoginWithEmailScreen(
                         }
                     }
                 }
+                LoginWithEmailUiEvent.VerificationNotVerified -> {
+                    navigator.navigate(SendVerifyEmailScreenDestination) {
+                        popUpTo(SendVerifyEmailScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
+                }
+                LoginWithEmailUiEvent.NavigateToVerification -> {
+                    navigator.navigate(SendVerifyEmailScreenDestination) {
+                        popUpTo(SendVerifyEmailScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
+                }
             }
         }
     }
+
 
     LoginWithEmail(
         modifier = modifier,

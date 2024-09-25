@@ -14,7 +14,6 @@ interface ApiService {
 
     @POST("auth/login")
     suspend fun login(@Body loginRequestDto: LoginRequestDto): AuthResponseDto
-    suspend fun login()
 
     @POST("auth/verify-otp")
     suspend fun verifyEmail(@Body verifyEmailRequestDto: VerifyEmailRequestDto): OtpResponseDto
