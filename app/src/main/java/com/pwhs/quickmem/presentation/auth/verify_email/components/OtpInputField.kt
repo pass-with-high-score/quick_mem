@@ -107,15 +107,14 @@ internal fun CharacterContainer(
     ) {
         Text(
             modifier = Modifier
-                .width(45.dp)
-                .height(55.dp)
+                .width(36.dp)
                 .border(
                     width = when {
                         isFocused -> 2.dp
                         else -> 1.dp
                     },
                     color = when {
-                        isFocused -> MaterialTheme.colorScheme.primaryContainer
+                        isFocused -> MaterialTheme.colorScheme.primary
                         else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                     },
                     shape = RoundedCornerShape(10.dp)

@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -179,7 +180,10 @@ private fun VerifyEmail(
                 Image(
                     painter = painterResource(id = R.drawable.otpimage),
                     contentDescription = "Send OTP",
-                    modifier = Modifier.padding(bottom = 10.dp)
+                    modifier = Modifier
+                        .padding(bottom = 10.dp)
+                        .size(100.dp),
+                    contentScale = ContentScale.Crop
                 )
                 Text(
                     text = "OTP Verification",

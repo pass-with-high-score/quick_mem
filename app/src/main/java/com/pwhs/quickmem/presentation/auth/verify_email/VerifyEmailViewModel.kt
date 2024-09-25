@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
@@ -25,6 +27,8 @@ import javax.inject.Inject
 class VerifyEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     stateHandle: SavedStateHandle,
+    private val tokenManager: TokenManager,
+    private val appManager: AppManager,
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(VerifyEmailUiState())
@@ -97,6 +101,10 @@ class VerifyEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
+                        tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
+                        tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
+                        appManager.saveUserId(resource.data?.id ?: "")
+                        appManager.saveIsLoggedIn(true)
                         _uiEvent.send(VerifyEmailUiEvent.VerifySuccess)
                     }
 

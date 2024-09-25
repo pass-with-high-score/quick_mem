@@ -9,6 +9,7 @@ import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
+import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signup(signUpRequestModel: SignupRequestModel): Flow<Resources<AuthResponseModel>> {
+    override suspend fun signup(signUpRequestModel: SignupRequestModel): Flow<Resources<SignupResponseModel>> {
         return flow {
             try {
                 emit(Resources.Loading())
@@ -50,7 +51,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun verifyEmail(
         verifyEmailResponseModel: VerifyEmailResponseModel
-    ): Flow<Resources<OtpResponseModel>> {
+    ): Flow<Resources<AuthResponseModel>> {
         return flow {
             try {
                 emit(Resources.Loading())
