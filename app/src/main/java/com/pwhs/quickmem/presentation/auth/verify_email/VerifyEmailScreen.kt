@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.verify_email
 
 import ResendOrLogoutText
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,8 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.R
@@ -100,6 +108,7 @@ fun VerifyEmailScreen(
     )
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 private fun VerifyEmail(
     modifier: Modifier = Modifier,
@@ -130,6 +139,18 @@ private fun VerifyEmail(
             }
             var success by remember {
                 mutableStateOf(false)
+            }
+
+            var countdownTime by remember { mutableStateOf(60) }
+
+            LaunchedEffect(key1 = countdownTime) {
+                if (countdownTime > 0) {
+                    kotlinx.coroutines.delay(1000L)
+                    countdownTime--
+                } else {
+                    onResendClick()
+                    countdownTime = 60
+                }
             }
 
             Column (
@@ -167,6 +188,22 @@ private fun VerifyEmail(
                     modifier=Modifier.size(50.dp,80.dp),
                 )
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = buildAnnotatedString {
+                    append("Code expires in: ")
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append(String.format("%02d:%02d", countdownTime / 60, countdownTime % 60))
+                    }
+                },
+                style = LocalTextStyle.current.copy(
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+            )
 
             AuthButton(
                 text = "Verify & Proceed",
