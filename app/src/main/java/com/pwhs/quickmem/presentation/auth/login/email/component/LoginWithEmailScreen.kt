@@ -33,7 +33,7 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.login.LoginWithEmailViewModel
+import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailViewModel
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
 import com.pwhs.quickmem.util.gradientBackground
