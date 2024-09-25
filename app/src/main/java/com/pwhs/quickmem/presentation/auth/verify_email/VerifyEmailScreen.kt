@@ -173,6 +173,7 @@ private fun VerifyEmail(
                 onClick = onVerifyClick,
                 modifier = Modifier.padding(top = 90.dp, bottom = 15.dp)
             )
+
             ResendOrLogoutText(
                 onResendClick = onResendClick,
                 onLogoutClick = onLogoutClick
