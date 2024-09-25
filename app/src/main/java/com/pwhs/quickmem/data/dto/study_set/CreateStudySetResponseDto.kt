@@ -3,6 +3,8 @@ package com.pwhs.quickmem.data.dto.study_set
 import com.google.gson.annotations.SerializedName
 
 data class CreateStudySetResponseDto(
+    @SerializedName("id")
+    val id: String,
     @SerializedName("colorId")
     val colorId: Long,
     @SerializedName("description")

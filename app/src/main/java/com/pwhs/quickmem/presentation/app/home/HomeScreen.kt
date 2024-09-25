@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.pwhs.quickmem.presentation.app.home.component.achiverment.AchievementsSection
 import com.pwhs.quickmem.presentation.app.home.component.categories.CategoriesSection
 import com.pwhs.quickmem.presentation.app.home.component.classes.ClassesSection
@@ -34,7 +35,13 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(
+        containerColor = Color.Transparent,
+        modifier = modifier.background(
+            Color(0xFF5E8DF5),
+            shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+        )
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

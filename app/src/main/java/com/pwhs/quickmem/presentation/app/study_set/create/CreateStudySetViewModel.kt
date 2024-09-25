@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
-import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -81,16 +79,7 @@ class CreateStudySetViewModel @Inject constructor(
                             }
 
                             is Resources.Success -> {
-                                // update ui state
-                                _uiState.update {
-                                    it.copy(
-                                        title = "",
-                                        subjectModel = SubjectModel.defaultSubjects.first(),
-                                        colorModel = ColorModel.defaultColors.first(),
-                                        isPublic = false
-                                    )
-                                }
-                                _uiEvent.send(CreateStudySetUiEvent.StudySetCreated)
+                                _uiEvent.send(CreateStudySetUiEvent.StudySetCreated(resource.data!!.id))
                             }
 
                             is Resources.Error -> {
