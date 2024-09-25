@@ -162,7 +162,7 @@ fun CreateStudySet(
                 ),
                 title = {
                     Text(
-                        text = "Create Flash Card",
+                        text = "Create Flashcard Set",
                         style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = colorScheme.onSurface,
@@ -420,7 +420,10 @@ fun CreateStudySet(
                     modifier = Modifier.padding(16.dp)
 
                 ) {
-                    Text("Subjects")
+                    Text(
+                        "Subjects",
+                        style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    )
                     OutlinedTextField(
                         leadingIcon = {
                             Icon(
