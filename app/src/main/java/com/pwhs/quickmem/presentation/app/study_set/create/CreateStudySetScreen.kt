@@ -83,12 +83,6 @@ fun CreateStudySetScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                CreateStudySetUiEvent.StudySetCreated -> {
-                    showLoading = false
-                    Toast.makeText(context, "Study Set Created", Toast.LENGTH_SHORT).show()
-                    navigator.navigateUp()
-                    navigator.navigate(StudySetDetailScreenDestination)
-                }
 
                 CreateStudySetUiEvent.None -> TODO()
                 CreateStudySetUiEvent.SaveClicked -> {
@@ -102,6 +96,13 @@ fun CreateStudySetScreen(
 
                 CreateStudySetUiEvent.ShowLoading -> {
                     showLoading = true
+                }
+
+                is CreateStudySetUiEvent.StudySetCreated -> {
+                    showLoading = false
+                    Toast.makeText(context, "Study Set Created", Toast.LENGTH_SHORT).show()
+                    navigator.navigateUp()
+                    navigator.navigate(StudySetDetailScreenDestination(id = event.id))
                 }
             }
         }
@@ -161,7 +162,7 @@ fun CreateStudySet(
                 ),
                 title = {
                     Text(
-                        text = "Create Flash Card",
+                        text = "Create Flashcard Set",
                         style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = colorScheme.onSurface,
@@ -419,7 +420,10 @@ fun CreateStudySet(
                     modifier = Modifier.padding(16.dp)
 
                 ) {
-                    Text("Subjects")
+                    Text(
+                        "Subjects",
+                        style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    )
                     OutlinedTextField(
                         leadingIcon = {
                             Icon(

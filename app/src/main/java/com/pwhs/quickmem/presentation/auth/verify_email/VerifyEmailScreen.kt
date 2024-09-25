@@ -171,6 +171,17 @@ private fun VerifyEmail(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
+            val error by remember {
+                mutableStateOf(false)
+            }
+            val success by remember {
+                mutableStateOf(false)
+            }
+
+            val bgColor by animateColorAsState(
+                (if (success) successColor else if (error) errorColor else Color.White).copy(alpha = .2f),
+                label = "bgColor"
+            )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
