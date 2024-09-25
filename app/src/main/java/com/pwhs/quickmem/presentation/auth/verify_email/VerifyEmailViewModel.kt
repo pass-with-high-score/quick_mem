@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.auth.verify_email
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -10,6 +11,7 @@ import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -22,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class VerifyEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    stateHandle: SavedStateHandle,
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(VerifyEmailUiState())
@@ -29,6 +32,12 @@ class VerifyEmailViewModel @Inject constructor(
 
     private val _uiEvent = Channel<VerifyEmailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    init {
+        val email = stateHandle.get<String>("email") ?: ""
+        _uiState.update { it.copy(email = email) }
+        updateCountdown()
+    }
 
     fun onEvent(event: VerifyEmailUiAction) {
         when (event) {
@@ -39,19 +48,32 @@ class VerifyEmailViewModel @Inject constructor(
                     _uiState.update { it.copy(email = event.email) }
                 }
             }
+
             is VerifyEmailUiAction.OtpChange -> {
                 _uiState.update { it.copy(otp = event.otp) }
             }
+
             is VerifyEmailUiAction.VerifyEmail -> {
                 verifyEmail()
             }
+
             is VerifyEmailUiAction.ResendEmail -> {
                 resendOtp(event.email)
             }
         }
     }
 
-    fun verifyEmail() {
+    private fun updateCountdown() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(countdown = 600) }
+            while (_uiState.value.countdown > 0) {
+                delay(1000)
+                _uiState.update { it.copy(countdown = _uiState.value.countdown - 1) }
+            }
+        }
+    }
+
+    private fun verifyEmail() {
         viewModelScope.launch {
             val email = uiState.value.email
             val otp = uiState.value.otp
@@ -89,7 +111,7 @@ class VerifyEmailViewModel @Inject constructor(
 
     private fun resendOtp(email: String) {
         viewModelScope.launch {
-            var response = authRepository.resendOtp(
+            val response = authRepository.resendOtp(
                 ResendEmailRequestModel(
                     email = email
                 )

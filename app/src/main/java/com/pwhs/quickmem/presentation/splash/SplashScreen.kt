@@ -34,8 +34,8 @@ fun SplashScreen(
     LaunchedEffect(key1 = uiState) {
         when (uiState) {
             is SplashUiState.IsLoggedIn -> {
-                navigator.navigate(HomeScreenDestination) {
-                    popUpTo(HomeScreenDestination) {
+                navigator.navigate(OnboardingScreenDestination) {
+                    popUpTo(OnboardingScreenDestination) {
                         inclusive = true
                         launchSingleTop = true
                     }
