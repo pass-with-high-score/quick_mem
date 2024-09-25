@@ -81,15 +81,6 @@ class CreateStudySetViewModel @Inject constructor(
                             }
 
                             is Resources.Success -> {
-                                // update ui state
-                                _uiState.update {
-                                    it.copy(
-                                        title = "",
-                                        subjectModel = SubjectModel.defaultSubjects.first(),
-                                        colorModel = ColorModel.defaultColors.first(),
-                                        isPublic = false
-                                    )
-                                }
                                 _uiEvent.send(CreateStudySetUiEvent.StudySetCreated)
                             }
 
