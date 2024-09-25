@@ -1,5 +1,8 @@
 package com.pwhs.quickmem.presentation.app.study_set.create_study_set
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,11 +33,14 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,24 +55,76 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
-fun CreateStudySetScreen(modifier: Modifier = Modifier) {
+fun CreateStudySetScreen(
+    modifier: Modifier = Modifier,
+    viewModel: CreateStudySetViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                CreateStudySetUiEvent.CreateStudySetFailure -> TODO()
+                CreateStudySetUiEvent.CreateStudySetSuccess -> TODO()
+                CreateStudySetUiEvent.None -> TODO()
+                CreateStudySetUiEvent.SaveClicked -> TODO()
+            }
+        }
+    }
+
+    CreateStudySet(
+        name = uiState.name,
+        onNameChange = { viewModel.onEvent(CreateStudySetUiAction.NameChanged(it)) },
+        subjectModel = uiState.subjectModel,
+        onSubjectChange = { viewModel.onEvent(CreateStudySetUiAction.SubjectChanged(it)) },
+        colorModel = uiState.colorModel,
+        onColorChange = { viewModel.onEvent(CreateStudySetUiAction.ColorChanged(it)) },
+        isPublic = uiState.isPublic,
+        onIsPublicChange = { viewModel.onEvent(CreateStudySetUiAction.PublicChanged(it)) },
+        onDoneClick = { viewModel.onEvent(CreateStudySetUiAction.SaveClicked) },
+        onNavigateBack = { navigator.popBackStack() }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateStudySet(
+    modifier: Modifier = Modifier,
+    name: String = "",
+    onNameChange: (String) -> Unit = {},
+    subjectModel: SubjectModel? = SubjectModel.defaultSubjects.first(),
+    onSubjectChange: (SubjectModel) -> Unit = {},
+    colorModel: ColorModel? = ColorModel.defaultColors.first(),
+    onColorChange: (ColorModel) -> Unit = {},
+    isPublic: Boolean = true,
+    onIsPublicChange: (Boolean) -> Unit = {},
+    onDoneClick: () -> Unit = {},
+    onNavigateBack: () -> Unit = {}
+) {
     val sheetSubjectState = rememberModalBottomSheetState()
     rememberCoroutineScope()
     var showBottomSheetCreate by remember {
         mutableStateOf(false)
     }
+    var searchSubjectQuery by remember {
+        mutableStateOf("")
+    }
+    val filteredSubjects = SubjectModel.defaultSubjects.filter {
+        it.name.contains(searchSubjectQuery, ignoreCase = true)
+    }
 
-    val defaultSubject = SubjectModel.defaultSubjects.first()
     Scaffold(
         containerColor = colorScheme.background,
         topBar = {
@@ -85,7 +144,7 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                 },
                 actions = {
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = onDoneClick,
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = colorScheme.onSurface
                         )
@@ -99,7 +158,7 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = onNavigateBack,
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = colorScheme.onSurface
                         )
@@ -126,8 +185,9 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                     )
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = { },
+                    shape = RoundedCornerShape(10.dp),
+                    value = name,
+                    onValueChange = onNameChange,
                     placeholder = { Text("Name") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -150,7 +210,8 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                     )
                 )
                 OutlinedTextField(
-                    value = defaultSubject.name,
+                    shape = RoundedCornerShape(10.dp),
+                    value = subjectModel!!.name,
                     onValueChange = { },
                     placeholder = { Text("Subject") },
                     modifier = Modifier
@@ -162,8 +223,8 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                     readOnly = true,
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = defaultSubject.iconRes!!),
-                            contentDescription = defaultSubject.name,
+                            painter = painterResource(id = subjectModel.iconRes!!),
+                            contentDescription = subjectModel.name,
                             modifier = Modifier.size(24.dp),
                             tint = Color.Black
                         )
@@ -206,7 +267,9 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                         .padding(top = 5.dp)
                         .border(
                             width = 1.dp,
-                            color = colorScheme.onSurface.copy(alpha = 0.12f),
+                            color = colorModel?.hexValue?.toColor() ?: colorScheme.onSurface.copy(
+                                alpha = 0.12f
+                            ),
                             shape = RoundedCornerShape(8.dp)
                         ),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -225,27 +288,40 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                                     .size(32.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        color.hexValue
-                                            .toColor()
-                                            .copy(alpha = 0.5f)
+                                        if (colorModel?.hexValue == color.hexValue) {
+                                            color.hexValue
+                                                .toColor()
+                                                .copy(alpha = 0.5f)
+                                        } else {
+                                            Color.Transparent
+                                        }
                                     )
-                                    .border(2.dp, Color.Transparent, CircleShape) // Add border
-                                    .padding(4.dp), // Adjust padding
+                                    .border(2.dp, Color.Transparent, CircleShape)
+                                    .padding(4.dp)
+                                    .clickable {
+                                        onColorChange(color)
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .size(23.dp) // Adjust size to account for padding
+                                        .size(23.dp)
                                         .clip(CircleShape)
                                         .background(color.hexValue.toColor()),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_done),
-                                        contentDescription = "Selected",
-                                        modifier = Modifier.size(16.dp),
-                                        tint = Color.White
-                                    )
+                                    this@Row.AnimatedVisibility(
+                                        visible = colorModel?.hexValue == color.hexValue,
+                                        enter = fadeIn(),
+                                        exit = fadeOut()
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_done),
+                                            contentDescription = "Selected",
+                                            modifier = Modifier.size(16.dp),
+                                            tint = Color.White
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -256,7 +332,11 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp)
+                    .padding(top = 10.dp),
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorScheme.surfaceContainerLow
+                )
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp)
@@ -274,8 +354,8 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                             )
                         )
                         Switch(
-                            checked = true,
-                            onCheckedChange = { }
+                            checked = isPublic,
+                            onCheckedChange = onIsPublicChange,
                         )
                     }
 
@@ -296,10 +376,12 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                 sheetState = sheetSubjectState,
                 onDismissRequest = {
                     showBottomSheetCreate = false
-                }
+                },
+                containerColor = Color.White,
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp)
+
                 ) {
                     Text("Subjects")
                     OutlinedTextField(
@@ -307,31 +389,47 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_search),
                                 contentDescription = "Search subject",
-                                modifier = Modifier.size(24.dp),
+                                modifier = Modifier.size(20.dp),
                                 tint = Color.Black
                             )
                         },
-                        value = "",
-                        onValueChange = { },
+                        value = searchSubjectQuery,
+                        shape = RoundedCornerShape(10.dp),
+                        onValueChange = { searchSubjectQuery = it },
                         placeholder = { Text("Try Arts") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = colorScheme.onSurface.copy(alpha = 0.12f),
-                            unfocusedContainerColor = colorScheme.onSurface.copy(alpha = 0.12f),
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
                             focusedIndicatorColor = colorScheme.primary,
+                            unfocusedIndicatorColor = colorScheme.onSurface.copy(alpha = 0.12f),
                         )
                     )
 
-                    LazyColumn {
-                        items(SubjectModel.defaultSubjects) { subject ->
-                            Row {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp)
+                    ) {
+                        items(filteredSubjects) { subject ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp)
+                                    .clickable {
+                                        onSubjectChange(subject)
+                                        showBottomSheetCreate = false
+                                    },
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
                                 Icon(
                                     painter = painterResource(id = subject.iconRes!!),
                                     contentDescription = subject.name,
                                     tint = subject.color!!,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier
+                                        .size(24.dp)
                                 )
 
                                 Text(
@@ -340,7 +438,11 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
                                         color = colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold
                                     ),
-                                    modifier = Modifier.padding(start = 10.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 10.dp)
+                                        .padding(start = 10.dp)
+
                                 )
                             }
                         }
@@ -357,5 +459,5 @@ fun CreateStudySetScreen(modifier: Modifier = Modifier) {
 )
 @Composable
 fun CreateFlashCardScreenPreview() {
-    CreateStudySetScreen()
+    CreateStudySet()
 }
