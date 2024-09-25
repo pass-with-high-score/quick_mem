@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.domain.model.study_set
 
 data class CreateStudySetResponseModel(
+    val id: String,
     val colorId: Long,
     val description: String,
     val isPublic: Boolean,

@@ -20,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,9 +55,11 @@ fun VerifyEmailScreen(
                 VerifyEmailUiEvent.None -> {
                     // Do nothing
                 }
+
                 VerifyEmailUiEvent.VerifyFailure -> {
                     Toast.makeText(context, "Failed to verify email", Toast.LENGTH_SHORT).show()
                 }
+
                 VerifyEmailUiEvent.VerifySuccess -> {
                     navigator.popBackStack()
                     navigator.navigate(HomeScreenDestination) {
@@ -107,7 +108,7 @@ private fun VerifyEmail(
     onResendClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
 ) {
-    Scaffold (
+    Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
         topBar = {
@@ -126,22 +127,25 @@ private fun VerifyEmail(
             val successColor = Color(0xff17917a)
             val errorColor = Color(0xFFFF6969)
 
-            var error by remember {
+            val error by remember {
                 mutableStateOf(false)
             }
-            var success by remember {
+            val success by remember {
                 mutableStateOf(false)
             }
 
-            val bgColor by animateColorAsState((if (success) successColor else if (error) errorColor else Color.White).copy(alpha = .2f))
+            val bgColor by animateColorAsState(
+                (if (success) successColor else if (error) errorColor else Color.White).copy(alpha = .2f),
+                label = "bgColor"
+            )
 
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 ConfirmEmailText()
                 Spacer(modifier = Modifier.height(16.dp))
                 HighlightedEmailText(email = email)
@@ -151,7 +155,7 @@ private fun VerifyEmail(
 
             Box(
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Otp(
                     count = 6,
                     error = error,
@@ -160,11 +164,11 @@ private fun VerifyEmail(
                     successColor = successColor,
                     focusedColor = Color.White,
                     unFocusedColor = Color.Gray,
-                    onFinish = { otp->
+                    onFinish = { otp ->
                         onOtpChange(otp)
                         onEmailChange(email)
                     },
-                    modifier=Modifier.size(50.dp,80.dp),
+                    modifier = Modifier.size(50.dp, 80.dp),
                 )
             }
 
