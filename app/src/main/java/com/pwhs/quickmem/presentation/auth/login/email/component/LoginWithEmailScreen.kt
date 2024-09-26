@@ -2,21 +2,9 @@ package com.pwhs.quickmem.presentation.auth.login.email.component
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +21,7 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.login.LoginWithEmailViewModel
+import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailViewModel
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
 import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
 import com.pwhs.quickmem.util.gradientBackground
@@ -41,6 +29,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.VerificationScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -58,29 +47,38 @@ fun LoginWithEmailScreen(
             when (event) {
                 LoginWithEmailUiEvent.None -> {}
                 LoginWithEmailUiEvent.LoginFailure -> {
-                    Toast.makeText(context, "Login failure", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show()
                 }
                 LoginWithEmailUiEvent.LoginSuccess -> {
-                    Toast.makeText(context, "Login success", Toast.LENGTH_SHORT).show()
-                    navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination) {
+                    Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
+                    if (viewModel.isAccountVerified()) {
+                        navigator.popBackStack()
+                        navigator.navigate(HomeScreenDestination) {
+                            popUpTo(HomeScreenDestination) {
+                                inclusive = true
+                                launchSingleTop = true
+                            }
+                        }
+                    } else {
+                        navigator.navigate(VerificationScreenDestination.invoke(message = uiState.email)) {
+                            popUpTo(HomeScreenDestination) {
+                                inclusive = true
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                }
+                LoginWithEmailUiEvent.VerificationNotVerified -> {
+                    navigator.navigate(VerificationScreenDestination(message = uiState.email)) {
                         popUpTo(HomeScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }
                     }
                 }
-                LoginWithEmailUiEvent.VerificationNotVerified -> {
-                    navigator.navigate(SendVerifyEmailScreenDestination) {
-                        popUpTo(SendVerifyEmailScreenDestination) {
-                            inclusive = true
-                            launchSingleTop = true
-                        }
-                    }
-                }
                 LoginWithEmailUiEvent.NavigateToVerification -> {
-                    navigator.navigate(SendVerifyEmailScreenDestination) {
-                        popUpTo(SendVerifyEmailScreenDestination) {
+                    navigator.navigate(VerificationScreenDestination(message = uiState.email)) {
+                        popUpTo(HomeScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }
@@ -90,7 +88,6 @@ fun LoginWithEmailScreen(
         }
     }
 
-
     LoginWithEmail(
         modifier = modifier,
         onNavigationIconClick = { navigator.popBackStack() },
@@ -99,9 +96,7 @@ fun LoginWithEmailScreen(
         onEmailChanged = { email -> viewModel.onEvent(LoginWithEmailUiAction.EmailChanged(email)) },
         password = uiState.password,
         passwordError = uiState.passwordError,
-        onPasswordChanged = { password ->
-            viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password))
-        },
+        onPasswordChanged = { password -> viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password)) },
         onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) },
         onForgotPasswordClick = {
             navigator.navigate(SendVerifyEmailScreenDestination) {
@@ -128,7 +123,6 @@ private fun LoginWithEmail(
     onLoginClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
-
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -211,21 +205,15 @@ private fun LoginWithEmail(
                         onLoginClick()
                     }
                 },
-                colors = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
-                    0xFFf3f4f6
-                ),
-                borderColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
-                    0xFFf3f4f6
-                ),
-                textColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color.White else Color(
-                    0xFF9095a0
-                )
+                colors = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(0xFFf3f4f6),
+                borderColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(0xFFf3f4f6),
+                textColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color.White else Color(0xFF9095a0)
             )
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewLoginWithEmailScreen() {
     LoginWithEmail()

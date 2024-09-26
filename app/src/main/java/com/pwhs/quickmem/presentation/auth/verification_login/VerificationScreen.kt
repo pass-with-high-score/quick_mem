@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.verification
+package com.pwhs.quickmem.presentation.auth.verification_login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -17,13 +17,16 @@ import kotlinx.coroutines.launch
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.util.gradientBackground
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 
 @Composable
+@Destination<RootGraph>
 fun VerificationScreen(
     modifier: Modifier = Modifier,
     onNavigationIconClick: () -> Unit = {},
     onResendEmail: () -> Unit,
-    message: String = "Your account is not verified. Please check your email for the verification link."
+    email: String
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -50,7 +53,7 @@ fun VerificationScreen(
             )
             Spacer(modifier = Modifier.height(80.dp))
             Text(
-                text = message,
+                text = "Your account is not verified. Please check your email for the verification link sent to $email.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
@@ -68,11 +71,12 @@ fun VerificationScreen(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun VerificationScreenPreview() {
     VerificationScreen(
-        onResendEmail = { /* Do nothing in preview */ },
-        message = "Your account is not verified. Please check your email for the verification link."
+        onResendEmail = { },
+        email = "example@example.com"
     )
 }

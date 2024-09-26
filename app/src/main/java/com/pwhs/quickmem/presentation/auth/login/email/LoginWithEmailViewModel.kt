@@ -1,27 +1,21 @@
-package com.pwhs.quickmem.presentation.auth.login
+package com.pwhs.quickmem.presentation.auth.login.email
 
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.AuthRepository
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiState
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiEvent
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
-import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -40,8 +34,6 @@ class LoginWithEmailViewModel @Inject constructor(
 
     private val _uiEvent = Channel<LoginWithEmailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-
-
 
     fun onEvent(event: LoginWithEmailUiAction) {
         when (event) {
@@ -98,6 +90,9 @@ class LoginWithEmailViewModel @Inject constructor(
                         tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
                         tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
                         appManager.saveIsLoggedIn(true)
+
+                        _uiState.update { it.copy(isAccountVerified = resource.data?.isVerified == true) }
+
                         if (resource.data?.isVerified == true) {
                             _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                         } else {
@@ -109,11 +104,10 @@ class LoginWithEmailViewModel @Inject constructor(
         }
     }
 
-
     private fun validateInput(): Boolean {
         var isValid = true
 
-        if (!uiState.value.email.validEmail() || uiState.value.email.isEmpty()) {
+        if (!uiState.value.email.emailIsValid() || uiState.value.email.isEmpty()) {
             _uiState.update { it.copy(emailError = "Invalid email") }
             isValid = false
         } else {
@@ -128,4 +122,9 @@ class LoginWithEmailViewModel @Inject constructor(
 
         return isValid
     }
+
+    fun isAccountVerified(): Boolean {
+        return _uiState.value.isAccountVerified
+    }
 }
+

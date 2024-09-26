@@ -6,5 +6,5 @@ sealed class LoginWithEmailUiEvent {
     data object LoginSuccess : LoginWithEmailUiEvent()
     data object LoginFailure : LoginWithEmailUiEvent()
     data object VerificationNotVerified : LoginWithEmailUiEvent()
-    object NavigateToVerification : LoginWithEmailUiEvent()
+    data object NavigateToVerification : LoginWithEmailUiEvent()
 }
