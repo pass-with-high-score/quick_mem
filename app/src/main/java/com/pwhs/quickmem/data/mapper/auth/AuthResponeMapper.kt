@@ -12,5 +12,6 @@ fun AuthResponseDto.toModel() = AuthResponseModel(
     avatarUrl = avatarUrl,
     birthday = birthday,
     accessToken = accessToken,
-    refreshToken = refreshToken
+    refreshToken = refreshToken,
+    provider = provider
 )

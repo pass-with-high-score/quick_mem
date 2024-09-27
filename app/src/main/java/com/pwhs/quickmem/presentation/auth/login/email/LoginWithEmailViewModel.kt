@@ -4,9 +4,11 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.AuthProvider
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
@@ -73,8 +75,10 @@ class LoginWithEmailViewModel @Inject constructor(
         viewModelScope.launch {
             val username = uiState.value.email
             val password = uiState.value.password
+            val provider = AuthProvider.Email.provider
+            val loginRequestModel = LoginRequestModel(username, password, provider)
 
-            val response = authRepository.login(username, password)
+            val response = authRepository.login(loginRequestModel)
 
             response.collectLatest { resource ->
                 when (resource) {

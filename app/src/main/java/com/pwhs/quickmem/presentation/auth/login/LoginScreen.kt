@@ -77,6 +77,19 @@ fun LoginScreen(
                         )
                     )
                 }
+
+                LoginUiEvent.LoginWithEmail -> {
+                    navigator.navigate(LoginWithEmailScreenDestination)
+                }
+
+                LoginUiEvent.NavigateToSignUp -> {
+                    navigator.navigate(SignupScreenDestination) {
+                        popUpTo(SignupWithEmailScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
+                }
             }
         }
     }
@@ -92,21 +105,16 @@ fun LoginScreen(
             }
         },
         onNavigateToSignup = {
-            navigator.navigate(SignupScreenDestination) {
-                popUpTo(SignupWithEmailScreenDestination) {
-                    inclusive = true
-                    launchSingleTop = true
-                }
-            }
+            viewModel.onEvent(LoginUiAction.NavigateToSignUp)
         },
         onLoginWithEmail = {
-            navigator.navigate(LoginWithEmailScreenDestination)
+            viewModel.onEvent(LoginUiAction.LoginWithEmail)
         },
         onLoginWithGoogle = {
-            viewModel.loginWithGoogle()
+            viewModel.onEvent(LoginUiAction.LoginWithGoogle)
         },
         onLoginWithFacebook = {
-            viewModel.loginWithFacebook()
+            viewModel.onEvent(LoginUiAction.LoginWithFacebook)
         }
     )
 }

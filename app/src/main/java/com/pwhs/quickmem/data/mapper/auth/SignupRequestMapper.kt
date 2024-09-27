@@ -10,7 +10,8 @@ fun SignupRequestDto.toModel() = SignupRequestModel(
     fullName = fullName,
     role = role,
     birthday = birthday,
-    password = password
+    password = password,
+    authProvider = provider
 )
 
 fun SignupRequestModel.toDto() = SignupRequestDto(
@@ -20,5 +21,6 @@ fun SignupRequestModel.toDto() = SignupRequestDto(
     fullName = fullName,
     role = role,
     birthday = birthday,
-    password = password
+    password = password,
+    provider = authProvider
 )

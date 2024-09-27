@@ -17,5 +17,7 @@ data class SignupRequestDto(
     @SerializedName("birthday")
     val birthday: String?,
     @SerializedName("password")
-    val password: String?
+    val password: String?,
+    @SerializedName("provider")
+    val provider: String? = null,
 )

@@ -2,23 +2,25 @@ package com.pwhs.quickmem.data.dto.auth
 
 import com.google.gson.annotations.SerializedName
 
-class AuthResponseDto {
+data class AuthResponseDto(
     @SerializedName("id")
-    val id: String? = null
+    val id: String? = null,
     @SerializedName("fullName")
-    val fullName: String? = null
+    val fullName: String? = null,
     @SerializedName("email")
-    val email: String? = null
+    val email: String? = null,
     @SerializedName("username")
-    val username: String? = null
+    val username: String? = null,
     @SerializedName("role")
-    val role: String? = null
+    val role: String? = null,
     @SerializedName("avatarUrl")
-    val avatarUrl: String? = null
+    val avatarUrl: String? = null,
     @SerializedName("birthday")
-    val birthday: String? = null
+    val birthday: String? = null,
     @SerializedName("accessToken")
-    val accessToken: String? = null
+    val accessToken: String? = null,
     @SerializedName("refreshToken")
-    val refreshToken: String? = null
-}
+    val refreshToken: String? = null,
+    @SerializedName("provider")
+    val provider: String? = null,
+)

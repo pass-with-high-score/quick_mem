@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.AuthProvider
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -99,7 +100,8 @@ class SignupWithEmailViewModel @Inject constructor(
                     fullName = fullName,
                     role = uiState.value.userRole,
                     birthday = uiState.value.birthday,
-                    password = uiState.value.password
+                    password = uiState.value.password,
+                    authProvider = AuthProvider.Email.provider
                 )
             )
 

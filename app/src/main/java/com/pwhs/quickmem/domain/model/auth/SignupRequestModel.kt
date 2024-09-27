@@ -9,5 +9,6 @@ data class SignupRequestModel(
     val fullName: String?,
     val role: UserRole?,
     val birthday: String?,
-    val password: String?
+    val password: String?,
+    val authProvider: String?,
 )

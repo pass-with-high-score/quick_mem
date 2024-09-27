@@ -19,14 +19,11 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val apiService: ApiService
 ) : AuthRepository {
-    override suspend fun login(
-        email: String,
-        password: String
-    ): Flow<Resources<AuthResponseModel>> {
+    override suspend fun login(loginRequestModel: LoginRequestModel): Flow<Resources<AuthResponseModel>> {
         return flow {
             try {
                 emit(Resources.Loading())
-                val params = LoginRequestModel(email, password).toDto()
+                val params = loginRequestModel.toDto()
                 val response = apiService.login(params)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {

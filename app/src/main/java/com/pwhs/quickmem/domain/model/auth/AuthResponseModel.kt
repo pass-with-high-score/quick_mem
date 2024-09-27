@@ -9,5 +9,6 @@ data class AuthResponseModel(
     val avatarUrl: String? = null,
     val birthday: String? = null,
     val accessToken: String? = null,
-    val refreshToken: String? = null
+    val refreshToken: String? = null,
+    val provider: String? = null,
 )
