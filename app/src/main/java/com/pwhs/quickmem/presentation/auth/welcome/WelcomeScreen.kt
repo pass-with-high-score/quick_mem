@@ -171,7 +171,7 @@ fun WelcomeScreen(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = {
-                    navigator.navigate(LoginScreenDestination)
+                    navigator.navigate(LoginScreenDestination())
                 },
                 text = "Already have an account",
                 colors = Color.White,

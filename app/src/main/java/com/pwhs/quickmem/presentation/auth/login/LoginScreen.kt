@@ -16,10 +16,14 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -38,16 +42,45 @@ import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestin
 import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SignupScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SignupWithEmailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WebViewAppDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 
-@Composable
 @Destination<RootGraph>
+@Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    Timber.d("Run here")
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                LoginUiEvent.LoginWithGoogle -> {
+                    // open webview
+                    navigator.navigate(
+                        WebViewAppDestination(
+                            oAuthLink = "https://api.nqmgaming.nl/auth/google",
+                        )
+                    )
+                }
+
+                LoginUiEvent.LoginWithFacebook -> {
+                    // open webview
+                    navigator.navigate(
+                        WebViewAppDestination(
+                            oAuthLink = "https://api.nqmgaming.nl/auth/facebook",
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     Login(
         modifier = modifier,
         onNavigationIconClick = {
@@ -161,7 +194,7 @@ fun Login(
                 text = "Continue with Google",
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
-                icon = R.drawable.ic_google
+                icon = R.drawable.ic_google,
             )
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),

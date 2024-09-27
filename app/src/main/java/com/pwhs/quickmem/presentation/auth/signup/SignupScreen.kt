@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SignupWithEmailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WebViewAppDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -47,18 +49,74 @@ fun SignupScreen(
     navigator: DestinationsNavigator,
     viewModel: SignupViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                SignupUiEvent.SignupWithGoogle -> {
+                    // open webview
+                    navigator.navigate(
+                        WebViewAppDestination(
+                            oAuthLink = "https://api.nqmgaming.nl/auth/google",
+                        )
+                    )
+                }
+
+                SignupUiEvent.SignupWithFacebook -> {
+                    // open webview
+                    navigator.navigate(
+                        WebViewAppDestination(
+                            oAuthLink = "https://api.nqmgaming.nl/auth/facebook",
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    Signup(
+        onNavigateToLogin = {
+            navigator.navigate(LoginScreenDestination) {
+                popUpTo(LoginScreenDestination) {
+                    inclusive = true
+                    launchSingleTop = true
+                }
+            }
+        },
+        onSignupWithEmail = {
+            navigator.navigate(SignupWithEmailScreenDestination)
+        },
+        onNavigationIconClick = {
+            navigator.navigate(WelcomeScreenDestination) {
+                popUpTo(LoginScreenDestination) {
+                    inclusive = true
+                    launchSingleTop = true
+                }
+            }
+        },
+        onSignupWithGoogle = {
+            viewModel.signupWithGoogle()
+        },
+        onSignupWithFacebook = {
+            viewModel.signupWithFacebook()
+        }
+
+    )
+}
+
+@Composable
+fun Signup(
+    modifier: Modifier = Modifier,
+    onNavigationIconClick: () -> Unit = {},
+    onNavigateToLogin: () -> Unit = {},
+    onSignupWithEmail: () -> Unit = {},
+    onSignupWithGoogle: () -> Unit = {},
+    onSignupWithFacebook: () -> Unit = {},
+) {
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
         topBar = {
-            AuthTopAppBar(onClick = {
-                navigator.navigate(WelcomeScreenDestination) {
-                    popUpTo(LoginScreenDestination) {
-                        inclusive = true
-                        launchSingleTop = true
-                    }
-                }
-            })
+            AuthTopAppBar(onClick = onNavigationIconClick)
         }
     ) { innerPadding ->
         Column(
@@ -88,9 +146,7 @@ fun SignupScreen(
 
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
-                onClick = {
-                    navigator.navigate(SignupWithEmailScreenDestination)
-                },
+                onClick = onSignupWithEmail,
                 text = "Sign up with email",
                 colors = colorScheme.primary,
                 textColor = Color.White,
@@ -124,9 +180,7 @@ fun SignupScreen(
 
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
-                onClick = {
-                    viewModel.signupWithGoogle()
-                },
+                onClick = onSignupWithGoogle,
                 text = "Continue with Google",
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
@@ -134,9 +188,7 @@ fun SignupScreen(
             )
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
-                onClick = {
-                    viewModel.signupWithFacebook()
-                },
+                onClick = onSignupWithFacebook,
                 text = "Continue with Facebook",
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
@@ -200,12 +252,7 @@ fun SignupScreen(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .clickable {
-                        navigator.navigate(LoginScreenDestination) {
-                            popUpTo(LoginScreenDestination) {
-                                inclusive = true
-                                launchSingleTop = true
-                            }
-                        }
+                        onNavigateToLogin()
                     }
             )
         }
