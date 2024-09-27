@@ -4,6 +4,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
+import com.pwhs.quickmem.domain.model.auth.VerificationResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import kotlinx.coroutines.flow.Flow
 
@@ -15,4 +16,5 @@ interface AuthRepository {
     suspend fun verifyEmail(
         verifyEmailResponseModel: VerifyEmailResponseModel
     ): Flow<Resources<OtpResponseModel>>
+    suspend fun isUserVerified(email: String): Flow<Resources<VerificationResponseModel>>
 }

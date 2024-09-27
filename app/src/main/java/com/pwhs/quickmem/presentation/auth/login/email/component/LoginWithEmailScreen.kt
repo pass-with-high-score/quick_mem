@@ -57,20 +57,32 @@ fun LoginWithEmailScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 LoginWithEmailUiEvent.None -> {}
+                LoginWithEmailUiEvent.NavigateToVerification -> {}
                 LoginWithEmailUiEvent.LoginFailure -> {
-                    Toast.makeText(context, "Login failure", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Login failed. Please try again.", Toast.LENGTH_SHORT).show()
                 }
-
                 LoginWithEmailUiEvent.LoginSuccess -> {
-                    Toast.makeText(context, "Login success", Toast.LENGTH_SHORT).show()
-                    navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination) {
-                        popUpTo(HomeScreenDestination) {
-                            inclusive = true
-                            launchSingleTop = true
+                    // Check verification status here
+                    if (uiState.isVerified) {
+                        Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
+                        navigator.navigate(HomeScreenDestination) {
+                            popUpTo(HomeScreenDestination) {
+                                inclusive = true
+                                launchSingleTop = true
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "Account not verified. Please check your email.", Toast.LENGTH_SHORT).show()
+                        navigator.navigate(SendVerifyEmailScreenDestination) {
+                            popUpTo(SendVerifyEmailScreenDestination) {
+                                inclusive = true
+                                launchSingleTop = true
+                            }
                         }
                     }
                 }
+
+
             }
         }
     }
@@ -83,9 +95,7 @@ fun LoginWithEmailScreen(
         onEmailChanged = { email -> viewModel.onEvent(LoginWithEmailUiAction.EmailChanged(email)) },
         password = uiState.password,
         passwordError = uiState.passwordError,
-        onPasswordChanged = { password ->
-            viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password))
-        },
+        onPasswordChanged = { password -> viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password)) },
         onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) },
         onForgotPasswordClick = {
             navigator.navigate(SendVerifyEmailScreenDestination) {
@@ -97,7 +107,6 @@ fun LoginWithEmailScreen(
         }
     )
 }
-
 
 @Composable
 private fun LoginWithEmail(
@@ -112,7 +121,6 @@ private fun LoginWithEmail(
     onLoginClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
-
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -195,19 +203,14 @@ private fun LoginWithEmail(
                         onLoginClick()
                     }
                 },
-                colors = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
-                    0xFFf3f4f6
-                ),
-                borderColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
-                    0xFFf3f4f6
-                ),
-                textColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color.White else Color(
-                    0xFF9095a0
-                )
+                colors = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(0xFFf3f4f6),
+                borderColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(0xFFf3f4f6),
+                textColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color.White else Color(0xFF9095a0)
             )
         }
     }
 }
+
 
 @Preview
 @Composable

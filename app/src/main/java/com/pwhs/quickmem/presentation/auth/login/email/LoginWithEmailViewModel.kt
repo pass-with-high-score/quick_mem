@@ -92,7 +92,34 @@ class LoginWithEmailViewModel @Inject constructor(
                         tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
                         appManager.saveIsLoggedIn(true)
                         appManager.saveUserId(resource.data?.id ?: "")
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+
+                        checkUserVerification(username)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkUserVerification(email: String) {
+        viewModelScope.launch {
+            val verificationResponse = authRepository.isUserVerified(email)
+
+            verificationResponse.collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                    }
+
+                    is Resources.Loading -> {
+
+                    }
+
+                    is Resources.Success -> {
+                        if (resource.data?.isVerified == true) {
+                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        } else {
+                            _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerification)
+                        }
                     }
                 }
             }
@@ -108,7 +135,11 @@ class LoginWithEmailViewModel @Inject constructor(
         } else {
             _uiState.update { it.copy(emailError = "") }
         }
-        if (!uiState.value.password.strongPassword() || uiState.value.password.isEmpty()) {
+
+        if (uiState.value.password.isEmpty()) {
+            _uiState.update { it.copy(passwordError = "Password is required") }
+            isValid = false
+        } else if (!uiState.value.password.strongPassword()) {
             _uiState.update { it.copy(passwordError = "Password is too weak!") }
             isValid = false
         } else {
@@ -118,3 +149,4 @@ class LoginWithEmailViewModel @Inject constructor(
         return isValid
     }
 }
+
