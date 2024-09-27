@@ -19,10 +19,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 
 
-@Destination<RootGraph>(
-    start = true,
-    style = SplashTransition::class,
-)
+@Destination<RootGraph>(start = true)
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,

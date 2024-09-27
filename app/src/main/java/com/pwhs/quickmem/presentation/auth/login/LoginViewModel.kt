@@ -5,8 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,15 +17,28 @@ class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val application: Application
 ) : AndroidViewModel(application) {
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<LoginUiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
+
+    fun onEvent(event: LoginUiAction) {
+        when (event) {
+            is LoginUiAction.LoginWithGoogle -> loginWithGoogle()
+            is LoginUiAction.LoginWithFacebook -> loginWithFacebook()
+        }
+    }
+
     fun loginWithGoogle() {
         viewModelScope.launch {
-           Timber.d("Login with Google")
+            _uiEvent.trySend(LoginUiEvent.LoginWithGoogle)
         }
     }
 
     fun loginWithFacebook() {
         viewModelScope.launch {
-            Timber.d("Login with Facebook")
+            _uiEvent.trySend(LoginUiEvent.LoginWithFacebook)
         }
     }
 }

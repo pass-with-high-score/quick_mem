@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity() {
                         navGraph = NavGraphs.root,
                         navController = navController,
                         engine = navHostEngine,
-
                     )
                 }
             }
