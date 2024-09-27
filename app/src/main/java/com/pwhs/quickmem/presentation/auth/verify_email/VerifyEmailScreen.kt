@@ -1,38 +1,51 @@
 package com.pwhs.quickmem.presentation.auth.verify_email
 
-import ResendOrLogoutText
 import android.widget.Toast
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
-import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.verify_email.components.ConfirmEmailText
-import com.pwhs.quickmem.presentation.auth.verify_email.components.EmailCheckPromptText
-import com.pwhs.quickmem.presentation.auth.verify_email.components.HighlightedEmailText
-import com.pwhs.quickmem.presentation.auth.verify_email.components.Otp
+import com.pwhs.quickmem.presentation.auth.verify_email.components.OtpInputField
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -47,7 +60,7 @@ fun VerifyEmailScreen(
     email: String,
     navigator: DestinationsNavigator,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -69,51 +82,84 @@ fun VerifyEmailScreen(
                         }
                     }
                 }
+
+                VerifyEmailUiEvent.ResendFailure -> {
+                    Toast.makeText(context, "Failed to resend email", Toast.LENGTH_SHORT).show()
+                }
+
+                VerifyEmailUiEvent.ResendSuccess -> {
+                    Toast.makeText(context, "Please check your email again", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
 
         }
     }
     VerifyEmail(
         modifier = modifier,
-        email = email,
+        otp = uiState.otp,
+        email = uiState.email,
+        countdownTime = uiState.countdown,
         onVerifyClick = {
             viewModel.onEvent(VerifyEmailUiAction.VerifyEmail)
         },
         onOtpChange = {
             viewModel.onEvent(VerifyEmailUiAction.OtpChange(it))
         },
-        onEmailChange = {
-            viewModel.onEvent(VerifyEmailUiAction.EmailChange(it))
-        },
-        onNavigationIconClick = {
-            navigator.popBackStack()
-        },
         onResendClick = {
-
+            viewModel.onEvent(VerifyEmailUiAction.ResendEmail(email))
         },
         onLogoutClick = {
-            // logout click
+            navigator.popBackStack()
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VerifyEmail(
     modifier: Modifier = Modifier,
-    email: String,
-    onNavigationIconClick: () -> Unit = {},
+    email: String = "",
+    otp: String = "",
+    countdownTime: Int = 0,
     onVerifyClick: () -> Unit = {},
     onOtpChange: (String) -> Unit = {},
-    onEmailChange: (String) -> Unit = {},
     onResendClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
         topBar = {
-            AuthTopAppBar(
-                onClick = onNavigationIconClick,
+            TopAppBar(
+                title = {},
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                ),
+                actions = {
+                    IconButton(
+                        onClick = onLogoutClick
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_logout),
+                            contentDescription = "Logout",
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onLogoutClick
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
             )
         }
     ) { innerPadding ->
@@ -122,83 +168,111 @@ private fun VerifyEmail(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val successColor = Color(0xff17917a)
-            val errorColor = Color(0xFFFF6969)
-
-            val error by remember {
-                mutableStateOf(false)
-            }
-            val success by remember {
-                mutableStateOf(false)
-            }
-
-            val bgColor by animateColorAsState(
-                (if (success) successColor else if (error) errorColor else Color.White).copy(alpha = .2f),
-                label = "bgColor"
-            )
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ConfirmEmailText()
-                Spacer(modifier = Modifier.height(16.dp))
-                HighlightedEmailText(email = email)
-                Spacer(modifier = Modifier.height(16.dp))
-                EmailCheckPromptText()
+                Image(
+                    painter = painterResource(id = R.drawable.otpimage),
+                    contentDescription = "Send OTP",
+                    modifier = Modifier
+                        .padding(bottom = 10.dp)
+                        .size(100.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Text(
+                    text = "OTP Verification",
+                    style = typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                    ),
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+                Text(
+                    buildAnnotatedString {
+                        append("Enter the OTP sent to ")
+                        append("\n")
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Red,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append(email)
+                        }
+                    },
+                    style = typography.bodyMedium.copy(
+                        fontSize = 16.sp,
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
             }
 
             Box(
                 contentAlignment = Alignment.Center
             ) {
-                Otp(
-                    count = 6,
-                    error = error,
-                    success = success,
-                    errorColor = errorColor,
-                    successColor = successColor,
-                    focusedColor = Color.White,
-                    unFocusedColor = Color.Gray,
-                    onFinish = { otp ->
-                        onOtpChange(otp)
-                        onEmailChange(email)
-                    },
-                    modifier = Modifier.size(50.dp, 80.dp),
+                OtpInputField(
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .padding(bottom = 20.dp),
+                    otpText = otp,
+                    shouldCursorBlink = false,
+                    onOtpModified = { value, otpFilled ->
+                        onOtpChange(value)
+                        if (otpFilled) {
+                            keyboardController?.hide()
+                        }
+                    }
                 )
             }
 
-            AuthButton(
-                text = "Done",
-                onClick = onVerifyClick,
-                modifier = Modifier.padding(top = 106.dp)
-            )
-
-            AuthButton(
-                modifier = Modifier.padding(top = 16.dp, bottom = 20.dp),
-                onClick = {
-
+            Text(
+                text = buildAnnotatedString {
+                    append("Code expires in: ")
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append(String.format("%02d:%02d", countdownTime / 60, countdownTime % 60))
+                    }
                 },
-                text = "Update email",
-                colors = Color.White,
-                textColor = colorScheme.onSurface,
+                style = typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                ),
             )
-            ResendOrLogoutText(
-                onResendClick = onResendClick,
-                onLogoutClick = onLogoutClick
+
+            AuthButton(
+                text = "Verify",
+                onClick = onVerifyClick,
+                modifier = Modifier.padding(top = 20.dp, bottom = 15.dp)
             )
+
+            Text(
+                text = "Didn't receive the code?",
+                style = typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                ),
+                modifier = Modifier.padding(bottom = 2.dp)
+            )
+
+            TextButton(
+                onClick = onResendClick,
+            ) {
+                Text(
+                    text = "Resend code",
+                    style = typography.bodyMedium.copy(
+                        fontSize = 17.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+            }
         }
     }
 }
-
-fun String.splitAtIndex(index: Int): String {
-    return this.chunked(index).joinToString("\n")
-}
-
 
 @Preview
 @Composable
