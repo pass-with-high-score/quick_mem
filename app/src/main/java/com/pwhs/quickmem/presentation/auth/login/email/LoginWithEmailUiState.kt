@@ -7,4 +7,5 @@ data class LoginWithEmailUiState (
     val password: String = "",
     val passwordError: String = "",
     val isLoading: Boolean = false,
+    val isVerified: Boolean = false,
 )

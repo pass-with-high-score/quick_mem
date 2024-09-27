@@ -39,8 +39,8 @@ import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
+//import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+//import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -61,28 +61,26 @@ fun LoginWithEmailScreen(
                 LoginWithEmailUiEvent.LoginFailure -> {
                     Toast.makeText(context, "Login failed. Please try again.", Toast.LENGTH_SHORT).show()
                 }
-                LoginWithEmailUiEvent.LoginSuccess -> {
-                    // Check verification status here
-                    if (uiState.isVerified) {
-                        Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
-                        navigator.navigate(HomeScreenDestination) {
-                            popUpTo(HomeScreenDestination) {
-                                inclusive = true
-                                launchSingleTop = true
-                            }
-                        }
-                    } else {
-                        Toast.makeText(context, "Account not verified. Please check your email.", Toast.LENGTH_SHORT).show()
-                        navigator.navigate(SendVerifyEmailScreenDestination) {
-                            popUpTo(SendVerifyEmailScreenDestination) {
-                                inclusive = true
-                                launchSingleTop = true
-                            }
-                        }
-                    }
-                }
-
-
+//                LoginWithEmailUiEvent.LoginSuccess -> {
+//                    if (uiState.isVerified) {
+//                        Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
+//                        navigator.navigate(HomeScreenDestination) {
+//                            popUpTo(HomeScreenDestination) {
+//                                inclusive = true
+//                                launchSingleTop = true
+//                            }
+//                        }
+//                    } else {
+//                        Toast.makeText(context, "Account not verified. Please check your email.", Toast.LENGTH_SHORT).show()
+//                        navigator.navigate(SendVerifyEmailScreenDestination) {
+//                            popUpTo(SendVerifyEmailScreenDestination) {
+//                                inclusive = true
+//                                launchSingleTop = true
+//                            }
+//                        }
+//                    }
+//                }
+                LoginWithEmailUiEvent.LoginSuccess -> {}
             }
         }
     }
@@ -97,14 +95,14 @@ fun LoginWithEmailScreen(
         passwordError = uiState.passwordError,
         onPasswordChanged = { password -> viewModel.onEvent(LoginWithEmailUiAction.PasswordChanged(password)) },
         onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) },
-        onForgotPasswordClick = {
-            navigator.navigate(SendVerifyEmailScreenDestination) {
-                popUpTo(SendVerifyEmailScreenDestination) {
-                    inclusive = true
-                    launchSingleTop = true
-                }
-            }
-        }
+//        onForgotPasswordClick = {
+//            navigator.navigate(SendVerifyEmailScreenDestination) {
+//                popUpTo(SendVerifyEmailScreenDestination) {
+//                    inclusive = true
+//                    launchSingleTop = true
+//                }
+//            }
+//        }
     )
 }
 
