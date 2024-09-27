@@ -47,10 +47,10 @@ fun LoginWithEmailScreen(
             when (event) {
                 LoginWithEmailUiEvent.None -> {}
                 LoginWithEmailUiEvent.LoginFailure -> {
-                    Toast.makeText(context, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show()
                 }
                 LoginWithEmailUiEvent.LoginSuccess -> {
-                    Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                     if (viewModel.isAccountVerified()) {
                         navigator.popBackStack()
                         navigator.navigate(HomeScreenDestination) {
