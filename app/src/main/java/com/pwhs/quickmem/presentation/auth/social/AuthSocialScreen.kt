@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.core.data.AuthProvider
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
@@ -25,8 +26,8 @@ import timber.log.Timber
 
 @Destination<RootGraph>(
     deepLinks = [
-        DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&firstName={firstName}&lastName={lastName}&picture={picture}"),
-        DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&firstName={firstName}&lastName={lastName}&picture={picture}"),
+        DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}"),
+        DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}"),
     ]
 )
 @Composable
@@ -36,14 +37,13 @@ fun AuthSocialScreen(
     navigator: DestinationsNavigator,
     email: String = "",
     token: String = "",
-    firstName: String = "",
-    lastName: String = "",
+    fullName: String = "",
+    provider: String = "",
     picture: String = ""
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(email, token, firstName, lastName, picture) {
-        val fullName = "$firstName $lastName"
-        viewModel.initDataDeeplink(email, fullName, picture, token)
+    LaunchedEffect(email, token, fullName, picture, provider) {
+        viewModel.initDataDeeplink(email, fullName, picture, token, provider)
     }
 
     LaunchedEffect(key1 = true) {
@@ -66,9 +66,9 @@ fun AuthSocialScreen(
         },
         email = uiState.email,
         token = uiState.token,
-        firstName = uiState.name,
-        lastName = uiState.name,
-        picture = uiState.avatarUrl
+        fullName = uiState.fullName,
+        picture = uiState.avatarUrl,
+        provider = uiState.provider ?: AuthProvider.Google
     )
 }
 
@@ -78,9 +78,9 @@ fun AuthSocial(
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
     token: String = "",
-    firstName: String = "",
-    lastName: String = "",
-    picture: String = ""
+    fullName: String = "",
+    picture: String = "",
+    provider: AuthProvider
 ) {
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -104,8 +104,8 @@ fun AuthSocial(
                 }
             )
             Text(email)
-            Text(firstName)
-            Text(lastName)
+            Text(fullName)
+            Text(provider.name)
             Text(token)
         }
     }

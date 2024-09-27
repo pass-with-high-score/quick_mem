@@ -11,6 +11,6 @@ data class AuthSocialUiState(
     val birthDay: String = "",
     val avatarUrl: String = "",
     val role: UserRole = UserRole.Student,
-    val name: String = "",
-    val token: String = ""
+    val fullName: String = "",
+    val token: String = "",
 )
