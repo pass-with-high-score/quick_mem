@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -37,6 +36,40 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                HomeUIEvent.NavigateFreeTrial -> {
+
+                }
+
+                HomeUIEvent.NavigateShowMoreCategories -> {
+
+                }
+
+                HomeUIEvent.NavigateShowMoreClasses -> {
+
+                }
+
+                HomeUIEvent.NavigateShowMoreFolder -> {
+
+                }
+
+                HomeUIEvent.NavigateShowMoreSets -> {
+
+                }
+
+                HomeUIEvent.NavigateToSearch -> {
+                    navigator.navigate(SearchScreenDestination) {
+                        popUpTo(HomeScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            }
+        }
+    }
     HomeUI(
         modifier,
         viewModel,
@@ -72,17 +105,6 @@ fun HomeUI(
 
     ) {
     val state by viewModel.state
-    val coroutineScope = rememberCoroutineScope()
-    val action = viewModel.action.collectAsState(initial = null)
-
-    LaunchedEffect(action.value) {
-        action.value?.let {
-            when (it) {
-                is HomeUIAction.NavigateToSearch -> onNavigationSearch()
-                is HomeUIAction.OpenFreeTrialPage -> onOpenFreeTrailClick()
-            }
-        }
-    }
 
     Scaffold(
         modifier = modifier.fillMaxSize()
