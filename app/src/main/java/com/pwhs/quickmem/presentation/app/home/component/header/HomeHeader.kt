@@ -1,39 +1,51 @@
-package com.pwhs.quickmem.presentation.homescreen.components
+package com.pwhs.quickmem.presentation.app.home.component.header
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.presentation.app.home.component.home.SearchTextField
 
 @Composable
 fun HomeHeader(
-    Onclick: () -> Unit
+    modifier: Modifier,
+    onNavigationIconClick: () -> Unit = {},
+    onOpenFreeTrailClick: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier
+            .background(
+                Color(0xFF5E8DF5),
+                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+            )
             .padding(16.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -50,14 +62,18 @@ fun HomeHeader(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
-                        onClick = Onclick,
+                        onClick = {
+                            onOpenFreeTrailClick
+                        },
                         modifier = Modifier.padding(end = 8.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCBB237))
                     ) {
-                        Text("Free trial")
+                        Text(
+                            "Free trial",
+                            color = Color.Black
+                        )
                     }
-
                     IconButton(
                         onClick = {
 
@@ -71,7 +87,42 @@ fun HomeHeader(
                     }
                 }
             }
-            SearchTextField()
+            Spacer(modifier = Modifier.height(16.dp))
+            SearchTextField(onNavigationIconClick = onNavigationIconClick)
+            Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+}
+
+
+@Composable
+fun SearchTextField(
+    onNavigationIconClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clickable {
+                onNavigationIconClick
+            },
+        shadowElevation = 4.dp,
+        shape = RoundedCornerShape(50),
+        color = Color.White
+    ) {
+        TextField(
+            value = "",
+            onValueChange = {},
+            placeholder = {
+                Icon(Icons.Default.Search, contentDescription = null)
+                Text(
+                    text = "Flashcards, textbooks, question,...",
+                    color = Color.Gray,
+                    modifier = Modifier.padding(start = 32.dp)
+                )
+            },
+            modifier = Modifier.fillMaxSize(),
+            singleLine = true,
+        )
     }
 }

@@ -43,7 +43,6 @@ fun ClassesCard(
             .height(150.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(Color(0xFFF0F0F0))
-            .shadow(4.dp, RoundedCornerShape(8.dp))
             .padding(10.dp)
     ) {
         Column(
@@ -83,11 +82,10 @@ fun ClassesCard(
                     imageVector = Icons.Default.AutoAwesomeMotion,
                     contentDescription = "Sets"
                 )
-                Spacer(modifier = Modifier.width(4.dp))  // Thêm khoảng trống nhỏ
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = sets,
                     style = typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
                     )
                 )
@@ -105,23 +103,10 @@ fun ClassesCard(
                 Text(
                     text = member,
                     style = typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
                     )
                 )
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun PreviewClass() {
-    ClassesCard(
-        title = "ETS 2024",
-        classname = "Anh Ngữ MS.Hoa",
-        sets = "2 sets",
-        member = "30 members"
-    )
 }
