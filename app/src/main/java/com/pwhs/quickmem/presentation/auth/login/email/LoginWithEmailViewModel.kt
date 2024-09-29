@@ -9,6 +9,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
+import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
@@ -96,12 +97,35 @@ class LoginWithEmailViewModel @Inject constructor(
                         tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
                         appManager.saveIsLoggedIn(true)
                         appManager.saveUserId(resource.data?.id ?: "")
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        checkAccountVerification()
                     }
                 }
             }
         }
     }
+
+    private fun checkAccountVerification() {
+        viewModelScope.launch {
+            authRepository.verifyEmail(VerifyEmailResponseModel(uiState.value.email)).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Success -> {
+                        if (resource.data?.isVerified == true) {
+                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        } else {
+                            _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
+                        }
+                    }
+                    is Resources.Error -> {
+                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
+                    }
+
+                    is Resources.Loading -> {}
+                }
+            }
+        }
+    }
+
+
 
     private fun validateInput(): Boolean {
         var isValid = true

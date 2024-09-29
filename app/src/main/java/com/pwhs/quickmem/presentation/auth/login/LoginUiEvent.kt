@@ -5,4 +5,5 @@ sealed class LoginUiEvent {
     data object LoginWithEmail : LoginUiEvent()
     data object LoginWithGoogle : LoginUiEvent()
     data object LoginWithFacebook : LoginUiEvent()
+
 }

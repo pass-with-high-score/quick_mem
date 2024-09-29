@@ -41,6 +41,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -71,9 +72,15 @@ fun LoginWithEmailScreen(
                         }
                     }
                 }
+
+                LoginWithEmailUiEvent.NavigateToVerifyEmail -> {
+                    navigator.navigate(VerifyEmailScreenDestination(uiState.email))  // Điều hướng đến màn hình nhập OTP
+                }
             }
         }
     }
+
+
 
     LoginWithEmail(
         modifier = modifier,
@@ -169,7 +176,7 @@ private fun LoginWithEmail(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
-                contentAlignment = Alignment.CenterEnd
+                contentAlignment = Alignment.Center
             ) {
                 TextButton(
                     onClick = onForgotPasswordClick

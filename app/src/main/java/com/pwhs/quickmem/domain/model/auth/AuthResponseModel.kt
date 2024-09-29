@@ -11,4 +11,5 @@ data class AuthResponseModel(
     val accessToken: String? = null,
     val refreshToken: String? = null,
     val provider: String? = null,
+    val isVerified: Boolean? = null
 )
