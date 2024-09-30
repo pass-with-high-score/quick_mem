@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,12 +20,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
 
 @Composable
-fun FoldersSections() {
+fun FolderSections(
+    modifier: Modifier,
+    onSaveFolder: () -> Unit = {},
+    onViewAllFolder: () -> Unit = {},
+    onDetailFolder: () -> Unit = {},
+) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(start = 15.dp)
     ) {
         Row(
@@ -53,17 +58,16 @@ fun FoldersSections() {
                     }
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(end = 16.dp, start = 15.dp)
         ) {
             items(folderList) { folder ->
                 FolderCard(
-                    title = folder.title,
-                    sets = folder.sets,
-                    author = folder.author
+                    folderInfo = folder,
+                    imgFolder = R.drawable.ic_folder,
+                    imgAvt = R.drawable.ic_bear
                 )
             }
         }
