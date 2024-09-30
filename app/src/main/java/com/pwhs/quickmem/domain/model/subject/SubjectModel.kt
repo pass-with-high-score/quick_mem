@@ -9,7 +9,7 @@ data class SubjectModel(
     val name: String,
     @DrawableRes val iconRes: Int? = null,
     val color: Color? = null,
-    val description: String?,
+    val description: String? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null
 ) {
