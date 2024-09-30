@@ -1,7 +1,7 @@
 package com.pwhs.quickmem.domain.model.study_set
 
-import com.pwhs.quickmem.data.dto.color.ColorResponseDto
-import com.pwhs.quickmem.data.dto.subject.SubjectResponseDto
+import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 
 data class GetStudySetResponseModel(
     val id: String,
@@ -11,6 +11,6 @@ data class GetStudySetResponseModel(
     val createdAt: String,
     val updatedAt: String,
     val ownerId: String,
-    val subject: SubjectResponseDto? = null,
-    val color: ColorResponseDto? = null
+    val subject: SubjectModel? = null,
+    val color: ColorModel? = null
 )

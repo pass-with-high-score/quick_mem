@@ -16,6 +16,8 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,8 +34,11 @@ fun StudySetDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: StudySetDetailViewModel = hiltViewModel(),
 ) {
-    Text(
-        "Hello from StudySetDetailScreen!",
+    val uiState by viewModel.uiState.collectAsState()
+    StudySetDetail(
+        modifier = modifier,
+        onNavigateBack = { },
+        title = uiState.title
     )
 }
 
@@ -41,14 +46,15 @@ fun StudySetDetailScreen(
 @Composable
 fun StudySetDetail(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    title: String = ""
 ) {
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = colorScheme.surface,
         topBar = {
             LargeTopAppBar(
-                title = { Text("Study Set Detail") },
+                title = { Text(title) },
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateBack,
