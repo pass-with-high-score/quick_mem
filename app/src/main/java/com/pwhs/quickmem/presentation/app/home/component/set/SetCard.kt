@@ -1,7 +1,9 @@
-package com.pwhs.quickmem.presentation.app.home.component.sets
+package com.pwhs.quickmem.presentation.app.home.component.set
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,41 +21,39 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.R
 
 @Composable
 fun SetCard(
-    title: String,
-    terms: String,
-    author: String
+    setInfo: SetInfo,
+    @DrawableRes imageResId: Int,
+    onSaveSets: () -> Unit = {},
+    onMoreOption: () -> Unit = {},
+    onDetailSets: () -> Unit = {},
 ) {
-    // Sử dụng Box thay cho Surface
     Box(
         modifier = Modifier
             .width(250.dp)
             .height(110.dp)
-            .clip(RoundedCornerShape(8.dp))  // Bo góc
-            .background(Color(0xFFF0F0F0))  // Màu nền
-            .shadow(4.dp, RoundedCornerShape(8.dp))  // Bóng đổ
-            .padding(10.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFF0F0F0))
+            .clickable {
+                onDetailSets
+            }.padding(start = 10.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
@@ -62,17 +62,17 @@ fun SetCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    text = setInfo.title,
+                    style = typography.bodyMedium.copy(
                         fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
+                        fontSize = 13.sp
                     ),
                     modifier = Modifier.weight(1f)
                 )
 
                 IconButton(
                     onClick = {
-                        // Thao tác khi nhấn Bookmark
+                        onSaveSets
                     },
                 ) {
                     Icon(
@@ -83,9 +83,9 @@ fun SetCard(
             }
 
             Text(
-                text = terms,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontSize = 10.sp
+                text = setInfo.terms,
+                style = typography.bodySmall.copy(
+                    fontSize = 12.sp
                 )
             )
 
@@ -98,16 +98,16 @@ fun SetCard(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        painter = painterResource(id = imageResId),
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
-                            .clip(RoundedCornerShape(50))  // Bo góc hình ảnh
+                            .clip(RoundedCornerShape(50))
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = author,
-                        style = MaterialTheme.typography.bodySmall.copy(
+                        text = setInfo.author,
+                        style = typography.bodySmall.copy(
                             fontSize = 12.sp
                         ),
                     )
@@ -115,7 +115,7 @@ fun SetCard(
 
                 IconButton(
                     onClick = {
-                        // Thao tác khi nhấn More options
+                        onMoreOption
                     },
                 ) {
                     Icon(
@@ -131,11 +131,5 @@ fun SetCard(
 @Preview
 @Composable
 fun SetCardPreview() {
-    SetCard(
-        title = "New Toeic 700 - Test 1 - 2024",
-        terms = "23 terms",
-        author = "Hadao04"
-    )
+
 }
-
-

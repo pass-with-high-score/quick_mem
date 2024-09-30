@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.home.component.sets
+package com.pwhs.quickmem.presentation.app.home.component.set
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,28 +12,34 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
 
-@Preview
 @Composable
-fun SetsSections() {
+fun SetsSections(
+    modifier: Modifier,
+    onSaveSets: () -> Unit = {},
+    onViewAllSets: () -> Unit = {},
+    onDetailSets: () -> Unit = {},
+    onViewMoreOptions: () -> Unit = {}
+) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(start = 15.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Sets",
@@ -52,38 +58,33 @@ fun SetsSections() {
                 modifier = Modifier
                     .padding(end = 18.dp)
                     .clickable {
-                        // Xử lý sự kiện khi nhấn "View more"
+                        onViewAllSets
                     }
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(end = 16.dp, start = 15.dp)
         ) {
             items(setsList) { set ->
                 SetCard(
-                    title = set.title,
-                    terms = set.terms,
-                    author = set.author
+                    setInfo = set,
+                    imageResId = R.drawable.ic_facebook,
+                    onSaveSets = { onSaveSets },
+                    onMoreOption = { onViewMoreOptions },
+                    onDetailSets = { onDetailSets }
                 )
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun PreviewSection(){
-    SetsSections()
-}
-
 data class SetInfo(
     val title: String,
     val terms: String,
-    val author: String
+    val author: String,
 )
 
 val setsList = listOf(
@@ -91,5 +92,3 @@ val setsList = listOf(
     SetInfo("IELTS Reading Practice", "50 terms", "IELTS Fighter"),
     SetInfo("Advanced Physics", "45 terms", "SciGuy999")
 )
-
-

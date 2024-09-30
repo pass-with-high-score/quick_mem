@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.home.component.folder
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,45 +19,40 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.R
 
 @Composable
 fun FolderCard(
-    title: String,
-    sets: String,
-    author: String
+    folderInfo: FolderInfo,
+    @DrawableRes imgFolder: Int,
+    @DrawableRes imgAvt: Int
+
 ) {
-    // Sử dụng Box thay vì Surface
     Box(
         modifier = Modifier
             .width(220.dp)
             .height(110.dp)
-            .clip(RoundedCornerShape(8.dp)) // Bo góc
-            .background(Color(0xFFF0F0F0))  // Màu nền
-            .shadow(4.dp, RoundedCornerShape(8.dp))  // Bóng đổ
-            .padding(10.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFF0F0F0))
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -65,15 +61,15 @@ fun FolderCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        painter = painterResource(id = imgFolder),
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
-                            .clip(RoundedCornerShape(50)) // Bo góc hình ảnh
+                            .clip(RoundedCornerShape(50))
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = title,
+                        text = folderInfo.title,
                         style = typography.bodySmall.copy(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
@@ -100,22 +96,22 @@ fun FolderCard(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = sets)
-
+                Text(text = folderInfo.sets)
+                Spacer(modifier = Modifier.width(8.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(start = 5.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        painter = painterResource(id = imgAvt),
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
                             .clip(RoundedCornerShape(50))
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(5.dp))
                     Text(
-                        text = author,
+                        text = folderInfo.author,
                         style = typography.bodySmall.copy(
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
@@ -127,8 +123,3 @@ fun FolderCard(
     }
 }
 
-@Preview
-@Composable
-fun FolderCardPV() {
-    FolderCard(title = "Animal", sets = "2 sets", author = "Hadao1204")
-}

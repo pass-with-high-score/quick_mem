@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.home.component.achiverment
+package com.pwhs.quickmem.presentation.app.home.component.achivement
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,6 +70,8 @@ fun AchievementsSection() {
                     fontSize = 16.sp
                 )
             )
+
+            Spacer(Modifier.height(20.dp))
             CalendarGrid()
         }
     }
@@ -92,7 +93,6 @@ fun CalendarGrid() {
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 30.dp)
     ) {
         daysOfWeek.forEach { day ->
             Text(
