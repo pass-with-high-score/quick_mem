@@ -13,5 +13,6 @@ fun AuthResponseDto.toModel() = AuthResponseModel(
     birthday = birthday,
     accessToken = accessToken,
     refreshToken = refreshToken,
-    provider = provider
+    provider = provider,
+    isVerified = isVerified
 )
