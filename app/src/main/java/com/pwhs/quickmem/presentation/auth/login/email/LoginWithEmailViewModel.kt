@@ -76,8 +76,8 @@ class LoginWithEmailViewModel @Inject constructor(
         viewModelScope.launch {
             val username = uiState.value.email
             val password = uiState.value.password
-            val provider = AuthProvider.Email.provider
-            val loginRequestModel = LoginRequestModel(username, password, provider)
+            val provider = AuthProvider.email.provider
+            val loginRequestModel = LoginRequestModel(username, password, provider, null)
 
             val response = authRepository.login(loginRequestModel)
 

@@ -1,7 +1,8 @@
-    package com.pwhs.quickmem.domain.model.auth
+package com.pwhs.quickmem.domain.model.auth
 
-    data class LoginRequestModel(
-        val email: String?,
-        val password: String?,
-        val authProvider: String?,
-    )
+data class LoginRequestModel(
+    val email: String?,
+    val password: String?,
+    val authProvider: String?,
+    val idToken: String?,
+)
