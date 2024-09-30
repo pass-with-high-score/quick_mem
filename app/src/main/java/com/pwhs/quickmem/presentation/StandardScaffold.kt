@@ -55,7 +55,6 @@ fun StandardScaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val sheetSelectCreateState = rememberModalBottomSheetState()
-    rememberCoroutineScope()
     var showBottomSheetCreate by remember {
         mutableStateOf(false)
     }

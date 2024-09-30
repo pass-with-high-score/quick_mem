@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.StudySetRepository
+import com.pwhs.quickmem.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +47,10 @@ class StudySetDetailViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         _uiState.update {
-                            resource.data?.let { it1 -> it.copy(title = it1.title) }!!
+                            it.copy(
+                                title = resource.data!!.title,
+                                color = resource.data.color!!.hexValue.toColor()
+                            )
                         }
                     }
 
