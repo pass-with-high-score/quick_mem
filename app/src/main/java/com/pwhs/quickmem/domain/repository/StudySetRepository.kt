@@ -16,4 +16,9 @@ interface StudySetRepository {
         token: String,
         studySetId: String
     ): Flow<Resources<GetStudySetResponseModel>>
+
+    suspend fun getStudySetsByOwnerId(
+        token: String,
+        ownerId: String
+    ): Flow<Resources<List<GetStudySetResponseModel>>>
 }

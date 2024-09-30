@@ -47,4 +47,20 @@ class StudySetRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getStudySetsByOwnerId(
+        token: String,
+        ownerId: String
+    ): Flow<Resources<List<GetStudySetResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getStudySetsByOwnerId(token, ownerId)
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

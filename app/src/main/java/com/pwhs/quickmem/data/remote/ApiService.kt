@@ -41,4 +41,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): GetStudySetResponseDto
+
+    @GET("study-set/owner/{ownerId}")
+    suspend fun getStudySetsByOwnerId(
+        @Header("Authorization") token: String,
+        @Path("ownerId") ownerId: String
+    ): List<GetStudySetResponseDto>
 }
