@@ -4,4 +4,5 @@ data class LoginRequestModel(
     val email: String?,
     val password: String?,
     val authProvider: String?,
+    val idToken: String?,
 )

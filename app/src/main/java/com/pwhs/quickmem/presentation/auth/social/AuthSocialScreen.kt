@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.auth.social
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +28,7 @@ import timber.log.Timber
 @Destination<RootGraph>(
     deepLinks = [
         DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}"),
-        DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}"),
+        DeepLink(uriPattern = "quickmem://oauth/facebook/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}"),
     ]
 )
 @Composable
@@ -43,6 +44,12 @@ fun AuthSocialScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(email, token, fullName, picture, provider) {
+        Timber.d("Run here")
+        Timber.d("Email: $email")
+        Timber.d("Token: $token")
+        Timber.d("Full name: $fullName")
+        Timber.d("Provider: $provider")
+        Timber.d("Picture: $picture")
         viewModel.initDataDeeplink(email, fullName, picture, token, provider)
     }
 
@@ -64,11 +71,14 @@ fun AuthSocialScreen(
         onNavigationIconClick = {
             navigator.popBackStack()
         },
+        onRegisterClick = {
+            viewModel.onEvent(AuthSocialUiAction.Register)
+        },
         email = uiState.email,
         token = uiState.token,
         fullName = uiState.fullName,
         picture = uiState.avatarUrl,
-        provider = uiState.provider ?: AuthProvider.Google
+        provider = uiState.provider ?: AuthProvider.google
     )
 }
 
@@ -76,6 +86,7 @@ fun AuthSocialScreen(
 fun AuthSocial(
     modifier: Modifier = Modifier,
     onNavigationIconClick: () -> Unit = {},
+    onRegisterClick: () -> Unit = {},
     email: String = "",
     token: String = "",
     fullName: String = "",
@@ -96,6 +107,11 @@ fun AuthSocial(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Button(
+                onClick = onRegisterClick
+            ) {
+                Text("Register")
+            }
             AsyncImage(
                 model = picture,
                 contentDescription = "Hello",

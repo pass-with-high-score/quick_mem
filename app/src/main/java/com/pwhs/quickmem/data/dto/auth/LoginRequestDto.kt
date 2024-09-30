@@ -9,4 +9,6 @@ data class LoginRequestDto(
     val password: String?,
     @SerializedName("provider")
     val provider: String? = null,
+    @SerializedName("idToken")
+    val idToken: String? = null,
 )

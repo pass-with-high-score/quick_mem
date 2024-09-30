@@ -6,11 +6,13 @@ import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 fun LoginRequestDto.toModel() = LoginRequestModel(
     email = email,
     password = password,
-    authProvider = provider
+    authProvider = provider,
+    idToken = idToken
 )
 
 fun LoginRequestModel.toDto() = LoginRequestDto(
     email = email,
     password = password,
-    provider = authProvider
+    provider = authProvider,
+    idToken = idToken
 )
