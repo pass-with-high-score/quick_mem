@@ -4,11 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.presentation.auth.login.LoginUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,46 +23,46 @@ class HomeViewModel @Inject constructor(
     // Function to handle UI events
     fun onEvent(event: HomeUIEvent) {
         when (event) {
-            HomeUIEvent.NavigateFreeTrial -> NavigateFreeTrial()
-            HomeUIEvent.NavigateShowMoreCategories -> NavigateShowMoreCategories()
-            HomeUIEvent.NavigateShowMoreClasses -> NavigateShowMoreClasses()
-            HomeUIEvent.NavigateShowMoreFolder -> NavigateShowMoreFolder()
-            HomeUIEvent.NavigateShowMoreSets -> NavigateShowMoreSets()
-            HomeUIEvent.NavigateToSearch -> NavigateSearch()
+            HomeUIEvent.NavigateFreeTrial -> navigateFreeTrial()
+            HomeUIEvent.NavigateShowMoreCategories -> navigateShowMoreCategories()
+            HomeUIEvent.NavigateShowMoreClasses -> navigateShowMoreClasses()
+            HomeUIEvent.NavigateShowMoreFolder -> navigateShowMoreFolder()
+            HomeUIEvent.NavigateShowMoreSets -> navigateShowMoreSets()
+            HomeUIEvent.NavigateToSearch -> navigateSearch()
         }
     }
 
-    private fun NavigateSearch() {
+    private fun navigateSearch() {
         viewModelScope.launch {
             _uiEvent.trySend(HomeUIEvent.NavigateToSearch)
         }
     }
 
-    private fun NavigateFreeTrial() {
+    private fun navigateFreeTrial() {
         viewModelScope.launch {
             _uiEvent.trySend(HomeUIEvent.NavigateFreeTrial)
         }
     }
 
-    private fun NavigateShowMoreSets() {
+    private fun navigateShowMoreSets() {
         viewModelScope.launch {
             _uiEvent.trySend(HomeUIEvent.NavigateShowMoreSets)
         }
     }
 
-    private fun NavigateShowMoreFolder() {
+    private fun navigateShowMoreFolder() {
         viewModelScope.launch {
             _uiEvent.trySend(HomeUIEvent.NavigateShowMoreFolder)
         }
     }
 
-    private fun NavigateShowMoreClasses() {
+    private fun navigateShowMoreClasses() {
         viewModelScope.launch {
             _uiEvent.trySend(HomeUIEvent.NavigateShowMoreClasses)
         }
     }
 
-    private fun NavigateShowMoreCategories() {
+    private fun navigateShowMoreCategories() {
         viewModelScope.launch {
             _uiEvent.trySend(HomeUIEvent.NavigateShowMoreCategories)
         }
