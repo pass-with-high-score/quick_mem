@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.pwhs.quickmem"
-        minSdk = 27
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
