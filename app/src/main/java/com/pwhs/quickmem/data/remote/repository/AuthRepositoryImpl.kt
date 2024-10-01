@@ -4,6 +4,8 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.data.remote.EmailRequestDto
+import com.pwhs.quickmem.data.remote.EmailService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
@@ -18,8 +20,27 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val emailService: EmailService
 ) : AuthRepository {
+    override suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val emailDto = EmailRequestDto(email)
+                val response = emailService.checkEmail(emailDto)
+                if (response.isReachable == "safe" || response.isReachable == "risky") {
+                    emit(Resources.Success(true))
+                } else {
+                    emit(Resources.Success(false))
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
     override suspend fun login(loginRequestModel: LoginRequestModel): Flow<Resources<AuthResponseModel>> {
         return flow {
             try {
@@ -41,6 +62,7 @@ class AuthRepositoryImpl @Inject constructor(
                 val response = apiService.signUp(params)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
+                Timber.e(e)
                 emit(Resources.Error(e.toString()))
             }
 

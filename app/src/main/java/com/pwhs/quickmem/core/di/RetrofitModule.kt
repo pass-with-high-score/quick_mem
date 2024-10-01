@@ -1,7 +1,9 @@
 package com.pwhs.quickmem.core.di
 
 import com.pwhs.quickmem.core.utils.AppConstant.BASE_URL
+import com.pwhs.quickmem.core.utils.AppConstant.EMAIL_VERIFICATION_URL
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.data.remote.EmailService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +21,7 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideMoviesApi(): ApiService {
+    fun provideQuickMemApi(): ApiService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -34,5 +36,24 @@ object RetrofitModule {
             )
             .build()
             .create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCheckEmailApi(): EmailService {
+        return Retrofit.Builder()
+            .baseUrl(EMAIL_VERIFICATION_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(
+                OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .addInterceptor(HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    }).build()
+            )
+            .build()
+            .create(EmailService::class.java)
     }
 }
