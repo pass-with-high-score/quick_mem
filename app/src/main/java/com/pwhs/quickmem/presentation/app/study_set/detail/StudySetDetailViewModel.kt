@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StudySetDetailViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val studySetRepository: StudySetRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
