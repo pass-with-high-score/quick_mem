@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.pwhs.quickmem"
-        minSdk = 29
+        minSdk = 27
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -44,6 +44,8 @@ android {
 }
 
 dependencies {
+    //Lottie Animation
+    implementation("com.airbnb.android:lottie-compose:5.2.0")
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
