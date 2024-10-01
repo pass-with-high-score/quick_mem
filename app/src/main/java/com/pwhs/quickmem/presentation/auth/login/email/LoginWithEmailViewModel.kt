@@ -74,14 +74,8 @@ class LoginWithEmailViewModel @Inject constructor(
 
     private fun login() {
         viewModelScope.launch {
-            val username = uiState.value.email
-            val password = uiState.value.password
-            val provider = AuthProvider.email.provider
-            val loginRequestModel = LoginRequestModel(username, password, provider, null)
-
-            val response = authRepository.login(loginRequestModel)
-
-            response.collectLatest { resource ->
+            val email = uiState.value.email
+            authRepository.checkEmailValidity(email).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
                         Timber.e(resource.message)
@@ -93,19 +87,51 @@ class LoginWithEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        if (resource.data?.isVerified == false) {
-                            checkAccountVerification().also {
-                                _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
+                        Timber.d("Email is valid: ${resource.data}")
+                        if (resource.data == true) {
+                            val password = uiState.value.password
+                            val provider = AuthProvider.email.provider
+                            val loginRequestModel =
+                                LoginRequestModel(email, password, provider, null)
+
+                            val response = authRepository.login(loginRequestModel)
+
+                            response.collectLatest { login ->
+                                when (login) {
+                                    is Resources.Error -> {
+                                        Timber.e(login.message)
+                                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
+                                    }
+
+                                    is Resources.Loading -> {
+                                        _uiState.update { it.copy(isLoading = true) }
+                                    }
+
+                                    is Resources.Success -> {
+                                        if (login.data?.isVerified == false) {
+                                            checkAccountVerification().also {
+                                                _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
+                                            }
+                                        } else {
+                                            tokenManager.saveAccessToken(
+                                                login.data?.accessToken ?: ""
+                                            )
+                                            tokenManager.saveRefreshToken(
+                                                login.data?.refreshToken ?: ""
+                                            )
+                                            appManager.saveIsLoggedIn(true)
+                                            appManager.saveUserId(login.data?.id ?: "")
+                                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                                        }
+                                    }
+                                }
                             }
                         } else {
-                            tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
-                            tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
-                            appManager.saveIsLoggedIn(true)
-                            appManager.saveUserId(resource.data?.id ?: "")
-                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                            _uiState.update { it.copy(emailError = "Email is not registered") }
                         }
                     }
                 }
+
             }
         }
     }

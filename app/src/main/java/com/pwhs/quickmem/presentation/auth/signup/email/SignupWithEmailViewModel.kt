@@ -88,24 +88,7 @@ class SignupWithEmailViewModel @Inject constructor(
 
     private fun signUp() {
         viewModelScope.launch {
-            val avatarUrl = Random().nextInt(100).toString()
-            val username = uiState.value.email.getUsernameFromEmail()
-            val fullName = uiState.value.email.getNameFromEmail()
-
-            val response = authRepository.signup(
-                signUpRequestModel = SignupRequestModel(
-                    avatarUrl = avatarUrl,
-                    email = uiState.value.email,
-                    username = username,
-                    fullName = fullName,
-                    role = uiState.value.userRole,
-                    birthday = uiState.value.birthday,
-                    password = uiState.value.password,
-                    authProvider = AuthProvider.email.provider
-                )
-            )
-
-            response.collectLatest { resource ->
+            authRepository.checkEmailValidity(_uiState.value.email).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
                         Timber.e(resource.message)
@@ -117,10 +100,46 @@ class SignupWithEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        _uiEvent.send(SignUpWithEmailUiEvent.SignUpSuccess)
+                        if (resource.data == true) {
+                            val avatarUrl = Random().nextInt(100).toString()
+                            val username = uiState.value.email.getUsernameFromEmail()
+                            val fullName = uiState.value.email.getNameFromEmail()
+
+                            val response = authRepository.signup(
+                                signUpRequestModel = SignupRequestModel(
+                                    avatarUrl = avatarUrl,
+                                    email = uiState.value.email,
+                                    username = username,
+                                    fullName = fullName,
+                                    role = uiState.value.userRole,
+                                    birthday = uiState.value.birthday,
+                                    password = uiState.value.password,
+                                    authProvider = AuthProvider.email.provider
+                                )
+                            )
+
+                            response.collectLatest { signup ->
+                                when (signup) {
+                                    is Resources.Error -> {
+                                        Timber.e(signup.message)
+                                        _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
+                                    }
+
+                                    is Resources.Loading -> {
+                                        _uiState.update { it.copy(isLoading = true) }
+                                    }
+
+                                    is Resources.Success -> {
+                                        _uiEvent.send(SignUpWithEmailUiEvent.SignUpSuccess)
+                                    }
+                                }
+
+                            }
+                        } else {
+                            _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
+                        }
                     }
                 }
-
             }
         }
     }
