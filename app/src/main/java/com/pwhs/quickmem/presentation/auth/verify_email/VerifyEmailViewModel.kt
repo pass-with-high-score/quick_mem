@@ -93,7 +93,7 @@ class VerifyEmailViewModel @Inject constructor(
                 return@launch
             }
 
-            if (isOtpNumber(otp)) {
+            if (!isOtpNumber(otp)) {
                 _uiEvent.send(VerifyEmailUiEvent.WrongOtp)
                 return@launch
             }
