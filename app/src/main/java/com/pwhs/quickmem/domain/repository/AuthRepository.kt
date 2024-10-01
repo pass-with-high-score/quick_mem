@@ -23,7 +23,4 @@ interface AuthRepository {
     suspend fun resendOtp(
         resendEmailRequestModel: ResendEmailRequestModel
     ): Flow<Resources<OtpResponseModel>>
-    suspend fun resendOtp(
-        resendEmailRequestModel: ResendEmailRequestModel
-    ): Flow<Resources<OtpResponseModel>>
 }
