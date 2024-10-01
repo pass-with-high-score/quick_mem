@@ -74,7 +74,7 @@ fun LoginWithEmailScreen(
                 }
 
                 LoginWithEmailUiEvent.NavigateToVerifyEmail -> {
-                    navigator.navigate(VerifyEmailScreenDestination(uiState.email))  // Điều hướng đến màn hình nhập OTP
+                    navigator.navigate(VerifyEmailScreenDestination(uiState.email))
                 }
             }
         }
