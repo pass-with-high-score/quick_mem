@@ -14,6 +14,7 @@ import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -71,6 +72,7 @@ class AuthRepositoryImpl @Inject constructor(
                 val response = apiService.resendVerificationEmail(params)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
+                Timber.e(e)
                 emit(Resources.Error(e.toString()))
             }
         }

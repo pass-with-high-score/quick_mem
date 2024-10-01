@@ -9,7 +9,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
-import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
+import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
@@ -18,8 +18,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -93,11 +93,17 @@ class LoginWithEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
-                        tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
-                        appManager.saveIsLoggedIn(true)
-                        appManager.saveUserId(resource.data?.id ?: "")
-                        checkAccountVerification()
+                        if (resource.data?.isVerified == false) {
+                            checkAccountVerification().also {
+                                _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
+                            }
+                        } else {
+                            tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
+                            tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
+                            appManager.saveIsLoggedIn(true)
+                            appManager.saveUserId(resource.data?.id ?: "")
+                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        }
                     }
                 }
             }
@@ -106,25 +112,31 @@ class LoginWithEmailViewModel @Inject constructor(
 
     private fun checkAccountVerification() {
         viewModelScope.launch {
-            authRepository.verifyEmail(VerifyEmailResponseModel(uiState.value.email)).collectLatest { resource ->
+            val email = uiState.value.email
+            val response = authRepository.resendOtp(
+                ResendEmailRequestModel(
+                    email = email
+                )
+            )
+
+            response.collectLatest { resource ->
                 when (resource) {
-                    is Resources.Success -> {
-                        if (resource.data?.isVerified == true) {
-                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
-                        } else {
-                            _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
-                        }
-                    }
-                    is Resources.Error -> {
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
+                    is Resources.Loading -> {
+                        // Show loading
                     }
 
-                    is Resources.Loading -> {}
+                    is Resources.Success -> {
+                        _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                    }
+
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
+                    }
                 }
             }
         }
     }
-
 
 
     private fun validateInput(): Boolean {

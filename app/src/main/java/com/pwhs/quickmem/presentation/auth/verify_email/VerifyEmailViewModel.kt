@@ -62,6 +62,7 @@ class VerifyEmailViewModel @Inject constructor(
             }
 
             is VerifyEmailUiAction.ResendEmail -> {
+                _uiState.update { it.copy(countdown = 60) }
                 resendOtp(event.email)
             }
         }
@@ -69,7 +70,7 @@ class VerifyEmailViewModel @Inject constructor(
 
     private fun updateCountdown() {
         viewModelScope.launch {
-            _uiState.update { it.copy(countdown = 600) }
+            _uiState.update { it.copy(countdown = 60) }
             while (_uiState.value.countdown > 0) {
                 delay(1000)
                 _uiState.update { it.copy(countdown = _uiState.value.countdown - 1) }
