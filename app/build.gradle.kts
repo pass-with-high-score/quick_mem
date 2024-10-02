@@ -44,6 +44,9 @@ android {
 }
 
 dependencies {
+    implementation("io.ak1:drawbox:1.0.3")
+    implementation("io.ak1:rang-vikalp:1.0.0-alpha02")
+    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc09")
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))

@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StudySetDetailViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val studySetRepository: StudySetRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
@@ -33,6 +33,7 @@ class StudySetDetailViewModel @Inject constructor(
     init {
         val id: String = savedStateHandle["id"] ?: ""
         Timber.d("StudySetDetailViewModel: $id")
+        _uiState.update { it.copy(id = id) }
         getStudySetById(id)
     }
 
