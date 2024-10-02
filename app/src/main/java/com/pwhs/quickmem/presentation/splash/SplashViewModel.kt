@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class SplashViewModel @Inject constructor(
     private fun checkAuth() {
         Timber.d("Checking auth")
         viewModelScope.launch {
+            delay(1500)
             appManager.isLoggedIn.collect { isLoggedIn ->
                 if (isLoggedIn) {
                     _uiState.value = SplashUiState.IsLoggedIn
@@ -41,6 +43,7 @@ class SplashViewModel @Inject constructor(
     private fun checkFirstRun() {
         Timber.d("Checking first run")
         viewModelScope.launch {
+            delay(1500)
             appManager.isFirstRun.collect { isFirstRun ->
                 if (isFirstRun) {
                     _uiState.value = SplashUiState.FirstRun
@@ -53,6 +56,7 @@ class SplashViewModel @Inject constructor(
 
     fun saveIsFirstRun(isFirstRun: Boolean) {
         viewModelScope.launch {
+            delay(1500)
             appManager.saveIsFirstRun(isFirstRun)
         }
     }
