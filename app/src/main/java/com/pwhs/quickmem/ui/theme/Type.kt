@@ -14,7 +14,7 @@ val provider = GoogleFont.Provider(
 )
 
 val Abrilfatface_Font = FontFamily(
-    androidx.compose.ui.text.font.Font(R.font.abrilfatface_regular)
+    androidx.compose.ui.text.font.Font(R.font.firasans_extrabold)
 )
 val FontAbrilfatface = TextStyle(
     fontFamily = Abrilfatface_Font

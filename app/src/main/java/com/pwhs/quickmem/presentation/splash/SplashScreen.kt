@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.ui.theme.Abrilfatface_Font
+import com.pwhs.quickmem.util.splashBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
@@ -80,13 +80,13 @@ fun SplashScreen(
     }
 
     Scaffold(
-        modifier = modifier
-    ) {
+        modifier = modifier.splashBackground(),
+        containerColor = Color.Transparent
+    ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize().
-                background(Color(0xFF2CB2CF)),
+            modifier = modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
