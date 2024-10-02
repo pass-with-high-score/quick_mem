@@ -50,6 +50,7 @@ import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabS
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>(
@@ -59,13 +60,16 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun StudySetDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: StudySetDetailViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     StudySetDetail(
         modifier = modifier,
         onNavigateBack = {
             navigator.navigateUp()
+        },
+        onAddFlashcard = {
+            navigator.navigate(CreateFlashCardScreenDestination)
         },
         title = uiState.title,
         color = uiState.color
@@ -77,6 +81,7 @@ fun StudySetDetailScreen(
 fun StudySetDetail(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
+    onAddFlashcard: () -> Unit = {},
     title: String = "",
     color: Color = Color.Blue
 ) {
@@ -125,7 +130,7 @@ fun StudySetDetail(
                         )
                     }
                     IconButton(
-                        onClick = { }
+                        onClick = onAddFlashcard
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
