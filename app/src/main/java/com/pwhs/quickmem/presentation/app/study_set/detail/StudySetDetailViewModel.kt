@@ -33,6 +33,7 @@ class StudySetDetailViewModel @Inject constructor(
     init {
         val id: String = savedStateHandle["id"] ?: ""
         Timber.d("StudySetDetailViewModel: $id")
+        _uiState.update { it.copy(id = id) }
         getStudySetById(id)
     }
 

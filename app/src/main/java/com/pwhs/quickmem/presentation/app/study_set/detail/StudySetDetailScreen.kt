@@ -69,7 +69,12 @@ fun StudySetDetailScreen(
             navigator.navigateUp()
         },
         onAddFlashcard = {
-            navigator.navigate(CreateFlashCardScreenDestination)
+            navigator.navigate(
+                CreateFlashCardScreenDestination(
+                    studySetId = uiState.id,
+                    studySetTitle = uiState.title
+                )
+            )
         },
         title = uiState.title,
         color = uiState.color
