@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,7 +54,19 @@ class CreateFlashCardViewModel @Inject constructor(
             is CreateFlashCardUiAction.StudySetTitleChanged -> {
                 _uiState.update { it.copy(studySetTitle = event.studySetTitle) }
             }
-        }
-    }
 
+            is CreateFlashCardUiAction.ImagesChanged -> {
+                Timber.d("Images changed: ${event.images}")
+                _uiState.update { it.copy(images = it.images + event.images) }
+            }
+
+            is CreateFlashCardUiAction.ImagesRemoved -> {
+                Timber.d("Images removed: ${event.images}")
+                _uiState.update {
+                    it.copy(images = it.images - event.images)
+                }
+            }
+        }
+
+    }
 }

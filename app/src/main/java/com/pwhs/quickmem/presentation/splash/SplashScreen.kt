@@ -40,7 +40,6 @@ import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDest
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 
-
 @Destination<RootGraph>(start = true)
 @Composable
 fun SplashScreen(
@@ -56,18 +55,14 @@ fun SplashScreen(
                 navigator.navigate(HomeScreenDestination) {
                     popUpTo(HomeScreenDestination) {
                         inclusive = true
-                        launchSingleTop = true
                     }
                 }
             }
 
             is SplashUiState.FirstRun -> {
                 navigator.navigate(OnboardingScreenDestination) {
-
                     popUpTo(WelcomeScreenDestination) {
                         inclusive = true
-                        launchSingleTop = true
-
                     }
                 }
             }
