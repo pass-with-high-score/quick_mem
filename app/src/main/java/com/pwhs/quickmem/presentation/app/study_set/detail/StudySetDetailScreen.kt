@@ -2,15 +2,20 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,6 +50,8 @@ import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabS
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>(
     navArgs = StudySetDetailArgs::class
@@ -53,11 +60,22 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 fun StudySetDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: StudySetDetailViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     StudySetDetail(
         modifier = modifier,
-        onNavigateBack = { },
+        onNavigateBack = {
+            navigator.navigateUp()
+        },
+        onAddFlashcard = {
+            navigator.navigate(
+                CreateFlashCardScreenDestination(
+                    studySetId = uiState.id,
+                    studySetTitle = uiState.title
+                )
+            )
+        },
         title = uiState.title,
         color = uiState.color
     )
@@ -68,6 +86,7 @@ fun StudySetDetailScreen(
 fun StudySetDetail(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
+    onAddFlashcard: () -> Unit = {},
     title: String = "",
     color: Color = Color.Blue
 ) {
@@ -116,7 +135,7 @@ fun StudySetDetail(
                         )
                     }
                     IconButton(
-                        onClick = { }
+                        onClick = onAddFlashcard
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -180,19 +199,51 @@ fun StudySetDetail(
             }
         }
     }
-
     if (showMoreBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showMoreBottomSheet = false },
             sheetState = sheetShowMoreState
         ) {
-            Column {
-                Row {
-                    Text("Edit")
-                }
-                Row {
-                    Text("Delete")
-                }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                ItemMenuBottomSheet(
+                    onClick = { },
+                    icon = Icons.Outlined.Edit,
+                    title = "Edit"
+                )
+                ItemMenuBottomSheet(
+                    onClick = { },
+                    icon = Icons.Outlined.Folder,
+                    title = "Add to folder"
+                )
+                ItemMenuBottomSheet(
+                    onClick = { },
+                    icon = Icons.Outlined.Group,
+                    title = "Add to class"
+                )
+                ItemMenuBottomSheet(
+                    onClick = { },
+                    icon = Icons.Outlined.ContentCopy,
+                    title = "Save and edit"
+                )
+                ItemMenuBottomSheet(
+                    onClick = { },
+                    icon = Icons.Outlined.Refresh,
+                    title = "Reset progress"
+                )
+                ItemMenuBottomSheet(
+                    onClick = { },
+                    icon = Icons.Outlined.Info,
+                    title = "Set info"
+                )
+                ItemMenuBottomSheet(
+                    onClick = { },
+                    icon = Icons.Default.DeleteOutline,
+                    title = "Delete study set",
+                    color = Color.Red
+                )
             }
         }
     }

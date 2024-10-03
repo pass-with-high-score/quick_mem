@@ -31,6 +31,18 @@ fun Modifier.gradientBackground(): Modifier {
     )
 }
 
+fun Modifier.splashBackground(): Modifier {
+    return this.background(
+        brush = Brush.verticalGradient(
+            colors = listOf(
+                Color(0xFF2CB2CF),
+                Color(0xFF2CB2CF)
+            ),
+            tileMode = TileMode.Mirror
+        )
+    )
+}
+
 fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(
     factory = {
         val density = LocalDensity.current

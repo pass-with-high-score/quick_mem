@@ -1,7 +1,10 @@
 package com.pwhs.quickmem.presentation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +46,7 @@ import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScr
 @Composable
 fun StandardScaffold(
     navController: NavController,
-    showBottomBar: Boolean = true,
+    showBottomBar: Boolean,
     items: List<BottomNavItem> = listOf(
         BottomNavItem.Home,
         BottomNavItem.Explore,
@@ -61,7 +63,11 @@ fun StandardScaffold(
 
     Scaffold(
         bottomBar = {
-            if (showBottomBar) {
+            AnimatedVisibility(
+                visible = showBottomBar,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 NavigationBar(
                     modifier = Modifier
                         .shadow(4.dp, RoundedCornerShape(0.dp))
@@ -154,6 +160,7 @@ fun StandardScaffold(
                     }
                 )
             }
+
         }
     ) { paddingValues ->
         content(paddingValues)
@@ -196,6 +203,5 @@ fun StandardScaffold(
             }
         }
     }
-
 }
 
