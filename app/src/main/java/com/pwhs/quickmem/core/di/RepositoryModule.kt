@@ -1,8 +1,10 @@
 package com.pwhs.quickmem.core.di
 
 import com.pwhs.quickmem.data.remote.repository.AuthRepositoryImpl
+import com.pwhs.quickmem.data.remote.repository.FlashCardRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StudySetRepositoryImpl
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.Binds
 import dagger.Module
@@ -21,5 +23,10 @@ abstract class RepositoryModule {
     abstract fun bindStudySetRepository(
         studySetRepositoryImpl: StudySetRepositoryImpl
     ): StudySetRepository
+
+    @Binds
+    abstract fun bindFlashCardRepository(
+        flashCardRepositoryImpl: FlashCardRepositoryImpl
+    ): FlashCardRepository
 
 }

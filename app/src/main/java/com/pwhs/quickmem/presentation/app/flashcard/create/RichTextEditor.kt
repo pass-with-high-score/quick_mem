@@ -44,6 +44,8 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 @Composable
 fun RichTextEditor(
     modifier: Modifier = Modifier,
+    title: String,
+    placeholder: String,
     showRichTextControls: Boolean,
     onShowRichTextControlsChanged: (Boolean) -> Unit,
     richTextState: RichTextState,
@@ -56,7 +58,7 @@ fun RichTextEditor(
             .padding(horizontal = 16.dp)
     ) {
         Text(
-            text = "Question",
+            text = title,
             style = typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -93,7 +95,7 @@ fun RichTextEditor(
                         state = richTextState,
                         placeholder = {
                             Text(
-                                text = "Add an answer",
+                                text = placeholder,
                                 style = typography.bodyLarge.copy(
                                     color = Color.Gray
                                 )

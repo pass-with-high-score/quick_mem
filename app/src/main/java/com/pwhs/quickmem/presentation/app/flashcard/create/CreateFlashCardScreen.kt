@@ -8,7 +8,9 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -195,6 +197,8 @@ fun CreateFlashCard(
                         onShowRichTextControlsChanged = { showRichTextControls = it },
                         images = images,
                         onImageRemoved = onImageRemoved,
+                        title = "Question",
+                        placeholder = "Enter question"
                     )
                 }
                 item {
@@ -206,88 +210,49 @@ fun CreateFlashCard(
                         onShowRichTextControlsChanged = { showRichTextControls = it },
                         images = images,
                         onImageRemoved = onImageRemoved,
-                    )
-                }
-                item {
-                    RichTextEditor(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        richTextState = richTextState,
-                        showRichTextControls = showRichTextControls,
-                        onShowRichTextControlsChanged = { showRichTextControls = it },
-                        images = images,
-                        onImageRemoved = onImageRemoved,
-                    )
-                }
-                item {
-                    RichTextEditor(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        richTextState = richTextState,
-                        showRichTextControls = showRichTextControls,
-                        onShowRichTextControlsChanged = { showRichTextControls = it },
-                        images = images,
-                        onImageRemoved = onImageRemoved,
-                    )
-                }
-                item {
-                    RichTextEditor(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        richTextState = richTextState,
-                        showRichTextControls = showRichTextControls,
-                        onShowRichTextControlsChanged = { showRichTextControls = it },
-                        images = images,
-                        onImageRemoved = onImageRemoved,
-                    )
-                }
-                item {
-                    RichTextEditor(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        richTextState = richTextState,
-                        showRichTextControls = showRichTextControls,
-                        onShowRichTextControlsChanged = { showRichTextControls = it },
-                        images = images,
-                        onImageRemoved = onImageRemoved,
+                        title = "Answer",
+                        placeholder = "Enter answer"
                     )
                 }
             }
             if (showRichTextControls) {
-                EditorControls(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 0.dp)
+                        .background(Color.White)
                         .align(Alignment.BottomCenter)
                         .imePadding(),
-                    onBoldClick = {
-                        richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                    },
-                    onItalicClick = {
-                        richTextState.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic))
-                    },
-                    onUnderlineClick = {
-                        richTextState.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                    },
-                    onTextColorClick = {
-                        richTextState.toggleSpanStyle(SpanStyle(color = Color.Red))
-                    },
-                    onUnorderedListClick = {
-                        richTextState.toggleUnorderedList()
-                    },
-                    onImageClick = {
-                        if (!readImagePermission.status.isGranted) {
-                            launcher.launch(
-                                PickVisualMediaRequest(
-                                    mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
+                ) {
+                    EditorControls(
+                        onBoldClick = {
+                            richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                        },
+                        onItalicClick = {
+                            richTextState.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic))
+                        },
+                        onUnderlineClick = {
+                            richTextState.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
+                        },
+                        onTextColorClick = {
+                            richTextState.toggleSpanStyle(SpanStyle(color = Color.Red))
+                        },
+                        onUnorderedListClick = {
+                            richTextState.toggleUnorderedList()
+                        },
+                        onImageClick = {
+                            if (!readImagePermission.status.isGranted) {
+                                launcher.launch(
+                                    PickVisualMediaRequest(
+                                        mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
+                                    )
                                 )
-                            )
-                        } else {
-                            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-                        }
-                    },
-                    onDrawClick = onDrawFlashcard
-                )
+                            } else {
+                                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+                            }
+                        },
+                        onDrawClick = onDrawFlashcard
+                    )
+                }
             }
         }
     }

@@ -47,8 +47,7 @@ fun EditorControls(
     FlowRow(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = 10.dp)
-            .padding(bottom = 24.dp),
+            .padding(all = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ControlWrapper(
