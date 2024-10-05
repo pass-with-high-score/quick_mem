@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.ksp)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -46,8 +47,10 @@ android {
 dependencies {
     implementation("io.ak1:drawbox:1.0.3")
     implementation("io.ak1:rang-vikalp:1.0.0-alpha02")
-    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc09")
     implementation("com.google.accompanist:accompanist-permissions:0.36.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.2")
 
     // Compose
     implementation(libs.bundles.compose)

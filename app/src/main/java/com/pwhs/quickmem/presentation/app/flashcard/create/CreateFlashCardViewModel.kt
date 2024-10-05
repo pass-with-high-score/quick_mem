@@ -2,18 +2,23 @@ package com.pwhs.quickmem.presentation.app.flashcard.create
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.core.datastore.TokenManager
+import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateFlashCardViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val flashCardRepository: FlashCardRepository,
+    private val tokenManager: TokenManager,
+    private val appManager: AppManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateFlashCardUiState())
     val uiState = _uiState.asStateFlow()
@@ -29,21 +34,13 @@ class CreateFlashCardViewModel @Inject constructor(
 
     fun onEvent(event: CreateFlashCardUiAction) {
         when (event) {
-            is CreateFlashCardUiAction.AnswerChanged -> {
-                _uiState.update { it.copy(answer = event.answer) }
-            }
-
-            is CreateFlashCardUiAction.AnswerImageUrlChanged -> {
-                _uiState.update { it.copy(answerImageUrl = event.answerImageUrl) }
-            }
-
             CreateFlashCardUiAction.CancelClicked -> TODO()
             is CreateFlashCardUiAction.QuestionChanged -> {
                 _uiState.update { it.copy(question = event.question) }
             }
 
-            is CreateFlashCardUiAction.QuestionImageUrlChanged -> {
-                _uiState.update { it.copy(questionImageUrl = event.questionImageUrl) }
+            is CreateFlashCardUiAction.AnswerChanged -> {
+                _uiState.update { it.copy(answer = event.answer) }
             }
 
             CreateFlashCardUiAction.SaveFlashCardClicked -> TODO()
@@ -55,18 +52,10 @@ class CreateFlashCardViewModel @Inject constructor(
                 _uiState.update { it.copy(studySetTitle = event.studySetTitle) }
             }
 
-            is CreateFlashCardUiAction.ImagesChanged -> {
-                Timber.d("Images changed: ${event.images}")
-                _uiState.update { it.copy(images = it.images + event.images) }
-            }
-
-            is CreateFlashCardUiAction.ImagesRemoved -> {
-                Timber.d("Images removed: ${event.images}")
-                _uiState.update {
-                    it.copy(images = it.images - event.images)
-                }
+            CreateFlashCardUiAction.AddOptionClicked -> TODO()
+            is CreateFlashCardUiAction.AnswerImageChanged -> {
+                _uiState.update { it.copy(answerImage = event.answerImage) }
             }
         }
-
     }
 }

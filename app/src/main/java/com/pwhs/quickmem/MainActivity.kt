@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
             }
 
         }
+        this.requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
 }

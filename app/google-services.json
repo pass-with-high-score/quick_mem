@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "743857474439",
+    "project_id": "quickmem-pwhs",
+    "storage_bucket": "quickmem-pwhs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743857474439:android:bfdeb3a323c2e604286122",
+        "android_client_info": {
+          "package_name": "com.pwhs.quickmem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjPH24pBKYrxF6_0VFagoQae134266GDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
