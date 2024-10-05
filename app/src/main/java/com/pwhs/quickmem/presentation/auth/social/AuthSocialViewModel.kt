@@ -1,24 +1,35 @@
 package com.pwhs.quickmem.presentation.auth.social
 
+import android.app.Application
+import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.data.AuthProvider
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
+import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiEvent
+import com.pwhs.quickmem.util.getUsernameFromEmail
+import com.pwhs.quickmem.util.strongPassword
+import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthSocialViewModel @Inject constructor(
-    private val authRepository: AuthRepository
-) : ViewModel() {
+    private val authRepository: AuthRepository,
+    application: Application
+) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(AuthSocialUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -27,13 +38,27 @@ class AuthSocialViewModel @Inject constructor(
 
     fun onEvent(event: AuthSocialUiAction) {
         when (event) {
-            is AuthSocialUiAction.OnAvatarUrlChanged -> TODO()
-            is AuthSocialUiAction.OnBirthDayChanged -> TODO()
-            is AuthSocialUiAction.OnEmailChanged -> TODO()
-            is AuthSocialUiAction.OnNameChanged -> TODO()
-            is AuthSocialUiAction.OnRoleChanged -> TODO()
+            is AuthSocialUiAction.OnAvatarUrlChanged -> {
+                _uiState.value = _uiState.value.copy(avatarUrl = event.avatarUrl)
+            }
+            is AuthSocialUiAction.OnBirthDayChanged -> {
+                _uiState.value = _uiState.value.copy(birthDay = event.birthDay)
+            }
+            is AuthSocialUiAction.OnEmailChanged -> {
+                _uiState.value = _uiState.value.copy(email = event.email)
+            }
+            is AuthSocialUiAction.OnNameChanged -> {
+                _uiState.value = _uiState.value.copy(fullName = event.name)
+            }
+            is AuthSocialUiAction.OnRoleChanged -> {
+                _uiState.value = _uiState.value.copy(role = event.role)
+            }
             is AuthSocialUiAction.Register -> {
-                authSocial()
+                if (validateInput()) {
+                    authSocial()
+                } else {
+                    Toast.makeText(getApplication(), "Invalid input", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -56,32 +81,52 @@ class AuthSocialViewModel @Inject constructor(
     }
 
     private fun authSocial() {
-        val loginRequestModel = _uiState.value.run {
-            LoginRequestModel(
-                email = email,
-                password = null,
-                authProvider = provider?.name,
-                idToken = token
-            )
-        }
+        val username = uiState.value.email.getUsernameFromEmail()
 
         viewModelScope.launch {
-            authRepository.login(loginRequestModel).collect { result ->
-                when (result) {
-                    is Resources.Success -> {
-                        Timber.d(result.data.toString())
-                    }
 
+            val response = authRepository.signup(
+                signUpRequestModel = SignupRequestModel(
+                    avatarUrl = uiState.value.avatarUrl,
+                    email = uiState.value.email,
+                    username = username,
+                    fullName = uiState.value.fullName,
+                    role = uiState.value.role,
+                    birthday = uiState.value.birthDay,
+                    authProvider = AuthProvider.google.provider
+                )
+            )
+
+            response.collectLatest { resource ->
+                when (resource) {
                     is Resources.Error -> {
-                        Timber.e(result.message)
+                        Timber.e(resource.message)
+                        _uiEvent.send(AuthSocialUiEvent.SignUpFailure)
                     }
 
                     is Resources.Loading -> {
-                        _uiState.value = _uiState.value.copy(isLoading = true)
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
 
+                    is Resources.Success -> {
+                        _uiEvent.send(AuthSocialUiEvent.SignUpSuccess)
                     }
                 }
+
             }
         }
+    }
+
+    private fun validateInput(): Boolean {
+        var isValid = true
+
+        if (uiState.value.birthDay.isEmpty()) {
+            _uiState.update { it.copy(birthdayError = "Birthday is required") }
+            isValid = false
+        } else {
+            _uiState.update { it.copy(birthdayError = "") }
+        }
+
+        return isValid
     }
 }

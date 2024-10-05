@@ -97,6 +97,18 @@ fun VerifyEmailScreen(
                     Toast.makeText(context, "Please check your email again", Toast.LENGTH_SHORT)
                         .show()
                 }
+
+                VerifyEmailUiEvent.WrongOtp -> {
+                    Toast.makeText(context, "OTP must be numbers", Toast.LENGTH_SHORT).show()
+                }
+
+                VerifyEmailUiEvent.EmptyOtp -> {
+                    Toast.makeText(context, "OTP must not be empty", Toast.LENGTH_SHORT).show()
+                }
+
+                VerifyEmailUiEvent.ErrorLengthOtp -> {
+                    Toast.makeText(context, "OTP must be 6 digits", Toast.LENGTH_SHORT).show()
+                }
             }
 
         }
