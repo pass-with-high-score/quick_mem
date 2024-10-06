@@ -90,7 +90,7 @@ class LoginWithEmailViewModel @Inject constructor(
                         Timber.d("Email is valid: ${resource.data}")
                         if (resource.data == true) {
                             val password = uiState.value.password
-                            val provider = AuthProvider.email.provider
+                            val provider = AuthProvider.EMAIL.name
                             val loginRequestModel =
                                 LoginRequestModel(email, password, provider, null)
 

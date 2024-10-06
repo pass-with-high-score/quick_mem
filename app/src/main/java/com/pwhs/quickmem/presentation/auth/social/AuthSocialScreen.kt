@@ -78,7 +78,7 @@ fun AuthSocialScreen(
         token = uiState.token,
         fullName = uiState.fullName,
         picture = uiState.avatarUrl,
-        provider = uiState.provider ?: AuthProvider.google
+        provider = uiState.provider ?: AuthProvider.GOOGLE
     )
 }
 

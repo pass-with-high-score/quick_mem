@@ -5,5 +5,4 @@ enum class Rating(val rating: String) {
     OK("ok"),
     GOOD("good"),
     UNRATED("unrated")
-
 }

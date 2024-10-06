@@ -22,7 +22,7 @@ fun RadioGroup(
     modifier: Modifier = Modifier,
     onRoleChanged: (UserRole) -> Unit = {}
 ) {
-    val options = listOf(UserRole.Teacher, UserRole.Student)
+    val options = listOf(UserRole.TEACHER, UserRole.STUDENT)
     val selectedOption = rememberSaveable { mutableStateOf(options[0]) }
     Column(
         modifier = modifier.padding(vertical = 16.dp),
@@ -47,7 +47,7 @@ fun RadioGroup(
                         }
                     )
                     Text(
-                        text = option.role.upperCaseFirstLetter(),
+                        text = option.name.upperCaseFirstLetter(),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(start = 8.dp)
                     )

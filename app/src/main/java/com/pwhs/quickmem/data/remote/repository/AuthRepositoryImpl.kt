@@ -35,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
                     emit(Resources.Success(false))
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.e(e.toString())
                 emit(Resources.Error(e.toString()))
             }
         }
@@ -47,8 +47,10 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resources.Loading())
                 val params = loginRequestModel.toDto()
                 val response = apiService.login(params)
+                Timber.d(response.toString())
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
+                Timber.e(e.toString())
                 emit(Resources.Error(e.toString()))
             }
         }
