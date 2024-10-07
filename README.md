@@ -53,7 +53,7 @@
 - `.github/workflows/`: Contains GitHub Actions workflows for CI/CD.
 
 ## Backend
-Backend have many important info like vps, email, google service and because we want it safe so we no public it right now, you can check it later or email me.
+The backend has important info like VPS, email, and Google service, and because we want it safe we are not publicizing it right now, you can check it later or email me.
 
 ## Contributing
 This is graduation project for the course of "Mobile Application Development" at the FPT Polytechnic College. Contributions are not accepted at the moment.
