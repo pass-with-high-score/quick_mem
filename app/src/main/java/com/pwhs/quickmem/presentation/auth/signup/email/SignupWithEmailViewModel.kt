@@ -114,7 +114,7 @@ class SignupWithEmailViewModel @Inject constructor(
                                     role = uiState.value.userRole,
                                     birthday = uiState.value.birthday,
                                     password = uiState.value.password,
-                                    authProvider = AuthProvider.email.provider
+                                    authProvider = AuthProvider.EMAIL.name
                                 )
                             )
 

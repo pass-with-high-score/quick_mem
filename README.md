@@ -48,9 +48,12 @@
 ## Project Structure
 
 - `app/src/main/java/com/pwhs/quickmem/`: Contains the main application code.
-- `app/src/main/res/`: Contains the resource files (layouts, strings, etc.).
+- `app/src/main/res/`: Contains the resource files (strings,drawable etc.).
 - `app/build.gradle.kts`: Build configuration for the app module.
 - `.github/workflows/`: Contains GitHub Actions workflows for CI/CD.
+
+## Backend
+The backend has important info like VPS, email, and Google service, and because we want it safe we are not publicizing it right now, you can check it later or email me.
 
 ## Contributing
 This is graduation project for the course of "Mobile Application Development" at the FPT Polytechnic College. Contributions are not accepted at the moment.

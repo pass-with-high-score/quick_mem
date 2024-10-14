@@ -64,7 +64,7 @@ fun LoginScreen(
                     // open webview
                     navigator.navigate(
                         WebViewAppDestination(
-                            oAuthLink = "https://api.nqmgaming.nl/auth/google",
+                            oAuthLink = "https://api.quickmem.app/auth/google",
                         )
                     )
                 }
@@ -73,7 +73,7 @@ fun LoginScreen(
                     // open webview
                     navigator.navigate(
                         WebViewAppDestination(
-                            oAuthLink = "https://api.nqmgaming.nl/auth/facebook",
+                            oAuthLink = "https://api.quickmem.app/auth/facebook",
                         )
                     )
                 }

@@ -7,6 +7,8 @@ import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
+import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -46,4 +48,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("ownerId") ownerId: String
     ): List<GetStudySetResponseDto>
+
+    @POST("flashcard")
+    suspend fun createFlashCard(
+        @Header("Authorization") token: String,
+        @Body createFlashCardDto: CreateFlashCardDto
+    ): FlashCardResponseDto
 }
