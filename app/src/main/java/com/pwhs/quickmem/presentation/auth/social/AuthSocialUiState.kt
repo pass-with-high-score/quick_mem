@@ -9,6 +9,7 @@ data class AuthSocialUiState(
     val provider: AuthProvider? = null,
     val email: String = "",
     val birthDay: String = "",
+    val birthdayError: String = "",
     val avatarUrl: String = "",
     val role: UserRole = UserRole.STUDENT,
     val fullName: String = "",

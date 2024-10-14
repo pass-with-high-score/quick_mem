@@ -84,7 +84,17 @@ class VerifyEmailViewModel @Inject constructor(
             val otp = uiState.value.otp
 
             if (email.isEmpty() || otp.isEmpty()) {
-                _uiEvent.send(VerifyEmailUiEvent.VerifyFailure)
+                _uiEvent.send(VerifyEmailUiEvent.EmptyOtp)
+                return@launch
+            }
+
+            if (!isOtpLengthValid(otp)) {
+                _uiEvent.send(VerifyEmailUiEvent.ErrorLengthOtp)
+                return@launch
+            }
+
+            if (!isOtpNumber(otp)) {
+                _uiEvent.send(VerifyEmailUiEvent.WrongOtp)
                 return@launch
             }
 
@@ -143,6 +153,14 @@ class VerifyEmailViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun isOtpNumber(otp: String): Boolean {
+        return otp.all { it.isDigit() }
+    }
+
+    private fun isOtpLengthValid(otp: String): Boolean {
+        return otp.length == 6
     }
 
 }
