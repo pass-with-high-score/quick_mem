@@ -3,17 +3,12 @@ package com.pwhs.quickmem.presentation.auth.social
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.data.AuthProvider
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiEvent
 import com.pwhs.quickmem.util.getUsernameFromEmail
-import com.pwhs.quickmem.util.strongPassword
-import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,7 +88,7 @@ class AuthSocialViewModel @Inject constructor(
                     fullName = uiState.value.fullName,
                     role = uiState.value.role,
                     birthday = uiState.value.birthDay,
-                    authProvider = AuthProvider.google.provider
+                    authProvider = AuthProvider.GOOGLE.name,
                 )
             )
 
