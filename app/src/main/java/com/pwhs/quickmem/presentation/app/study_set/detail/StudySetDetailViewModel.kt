@@ -37,6 +37,14 @@ class StudySetDetailViewModel @Inject constructor(
         getStudySetById(id)
     }
 
+    fun onEvent(event: StudySetDetailUiAction) {
+        when (event) {
+            is StudySetDetailUiAction.Refresh -> {
+                getStudySetById(_uiState.value.id)
+            }
+        }
+    }
+
     private fun getStudySetById(id: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""

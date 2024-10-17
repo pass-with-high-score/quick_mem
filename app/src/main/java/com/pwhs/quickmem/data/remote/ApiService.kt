@@ -39,7 +39,7 @@ interface ApiService {
     @POST("upload")
     suspend fun uploadImage(
         @Header("Authorization") authToken: String,
-        @Part file: MultipartBody.Part
+        @Part flashcard: MultipartBody.Part
     ):  UploadImageResponseDto
 
     @POST("study-set")

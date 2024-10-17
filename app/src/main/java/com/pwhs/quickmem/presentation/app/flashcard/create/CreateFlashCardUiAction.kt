@@ -12,14 +12,7 @@ sealed class CreateFlashCardUiAction {
 
     data class FlashCardHintChanged(val hint: String) : CreateFlashCardUiAction()
     data class FlashCardExplanationChanged(val explanation: String) : CreateFlashCardUiAction()
-    data class SaveFlashCardClicked(
-        val studySetId: String,
-        val term: String,
-        val definition: String,
-        val definitionImageURL: Uri?,
-        val hint: String,
-        val explanation: String
-    ) : CreateFlashCardUiAction()
+    data object SaveFlashCard : CreateFlashCardUiAction()
 
     data class ShowHintClicked(val showHint: Boolean) : CreateFlashCardUiAction()
     data class ShowExplanationClicked(val showExplanation: Boolean) : CreateFlashCardUiAction()

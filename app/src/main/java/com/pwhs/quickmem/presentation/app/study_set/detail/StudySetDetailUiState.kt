@@ -17,4 +17,6 @@ data class StudySetDetailUiState(
     val user: UserResponseModel = UserResponseModel(),
     val createdAt: String = "",
     val updatedAt: String = "",
+    val isLoading: Boolean = false,
+    val shouldLoad: Boolean = false,
 )

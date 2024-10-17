@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +25,6 @@ class CreateFlashCardViewModel @Inject constructor(
     private val flashCardRepository: FlashCardRepository,
     private val uploadImageRepository: UploadImageRepository,
     private val tokenManager: TokenManager,
-    private val appManager: AppManager,
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(CreateFlashCardUiState())
@@ -61,8 +60,8 @@ class CreateFlashCardViewModel @Inject constructor(
                 _uiState.update { it.copy(term = event.term) }
             }
 
-            is CreateFlashCardUiAction.SaveFlashCardClicked -> {
-
+            is CreateFlashCardUiAction.SaveFlashCard -> {
+                saveFlashCard()
             }
 
             is CreateFlashCardUiAction.StudySetIdChanged -> {
@@ -87,15 +86,23 @@ class CreateFlashCardViewModel @Inject constructor(
                         .collect { resource ->
                             when (resource) {
                                 is Resources.Success -> {
-                                    _uiState.update { it.copy(definitionImageURL = resource.data!!.url) }
+                                    _uiState.update {
+                                        it.copy(
+                                            definitionImageURL = resource.data!!.url,
+                                            isLoading = false
+                                        )
+                                    }
                                 }
 
                                 is Resources.Error -> {
-                                    // do nothing
+                                    Timber.e("Error: ${resource.message}")
+                                    _uiState.update { it.copy(isLoading = false) }
                                 }
 
                                 is Resources.Loading -> {
-                                    // do nothing
+                                    _uiState.update {
+                                        it.copy(isLoading = true)
+                                    }
                                 }
                             }
                         }
@@ -105,5 +112,41 @@ class CreateFlashCardViewModel @Inject constructor(
     }
 
     private fun saveFlashCard() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            flashCardRepository.createFlashCard(
+                token,
+                _uiState.value.toCreateFlashCardModel()
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e("Error: ${resource.message}")
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+
+                    is Resources.Loading -> {
+                        Timber.d("Loading")
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is Resources.Success -> {
+                        Timber.d("FlashCard saved: ${resource.data}")
+                        _uiState.update {
+                            it.copy(
+                                term = "",
+                                definition = "",
+                                definitionImageURL = null,
+                                definitionImageUri = null,
+                                hint = null,
+                                explanation = null,
+                                isCreated = true,
+                                isLoading = false
+                            )
+                        }
+                        _uiEvent.send(CreateFlashCardUiEvent.FlashCardSaved)
+                    }
+                }
+            }
+        }
     }
 }

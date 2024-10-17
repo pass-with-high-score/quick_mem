@@ -32,10 +32,12 @@ class UploadImageRepositoryImpl @Inject constructor(
                 val imageFile = realPath?.let { File(it) }
 
                 if (imageFile != null) {
+                    // Log image size
+                    Timber.d("Image size: ${imageFile.length()} bytes")
                     val requestUploadImageFile = MultipartBody.Part.createFormData(
-                        "avatar",
+                        "flashcard",
                         imageFile.name,
-                        imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+                        imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
                     )
                     val response = apiService.uploadImage(token, requestUploadImageFile)
                     emit(Resources.Success(response.toUploadImageResponseModel()))

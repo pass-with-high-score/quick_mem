@@ -5,11 +5,11 @@ data class CreateFlashCardDto(
     @SerializedName("definition")
     val definition: String,
     @SerializedName("definitionImageUrl")
-    val definitionImageURL: String,
+    val definitionImageURL: String? = null,
     @SerializedName("explanation")
-    val explanation: String,
+    val explanation: String? = null,
     @SerializedName("hint")
-    val hint: String,
+    val hint: String? = null,
     @SerializedName("studySetId")
     val studySetId: String,
     @SerializedName("term")

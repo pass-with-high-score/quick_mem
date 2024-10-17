@@ -53,6 +53,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Destination<RootGraph>(
     navArgs = StudySetDetailArgs::class
@@ -62,8 +64,21 @@ fun StudySetDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: StudySetDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
+    resultBackNavigator: ResultRecipient<CreateFlashCardScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    resultBackNavigator.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+
+    }
     StudySetDetail(
         modifier = modifier,
         onNavigateBack = {

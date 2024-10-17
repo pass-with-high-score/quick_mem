@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.flashcard.create
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,11 +62,13 @@ import com.mr0xf00.easycrop.ui.ImageCropperDialog
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
 import com.pwhs.quickmem.util.bitmapToUri
+import com.pwhs.quickmem.util.loadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.DrawFlashCardScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -77,7 +81,8 @@ fun CreateFlashCardScreen(
     modifier: Modifier = Modifier,
     viewModel: CreateFlashCardViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    canvasResultBack: ResultRecipient<DrawFlashCardScreenDestination, Bitmap>
+    canvasResultBack: ResultRecipient<DrawFlashCardScreenDestination, Bitmap>,
+    resultNavigator: ResultBackNavigator<Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -92,16 +97,37 @@ fun CreateFlashCardScreen(
             }
         }
     }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                CreateFlashCardUiEvent.FlashCardSaved -> {
+                    Timber.d("Flashcard saved")
+                    Toast.makeText(context, "Flashcard saved", Toast.LENGTH_SHORT).show()
+                }
+
+                CreateFlashCardUiEvent.FlashCardSaveError -> {
+                    Timber.d("Flashcard save error")
+                    Toast.makeText(context, "Flashcard save error", Toast.LENGTH_SHORT).show()
+                }
+
+                CreateFlashCardUiEvent.LoadImage -> {
+                    Timber.d("Load image")
+                }
+            }
+        }
+    }
     CreateFlashCard(
         modifier = modifier,
         term = uiState.term,
         definition = uiState.definition,
         definitionImageUri = uiState.definitionImageUri,
-        definitionImageURL = uiState.definitionImageURL,
-        hint = uiState.hint,
+        definitionImageURL = uiState.definitionImageURL ?: "",
+        hint = uiState.hint ?: "",
         showHint = uiState.showHint,
-        explanation = uiState.explanation,
+        explanation = uiState.explanation ?: "",
         showExplanation = uiState.showExplanation,
+        isLoaded = uiState.isLoading,
         onTermChanged = { viewModel.onEvent(CreateFlashCardUiAction.FlashCardTermChanged(it)) },
         onDefinitionChanged = {
             viewModel.onEvent(
@@ -134,8 +160,13 @@ fun CreateFlashCardScreen(
             )
         },
         onUploadImage = { viewModel.onEvent(CreateFlashCardUiAction.UploadImage(it)) },
-        onNavigationBack = { navigator.navigateUp() },
-        onSaveFlashCardClicked = { }
+        onNavigationBack = {
+            resultNavigator.setResult(uiState.isCreated)
+            navigator.navigateUp()
+        },
+        onSaveFlashCardClicked = {
+            viewModel.onEvent(CreateFlashCardUiAction.SaveFlashCard)
+        }
     )
 }
 
@@ -149,6 +180,7 @@ fun CreateFlashCard(
     definition: String = "",
     definitionImageUri: Uri? = null,
     definitionImageURL: String = "",
+    isLoaded: Boolean = false,
     hint: String = "",
     showHint: Boolean = false,
     explanation: String = "",
@@ -225,13 +257,26 @@ fun CreateFlashCard(
                     }) {
                         Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
                     }
-                    IconButton(onClick = onSaveFlashCardClicked) {
-                        Icon(imageVector = Icons.Filled.Done, contentDescription = "Save")
+                    IconButton(
+                        onClick = onSaveFlashCardClicked,
+                        enabled = term.isNotEmpty() && definition.isNotEmpty()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = "Save",
+                            tint = if (term.isNotEmpty() && definition.isNotEmpty()) {
+                                colorScheme.primary
+                            } else {
+                                colorScheme.onSurface.copy(alpha = 0.5f)
+                            }
+                        )
                     }
                 }
             )
         },
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .loadingOverlay(isLoaded)
     ) { innerPadding ->
         Box(contentAlignment = Alignment.TopCenter) {
             LazyColumn(
@@ -271,7 +316,7 @@ fun CreateFlashCard(
                                     AsyncImage(
                                         model = definitionImageUri,
                                         contentDescription = "Image for definition",
-                                        modifier = Modifier.size(180.dp),
+                                        modifier = Modifier.size(120.dp),
                                         contentScale = ContentScale.Crop,
                                         onSuccess = {
                                             onUploadImage(definitionImageUri)
@@ -281,7 +326,7 @@ fun CreateFlashCard(
                                     Image(
                                         painter = painterResource(id = R.drawable.ic_add_image),
                                         contentDescription = "Add Image to Definition",
-                                        modifier = Modifier.size(180.dp),
+                                        modifier = Modifier.size(120.dp),
                                         colorFilter = ColorFilter.tint(
                                             colorScheme.onSurface.copy(
                                                 alpha = 0.5f
