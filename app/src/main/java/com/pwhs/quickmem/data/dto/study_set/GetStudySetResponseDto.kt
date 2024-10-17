@@ -2,7 +2,9 @@ package com.pwhs.quickmem.data.dto.study_set
 
 import com.google.gson.annotations.SerializedName
 import com.pwhs.quickmem.data.dto.color.ColorResponseDto
+import com.pwhs.quickmem.data.dto.flashcard.StudySetFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.subject.SubjectResponseDto
+import com.pwhs.quickmem.data.dto.user.UserResponseDto
 
 data class GetStudySetResponseDto(
     @SerializedName("id")
@@ -17,11 +19,11 @@ data class GetStudySetResponseDto(
     @SerializedName("isPublic")
     val isPublic: Boolean,
 
-    @SerializedName("createdAt")
-    val createdAt: String, // Sử dụng String hoặc LocalDateTime
+    @SerializedName("flashCardCount")
+    val flashCardCount: Int,
 
-    @SerializedName("updatedAt")
-    val updatedAt: String,
+    @SerializedName("flashcards")
+    val flashcards: List<StudySetFlashCardResponseDto>,
 
     @SerializedName("ownerId")
     val ownerId: String,
@@ -30,5 +32,14 @@ data class GetStudySetResponseDto(
     val subject: SubjectResponseDto? = null,
 
     @SerializedName("color")
-    val color: ColorResponseDto? = null
+    val color: ColorResponseDto? = null,
+
+    @SerializedName("user")
+    val user: UserResponseDto,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
+
+    @SerializedName("updatedAt")
+    val updatedAt: String,
 )

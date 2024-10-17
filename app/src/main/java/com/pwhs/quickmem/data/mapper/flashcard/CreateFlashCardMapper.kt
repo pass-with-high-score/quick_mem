@@ -1,30 +1,22 @@
 package com.pwhs.quickmem.data.mapper.flashcard
 
-import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
-import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
+import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
 
-fun FlashCardResponseDto.toModel() = FlashCardResponseModel(
-    id = id,
-    question = question,
-    answer = answer,
-    answerImageURL = answerImageURL,
+fun CreateFlashCardDto.toModel() = CreateFlashCardModel(
+    term = term,
+    definition = definition,
+    definitionImageURL = definitionImageURL,
     hint = hint,
     explanation = explanation,
     studySetId = studySetId,
-    rating = rating,
-    createdAt = createdAt,
-    updatedAt = updatedAt
 )
 
-fun FlashCardResponseModel.toDto() = FlashCardResponseDto(
-    id = id,
-    question = question,
-    answer = answer,
-    answerImageURL = answerImageURL,
+fun CreateFlashCardModel.toDto() = CreateFlashCardDto(
+    term = term,
+    definition = definition,
+    definitionImageURL = definitionImageURL,
     hint = hint,
     explanation = explanation,
     studySetId = studySetId,
-    rating = rating,
-    createdAt = createdAt,
-    updatedAt = updatedAt
 )

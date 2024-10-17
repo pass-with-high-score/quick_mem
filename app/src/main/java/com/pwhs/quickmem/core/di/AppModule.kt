@@ -25,4 +25,10 @@ object AppModule {
     fun provideAppManager(@ApplicationContext context: Context): AppManager {
         return AppManager(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }

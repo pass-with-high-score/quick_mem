@@ -5,11 +5,23 @@ import android.net.Uri
 
 sealed class CreateFlashCardUiAction {
     data class StudySetIdChanged(val studySetId: String) : CreateFlashCardUiAction()
-    data class StudySetTitleChanged(val studySetTitle: String) : CreateFlashCardUiAction()
-    data class QuestionChanged(val question: String) : CreateFlashCardUiAction()
-    data class AnswerChanged(val answer: String) : CreateFlashCardUiAction()
-    data class AnswerImageChanged(val answerImage: Uri?) : CreateFlashCardUiAction()
-    data object SaveFlashCardClicked : CreateFlashCardUiAction()
-    data object CancelClicked : CreateFlashCardUiAction()
-    data object AddOptionClicked : CreateFlashCardUiAction()
+    data class FlashCardTermChanged(val term: String) : CreateFlashCardUiAction()
+    data class FlashCardDefinitionChanged(val definition: String) : CreateFlashCardUiAction()
+    data class FlashCardDefinitionImageChanged(val definitionImageUri: Uri?) :
+        CreateFlashCardUiAction()
+
+    data class FlashCardHintChanged(val hint: String) : CreateFlashCardUiAction()
+    data class FlashCardExplanationChanged(val explanation: String) : CreateFlashCardUiAction()
+    data class SaveFlashCardClicked(
+        val studySetId: String,
+        val term: String,
+        val definition: String,
+        val definitionImageURL: Uri?,
+        val hint: String,
+        val explanation: String
+    ) : CreateFlashCardUiAction()
+
+    data class ShowHintClicked(val showHint: Boolean) : CreateFlashCardUiAction()
+    data class ShowExplanationClicked(val showExplanation: Boolean) : CreateFlashCardUiAction()
+    data class UploadImage(val imageUri: Uri) : CreateFlashCardUiAction()
 }

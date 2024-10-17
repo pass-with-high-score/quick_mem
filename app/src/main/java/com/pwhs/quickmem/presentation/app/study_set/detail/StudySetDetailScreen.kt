@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.detail.material.MaterialTabScreen
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabScreen
 import com.pwhs.quickmem.util.gradientBackground
@@ -77,7 +78,9 @@ fun StudySetDetailScreen(
             )
         },
         title = uiState.title,
-        color = uiState.color
+        color = uiState.color,
+        flashCardCount = uiState.flashCardCount,
+        flashCards = uiState.flashCards
     )
 }
 
@@ -88,7 +91,9 @@ fun StudySetDetail(
     onNavigateBack: () -> Unit = {},
     onAddFlashcard: () -> Unit = {},
     title: String = "",
-    color: Color = Color.Blue
+    color: Color = Color.Blue,
+    flashCardCount: Int = 0,
+    flashCards: List<StudySetFlashCardResponseModel> = emptyList()
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Material", "Progress")
@@ -99,12 +104,20 @@ fun StudySetDetail(
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(
-                        title, style = typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = colorScheme.onSurface
+                    Column {
+                        Text(
+                            title, style = typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = colorScheme.onSurface
+                            )
                         )
-                    )
+                        Text(
+                            "$flashCardCount flashcards",
+                            style = typography.bodyMedium.copy(
+                                color = colorScheme.secondary
+                            )
+                        )
+                    }
                 },
                 modifier = modifier.background(color.gradientBackground()),
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -194,7 +207,7 @@ fun StudySetDetail(
                 }
             }
             when (tabIndex) {
-                0 -> MaterialTabScreen()
+                0 -> MaterialTabScreen(flashCards = flashCards)
                 1 -> ProgressTabScreen()
             }
         }

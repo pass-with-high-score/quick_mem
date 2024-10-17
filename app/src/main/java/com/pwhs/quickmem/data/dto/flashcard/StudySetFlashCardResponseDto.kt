@@ -3,7 +3,7 @@ package com.pwhs.quickmem.data.dto.flashcard
 import com.google.gson.annotations.SerializedName
 import com.pwhs.quickmem.core.data.Rating
 
-data class FlashCardResponseDto(
+data class StudySetFlashCardResponseDto(
     @SerializedName("id")
     val id: String,
     @SerializedName("term")
@@ -16,8 +16,6 @@ data class FlashCardResponseDto(
     val hint: String?,
     @SerializedName("explanation")
     val explanation: String?,
-    @SerializedName("studySetId")
-    val studySetId: String,
     @SerializedName("rating")
     val rating: String = Rating.NOT_STUDIED.name,
     @SerializedName("isStarred")

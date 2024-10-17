@@ -50,7 +50,15 @@ class StudySetDetailViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 title = resource.data!!.title,
-                                color = resource.data.color!!.hexValue.toColor()
+                                description = resource.data.description,
+                                color = resource.data.color!!.hexValue.toColor(),
+                                subject = resource.data.subject!!,
+                                flashCardCount = resource.data.flashCardCount,
+                                flashCards = resource.data.flashcards,
+                                isPublic = resource.data.isPublic,
+                                user = resource.data.user,
+                                createdAt = resource.data.createdAt,
+                                updatedAt = resource.data.updatedAt
                             )
                         }
                     }

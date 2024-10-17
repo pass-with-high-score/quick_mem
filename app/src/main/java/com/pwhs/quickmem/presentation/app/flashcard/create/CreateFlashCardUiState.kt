@@ -1,11 +1,27 @@
 package com.pwhs.quickmem.presentation.app.flashcard.create
 
 import android.net.Uri
+import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
 
 data class CreateFlashCardUiState(
     val studySetId: String = "",
-    val studySetTitle: String = "",
-    val question: String = "",
-    val answer: String = "",
-    val answerImage: Uri? = null,
+    val term: String = "",
+    val definition: String = "",
+    val definitionImageUri: Uri? = null,
+    val definitionImageURL: String = "",
+    val hint: String = "",
+    val showHint: Boolean = false,
+    val explanation: String = "",
+    val showExplanation: Boolean = false,
 )
+
+fun CreateFlashCardUiState.toCreateFlashCardModel(): CreateFlashCardModel {
+    return CreateFlashCardModel(
+        studySetId = studySetId,
+        term = term,
+        definition = definition,
+        definitionImageURL = definitionImageURL,
+        hint = hint,
+        explanation = explanation
+    )
+}

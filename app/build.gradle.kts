@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation("io.github.mr0xf00:easycrop:0.1.1")
     implementation("io.ak1:drawbox:1.0.3")
     implementation("io.ak1:rang-vikalp:1.0.0-alpha02")
     implementation("com.google.accompanist:accompanist-permissions:0.36.0")

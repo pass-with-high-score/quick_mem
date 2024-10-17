@@ -12,10 +12,14 @@ import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
+import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -30,6 +34,13 @@ interface ApiService {
 
     @POST("auth/resend-verification-email")
     suspend fun resendVerificationEmail(@Body resendEmailRequestDto: ResendEmailRequestDto): OtpResponseDto
+
+    @Multipart
+    @POST("upload")
+    suspend fun uploadImage(
+        @Header("Authorization") authToken: String,
+        @Part file: MultipartBody.Part
+    ):  UploadImageResponseDto
 
     @POST("study-set")
     suspend fun createStudySet(

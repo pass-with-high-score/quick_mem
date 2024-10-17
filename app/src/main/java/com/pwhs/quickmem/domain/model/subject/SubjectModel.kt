@@ -5,8 +5,8 @@ import androidx.compose.ui.graphics.Color
 import com.pwhs.quickmem.R
 
 data class SubjectModel(
-    val id: Int,
-    val name: String,
+    val id: Int = 0,
+    val name: String = "",
     @DrawableRes val iconRes: Int? = null,
     val color: Color? = null,
     val description: String? = null,

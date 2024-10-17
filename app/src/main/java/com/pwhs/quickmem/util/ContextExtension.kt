@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -13,12 +15,12 @@ import java.io.IOException
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth")
 
-fun Context.bitmapToUri(bitmap: Bitmap): Uri {
+fun Context.bitmapToUri(bitmap: ImageBitmap): Uri {
     val file = File(this.cacheDir, "image_${System.currentTimeMillis()}.png")
     return try {
         // Save the bitmap to the file
         val outputStream = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        bitmap.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         outputStream.flush()
         outputStream.close()
         // Return the Uri for the file

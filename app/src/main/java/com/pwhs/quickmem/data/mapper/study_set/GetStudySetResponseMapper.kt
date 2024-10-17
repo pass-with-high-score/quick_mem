@@ -3,8 +3,12 @@ package com.pwhs.quickmem.data.mapper.study_set
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.mapper.color.toColorModel
 import com.pwhs.quickmem.data.mapper.color.toColorResponseDto
+import com.pwhs.quickmem.data.mapper.flashcard.toDto
+import com.pwhs.quickmem.data.mapper.flashcard.toModel
 import com.pwhs.quickmem.data.mapper.subject.toSubjectModel
 import com.pwhs.quickmem.data.mapper.subject.toSubjectResponseDto
+import com.pwhs.quickmem.data.mapper.user.toDto
+import com.pwhs.quickmem.data.mapper.user.toModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 
 fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
@@ -17,6 +21,9 @@ fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
     title = title,
     createdAt = createdAt,
     updatedAt = updatedAt,
+    flashCardCount = flashCardCount,
+    flashcards = flashcards.map { it.toModel() },
+    user = user.toModel(),
 )
 
 fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
@@ -29,4 +36,7 @@ fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
     title = title,
     createdAt = createdAt,
     updatedAt = updatedAt,
+    flashCardCount = flashCardCount,
+    flashcards = flashcards.map { it.toDto() },
+    user = user.toDto(),
 )
