@@ -1,9 +1,12 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -31,6 +34,7 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,13 +43,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.detail.material.MaterialTabScreen
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabScreen
 import com.pwhs.quickmem.util.gradientBackground
@@ -95,7 +102,8 @@ fun StudySetDetailScreen(
         title = uiState.title,
         color = uiState.color,
         flashCardCount = uiState.flashCardCount,
-        flashCards = uiState.flashCards
+        flashCards = uiState.flashCards,
+        userResponse = uiState.user
     )
 }
 
@@ -108,6 +116,7 @@ fun StudySetDetail(
     title: String = "",
     color: Color = Color.Blue,
     flashCardCount: Int = 0,
+    userResponse: UserResponseModel = UserResponseModel(),
     flashCards: List<StudySetFlashCardResponseModel> = emptyList()
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -126,12 +135,35 @@ fun StudySetDetail(
                                 color = colorScheme.onSurface
                             )
                         )
-                        Text(
-                            "$flashCardCount flashcards",
-                            style = typography.bodyMedium.copy(
-                                color = colorScheme.secondary
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ){
+                            AsyncImage(
+                                model = userResponse.avatarUrl,
+                                contentDescription = "User Avatar",
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .padding(end = 8.dp)
                             )
-                        )
+                            Text(
+                                userResponse.username,
+                                style = typography.bodyMedium.copy(
+                                    color = colorScheme.secondary
+                                )
+                            )
+                            VerticalDivider(
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .size(16.dp)
+                            )
+                            Text(
+                                "$flashCardCount flashcards",
+                                style = typography.bodyMedium.copy(
+                                    color = colorScheme.secondary
+                                )
+                            )
+                        }
                     }
                 },
                 modifier = modifier.background(color.gradientBackground()),

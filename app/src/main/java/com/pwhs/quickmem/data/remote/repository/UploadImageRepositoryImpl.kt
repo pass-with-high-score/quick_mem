@@ -49,4 +49,11 @@ class UploadImageRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun removeImage(
+        token: String,
+        imageURL: String
+    ): Flow<Resources<UploadImageResponseModel>> {
+        TODO("Not yet implemented")
+    }
 }

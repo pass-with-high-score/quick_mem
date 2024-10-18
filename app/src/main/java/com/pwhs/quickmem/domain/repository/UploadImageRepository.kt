@@ -10,4 +10,9 @@ interface UploadImageRepository {
         token: String,
         imageUri: Uri
     ): Flow<Resources<UploadImageResponseModel>>
+
+    suspend fun removeImage(
+        token: String,
+        imageURL: String
+    ): Flow<Resources<UploadImageResponseModel>>
 }
