@@ -37,6 +37,8 @@ uiTextGoogleFonts = "1.7.2"
 # Retrofit
 retrofit = "2.11.0"
 loggingInterceptor = "4.12.0"
+# PlayServices Ads
+playServicesAds = "23.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -86,6 +88,8 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 #Datastore
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferences" }
+# PlayServices Ads
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 
 [bundles]
 compose = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx", "androidx-activity-compose", "androidx-ui", "androidx-ui-graphics", "androidx-ui-tooling-preview", "androidx-material3", "androidx-material-icons-extended"]

@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.pwhs.quickmem"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.pwhs.quickmem"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -52,6 +52,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging-ktx:24.0.2")
+
+    implementation(libs.play.services.ads)
 
     // Compose
     implementation(libs.bundles.compose)

@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -60,6 +61,7 @@ import com.mr0xf00.easycrop.rememberImageCropper
 import com.mr0xf00.easycrop.rememberImagePicker
 import com.mr0xf00.easycrop.ui.ImageCropperDialog
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
 import com.pwhs.quickmem.util.bitmapToUri
 import com.pwhs.quickmem.util.loadingOverlay
@@ -523,6 +525,15 @@ fun CreateFlashCard(
                     }
                 }
 
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
+                    BannerAds(modifier = Modifier.fillMaxWidth())
+                }
+
             }
 
         }
@@ -554,6 +565,14 @@ fun CreateFlashCard(
                         icon = R.drawable.ic_add,
                         onClick = {
                             onShowExplanationClicked(true)
+                            showBottomSheetSetting = false
+                        },
+                    )
+                    BottomSheetItem(
+                        title = "Draw (to answer)",
+                        icon = R.drawable.ic_art,
+                        onClick = {
+                            //TODO: Draw
                             showBottomSheetSetting = false
                         },
                     )
