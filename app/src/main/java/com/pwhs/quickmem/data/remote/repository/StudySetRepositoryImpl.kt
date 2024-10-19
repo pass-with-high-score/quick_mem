@@ -87,4 +87,20 @@ class StudySetRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun deleteStudySet(
+        token: String,
+        studySetId: String
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.deleteStudySet(token, studySetId)
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

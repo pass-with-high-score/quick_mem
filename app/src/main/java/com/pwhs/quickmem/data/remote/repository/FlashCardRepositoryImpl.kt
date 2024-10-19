@@ -69,7 +69,7 @@ class FlashCardRepositoryImpl @Inject constructor(
                     ToggleStarredFlashCardDto(isStarred)
                 )
                 Timber.d("toggleStarredFlashCard: $response")
-                emit(Resources.Success(null))
+                emit(Resources.Success(Unit))
             } catch (e: HttpException) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

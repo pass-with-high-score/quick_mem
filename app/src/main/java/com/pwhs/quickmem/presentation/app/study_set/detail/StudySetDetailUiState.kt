@@ -18,6 +18,7 @@ data class StudySetDetailUiState(
     val idOfFlashCardSelected: String = "",
     val isPublic: Boolean = false,
     val user: UserResponseModel = UserResponseModel(),
+    val linkShareCode: String = "",
     val createdAt: String = "",
     val updatedAt: String = "",
     val isLoading: Boolean = false,

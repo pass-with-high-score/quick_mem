@@ -37,6 +37,9 @@ data class GetStudySetResponseDto(
     @SerializedName("user")
     val user: UserResponseDto,
 
+    @SerializedName("linkShareCode")
+    val linkShareCode: String? = null,
+
     @SerializedName("createdAt")
     val createdAt: String,
 

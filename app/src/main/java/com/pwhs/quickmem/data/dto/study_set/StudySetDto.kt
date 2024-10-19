@@ -17,6 +17,8 @@ data class StudySetDto(
     val owner: String,
     @SerializedName("isPublic")
     val isPublic: Boolean = false,
+    @SerializedName("linkShareCode")
+    val linkShareCode: String,
     @SerializedName("cards")
     val createdAt: String? = null,
     @SerializedName("cards")

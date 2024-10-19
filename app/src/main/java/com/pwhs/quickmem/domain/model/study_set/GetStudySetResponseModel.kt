@@ -15,6 +15,7 @@ data class GetStudySetResponseModel(
     val color: ColorModel? = null,
     val user: UserResponseModel,
     val flashCardCount: Int,
+    val linkShareCode: String? = null,
     val flashcards: List<StudySetFlashCardResponseModel>,
     val createdAt: String,
     val updatedAt: String,

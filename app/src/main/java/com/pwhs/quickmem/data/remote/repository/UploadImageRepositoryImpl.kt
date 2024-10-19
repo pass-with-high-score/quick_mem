@@ -59,7 +59,7 @@ class UploadImageRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 apiService.deleteImage(token, DeleteImageDto(imageURL))
-                emit(Resources.Success(null))
+                emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.message ?: "An error occurred"))

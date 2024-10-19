@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -47,15 +49,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.detail.material.MaterialTabScreen
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabScreen
+import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -64,6 +70,7 @@ import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScre
 import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import timber.log.Timber
 
@@ -75,6 +82,7 @@ fun StudySetDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: StudySetDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
+    resultNavigator: ResultBackNavigator<Boolean>,
     resultBakFlashCard: ResultRecipient<CreateFlashCardScreenDestination, Boolean>,
     resultEditStudySet: ResultRecipient<EditStudySetScreenDestination, Boolean>,
     resultEditFlashCard: ResultRecipient<EditFlashCardScreenDestination, Boolean>
@@ -155,12 +163,19 @@ fun StudySetDetailScreen(
                         )
                     )
                 }
+
+                StudySetDetailUiEvent.StudySetDeleted -> {
+                    Timber.d("StudySetDeleted")
+                    resultNavigator.setResult(true)
+                    navigator.navigateUp()
+                }
             }
         }
     }
     StudySetDetail(
         modifier = modifier,
         onNavigateBack = {
+            resultNavigator.setResult(true)
             navigator.navigateUp()
         },
         onAddFlashcard = {
@@ -190,6 +205,10 @@ fun StudySetDetailScreen(
         },
         onEditStudySet = {
             viewModel.onEvent(StudySetDetailUiAction.OnEditStudySetClicked)
+        },
+        linkShareCode = uiState.linkShareCode,
+        onDeleteStudySet = {
+            viewModel.onEvent(StudySetDetailUiAction.OnDeleteStudySetClicked)
         }
     )
 }
@@ -201,6 +220,7 @@ fun StudySetDetail(
     onNavigateBack: () -> Unit = {},
     onAddFlashcard: () -> Unit = {},
     title: String = "",
+    linkShareCode: String = "",
     color: Color = Color.Blue,
     flashCardCount: Int = 0,
     userResponse: UserResponseModel = UserResponseModel(),
@@ -209,12 +229,15 @@ fun StudySetDetail(
     onDeleteFlashCard: () -> Unit = {},
     onEditFlashCard: () -> Unit = {},
     onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> },
-    onEditStudySet: () -> Unit = {}
+    onEditStudySet: () -> Unit = {},
+    onDeleteStudySet: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Material", "Progress")
     var showMoreBottomSheet by remember { mutableStateOf(false) }
     val sheetShowMoreState = rememberModalBottomSheetState()
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
@@ -225,7 +248,9 @@ fun StudySetDetail(
                             title, style = typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = colorScheme.onSurface
-                            )
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -279,10 +304,19 @@ fun StudySetDetail(
                 },
                 actions = {
                     IconButton(
-                        onClick = { }
+                        onClick = {
+                            val link = AppConstant.BASE_URL + "study-set/share/" + linkShareCode
+                            val text = "Check out this study set: $title\n$link"
+                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                putExtra(Intent.EXTRA_TEXT, text)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            context.startActivity(shareIntent)
+                        }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.IosShare,
+                            imageVector = Default.IosShare,
                             contentDescription = "Share"
                         )
                     }
@@ -290,7 +324,7 @@ fun StudySetDetail(
                         onClick = onAddFlashcard
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
+                            imageVector = Default.Add,
                             contentDescription = "Add"
                         )
                     }
@@ -300,7 +334,7 @@ fun StudySetDetail(
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.MoreVert,
+                            imageVector = Default.MoreVert,
                             contentDescription = "More"
                         )
                     }
@@ -351,7 +385,8 @@ fun StudySetDetail(
                     onFlashCardClick = onFlashCardClick,
                     onDeleteFlashCardClick = onDeleteFlashCard,
                     onToggleStarClick = onToggleStarredFlashCard,
-                    onEditFlashCardClick = onEditFlashCard
+                    onEditFlashCardClick = onEditFlashCard,
+                    onAddFlashCardClick = onAddFlashcard
                 )
 
                 1 -> ProgressTabScreen()
@@ -401,13 +436,29 @@ fun StudySetDetail(
                     title = "Set info"
                 )
                 ItemMenuBottomSheet(
-                    onClick = { },
-                    icon = Icons.Default.DeleteOutline,
+                    onClick = {
+                        showDeleteConfirmationDialog = true
+                        showMoreBottomSheet = false
+                    },
+                    icon = Default.DeleteOutline,
                     title = "Delete study set",
                     color = Color.Red
                 )
             }
         }
+    }
+    if (showDeleteConfirmationDialog) {
+        QuickMemAlertDialog(
+            onDismissRequest = { showDeleteConfirmationDialog = false },
+            onConfirm = {
+                onDeleteStudySet()
+                showDeleteConfirmationDialog = false
+            },
+            title = "Delete Study Set",
+            text = "Are you sure you want to delete this study set?",
+            confirmButtonTitle = "Delete",
+            dismissButtonTitle = "Cancel",
+        )
     }
 }
 

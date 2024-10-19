@@ -24,6 +24,7 @@ fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
     flashCardCount = flashCardCount,
     flashcards = flashcards.map { it.toModel() },
     user = user.toModel(),
+    linkShareCode = linkShareCode,
 )
 
 fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
@@ -39,4 +40,5 @@ fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
     flashCardCount = flashCardCount,
     flashcards = flashcards.map { it.toDto() },
     user = user.toDto(),
+    linkShareCode = linkShareCode,
 )

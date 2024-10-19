@@ -58,6 +58,7 @@ fun MaterialTabScreen(
     onDeleteFlashCardClick: () -> Unit = {},
     onEditFlashCardClick: () -> Unit = {},
     onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
+    onAddFlashCardClick: () -> Unit = {},
 ) {
     var menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
@@ -93,7 +94,7 @@ fun MaterialTabScreen(
                             ),
                         )
                         Button(
-                            onClick = {},
+                            onClick = onAddFlashCardClick,
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Row(

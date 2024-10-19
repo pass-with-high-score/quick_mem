@@ -69,6 +69,11 @@ class StudySetDetailViewModel @Inject constructor(
                 Timber.d("OnNavigateToEditFlashCardClicked")
                 _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditFlashCard)
             }
+
+            StudySetDetailUiAction.OnDeleteStudySetClicked -> {
+                Timber.d("OnDeleteStudySetClicked")
+                deleteStudySet()
+            }
         }
     }
 
@@ -95,6 +100,7 @@ class StudySetDetailViewModel @Inject constructor(
                                 createdAt = resource.data.createdAt,
                                 updatedAt = resource.data.updatedAt,
                                 colorModel = resource.data.color,
+                                linkShareCode = resource.data.linkShareCode ?: ""
                             )
                         }
                     }
@@ -146,6 +152,28 @@ class StudySetDetailViewModel @Inject constructor(
 
                         is Resources.Success -> {
                             _uiEvent.send(StudySetDetailUiEvent.FlashCardStarred)
+                        }
+
+                        is Resources.Error -> {
+                            Timber.d("Error")
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun deleteStudySet() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            studySetRepository.deleteStudySet(token, _uiState.value.id)
+                .collect { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                        }
+
+                        is Resources.Success -> {
+                            _uiEvent.send(StudySetDetailUiEvent.StudySetDeleted)
                         }
 
                         is Resources.Error -> {

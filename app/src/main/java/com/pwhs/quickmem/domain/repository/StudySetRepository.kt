@@ -29,4 +29,9 @@ interface StudySetRepository {
         studySetId: String,
         updateStudySetRequestModel: UpdateStudySetRequestModel
     ): Flow<Resources<UpdateStudySetResponseModel>>
+
+    suspend fun deleteStudySet(
+        token: String,
+        studySetId: String
+    ): Flow<Resources<Unit>>
 }

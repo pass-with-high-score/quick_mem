@@ -81,6 +81,12 @@ interface ApiService {
         @Body updateStudySetRequestDto: UpdateStudySetRequestDto
     ): UpdateStudySetResponseDto
 
+    @DELETE("study-set/{id}")
+    suspend fun deleteStudySet(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
     @POST("flashcard")
     suspend fun createFlashCard(
         @Header("Authorization") token: String,

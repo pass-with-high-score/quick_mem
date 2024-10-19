@@ -7,6 +7,7 @@ data class StudySetModel(
     val subject: String?,
     val color: String,
     val owner: String,
+    val linkShareCode: String,
     val isPublic: Boolean = false,
     val createdAt: String? = null,
     val updatedAt: String? = null

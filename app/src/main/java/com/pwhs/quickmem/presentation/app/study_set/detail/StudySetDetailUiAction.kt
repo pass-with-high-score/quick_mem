@@ -8,4 +8,5 @@ sealed class StudySetDetailUiAction {
         StudySetDetailUiAction()
     data object OnEditStudySetClicked : StudySetDetailUiAction()
     data object OnEditFlashCardClicked : StudySetDetailUiAction()
+    data object OnDeleteStudySetClicked : StudySetDetailUiAction()
 }
