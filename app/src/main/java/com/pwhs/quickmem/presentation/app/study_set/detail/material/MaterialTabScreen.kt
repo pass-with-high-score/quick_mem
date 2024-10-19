@@ -16,8 +16,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
+import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,25 +43,31 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.detail.ItemMenuBottomSheet
+import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MaterialTabScreen(
     modifier: Modifier = Modifier,
-    flashCards: List<StudySetFlashCardResponseModel> = emptyList()
+    flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
+    onFlashCardClick: (String) -> Unit = {},
+    onDeleteFlashCardClick: () -> Unit = {},
 ) {
     val listState = rememberLazyListState()
     val totalIndicators = 5
     var currentVisibleIndex by remember { mutableIntStateOf(0) }
     var menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
+    var showAlertDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
@@ -221,6 +231,7 @@ fun MaterialTabScreen(
                                 onStarClick = {},
                                 onMenuClick = {
                                     showMenu = true
+                                    onFlashCardClick(flashCards.id)
                                 }
                             )
                         }
@@ -238,10 +249,39 @@ fun MaterialTabScreen(
                 }
             ) {
                 Column {
-                    Text("Edit")
-                    Text("Delete")
+                    ItemMenuBottomSheet(
+                        onClick = { },
+                        icon = Outlined.Edit,
+                        title = "Edit"
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = {
+                            showAlertDialog = true
+                            showMenu = false
+                        },
+                        icon = Default.DeleteOutline,
+                        title = "Delete",
+                        color = Color.Red,
+                    )
                 }
             }
+        }
+
+        if (showAlertDialog) {
+            QuickMemAlertDialog(
+                onDismissRequest = {
+                    showAlertDialog = false
+                },
+                onConfirm = {
+                    showAlertDialog = false
+                    onDeleteFlashCardClick()
+                },
+                title = "Delete Flashcard",
+                text = "Are you sure you want to delete this flashcard?",
+                confirmButtonTitle = "Delete",
+                dismissButtonTitle = "Cancel",
+                buttonColor = colorScheme.error,
+            )
         }
     }
 }

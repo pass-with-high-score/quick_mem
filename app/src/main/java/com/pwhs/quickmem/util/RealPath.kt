@@ -1,58 +1,17 @@
 package com.pwhs.quickmem.util
 
-import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import androidx.loader.content.CursorLoader
 
 object RealPathUtil {
 
-    fun getRealPath(context: Context, fileUri: Uri): String? {
-        return when {
-            Build.VERSION.SDK_INT < 11 -> getRealPathFromURI_BelowAPI11(context, fileUri)
-            Build.VERSION.SDK_INT < 19 -> getRealPathFromURI_API11to18(context, fileUri)
-            else -> getRealPathFromURI_API19(context, fileUri)
-        }
-    }
+    fun getRealPath(context: Context, uri: Uri): String? {
 
-    @SuppressLint("NewApi")
-    fun getRealPathFromURI_API11to18(context: Context, contentUri: Uri): String? {
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        var result: String? = null
-
-        val cursorLoader = CursorLoader(context, contentUri, proj, null, null, null)
-        val cursor = cursorLoader.loadInBackground()
-
-        cursor?.use {
-            val column_index = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            it.moveToFirst()
-            result = it.getString(column_index)
-        }
-        return result
-    }
-
-    fun getRealPathFromURI_BelowAPI11(context: Context, contentUri: Uri): String? {
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context.contentResolver.query(contentUri, proj, null, null, null)
-        var result = ""
-        cursor?.use {
-            val column_index = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            it.moveToFirst()
-            result = it.getString(column_index)
-        }
-        return result
-    }
-
-    @SuppressLint("NewApi")
-    fun getRealPathFromURI_API19(context: Context, uri: Uri): String? {
-        val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+        if (DocumentsContract.isDocumentUri(context, uri)) {
             if (isExternalStorageDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":")

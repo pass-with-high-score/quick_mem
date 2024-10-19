@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
@@ -16,7 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -48,11 +48,11 @@ fun CardDetail(
             modifier = Modifier.padding(16.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = CenterVertically
             ) {
                 Text(text = front, modifier = Modifier.weight(1f))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = CenterVertically
                 ) {
                     IconButton(
                         onClick = {
@@ -69,7 +69,7 @@ fun CardDetail(
                         onClick = onStarClick
                     ) {
                         Icon(
-                            imageVector = if (isStarred) Icons.Default.Star else Icons.Default.StarBorder,
+                            imageVector = if (isStarred) Default.Star else Default.StarBorder,
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                         )
@@ -98,7 +98,7 @@ fun CardDetail(
                         onClick = onMenuClick,
                         modifier = Modifier.size(24.dp)
                     ) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                        Icon(Default.MoreHoriz, contentDescription = "More options")
                     }
                 }
             }

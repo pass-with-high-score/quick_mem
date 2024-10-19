@@ -10,4 +10,9 @@ interface FlashCardRepository {
         token: String,
         createFlashCardModel: CreateFlashCardModel
     ): Flow<Resources<FlashCardResponseModel>>
+
+    suspend fun deleteFlashCard(
+        token: String,
+        id: String
+    ): Flow<Resources<Unit>>
 }

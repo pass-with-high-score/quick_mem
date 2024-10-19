@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -62,6 +63,7 @@ import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardSc
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import timber.log.Timber
 
 @Destination<RootGraph>(
     navArgs = StudySetDetailArgs::class
@@ -86,6 +88,17 @@ fun StudySetDetailScreen(
         }
 
     }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                StudySetDetailUiEvent.FlashCardDeleted -> {
+                    Timber.d("FlashCardDeleted")
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
     StudySetDetail(
         modifier = modifier,
         onNavigateBack = {
@@ -103,7 +116,13 @@ fun StudySetDetailScreen(
         color = uiState.color,
         flashCardCount = uiState.flashCardCount,
         flashCards = uiState.flashCards,
-        userResponse = uiState.user
+        userResponse = uiState.user,
+        onFlashCardClick = { id ->
+            viewModel.onEvent(StudySetDetailUiAction.OnIdOfFlashCardSelectedChanged(id))
+        },
+        onDeleteFlashCard = {
+            viewModel.onEvent(StudySetDetailUiAction.OnDeleteFlashCardClicked)
+        }
     )
 }
 
@@ -117,7 +136,9 @@ fun StudySetDetail(
     color: Color = Color.Blue,
     flashCardCount: Int = 0,
     userResponse: UserResponseModel = UserResponseModel(),
-    flashCards: List<StudySetFlashCardResponseModel> = emptyList()
+    flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
+    onFlashCardClick: (String) -> Unit = {},
+    onDeleteFlashCard: () -> Unit = {}
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Material", "Progress")
@@ -135,10 +156,10 @@ fun StudySetDetail(
                                 color = colorScheme.onSurface
                             )
                         )
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Start
-                        ){
+                        ) {
                             AsyncImage(
                                 model = userResponse.avatarUrl,
                                 contentDescription = "User Avatar",
@@ -254,7 +275,12 @@ fun StudySetDetail(
                 }
             }
             when (tabIndex) {
-                0 -> MaterialTabScreen(flashCards = flashCards)
+                0 -> MaterialTabScreen(
+                    flashCards = flashCards,
+                    onFlashCardClick = onFlashCardClick,
+                    onDeleteFlashCardClick = onDeleteFlashCard
+                )
+
                 1 -> ProgressTabScreen()
             }
         }

@@ -13,6 +13,7 @@ data class StudySetDetailUiState(
     val subject: SubjectModel = SubjectModel(),
     val flashCardCount: Int = 0,
     val flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
+    val idOfFlashCardSelected: String = "",
     val isPublic: Boolean = false,
     val user: UserResponseModel = UserResponseModel(),
     val createdAt: String = "",

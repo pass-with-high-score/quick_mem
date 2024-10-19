@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class StudySetDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val studySetRepository: StudySetRepository,
+    private val flashCardRepository: FlashCardRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(StudySetDetailUiState())
@@ -41,6 +43,16 @@ class StudySetDetailViewModel @Inject constructor(
         when (event) {
             is StudySetDetailUiAction.Refresh -> {
                 getStudySetById(_uiState.value.id)
+            }
+
+            is StudySetDetailUiAction.OnIdOfFlashCardSelectedChanged -> {
+                Timber.d("OnIdOfFlashCardSelectedChanged: ${event.id}")
+                _uiState.update { it.copy(idOfFlashCardSelected = event.id) }
+            }
+
+            StudySetDetailUiAction.OnDeleteFlashCardClicked -> {
+                Timber.d("OnDeleteFlashCardClicked")
+                deleteFlashCard()
             }
         }
     }
@@ -77,6 +89,28 @@ class StudySetDetailViewModel @Inject constructor(
                 }
 
             }
+        }
+    }
+
+    private fun deleteFlashCard() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            flashCardRepository.deleteFlashCard(token, _uiState.value.idOfFlashCardSelected)
+                .collect { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                        }
+
+                        is Resources.Success -> {
+                            _uiEvent.send(StudySetDetailUiEvent.FlashCardDeleted)
+                        }
+
+                        is Resources.Error -> {
+                            Timber.d("Error")
+                        }
+                    }
+                }
         }
     }
 }

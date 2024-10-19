@@ -15,6 +15,7 @@ import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import okhttp3.MultipartBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -40,7 +41,7 @@ interface ApiService {
     suspend fun uploadImage(
         @Header("Authorization") authToken: String,
         @Part flashcard: MultipartBody.Part
-    ):  UploadImageResponseDto
+    ): UploadImageResponseDto
 
     @POST("study-set")
     suspend fun createStudySet(
@@ -65,4 +66,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body createFlashCardDto: CreateFlashCardDto
     ): FlashCardResponseDto
+
+    @DELETE("flashcard/{id}")
+    suspend fun deleteFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
 }
