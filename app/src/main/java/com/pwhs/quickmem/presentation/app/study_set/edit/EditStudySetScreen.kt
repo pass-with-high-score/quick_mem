@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.create
+package com.pwhs.quickmem.presentation.app.study_set.edit
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -64,15 +64,18 @@ import com.pwhs.quickmem.util.loadingOverlay
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
-@Destination<RootGraph>
+@Destination<RootGraph>(
+    navArgs = EditStudySetScreenArgs::class
+)
 @Composable
-fun CreateStudySetScreen(
+fun EditStudySetScreen(
     modifier: Modifier = Modifier,
-    viewModel: CreateStudySetViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    viewModel: EditStudySetViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator,
+    resultNavigator: ResultBackNavigator<Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -83,24 +86,22 @@ fun CreateStudySetScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                CreateStudySetUiEvent.None -> {
-                    showLoading = false
-                }
+                EditStudySetUiEvent.None -> TODO()
 
-                is CreateStudySetUiEvent.ShowError -> {
+                is EditStudySetUiEvent.ShowError -> {
                     showLoading = false
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
 
-                CreateStudySetUiEvent.ShowLoading -> {
+                EditStudySetUiEvent.ShowLoading -> {
                     showLoading = true
                 }
 
-                is CreateStudySetUiEvent.StudySetCreated -> {
+                is EditStudySetUiEvent.StudySetCreated -> {
                     showLoading = false
                     Toast.makeText(context, "Study Set Created", Toast.LENGTH_SHORT).show()
-                    navigator.navigateUp()
-                    navigator.navigate(StudySetDetailScreenDestination(id = event.id))
+                    resultNavigator.setResult(true)
+                    navigator.popBackStack()
                 }
             }
         }
@@ -110,14 +111,14 @@ fun CreateStudySetScreen(
         modifier = modifier.loadingOverlay(showLoading),
         title = uiState.title,
         titleError = uiState.titleError,
-        onTitleChange = { viewModel.onEvent(CreateStudySetUiAction.NameChanged(it)) },
+        onTitleChange = { viewModel.onEvent(EditStudySetUiAction.NameChanged(it)) },
         subjectModel = uiState.subjectModel,
-        onSubjectChange = { viewModel.onEvent(CreateStudySetUiAction.SubjectChanged(it)) },
+        onSubjectChange = { viewModel.onEvent(EditStudySetUiAction.SubjectChanged(it)) },
         colorModel = uiState.colorModel,
-        onColorChange = { viewModel.onEvent(CreateStudySetUiAction.ColorChanged(it)) },
+        onColorChange = { viewModel.onEvent(EditStudySetUiAction.ColorChanged(it)) },
         isPublic = uiState.isPublic,
-        onIsPublicChange = { viewModel.onEvent(CreateStudySetUiAction.PublicChanged(it)) },
-        onDoneClick = { viewModel.onEvent(CreateStudySetUiAction.SaveClicked) },
+        onIsPublicChange = { viewModel.onEvent(EditStudySetUiAction.PublicChanged(it)) },
+        onDoneClick = { viewModel.onEvent(EditStudySetUiAction.SaveClicked) },
         onNavigateBack = { navigator.popBackStack() }
     )
 }

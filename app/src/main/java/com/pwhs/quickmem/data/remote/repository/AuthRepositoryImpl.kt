@@ -1,10 +1,10 @@
 package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
 import com.pwhs.quickmem.data.remote.ApiService
-import com.pwhs.quickmem.data.remote.EmailRequestDto
 import com.pwhs.quickmem.data.remote.EmailService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel

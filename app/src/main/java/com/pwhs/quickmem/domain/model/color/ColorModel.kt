@@ -3,9 +3,9 @@ package com.pwhs.quickmem.domain.model.color
 import androidx.compose.ui.graphics.Color
 
 data class ColorModel(
-    val id: Int,
-    val name: String,
-    val hexValue: String,
+    val id: Int = 0,
+    val name: String = "",
+    val hexValue: String = "",
     val createdAt: String? = null,
     val updatedAt: String? = null
 ) {

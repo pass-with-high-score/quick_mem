@@ -60,6 +60,7 @@ import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -73,11 +74,12 @@ fun StudySetDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: StudySetDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    resultBackNavigator: ResultRecipient<CreateFlashCardScreenDestination, Boolean>
+    resultBakFlashCard: ResultRecipient<CreateFlashCardScreenDestination, Boolean>,
+    resultEditFlashCard: ResultRecipient<EditStudySetScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    resultBackNavigator.onNavResult { result ->
+    resultBakFlashCard.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {}
             is NavResult.Value -> {
@@ -87,6 +89,17 @@ fun StudySetDetailScreen(
             }
         }
 
+    }
+
+    resultEditFlashCard.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
     }
 
     LaunchedEffect(key1 = true) {
@@ -100,6 +113,19 @@ fun StudySetDetailScreen(
                 StudySetDetailUiEvent.FlashCardStarred -> {
                     Timber.d("FlashCardStarred")
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+
+                StudySetDetailUiEvent.NavigateToEditStudySet -> {
+                    Timber.d("${uiState.id} ${uiState.title} ${uiState.subject.id} ${uiState.colorModel.id} ${uiState.isPublic}")
+                    navigator.navigate(
+                        EditStudySetScreenDestination(
+                            studySetId = uiState.id,
+                            studySetTitle = uiState.title,
+                            studySetSubjectId = uiState.subject.id,
+                            studySetColorId = uiState.colorModel.id,
+                            studySetIsPublic = uiState.isPublic
+                        )
+                    )
                 }
             }
         }
@@ -130,6 +156,9 @@ fun StudySetDetailScreen(
         },
         onToggleStarredFlashCard = { id, isStarred ->
             viewModel.onEvent(StudySetDetailUiAction.OnStarFlashCardClicked(id, isStarred))
+        },
+        onEditStudySet = {
+            viewModel.onEvent(StudySetDetailUiAction.OnEditStudySetClicked)
         }
     )
 }
@@ -147,7 +176,8 @@ fun StudySetDetail(
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     onFlashCardClick: (String) -> Unit = {},
     onDeleteFlashCard: () -> Unit = {},
-    onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> }
+    onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> },
+    onEditStudySet: () -> Unit = {}
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Material", "Progress")
@@ -305,7 +335,10 @@ fun StudySetDetail(
                     .fillMaxWidth()
             ) {
                 ItemMenuBottomSheet(
-                    onClick = { },
+                    onClick = {
+                        onEditStudySet()
+                        showMoreBottomSheet = false
+                    },
                     icon = Icons.Outlined.Edit,
                     title = "Edit"
                 )

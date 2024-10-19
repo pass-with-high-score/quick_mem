@@ -59,6 +59,11 @@ class StudySetDetailViewModel @Inject constructor(
                 Timber.d("OnStarFlashCardClicked: ${event.isStarred}")
                 toggleStarredFlashCard(event.id, event.isStarred)
             }
+
+            StudySetDetailUiAction.OnEditStudySetClicked -> {
+                Timber.d("OnNavigateToEditFlashCardClicked")
+                _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditStudySet)
+            }
         }
     }
 
@@ -83,7 +88,8 @@ class StudySetDetailViewModel @Inject constructor(
                                 isPublic = resource.data.isPublic,
                                 user = resource.data.user,
                                 createdAt = resource.data.createdAt,
-                                updatedAt = resource.data.updatedAt
+                                updatedAt = resource.data.updatedAt,
+                                colorModel = resource.data.color,
                             )
                         }
                     }

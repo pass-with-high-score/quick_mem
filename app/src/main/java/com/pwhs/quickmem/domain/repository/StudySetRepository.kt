@@ -4,6 +4,8 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
+import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
 import kotlinx.coroutines.flow.Flow
 
 interface StudySetRepository {
@@ -21,4 +23,10 @@ interface StudySetRepository {
         token: String,
         ownerId: String
     ): Flow<Resources<List<GetStudySetResponseModel>>>
+
+    suspend fun updateStudySet(
+        token: String,
+        studySetId: String,
+        updateStudySetRequestModel: UpdateStudySetRequestModel
+    ): Flow<Resources<UpdateStudySetResponseModel>>
 }

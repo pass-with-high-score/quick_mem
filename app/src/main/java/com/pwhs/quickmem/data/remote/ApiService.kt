@@ -13,6 +13,8 @@ import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
+import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
+import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -62,6 +64,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("ownerId") ownerId: String
     ): List<GetStudySetResponseDto>
+
+    @PATCH("study-set/{id}")
+    suspend fun updateStudySet(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body updateStudySetRequestDto: UpdateStudySetRequestDto
+    ): UpdateStudySetResponseDto
 
     @POST("flashcard")
     suspend fun createFlashCard(

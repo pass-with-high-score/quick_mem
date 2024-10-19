@@ -2,12 +2,16 @@ package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
+import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
+import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
+import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -59,6 +63,24 @@ class StudySetRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.getStudySetsByOwnerId(token, ownerId)
                 emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateStudySet(
+        token: String,
+        studySetId: String,
+        updateStudySetRequestModel: UpdateStudySetRequestModel
+    ): Flow<Resources<UpdateStudySetResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response =
+                    apiService.updateStudySet(token, studySetId, updateStudySetRequestModel.toDto())
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

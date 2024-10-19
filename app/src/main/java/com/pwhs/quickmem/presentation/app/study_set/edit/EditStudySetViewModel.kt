@@ -1,11 +1,14 @@
-package com.pwhs.quickmem.presentation.app.study_set.create
+package com.pwhs.quickmem.presentation.app.study_set.edit
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
+import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -19,32 +22,50 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateStudySetViewModel @Inject constructor(
+class EditStudySetViewModel @Inject constructor(
     private val studySetRepository: StudySetRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(CreateStudySetUiState())
+    private val _uiState = MutableStateFlow(EditStudySetUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<CreateStudySetUiEvent>()
+    private val _uiEvent = Channel<EditStudySetUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun onEvent(event: CreateStudySetUiAction) {
+    init {
+        val studySetId: String = savedStateHandle["studySetId"] ?: ""
+        val studySetTitle = savedStateHandle["studySetTitle"] ?: ""
+        val studySetSubjectId: Int = savedStateHandle["studySetSubjectId"] ?: 1
+        val studySetColorId: Int = savedStateHandle["studySetColorId"] ?: 1
+        val studySetIsPublic: Boolean = savedStateHandle["studySetIsPublic"] ?: false
+        _uiState.update {
+            it.copy(
+                id = studySetId,
+                title = studySetTitle,
+                subjectModel = SubjectModel.defaultSubjects.first { it.id == studySetSubjectId },
+                colorModel = ColorModel.defaultColors.first { it.id == studySetColorId },
+                isPublic = studySetIsPublic
+            )
+        }
+    }
+
+    fun onEvent(event: EditStudySetUiAction) {
         when (event) {
-            is CreateStudySetUiAction.ColorChanged -> {
+            is EditStudySetUiAction.ColorChanged -> {
                 _uiState.update {
                     it.copy(colorModel = event.colorModel)
                 }
             }
 
-            is CreateStudySetUiAction.PublicChanged -> {
+            is EditStudySetUiAction.PublicChanged -> {
                 _uiState.update {
                     it.copy(isPublic = event.isPublic)
                 }
             }
 
-            is CreateStudySetUiAction.SaveClicked -> {
+            is EditStudySetUiAction.SaveClicked -> {
                 val uiState = _uiState.value
                 if (uiState.title.isEmpty()) {
                     _uiState.update {
@@ -56,9 +77,10 @@ class CreateStudySetViewModel @Inject constructor(
                         it.copy(titleError = "")
                     }
                 }
+
                 viewModelScope.launch {
                     val ownerId = appManager.userId.firstOrNull { true } ?: ""
-                    val createStudySetRequestModel = CreateStudySetRequestModel(
+                    val updateStudySetRequestModel = UpdateStudySetRequestModel(
                         title = uiState.title,
                         subjectId = uiState.subjectModel.id,
                         colorId = uiState.colorModel.id,
@@ -66,34 +88,35 @@ class CreateStudySetViewModel @Inject constructor(
                         description = "",
                         ownerId = ownerId
                     )
-                    studySetRepository.createStudySet(
+                    studySetRepository.updateStudySet(
                         token = tokenManager.accessToken.firstOrNull { true } ?: "",
-                        createStudySetRequestModel
+                        studySetId = uiState.id,
+                        updateStudySetRequestModel
                     ).collectLatest { resource ->
                         when (resource) {
                             is Resources.Loading -> {
-                                _uiEvent.send(CreateStudySetUiEvent.ShowLoading)
+                                _uiEvent.send(EditStudySetUiEvent.ShowLoading)
                             }
 
                             is Resources.Success -> {
-                                _uiEvent.send(CreateStudySetUiEvent.StudySetCreated(resource.data!!.id))
+                                _uiEvent.send(EditStudySetUiEvent.StudySetCreated(resource.data!!.id))
                             }
 
                             is Resources.Error -> {
-                                _uiEvent.send(CreateStudySetUiEvent.ShowError(resource.message!!))
+                                _uiEvent.send(EditStudySetUiEvent.ShowError(resource.message!!))
                             }
                         }
                     }
                 }
             }
 
-            is CreateStudySetUiAction.SubjectChanged -> {
+            is EditStudySetUiAction.SubjectChanged -> {
                 _uiState.update {
                     it.copy(subjectModel = event.subjectModel)
                 }
             }
 
-            is CreateStudySetUiAction.NameChanged -> {
+            is EditStudySetUiAction.NameChanged -> {
                 _uiState.update {
                     it.copy(title = event.name)
                 }
