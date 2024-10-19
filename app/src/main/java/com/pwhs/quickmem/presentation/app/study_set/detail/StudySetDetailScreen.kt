@@ -96,6 +96,11 @@ fun StudySetDetailScreen(
                     Timber.d("FlashCardDeleted")
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
+
+                StudySetDetailUiEvent.FlashCardStarred -> {
+                    Timber.d("FlashCardStarred")
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
             }
         }
     }
@@ -122,6 +127,9 @@ fun StudySetDetailScreen(
         },
         onDeleteFlashCard = {
             viewModel.onEvent(StudySetDetailUiAction.OnDeleteFlashCardClicked)
+        },
+        onToggleStarredFlashCard = { id, isStarred ->
+            viewModel.onEvent(StudySetDetailUiAction.OnStarFlashCardClicked(id, isStarred))
         }
     )
 }
@@ -138,7 +146,8 @@ fun StudySetDetail(
     userResponse: UserResponseModel = UserResponseModel(),
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     onFlashCardClick: (String) -> Unit = {},
-    onDeleteFlashCard: () -> Unit = {}
+    onDeleteFlashCard: () -> Unit = {},
+    onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> }
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Material", "Progress")
@@ -278,7 +287,8 @@ fun StudySetDetail(
                 0 -> MaterialTabScreen(
                     flashCards = flashCards,
                     onFlashCardClick = onFlashCardClick,
-                    onDeleteFlashCardClick = onDeleteFlashCard
+                    onDeleteFlashCardClick = onDeleteFlashCard,
+                    onToggleStarClick = onToggleStarredFlashCard
                 )
 
                 1 -> ProgressTabScreen()

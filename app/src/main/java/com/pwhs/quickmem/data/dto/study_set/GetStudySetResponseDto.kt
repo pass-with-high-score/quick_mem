@@ -23,7 +23,7 @@ data class GetStudySetResponseDto(
     val flashCardCount: Int,
 
     @SerializedName("flashcards")
-    val flashcards: List<StudySetFlashCardResponseDto>,
+    var flashcards: List<StudySetFlashCardResponseDto>,
 
     @SerializedName("ownerId")
     val ownerId: String,

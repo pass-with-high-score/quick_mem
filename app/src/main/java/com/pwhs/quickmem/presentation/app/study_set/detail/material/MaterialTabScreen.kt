@@ -61,6 +61,7 @@ fun MaterialTabScreen(
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     onFlashCardClick: (String) -> Unit = {},
     onDeleteFlashCardClick: () -> Unit = {},
+    onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
 ) {
     val listState = rememberLazyListState()
     val totalIndicators = 5
@@ -228,7 +229,9 @@ fun MaterialTabScreen(
                                 back = flashCards.definition,
                                 isStarred = flashCards.isStarred,
                                 imageURL = flashCards.definitionImageURL,
-                                onStarClick = {},
+                                onToggleStarClick = { isStarred ->
+                                    onToggleStarClick(flashCards.id, isStarred)
+                                },
                                 onMenuClick = {
                                     showMenu = true
                                     onFlashCardClick(flashCards.id)

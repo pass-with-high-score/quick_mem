@@ -54,6 +54,11 @@ class StudySetDetailViewModel @Inject constructor(
                 Timber.d("OnDeleteFlashCardClicked")
                 deleteFlashCard()
             }
+
+            is StudySetDetailUiAction.OnStarFlashCardClicked -> {
+                Timber.d("OnStarFlashCardClicked: ${event.isStarred}")
+                toggleStarredFlashCard(event.id, event.isStarred)
+            }
         }
     }
 
@@ -104,6 +109,32 @@ class StudySetDetailViewModel @Inject constructor(
 
                         is Resources.Success -> {
                             _uiEvent.send(StudySetDetailUiEvent.FlashCardDeleted)
+                        }
+
+                        is Resources.Error -> {
+                            Timber.d("Error")
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun toggleStarredFlashCard(id: String, isStarred: Boolean) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            flashCardRepository.toggleStarredFlashCard(
+                token,
+                id,
+                isStarred
+            )
+                .collect { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                        }
+
+                        is Resources.Success -> {
+                            _uiEvent.send(StudySetDetailUiEvent.FlashCardStarred)
                         }
 
                         is Resources.Error -> {

@@ -28,10 +28,11 @@ import com.pwhs.quickmem.R
 @Composable
 fun CardDetail(
     modifier: Modifier = Modifier,
+    id: String = "",
     front: String = "",
     back: String = "",
     isStarred: Boolean = true,
-    onStarClick: () -> Unit,
+    onToggleStarClick: (Boolean) -> Unit = { },
     onMenuClick: () -> Unit = {},
     imageURL: String? = null
 ) {
@@ -62,11 +63,11 @@ fun CardDetail(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_sound),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                     IconButton(
-                        onClick = onStarClick
+                        onClick = { onToggleStarClick(!isStarred) }
                     ) {
                         Icon(
                             imageVector = if (isStarred) Default.Star else Default.StarBorder,

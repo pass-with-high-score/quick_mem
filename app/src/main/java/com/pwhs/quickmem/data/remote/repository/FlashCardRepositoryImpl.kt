@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.mapper.flashcard.toDto
 import com.pwhs.quickmem.data.mapper.flashcard.toModel
 import com.pwhs.quickmem.data.remote.ApiService
@@ -43,6 +44,30 @@ class FlashCardRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.deleteFlashCard(token, id)
                 Timber.d("deleteFlashCard: $response")
+                emit(Resources.Success(null))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun toggleStarredFlashCard(
+        token: String,
+        id: String,
+        isStarred: Boolean
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading(true))
+            try {
+                val response = apiService.toggleStarredFlashCard(
+                    token, id,
+                    ToggleStarredFlashCardDto(isStarred)
+                )
+                Timber.d("toggleStarredFlashCard: $response")
                 emit(Resources.Success(null))
             } catch (e: HttpException) {
                 Timber.e(e)
