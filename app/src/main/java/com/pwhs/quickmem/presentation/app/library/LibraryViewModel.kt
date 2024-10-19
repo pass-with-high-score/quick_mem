@@ -32,6 +32,14 @@ class LibraryViewModel @Inject constructor(
         getStudySets()
     }
 
+    fun onEvent(event: LibraryUiAction) {
+        when (event) {
+            is LibraryUiAction.Refresh -> {
+                getStudySets()
+            }
+        }
+    }
+
     private fun getStudySets() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
