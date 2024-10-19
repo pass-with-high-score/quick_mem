@@ -8,6 +8,7 @@ import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
@@ -15,6 +16,7 @@ import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
+import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -24,6 +26,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -46,6 +49,12 @@ interface ApiService {
         @Header("Authorization") authToken: String,
         @Part flashcard: MultipartBody.Part
     ): UploadImageResponseDto
+
+    @POST("upload/delete")
+    suspend fun deleteImage(
+        @Header("Authorization") authToken: String,
+        @Body deleteImageDto: DeleteImageDto
+    )
 
     @POST("study-set")
     suspend fun createStudySet(
@@ -76,6 +85,13 @@ interface ApiService {
     suspend fun createFlashCard(
         @Header("Authorization") token: String,
         @Body createFlashCardDto: CreateFlashCardDto
+    ): FlashCardResponseDto
+
+    @PUT("flashcard/{id}")
+    suspend fun updateFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body editFlashCardDto: EditFlashCardDto
     ): FlashCardResponseDto
 
     @DELETE("flashcard/{id}")

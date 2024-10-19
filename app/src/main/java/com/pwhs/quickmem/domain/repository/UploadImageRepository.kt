@@ -14,5 +14,5 @@ interface UploadImageRepository {
     suspend fun removeImage(
         token: String,
         imageURL: String
-    ): Flow<Resources<UploadImageResponseModel>>
+    ): Flow<Resources<Unit>>
 }

@@ -60,6 +60,7 @@ import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -75,7 +76,8 @@ fun StudySetDetailScreen(
     viewModel: StudySetDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     resultBakFlashCard: ResultRecipient<CreateFlashCardScreenDestination, Boolean>,
-    resultEditFlashCard: ResultRecipient<EditStudySetScreenDestination, Boolean>
+    resultEditStudySet: ResultRecipient<EditStudySetScreenDestination, Boolean>,
+    resultEditFlashCard: ResultRecipient<EditFlashCardScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -89,6 +91,17 @@ fun StudySetDetailScreen(
             }
         }
 
+    }
+
+    resultEditStudySet.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
     }
 
     resultEditFlashCard.onNavResult { result ->
@@ -127,6 +140,21 @@ fun StudySetDetailScreen(
                         )
                     )
                 }
+
+                StudySetDetailUiEvent.NavigateToEditFlashCard -> {
+                    val flashCard =
+                        uiState.flashCards.find { it.id == uiState.idOfFlashCardSelected }
+                    navigator.navigate(
+                        EditFlashCardScreenDestination(
+                            flashcardId = flashCard!!.id,
+                            term = flashCard.term,
+                            definition = flashCard.definition,
+                            definitionImageUrl = flashCard.definitionImageURL ?: "",
+                            hint = flashCard.hint ?: "",
+                            explanation = flashCard.explanation ?: ""
+                        )
+                    )
+                }
             }
         }
     }
@@ -154,6 +182,9 @@ fun StudySetDetailScreen(
         onDeleteFlashCard = {
             viewModel.onEvent(StudySetDetailUiAction.OnDeleteFlashCardClicked)
         },
+        onEditFlashCard = {
+            viewModel.onEvent(StudySetDetailUiAction.OnEditFlashCardClicked)
+        },
         onToggleStarredFlashCard = { id, isStarred ->
             viewModel.onEvent(StudySetDetailUiAction.OnStarFlashCardClicked(id, isStarred))
         },
@@ -176,6 +207,7 @@ fun StudySetDetail(
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     onFlashCardClick: (String) -> Unit = {},
     onDeleteFlashCard: () -> Unit = {},
+    onEditFlashCard: () -> Unit = {},
     onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> },
     onEditStudySet: () -> Unit = {}
 ) {
@@ -318,7 +350,8 @@ fun StudySetDetail(
                     flashCards = flashCards,
                     onFlashCardClick = onFlashCardClick,
                     onDeleteFlashCardClick = onDeleteFlashCard,
-                    onToggleStarClick = onToggleStarredFlashCard
+                    onToggleStarClick = onToggleStarredFlashCard,
+                    onEditFlashCardClick = onEditFlashCard
                 )
 
                 1 -> ProgressTabScreen()

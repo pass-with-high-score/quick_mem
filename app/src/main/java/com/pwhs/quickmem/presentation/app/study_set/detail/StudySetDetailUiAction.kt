@@ -7,4 +7,5 @@ sealed class StudySetDetailUiAction {
     data class OnStarFlashCardClicked(val id: String, val isStarred: Boolean) :
         StudySetDetailUiAction()
     data object OnEditStudySetClicked : StudySetDetailUiAction()
+    data object OnEditFlashCardClicked : StudySetDetailUiAction()
 }

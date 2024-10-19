@@ -123,7 +123,9 @@ fun CardDetail(
                         targetState = isStarred,
                     ) { targetState ->
                         IconButton(
-                            onClick = { onToggleStarClick(targetState) }
+                            onClick = {
+                                onToggleStarClick(!targetState)
+                            }
                         ) {
                             Icon(
                                 imageVector = if (targetState) Default.Star else Default.StarBorder,
@@ -137,9 +139,9 @@ fun CardDetail(
             }
 
             Text(text = back, modifier = Modifier.padding(vertical = 8.dp))
-            imageURL?.let {
+            if (imageURL != null && imageURL.isNotEmpty()) {
                 AsyncImage(
-                    model = it,
+                    model = imageURL,
                     contentDescription = null,
                     modifier = Modifier.size(100.dp),
                     contentScale = ContentScale.Crop

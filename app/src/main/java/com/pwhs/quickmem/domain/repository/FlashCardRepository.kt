@@ -2,6 +2,7 @@ package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
+import com.pwhs.quickmem.domain.model.flashcard.EditFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import kotlinx.coroutines.flow.Flow
 
@@ -21,4 +22,10 @@ interface FlashCardRepository {
         id: String,
         isStarred: Boolean
     ): Flow<Resources<Unit>>
+
+    suspend fun updateFlashCard(
+        token: String,
+        id: String,
+        editFlashCardModel: EditFlashCardModel
+    ): Flow<Resources<FlashCardResponseModel>>
 }

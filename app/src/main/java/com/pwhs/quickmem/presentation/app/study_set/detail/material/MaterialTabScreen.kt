@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.Icons.Default
@@ -32,13 +31,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -52,7 +48,6 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.detail.ItemMenuBottomSheet
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,22 +56,14 @@ fun MaterialTabScreen(
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     onFlashCardClick: (String) -> Unit = {},
     onDeleteFlashCardClick: () -> Unit = {},
+    onEditFlashCardClick: () -> Unit = {},
     onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
 ) {
-    val listState = rememberLazyListState()
-    val totalIndicators = 5
-    var currentVisibleIndex by remember { mutableIntStateOf(0) }
     var menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
+    var studySetId by remember { mutableStateOf("") }
 
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.firstVisibleItemIndex }
-            .distinctUntilChanged()
-            .collect { index ->
-                currentVisibleIndex = index % totalIndicators
-            }
-    }
     Scaffold { innerPadding ->
         Box(
             modifier = modifier
@@ -138,7 +125,6 @@ fun MaterialTabScreen(
                     ) {
                         item {
                             LazyRow(
-                                state = listState,
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 items(flashCards) { flashCard ->
@@ -234,6 +220,7 @@ fun MaterialTabScreen(
                                 },
                                 onMenuClick = {
                                     showMenu = true
+                                    studySetId = flashCards.id
                                     onFlashCardClick(flashCards.id)
                                 }
                             )
@@ -253,7 +240,10 @@ fun MaterialTabScreen(
             ) {
                 Column {
                     ItemMenuBottomSheet(
-                        onClick = { },
+                        onClick = {
+                            onEditFlashCardClick()
+                            showMenu = false
+                        },
                         icon = Outlined.Edit,
                         title = "Edit"
                     )

@@ -64,6 +64,11 @@ class StudySetDetailViewModel @Inject constructor(
                 Timber.d("OnNavigateToEditFlashCardClicked")
                 _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditStudySet)
             }
+
+            StudySetDetailUiAction.OnEditFlashCardClicked -> {
+                Timber.d("OnNavigateToEditFlashCardClicked")
+                _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditFlashCard)
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.pwhs.quickmem.data.remote.repository
 import android.content.Context
 import android.net.Uri
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.mapper.upload.toUploadImageResponseModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.upload.UploadImageResponseModel
@@ -53,7 +54,16 @@ class UploadImageRepositoryImpl @Inject constructor(
     override suspend fun removeImage(
         token: String,
         imageURL: String
-    ): Flow<Resources<UploadImageResponseModel>> {
-        TODO("Not yet implemented")
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.deleteImage(token, DeleteImageDto(imageURL))
+                emit(Resources.Success(null))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.message ?: "An error occurred"))
+            }
+        }
     }
 }

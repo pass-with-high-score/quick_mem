@@ -6,6 +6,7 @@ import com.pwhs.quickmem.data.mapper.flashcard.toDto
 import com.pwhs.quickmem.data.mapper.flashcard.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
+import com.pwhs.quickmem.domain.model.flashcard.EditFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import kotlinx.coroutines.flow.Flow
@@ -69,6 +70,32 @@ class FlashCardRepositoryImpl @Inject constructor(
                 )
                 Timber.d("toggleStarredFlashCard: $response")
                 emit(Resources.Success(null))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateFlashCard(
+        token: String,
+        id: String,
+        editFlashCardModel: EditFlashCardModel
+    ): Flow<Resources<FlashCardResponseModel>> {
+        return flow {
+            emit(Resources.Loading(true))
+            Timber.d("updateFlashCard: $editFlashCardModel")
+            try {
+                val response = apiService.updateFlashCard(
+                    token,
+                    id,
+                    editFlashCardModel.toDto()
+                )
+                Timber.d("updateFlashCard: $response")
+                emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

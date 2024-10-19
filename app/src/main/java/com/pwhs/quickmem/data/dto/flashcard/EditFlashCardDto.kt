@@ -2,7 +2,7 @@ package com.pwhs.quickmem.data.dto.flashcard
 
 import com.google.gson.annotations.SerializedName
 
-data class CreateFlashCardDto(
+data class EditFlashCardDto(
     @SerializedName("definition")
     val definition: String,
     @SerializedName("definitionImageURL")
@@ -11,8 +11,6 @@ data class CreateFlashCardDto(
     val explanation: String? = null,
     @SerializedName("hint")
     val hint: String? = null,
-    @SerializedName("studySetId")
-    val studySetId: String,
     @SerializedName("term")
     val term: String
 )

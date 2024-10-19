@@ -1,6 +1,5 @@
-package com.pwhs.quickmem.presentation.app.flashcard.create
+package com.pwhs.quickmem.presentation.app.flashcard.edit
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -56,53 +55,40 @@ import com.pwhs.quickmem.util.bitmapToUri
 import com.pwhs.quickmem.util.loadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.DrawFlashCardScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Destination<RootGraph>(
-    navArgs = CreateFlashCardArgs::class
+    navArgs = EditFlashCardArgs::class
 )
 @Composable
-fun CreateFlashCardScreen(
+fun EditFlashCardScreen(
     modifier: Modifier = Modifier,
-    viewModel: CreateFlashCardViewModel = hiltViewModel(),
+    viewModel: EditFlashCardViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    canvasResultBack: ResultRecipient<DrawFlashCardScreenDestination, Bitmap>,
     resultNavigator: ResultBackNavigator<Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    canvasResultBack.onNavResult { result ->
-        when (result) {
-            NavResult.Canceled -> {
-                Timber.d("Canceled")
-            }
-
-            is NavResult.Value -> {
-                Timber.d("Value: ${result.value}")
-            }
-        }
-    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                CreateFlashCardUiEvent.FlashCardSaved -> {
+                EditFlashCardUiEvent.FlashCardSaved -> {
                     Timber.d("Flashcard saved")
                     Toast.makeText(context, "Flashcard saved", Toast.LENGTH_SHORT).show()
+                    resultNavigator.setResult(true)
+                    navigator.navigateUp()
                 }
 
-                CreateFlashCardUiEvent.FlashCardSaveError -> {
+                EditFlashCardUiEvent.FlashCardSaveError -> {
                     Timber.d("Flashcard save error")
                     Toast.makeText(context, "Flashcard save error", Toast.LENGTH_SHORT).show()
                 }
 
-                CreateFlashCardUiEvent.LoadImage -> {
+                EditFlashCardUiEvent.LoadImage -> {
                     Timber.d("Load image")
                 }
             }
@@ -119,51 +105,51 @@ fun CreateFlashCardScreen(
         explanation = uiState.explanation ?: "",
         showExplanation = uiState.showExplanation,
         isLoaded = uiState.isLoading,
-        onTermChanged = { viewModel.onEvent(CreateFlashCardUiAction.FlashCardTermChanged(it)) },
+        onTermChanged = { viewModel.onEvent(EditFlashCardUiAction.FlashCardTermChanged(it)) },
         onDefinitionChanged = {
             viewModel.onEvent(
-                CreateFlashCardUiAction.FlashCardDefinitionChanged(
+                EditFlashCardUiAction.FlashCardDefinitionChanged(
                     it
                 )
             )
         },
         onDefinitionImageChanged = {
             viewModel.onEvent(
-                CreateFlashCardUiAction.FlashCardDefinitionImageChanged(
+                EditFlashCardUiAction.FlashCardDefinitionImageChanged(
                     it
                 )
             )
         },
-        onHintChanged = { viewModel.onEvent(CreateFlashCardUiAction.FlashCardHintChanged(it)) },
-        onShowHintClicked = { viewModel.onEvent(CreateFlashCardUiAction.ShowHintClicked(it)) },
+        onHintChanged = { viewModel.onEvent(EditFlashCardUiAction.FlashCardHintChanged(it)) },
+        onShowHintClicked = { viewModel.onEvent(EditFlashCardUiAction.ShowHintClicked(it)) },
         onExplanationChanged = {
             viewModel.onEvent(
-                CreateFlashCardUiAction.FlashCardExplanationChanged(
+                EditFlashCardUiAction.FlashCardExplanationChanged(
                     it
                 )
             )
         },
         onShowExplanationClicked = {
             viewModel.onEvent(
-                CreateFlashCardUiAction.ShowExplanationClicked(
+                EditFlashCardUiAction.ShowExplanationClicked(
                     it
                 )
             )
         },
-        onUploadImage = { viewModel.onEvent(CreateFlashCardUiAction.UploadImage(it)) },
+        onUploadImage = { viewModel.onEvent(EditFlashCardUiAction.UploadImage(it)) },
         onDeleteImage = {
             viewModel.onEvent(
-                CreateFlashCardUiAction.RemoveImage(
+                EditFlashCardUiAction.RemoveImage(
                     uiState.definitionImageURL ?: ""
                 )
             )
         },
         onNavigationBack = {
-            resultNavigator.setResult(uiState.isCreated)
+            resultNavigator.setResult(true)
             navigator.navigateUp()
         },
         onSaveFlashCardClicked = {
-            viewModel.onEvent(CreateFlashCardUiAction.SaveFlashCard)
+            viewModel.onEvent(EditFlashCardUiAction.SaveFlashCard)
         }
     )
 }
@@ -278,7 +264,7 @@ fun CreateFlashCard(
                 }
 
                 item {
-                    if (showHint) {
+                    if (showHint || hint.isNotEmpty()) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -322,7 +308,7 @@ fun CreateFlashCard(
                 }
 
                 item {
-                    if (showExplanation) {
+                    if (showExplanation || explanation.isNotEmpty()) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()

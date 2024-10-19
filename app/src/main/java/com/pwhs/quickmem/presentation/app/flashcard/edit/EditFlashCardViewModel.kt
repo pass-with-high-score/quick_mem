@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.flashcard.create
+package com.pwhs.quickmem.presentation.app.flashcard.edit
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -20,65 +20,81 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateFlashCardViewModel @Inject constructor(
+class EditFlashCardViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val flashCardRepository: FlashCardRepository,
     private val uploadImageRepository: UploadImageRepository,
     private val tokenManager: TokenManager,
     application: Application
 ) : AndroidViewModel(application) {
-    private val _uiState = MutableStateFlow(CreateFlashCardUiState())
+    private val _uiState = MutableStateFlow(EditFlashCardUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<CreateFlashCardUiEvent>()
+    private val _uiEvent = Channel<EditFlashCardUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val studySetId: String = savedStateHandle["studySetId"] ?: ""
-        _uiState.update { it.copy(studySetId = studySetId) }
+        val flashcardId: String = savedStateHandle["flashcardId"] ?: ""
+        val term: String = savedStateHandle["term"] ?: ""
+        val definition: String = savedStateHandle["definition"] ?: ""
+        val definitionImageUrl: String = savedStateHandle["definitionImageUrl"] ?: ""
+        val hint: String = savedStateHandle["hint"] ?: ""
+        val explanation: String = savedStateHandle["explanation"] ?: ""
+        _uiState.update {
+            it.copy(
+                flashcardId = flashcardId,
+                term = term,
+                definition = definition,
+                definitionImageURL = definitionImageUrl,
+                hint = hint,
+                explanation = explanation
+            )
+        }
     }
 
-    fun onEvent(event: CreateFlashCardUiAction) {
+    fun onEvent(event: EditFlashCardUiAction) {
         when (event) {
-            is CreateFlashCardUiAction.FlashCardDefinitionChanged -> {
+            is EditFlashCardUiAction.FlashCardDefinitionChanged -> {
                 _uiState.update { it.copy(definition = event.definition) }
             }
 
-            is CreateFlashCardUiAction.FlashCardDefinitionImageChanged -> {
+            is EditFlashCardUiAction.FlashCardDefinitionImageChanged -> {
                 _uiState.update { it.copy(definitionImageUri = event.definitionImageUri) }
             }
 
-            is CreateFlashCardUiAction.FlashCardExplanationChanged -> {
+            is EditFlashCardUiAction.FlashCardExplanationChanged -> {
+                Timber.d("Explanation: ${event.explanation}")
                 _uiState.update { it.copy(explanation = event.explanation) }
             }
 
-            is CreateFlashCardUiAction.FlashCardHintChanged -> {
+            is EditFlashCardUiAction.FlashCardHintChanged -> {
+                Timber.d("Hint: ${event.hint}")
                 _uiState.update { it.copy(hint = event.hint) }
             }
 
-            is CreateFlashCardUiAction.FlashCardTermChanged -> {
+            is EditFlashCardUiAction.FlashCardTermChanged -> {
                 _uiState.update { it.copy(term = event.term) }
             }
 
-            is CreateFlashCardUiAction.SaveFlashCard -> {
+            is EditFlashCardUiAction.SaveFlashCard -> {
                 saveFlashCard()
             }
 
-            is CreateFlashCardUiAction.StudySetIdChanged -> {
-                _uiState.update { it.copy(studySetId = event.studySetId) }
+            is EditFlashCardUiAction.FlashcardIdChanged -> {
+                _uiState.update { it.copy(flashcardId = event.flashcardId) }
             }
 
-            is CreateFlashCardUiAction.ShowExplanationClicked -> {
+            is EditFlashCardUiAction.ShowExplanationClicked -> {
                 _uiState.update { it.copy(showExplanation = event.showExplanation) }
             }
 
-            is CreateFlashCardUiAction.ShowHintClicked -> {
+            is EditFlashCardUiAction.ShowHintClicked -> {
                 _uiState.update {
                     it.copy(showHint = event.showHint)
                 }
             }
 
-            is CreateFlashCardUiAction.UploadImage -> {
+            is EditFlashCardUiAction.UploadImage -> {
 
                 viewModelScope.launch {
                     val token = tokenManager.accessToken.firstOrNull() ?: ""
@@ -86,6 +102,7 @@ class CreateFlashCardViewModel @Inject constructor(
                         .collect { resource ->
                             when (resource) {
                                 is Resources.Success -> {
+                                    Timber.d("Success: ${resource.data}")
                                     _uiState.update {
                                         it.copy(
                                             definitionImageURL = resource.data!!.url,
@@ -109,13 +126,14 @@ class CreateFlashCardViewModel @Inject constructor(
                 }
             }
 
-            is CreateFlashCardUiAction.RemoveImage -> {
+            is EditFlashCardUiAction.RemoveImage -> {
                 viewModelScope.launch {
                     val token = tokenManager.accessToken.firstOrNull() ?: ""
                     uploadImageRepository.removeImage(token, event.imageURL)
                         .collect { resource ->
                             when (resource) {
                                 is Resources.Success -> {
+                                    Timber.d("Success: ${resource.data}")
                                     _uiState.update {
                                         it.copy(
                                             definitionImageURL = "",
@@ -143,11 +161,15 @@ class CreateFlashCardViewModel @Inject constructor(
     }
 
     private fun saveFlashCard() {
+        Timber.d("Saving flashcard: url: ${_uiState.value.definitionImageURL}")
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            flashCardRepository.createFlashCard(
+            val editFlashCardModel = _uiState.value.toEditFlashCardModel()
+            Timber.d("EditFlashCardModel: $editFlashCardModel")
+            flashCardRepository.updateFlashCard(
                 token,
-                _uiState.value.toCreateFlashCardModel()
+                _uiState.value.flashcardId,
+                editFlashCardModel
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
@@ -170,11 +192,10 @@ class CreateFlashCardViewModel @Inject constructor(
                                 definitionImageUri = null,
                                 hint = null,
                                 explanation = null,
-                                isCreated = true,
                                 isLoading = false
                             )
                         }
-                        _uiEvent.send(CreateFlashCardUiEvent.FlashCardSaved)
+                        _uiEvent.send(EditFlashCardUiEvent.FlashCardSaved)
                     }
                 }
             }

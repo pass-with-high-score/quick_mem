@@ -17,4 +17,5 @@ sealed class CreateFlashCardUiAction {
     data class ShowHintClicked(val showHint: Boolean) : CreateFlashCardUiAction()
     data class ShowExplanationClicked(val showExplanation: Boolean) : CreateFlashCardUiAction()
     data class UploadImage(val imageUri: Uri) : CreateFlashCardUiAction()
+    data class RemoveImage(val imageURL: String) : CreateFlashCardUiAction()
 }
