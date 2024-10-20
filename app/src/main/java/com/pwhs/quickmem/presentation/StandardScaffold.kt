@@ -40,6 +40,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
+import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -190,6 +192,7 @@ fun StandardScaffold(
                         icon = R.drawable.ic_folder,
                         onClick = {
                             showBottomSheetCreate = false
+                            navController.navigate(CreateFolderScreenDestination.route)
                         }
                     )
                     BottomSheetItem(
@@ -197,6 +200,7 @@ fun StandardScaffold(
                         icon = R.drawable.ic_school,
                         onClick = {
                             showBottomSheetCreate = false
+                            navController.navigate(CreateClassScreenDestination.route)
                         }
                     )
                 }

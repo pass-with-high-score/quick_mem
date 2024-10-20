@@ -36,6 +36,8 @@ import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -82,6 +84,12 @@ fun LibraryScreen(
         },
         navigateToCreateStudySet = {
             navigator.navigate(CreateStudySetScreenDestination)
+        },
+        navigateToCreateClass = {
+            navigator.navigate(CreateClassScreenDestination)
+        },
+        navigateToCreateFolder = {
+            navigator.navigate(CreateFolderScreenDestination)
         }
     )
 }
@@ -93,6 +101,8 @@ fun Library(
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     navigateToCreateStudySet: () -> Unit = {},
+    navigateToCreateClass: () -> Unit = {},
+    navigateToCreateFolder: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Study sets", "Classes", "Folders")
@@ -116,8 +126,13 @@ fun Library(
                                     navigateToCreateStudySet()
                                 }
 
-                                1 -> {}
-                                2 -> {}
+                                1 -> {
+                                    navigateToCreateClass()
+                                }
+
+                                2 -> {
+                                    navigateToCreateFolder()
+                                }
                             }
                         }
                     ) {

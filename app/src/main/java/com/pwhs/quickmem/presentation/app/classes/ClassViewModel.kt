@@ -15,15 +15,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ClassesViewModel @Inject constructor(
+class ClassViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ClassesUiState())
+    private val _uiState = MutableStateFlow(ClassUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<ClassesUiEvent>()
+    private val _uiEvent = Channel<ClassUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
@@ -34,20 +34,20 @@ class ClassesViewModel @Inject constructor(
                     _uiState.update { it.copy(isLogin = true) }
                 } else {
                     _uiState.update { it.copy(isLogin = false) }
-                    onEvent(ClassesUiAction.NavigateToWelcomeClicked)
+                    onEvent(ClassUiAction.NavigateToWelcomeClicked)
                 }
             }
         }
     }
 
-    fun onEvent(event: ClassesUiAction) {
+    fun onEvent(event: ClassUiAction) {
         when (event) {
-            ClassesUiAction.JoinClassClicked -> {
+            ClassUiAction.JoinClassClicked -> {
                 TODO()
             }
 
-            ClassesUiAction.NavigateToWelcomeClicked -> {
-                _uiEvent.trySend(ClassesUiEvent.NavigateToWelcome)
+            ClassUiAction.NavigateToWelcomeClicked -> {
+                _uiEvent.trySend(ClassUiEvent.NavigateToWelcome)
             }
         }
     }
