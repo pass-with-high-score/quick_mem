@@ -7,6 +7,7 @@ data class EditStudySetUiState(
     val id: String = "",
     val title: String = "",
     val titleError: String = "",
+    val description: String = "",
     val subjectModel: SubjectModel = SubjectModel.defaultSubjects.first(),
     val subjectError: String = "",
     val colorModel: ColorModel = ColorModel.defaultColors.first(),

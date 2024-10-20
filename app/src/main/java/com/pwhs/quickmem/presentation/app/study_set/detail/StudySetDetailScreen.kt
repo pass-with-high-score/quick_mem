@@ -2,41 +2,17 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 
 import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.Default
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.DeleteOutline
-import androidx.compose.material.icons.filled.IosShare
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Folder
-import androidx.compose.material.icons.outlined.Group
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,23 +22,20 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.detail.component.StudySetDetailTopAppBar
+import com.pwhs.quickmem.presentation.app.study_set.detail.component.StudySetFlashCardList
 import com.pwhs.quickmem.presentation.app.study_set.detail.material.MaterialTabScreen
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabScreen
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
-import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
@@ -98,9 +71,7 @@ fun StudySetDetailScreen(
                 }
             }
         }
-
     }
-
     resultEditStudySet.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {}
@@ -142,6 +113,7 @@ fun StudySetDetailScreen(
                         EditStudySetScreenDestination(
                             studySetId = uiState.id,
                             studySetTitle = uiState.title,
+                            studySetDescription = uiState.description,
                             studySetSubjectId = uiState.subject.id,
                             studySetColorId = uiState.colorModel.id,
                             studySetIsPublic = uiState.isPublic
@@ -239,105 +211,27 @@ fun StudySetDetail(
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     Scaffold(
+        modifier = modifier,
         containerColor = Color.Transparent,
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            title, style = typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = colorScheme.onSurface
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            AsyncImage(
-                                model = userResponse.avatarUrl,
-                                contentDescription = "User Avatar",
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .padding(end = 8.dp)
-                            )
-                            Text(
-                                userResponse.username,
-                                style = typography.bodyMedium.copy(
-                                    color = colorScheme.secondary
-                                )
-                            )
-                            VerticalDivider(
-                                modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .size(16.dp)
-                            )
-                            Text(
-                                "$flashCardCount flashcards",
-                                style = typography.bodyMedium.copy(
-                                    color = colorScheme.secondary
-                                )
-                            )
-                        }
+            StudySetDetailTopAppBar(
+
+                title = title,
+                color = color,
+                userResponse = userResponse,
+                flashCardCount = flashCardCount,
+                onNavigateBack = onNavigateBack,
+                onAddFlashcard = onAddFlashcard,
+                onMoreClicked = { showMoreBottomSheet = true },
+                onShareClicked = {
+                    val link = AppConstant.BASE_URL + "study-set/share/" + linkShareCode
+                    val text = "Check out this study set: $title\n$link"
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                        putExtra(Intent.EXTRA_TEXT, text)
+                        type = "text/plain"
                     }
-                },
-                modifier = modifier.background(color.gradientBackground()),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
-                expandedHeight = 120.dp,
-                collapsedHeight = 56.dp,
-                navigationIcon = {
-                    IconButton(
-                        onClick = onNavigateBack,
-                        colors = IconButtonDefaults.iconButtonColors(
-                            contentColor = colorScheme.onSurface
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            val link = AppConstant.BASE_URL + "study-set/share/" + linkShareCode
-                            val text = "Check out this study set: $title\n$link"
-                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                putExtra(Intent.EXTRA_TEXT, text)
-                                type = "text/plain"
-                            }
-                            val shareIntent = Intent.createChooser(sendIntent, null)
-                            context.startActivity(shareIntent)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Default.IosShare,
-                            contentDescription = "Share"
-                        )
-                    }
-                    IconButton(
-                        onClick = onAddFlashcard
-                    ) {
-                        Icon(
-                            imageVector = Default.Add,
-                            contentDescription = "Add"
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            showMoreBottomSheet = true
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Default.MoreVert,
-                            contentDescription = "More"
-                        )
-                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    context.startActivity(shareIntent)
                 }
             )
         }
@@ -393,60 +287,19 @@ fun StudySetDetail(
             }
         }
     }
-    if (showMoreBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showMoreBottomSheet = false },
-            sheetState = sheetShowMoreState
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                ItemMenuBottomSheet(
-                    onClick = {
-                        onEditStudySet()
-                        showMoreBottomSheet = false
-                    },
-                    icon = Icons.Outlined.Edit,
-                    title = "Edit"
-                )
-                ItemMenuBottomSheet(
-                    onClick = { },
-                    icon = Icons.Outlined.Folder,
-                    title = "Add to folder"
-                )
-                ItemMenuBottomSheet(
-                    onClick = { },
-                    icon = Icons.Outlined.Group,
-                    title = "Add to class"
-                )
-                ItemMenuBottomSheet(
-                    onClick = { },
-                    icon = Icons.Outlined.ContentCopy,
-                    title = "Save and edit"
-                )
-                ItemMenuBottomSheet(
-                    onClick = { },
-                    icon = Icons.Outlined.Refresh,
-                    title = "Reset progress"
-                )
-                ItemMenuBottomSheet(
-                    onClick = { },
-                    icon = Icons.Outlined.Info,
-                    title = "Set info"
-                )
-                ItemMenuBottomSheet(
-                    onClick = {
-                        showDeleteConfirmationDialog = true
-                        showMoreBottomSheet = false
-                    },
-                    icon = Default.DeleteOutline,
-                    title = "Delete study set",
-                    color = Color.Red
-                )
-            }
-        }
-    }
+    StudySetFlashCardList(
+        onEditStudySet = {
+            onEditStudySet()
+            showMoreBottomSheet = false
+        },
+        onDeleteStudySet = {
+            showDeleteConfirmationDialog = true
+            showMoreBottomSheet = false
+        },
+        showMoreBottomSheet = showMoreBottomSheet,
+        sheetShowMoreState = sheetShowMoreState,
+        onDismissRequest = { showMoreBottomSheet = false }
+    )
     if (showDeleteConfirmationDialog) {
         QuickMemAlertDialog(
             onDismissRequest = { showDeleteConfirmationDialog = false },

@@ -37,6 +37,7 @@ class EditStudySetViewModel @Inject constructor(
     init {
         val studySetId: String = savedStateHandle["studySetId"] ?: ""
         val studySetTitle = savedStateHandle["studySetTitle"] ?: ""
+        val studySetDescription = savedStateHandle["studySetDescription"] ?: ""
         val studySetSubjectId: Int = savedStateHandle["studySetSubjectId"] ?: 1
         val studySetColorId: Int = savedStateHandle["studySetColorId"] ?: 1
         val studySetIsPublic: Boolean = savedStateHandle["studySetIsPublic"] ?: false
@@ -44,6 +45,7 @@ class EditStudySetViewModel @Inject constructor(
             it.copy(
                 id = studySetId,
                 title = studySetTitle,
+                description = studySetDescription,
                 subjectModel = SubjectModel.defaultSubjects.first { it.id == studySetSubjectId },
                 colorModel = ColorModel.defaultColors.first { it.id == studySetColorId },
                 isPublic = studySetIsPublic
@@ -85,7 +87,7 @@ class EditStudySetViewModel @Inject constructor(
                         subjectId = uiState.subjectModel.id,
                         colorId = uiState.colorModel.id,
                         isPublic = uiState.isPublic,
-                        description = "",
+                        description = uiState.description,
                         ownerId = ownerId
                     )
                     studySetRepository.updateStudySet(
@@ -99,7 +101,7 @@ class EditStudySetViewModel @Inject constructor(
                             }
 
                             is Resources.Success -> {
-                                _uiEvent.send(EditStudySetUiEvent.StudySetCreated(resource.data!!.id))
+                                _uiEvent.send(EditStudySetUiEvent.StudySetEdited(resource.data!!.id))
                             }
 
                             is Resources.Error -> {
@@ -116,9 +118,15 @@ class EditStudySetViewModel @Inject constructor(
                 }
             }
 
-            is EditStudySetUiAction.NameChanged -> {
+            is EditStudySetUiAction.TitleChanged -> {
                 _uiState.update {
-                    it.copy(title = event.name)
+                    it.copy(title = event.title)
+                }
+            }
+
+            is EditStudySetUiAction.DescriptionChanged -> {
+                _uiState.update {
+                    it.copy(description = event.description)
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.library.study_set
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,13 +50,6 @@ fun ListStudySetScreen(
                 Column(modifier = Modifier.padding(innerPadding)) {
                     LazyColumn {
                         items(studySets) { studySet ->
-                            //thumbnailUrl is first image of flashcard if found, else null
-                            val thumbnailUrl = if (studySet.flashcards.isNotEmpty()) {
-                                // for to find
-                                studySet.flashcards.find { it.definitionImageURL != null }
-                            } else {
-                                null
-                            }
                             Card(
                                 onClick = { onStudySetClick(studySet.id) },
                                 colors = CardDefaults.cardColors(
@@ -68,6 +62,10 @@ fun ListStudySetScreen(
                                 elevation = CardDefaults.elevatedCardElevation(
                                     defaultElevation = 4.dp
                                 ),
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = studySet.color!!.hexValue.toColor()
+                                )
                             ) {
                                 Column(
                                     modifier = Modifier
@@ -81,7 +79,7 @@ fun ListStudySetScreen(
                                         ),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
-                                        color = studySet.color!!.hexValue.toColor()
+                                        color = studySet.color.hexValue.toColor()
                                             .copy(alpha = 0.8f),
                                     )
                                     Text(

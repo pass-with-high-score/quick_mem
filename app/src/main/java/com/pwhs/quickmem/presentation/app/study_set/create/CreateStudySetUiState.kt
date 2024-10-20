@@ -6,6 +6,7 @@ import com.pwhs.quickmem.domain.model.subject.SubjectModel
 data class CreateStudySetUiState(
     val title: String = "",
     val titleError: String = "",
+    val description: String = "",
     val subjectModel: SubjectModel = SubjectModel.defaultSubjects.first(),
     val subjectError: String = "",
     val colorModel: ColorModel = ColorModel.defaultColors.first(),

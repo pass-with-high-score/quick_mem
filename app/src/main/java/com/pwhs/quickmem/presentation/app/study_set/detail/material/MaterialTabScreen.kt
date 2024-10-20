@@ -60,7 +60,7 @@ fun MaterialTabScreen(
     onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
     onAddFlashCardClick: () -> Unit = {},
 ) {
-    var menuBottomSheetState = rememberModalBottomSheetState()
+    val menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
     var studySetId by remember { mutableStateOf("") }

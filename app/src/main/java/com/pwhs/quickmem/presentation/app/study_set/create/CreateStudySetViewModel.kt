@@ -63,7 +63,7 @@ class CreateStudySetViewModel @Inject constructor(
                         subjectId = uiState.subjectModel.id,
                         colorId = uiState.colorModel.id,
                         isPublic = uiState.isPublic,
-                        description = "",
+                        description = uiState.description,
                         ownerId = ownerId
                     )
                     studySetRepository.createStudySet(
@@ -93,9 +93,15 @@ class CreateStudySetViewModel @Inject constructor(
                 }
             }
 
-            is CreateStudySetUiAction.NameChanged -> {
+            is CreateStudySetUiAction.TitleChanged -> {
                 _uiState.update {
-                    it.copy(title = event.name)
+                    it.copy(title = event.title)
+                }
+            }
+
+            is CreateStudySetUiAction.DescriptionChanged -> {
+                _uiState.update {
+                    it.copy(description = event.description)
                 }
             }
         }
