@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +20,29 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        val localProperties = Properties()
+        file(rootProject.file("local.properties")).inputStream().use { localProperties.load(it) }
+
+        val baseUrl: String = localProperties.getProperty("BASE_URL") ?: "https://api.quickmem.app/"
+        val emailVerificationUrl: String = localProperties.getProperty("EMAIL_VERIFICATION_URL")
+            ?: "https://checkemail.quickmem.app/"
+        val bannerAdsId: String =
+            localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-3940256099942544/9214589741"
+        val interstitialAdsId: String = localProperties.getProperty("INTERSTITIAL_ADS_ID")
+            ?: "ca-app-pub-3940256099942544/1033173712"
+        val rewardAdsId: String =
+            localProperties.getProperty("REWARD_ADS_ID") ?: "ca-app-pub-3940256099942544/5224354917"
+        val rewardedInterstitialAdsId: String =
+            localProperties.getProperty("REWARDED_INTERSTITIAL_ADS_ID")
+                ?: "ca-app-pub-3940256099942544/5354046379"
+
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "EMAIL_VERIFICATION_URL", "\"$emailVerificationUrl\"")
+        buildConfigField("String", "BANNER_ADS_ID", "\"$bannerAdsId\"")
+        buildConfigField("String", "INTERSTITIAL_ADS_ID", "\"$interstitialAdsId\"")
+        buildConfigField("String", "REWARD_ADS_ID", "\"$rewardAdsId\"")
+        buildConfigField("String", "REWARDED_INTERSTITIAL_ADS_ID", "\"$rewardedInterstitialAdsId\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,6 +77,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging-ktx:24.0.2")
+    implementation("io.github.ehsannarmani:compose-charts:0.0.14")
 
     implementation(libs.play.services.ads)
 
