@@ -59,6 +59,10 @@ fun MaterialTabScreen(
     onEditFlashCardClick: () -> Unit = {},
     onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
     onAddFlashCardClick: () -> Unit = {},
+    onNavigateToLearnFlashCard: () -> Unit = {},
+    onNavigateToTestFlashCard: () -> Unit = {},
+    onNavigateToMatchFlashCard: () -> Unit = {},
+    onNavigateToFlipFlashCard: () -> Unit = {},
 ) {
     val menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
@@ -153,28 +157,28 @@ fun MaterialTabScreen(
                             LearnModeCard(
                                 title = "Flip Flashcards",
                                 icon = R.drawable.ic_flipcard,
-                                onClick = {}
+                                onClick = onNavigateToFlipFlashCard
                             )
                         }
                         item {
                             LearnModeCard(
                                 title = "Learn",
                                 icon = R.drawable.ic_learn,
-                                onClick = {}
+                                onClick = onNavigateToLearnFlashCard
                             )
                         }
                         item {
                             LearnModeCard(
                                 title = "Test",
                                 icon = R.drawable.ic_test,
-                                onClick = {}
+                                onClick = onNavigateToTestFlashCard
                             )
                         }
                         item {
                             LearnModeCard(
                                 title = "Match",
                                 icon = R.drawable.ic_match_card,
-                                onClick = {}
+                                onClick = onNavigateToMatchFlashCard
                             )
                         }
 

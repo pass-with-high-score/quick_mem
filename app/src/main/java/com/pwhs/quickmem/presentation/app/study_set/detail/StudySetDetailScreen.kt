@@ -43,7 +43,11 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.MatchFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.TestFlashCardScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -61,7 +65,11 @@ fun StudySetDetailScreen(
     resultNavigator: ResultBackNavigator<Boolean>,
     resultBakFlashCard: ResultRecipient<CreateFlashCardScreenDestination, Boolean>,
     resultEditStudySet: ResultRecipient<EditStudySetScreenDestination, Boolean>,
-    resultEditFlashCard: ResultRecipient<EditFlashCardScreenDestination, Boolean>
+    resultEditFlashCard: ResultRecipient<EditFlashCardScreenDestination, Boolean>,
+    resultFlipFlashCard: ResultRecipient<FlipFlashCardScreenDestination, Boolean>,
+    resultLearnFlashCard: ResultRecipient<LearnFlashCardScreenDestination, Boolean>,
+    resultTestFlashCard: ResultRecipient<TestFlashCardScreenDestination, Boolean>,
+    resultMatchFlashCard: ResultRecipient<MatchFlashCardScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -87,6 +95,50 @@ fun StudySetDetailScreen(
     }
 
     resultEditFlashCard.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultFlipFlashCard.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultLearnFlashCard.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultTestFlashCard.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultMatchFlashCard.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {}
             is NavResult.Value -> {
@@ -205,6 +257,26 @@ fun StudySetDetailScreen(
         },
         onResetProgress = {
             viewModel.onEvent(StudySetDetailUiAction.OnResetProgressClicked(uiState.id))
+        },
+        onNavigateToLearnFlashCard = {
+            navigator.navigate(
+                LearnFlashCardScreenDestination()
+            )
+        },
+        onNavigateToTestFlashCard = {
+            navigator.navigate(
+                TestFlashCardScreenDestination()
+            )
+        },
+        onNavigateToMatchFlashCard = {
+            navigator.navigate(
+                MatchFlashCardScreenDestination()
+            )
+        },
+        onNavigateToFlipFlashCard = {
+            navigator.navigate(
+                FlipFlashCardScreenDestination()
+            )
         }
     )
 }
@@ -229,7 +301,11 @@ fun StudySetDetail(
     onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> },
     onEditStudySet: () -> Unit = {},
     onDeleteStudySet: () -> Unit = {},
-    onResetProgress: () -> Unit = {}
+    onResetProgress: () -> Unit = {},
+    onNavigateToLearnFlashCard: () -> Unit = {},
+    onNavigateToTestFlashCard: () -> Unit = {},
+    onNavigateToMatchFlashCard: () -> Unit = {},
+    onNavigateToFlipFlashCard: () -> Unit = {},
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -308,7 +384,11 @@ fun StudySetDetail(
                         onDeleteFlashCardClick = onDeleteFlashCard,
                         onToggleStarClick = onToggleStarredFlashCard,
                         onEditFlashCardClick = onEditFlashCard,
-                        onAddFlashCardClick = onAddFlashcard
+                        onAddFlashCardClick = onAddFlashcard,
+                        onNavigateToLearnFlashCard = onNavigateToLearnFlashCard,
+                        onNavigateToTestFlashCard = onNavigateToTestFlashCard,
+                        onNavigateToMatchFlashCard = onNavigateToMatchFlashCard,
+                        onNavigateToFlipFlashCard = onNavigateToFlipFlashCard
                     )
 
                     1 -> ProgressTabScreen(
