@@ -41,6 +41,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -178,6 +179,18 @@ fun StudySetDetailScreen(
         onEditStudySet = {
             viewModel.onEvent(StudySetDetailUiAction.OnEditStudySetClicked)
         },
+        onNavigateToStudySetInfo = {
+            navigator.navigate(
+                StudySetInfoScreenDestination(
+                    title = uiState.title,
+                    description = uiState.description,
+                    isPublic = uiState.isPublic,
+                    authorUsername = uiState.user.username,
+                    authorAvatarUrl = uiState.user.avatarUrl,
+                    creationDate = uiState.createdAt
+                )
+            )
+        },
         linkShareCode = uiState.linkShareCode,
         onDeleteStudySet = {
             viewModel.onEvent(StudySetDetailUiAction.OnDeleteStudySetClicked)
@@ -200,6 +213,7 @@ fun StudySetDetail(
     onFlashCardClick: (String) -> Unit = {},
     onDeleteFlashCard: () -> Unit = {},
     onEditFlashCard: () -> Unit = {},
+    onNavigateToStudySetInfo: () -> Unit = {},
     onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> },
     onEditStudySet: () -> Unit = {},
     onDeleteStudySet: () -> Unit = {}
@@ -288,17 +302,14 @@ fun StudySetDetail(
         }
     }
     StudySetFlashCardList(
-        onEditStudySet = {
-            onEditStudySet()
-            showMoreBottomSheet = false
-        },
+        onEditStudySet = onEditStudySet,
         onDeleteStudySet = {
             showDeleteConfirmationDialog = true
-            showMoreBottomSheet = false
         },
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
-        onDismissRequest = { showMoreBottomSheet = false }
+        onDismissRequest = { showMoreBottomSheet = false },
+        onInfoStudySet = onNavigateToStudySetInfo
     )
     if (showDeleteConfirmationDialog) {
         QuickMemAlertDialog(

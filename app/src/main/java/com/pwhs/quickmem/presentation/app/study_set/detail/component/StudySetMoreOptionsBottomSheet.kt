@@ -25,6 +25,7 @@ fun StudySetFlashCardList(
     modifier: Modifier = Modifier,
     onEditStudySet: () -> Unit,
     onDeleteStudySet: () -> Unit,
+    onInfoStudySet: () -> Unit,
     showMoreBottomSheet: Boolean,
     sheetShowMoreState: SheetState,
     onDismissRequest: () -> Unit
@@ -65,9 +66,9 @@ fun StudySetFlashCardList(
                     title = "Reset progress"
                 )
                 ItemMenuBottomSheet(
-                    onClick = { },
+                    onClick = onInfoStudySet,
                     icon = Icons.Outlined.Info,
-                    title = "Set info"
+                    title = "Study set info"
                 )
                 ItemMenuBottomSheet(
                     onClick = onDeleteStudySet,
