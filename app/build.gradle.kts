@@ -22,7 +22,11 @@ android {
         versionName = "1.0"
 
         val localProperties = Properties()
-        file(rootProject.file("local.properties")).inputStream().use { localProperties.load(it) }
+        try {
+            file(rootProject.file("local.properties")).inputStream().use { localProperties.load(it) }
+        } catch (e: Exception) {
+            println("local.properties not found, using default values")
+        }
 
         val baseUrl: String = localProperties.getProperty("BASE_URL") ?: "https://api.quickmem.app/"
         val emailVerificationUrl: String = localProperties.getProperty("EMAIL_VERIFICATION_URL")
