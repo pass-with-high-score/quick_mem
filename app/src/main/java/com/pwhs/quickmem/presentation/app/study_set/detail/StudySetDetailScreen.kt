@@ -297,7 +297,13 @@ fun StudySetDetail(
                     onAddFlashCardClick = onAddFlashcard
                 )
 
-                1 -> ProgressTabScreen()
+                1 -> ProgressTabScreen(
+                    totalStudySet = flashCardCount,
+                    color = color,
+                    studySetsNotLearn = flashCards.count { it.rating == "NOT_STUDIED" },
+                    studySetsStillLearn = flashCards.count { it.rating == "STILL_LEARNING" },
+                    studySetsMastered = flashCards.count { it.rating == "MASTERED" },
+                )
             }
         }
     }
