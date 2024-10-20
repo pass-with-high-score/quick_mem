@@ -1,19 +1,19 @@
 [versions]
-agp = "8.5.2"
+agp = "8.6.0"
 datastorePreferences = "1.1.1"
 easyvalidationCore = "1.0.4"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
-composeBom = "2024.09.02"
-ksp = "2.0.0-1.0.24"
-materialIconsExtended = "1.7.2"
+activityCompose = "1.9.3"
+composeBom = "2024.10.00"
+ksp = "2.0.20-1.0.25"
+materialIconsExtended = "1.7.4"
 # Serialization
-serialization = "2.0.0"
+serialization = "2.0.20"
 serialization-json = "1.7.1"
 serialization-core = "1.7.1"
 # Hilt
@@ -33,12 +33,12 @@ composeAnimations = "1.11.6"
 workRuntime = "2.9.1"
 accompanist = "0.34.0"
 jakewhartonTimber = "5.0.1"
-uiTextGoogleFonts = "1.7.2"
+uiTextGoogleFonts = "1.7.4"
 # Retrofit
 retrofit = "2.11.0"
 loggingInterceptor = "4.12.0"
 # PlayServices Ads
-playServicesAds = "23.1.0"
+playServicesAds = "23.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
