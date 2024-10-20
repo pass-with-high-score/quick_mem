@@ -23,7 +23,8 @@ android {
 
         val localProperties = Properties()
         try {
-            file(rootProject.file("local.properties")).inputStream().use { localProperties.load(it) }
+            file(rootProject.file("local.properties")).inputStream()
+                .use { localProperties.load(it) }
         } catch (e: Exception) {
             println("local.properties not found, using default values")
         }
@@ -74,14 +75,13 @@ android {
 }
 
 dependencies {
-    implementation("io.github.mr0xf00:easycrop:0.1.1")
-    implementation("io.ak1:drawbox:1.0.3")
-    implementation("io.ak1:rang-vikalp:1.0.0-alpha02")
-    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
-    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-messaging-ktx:24.0.2")
-    implementation("io.github.ehsannarmani:compose-charts:0.0.14")
+    implementation(libs.easycrop)
+    implementation(libs.drawbox)
+    implementation(libs.rang.vikalp)
+    implementation(libs.accompanist.permissions)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging.ktx)
 
     implementation(libs.play.services.ads)
 
