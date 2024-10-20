@@ -6,4 +6,5 @@ sealed class StudySetDetailUiEvent {
     data object NavigateToEditStudySet : StudySetDetailUiEvent()
     data object NavigateToEditFlashCard : StudySetDetailUiEvent()
     data object StudySetDeleted : StudySetDetailUiEvent()
+    data object StudySetProgressReset : StudySetDetailUiEvent()
 }

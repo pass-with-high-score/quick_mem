@@ -46,7 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
-import com.pwhs.quickmem.presentation.app.study_set.detail.ItemMenuBottomSheet
+import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 
 @OptIn(ExperimentalMaterial3Api::class)

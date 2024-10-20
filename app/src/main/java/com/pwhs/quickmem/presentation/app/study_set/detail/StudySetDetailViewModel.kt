@@ -74,6 +74,11 @@ class StudySetDetailViewModel @Inject constructor(
                 Timber.d("OnDeleteStudySetClicked")
                 deleteStudySet()
             }
+
+            is StudySetDetailUiAction.OnResetProgressClicked -> {
+                Timber.d("OnResetProgressClicked: ${event.id}")
+                resetProgress(event.id)
+            }
         }
     }
 
@@ -84,6 +89,7 @@ class StudySetDetailViewModel @Inject constructor(
                 when (resource) {
                     is Resources.Loading -> {
                         Timber.d("Loading")
+                        _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
@@ -100,13 +106,15 @@ class StudySetDetailViewModel @Inject constructor(
                                 createdAt = resource.data.createdAt,
                                 updatedAt = resource.data.updatedAt,
                                 colorModel = resource.data.color,
-                                linkShareCode = resource.data.linkShareCode ?: ""
+                                linkShareCode = resource.data.linkShareCode ?: "",
+                                isLoading = false,
                             )
                         }
                     }
 
                     is Resources.Error -> {
                         Timber.d("Error")
+                        _uiState.update { it.copy(isLoading = false) }
                     }
                 }
 
@@ -178,6 +186,31 @@ class StudySetDetailViewModel @Inject constructor(
 
                         is Resources.Error -> {
                             Timber.d("Error")
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun resetProgress(id: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            studySetRepository.resetProgress(token, id)
+                .collect { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+
+                        is Resources.Success -> {
+                            _uiState.update { it.copy(isLoading = false) }
+                            _uiEvent.send(StudySetDetailUiEvent.StudySetProgressReset)
+                        }
+
+                        is Resources.Error -> {
+                            Timber.d("Error")
+                            _uiState.update { it.copy(isLoading = false) }
                         }
                     }
                 }

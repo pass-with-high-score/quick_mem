@@ -81,6 +81,12 @@ interface ApiService {
         @Body updateStudySetRequestDto: UpdateStudySetRequestDto
     ): UpdateStudySetResponseDto
 
+    @PATCH("study-set/{id}/reset-progress")
+    suspend fun resetProgress(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
     @DELETE("study-set/{id}")
     suspend fun deleteStudySet(
         @Header("Authorization") token: String,

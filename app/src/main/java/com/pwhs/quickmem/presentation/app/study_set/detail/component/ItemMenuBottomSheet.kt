@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.detail
+package com.pwhs.quickmem.presentation.app.study_set.detail.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +26,7 @@ fun ItemMenuBottomSheet(
     color: Color? = null
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(48.dp)
             .clickable {
