@@ -105,4 +105,24 @@ class FlashCardRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getFlashCardsByStudySetId(
+        token: String,
+        studySetId: String
+    ): Flow<Resources<List<FlashCardResponseModel>>> {
+        return flow {
+            emit(Resources.Loading(true))
+            try {
+                val response = apiService.getFlashCardsByStudySetId(token, studySetId)
+                Timber.d("getFlashCardsByStudySetId: $response")
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

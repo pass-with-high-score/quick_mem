@@ -85,6 +85,8 @@ dependencies {
 
     implementation(libs.play.services.ads)
 
+    implementation(project(":compose-cardstack"))
+
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))

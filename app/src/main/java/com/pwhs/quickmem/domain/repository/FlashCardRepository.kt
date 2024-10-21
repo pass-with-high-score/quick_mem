@@ -28,4 +28,9 @@ interface FlashCardRepository {
         id: String,
         editFlashCardModel: EditFlashCardModel
     ): Flow<Resources<FlashCardResponseModel>>
+
+    suspend fun getFlashCardsByStudySetId(
+        token: String,
+        studySetId: String
+    ): Flow<Resources<List<FlashCardResponseModel>>>
 }

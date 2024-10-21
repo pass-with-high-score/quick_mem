@@ -93,6 +93,12 @@ interface ApiService {
         @Path("id") id: String
     )
 
+    @GET("/flashcard/study-set/{id}")
+    suspend fun getFlashCardsByStudySetId(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): List<FlashCardResponseDto>
+
     @POST("flashcard")
     suspend fun createFlashCard(
         @Header("Authorization") token: String,

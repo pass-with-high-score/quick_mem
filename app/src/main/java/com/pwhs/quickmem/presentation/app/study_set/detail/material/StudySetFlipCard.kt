@@ -43,7 +43,7 @@ fun calculateDynamicFontSize(text: String): androidx.compose.ui.unit.TextUnit {
 }
 
 @Composable
-fun FlipCard(
+fun StudySetFlipCard(
     frontText: String,
     backText: String,
     backImage: String? = null,

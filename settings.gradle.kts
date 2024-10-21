@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "QuickMem"
 include(":app")
+include(":compose-cardstack")
  

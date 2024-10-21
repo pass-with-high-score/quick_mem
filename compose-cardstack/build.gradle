@@ -1,0 +1,51 @@
+plugins {
+    id 'com.android.library'
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+}
+
+android {
+    namespace 'com.msusman.compose.cardstack'
+    compileSdk 35
+
+    defaultConfig {
+        minSdk 29
+        targetSdk 35
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.4.8'
+    }
+}
+
+dependencies {
+
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.runtime)
+    // Unit Test
+    testImplementation(libs.bundles.testing)
+    // Android Test
+    androidTestImplementation(libs.bundles.android.testing)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    // Debug Test
+    debugImplementation(libs.bundles.debugging)
+}
