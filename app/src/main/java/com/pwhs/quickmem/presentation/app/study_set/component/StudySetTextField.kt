@@ -20,6 +20,7 @@ fun StudySetTextField(
     modifier: Modifier = Modifier,
     title: String,
     value: String,
+    placeholder: String,
     onValueChange: (String) -> Unit,
     valueError: String
 ) {
@@ -38,7 +39,7 @@ fun StudySetTextField(
             shape = RoundedCornerShape(10.dp),
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text("Title") },
+            placeholder = { Text(placeholder) },
             isError = valueError.isNotEmpty(),
             supportingText = {
                 valueError.isNotEmpty().let {
