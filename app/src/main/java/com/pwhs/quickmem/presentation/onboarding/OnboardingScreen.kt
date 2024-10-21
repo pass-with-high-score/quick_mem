@@ -46,6 +46,8 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+
+
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,

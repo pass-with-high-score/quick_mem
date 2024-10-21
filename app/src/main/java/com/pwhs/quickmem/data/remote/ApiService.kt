@@ -6,7 +6,6 @@ import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
-import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
@@ -43,12 +42,6 @@ interface ApiService {
 
     @POST("auth/resend-verification-email")
     suspend fun resendVerificationEmail(@Body resendEmailRequestDto: ResendEmailRequestDto): OtpResponseDto
-
-    @PATCH("auth/user/fullname")
-    suspend fun updateFullName(
-        @Header("Authorization") token: String,
-        @Body updateFullNameRequestDto: UpdateFullNameRequestDto
-    )
 
     @Multipart
     @POST("upload")

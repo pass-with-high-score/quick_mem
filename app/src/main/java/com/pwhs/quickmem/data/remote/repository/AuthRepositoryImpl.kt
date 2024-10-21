@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
 import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
@@ -13,7 +12,6 @@ import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
-import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -104,23 +102,5 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateFullName(
-        token: String,
-        updateFullNameRequestModel: UpdateFullNameRequestModel
-    ): Flow<Resources<UpdateFullNameRequestModel>> {
-        return flow {
-            emit(Resources.Loading(true))
-            Timber.d("updateFullName: $updateFullNameRequestModel")
-            try {
-                val response = apiService.updateFullName(
-                    token,
-                    updateFullNameRequestModel.toDto()
-                )
-                Timber.d("updateFullName: $response")
-            } catch (e: Exception) {
-                Timber.e(e)
-                emit(Resources.Error(e.toString()))
-            }
-        }
-    }
+
 }
