@@ -31,7 +31,6 @@ class ProfileViewModel @Inject constructor(
     fun onEvent(event: ProfileUiAction) {
         when (event) {
             ProfileUiAction.LoadProfile -> loadProfile()
-            ProfileUiAction.Logout -> logout()
         }
     }
 
@@ -45,7 +44,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             appManager.clearAllData()
             tokenManager.clearTokens()
-            _uiEvent.send(ProfileUiEvent.Logout)
         }
     }
 }
