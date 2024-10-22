@@ -54,9 +54,11 @@ class StackState(
     var cardQueue = mutableListOf<CardSate>()
     private var dragOffsetX = 0f
     private var dragOffsetY = 0f
-    private var onSwiped: (Int) -> Unit = { }
+    private var onSwiped: (Int, Direction) -> Unit = { _, _ -> }
     private var onRewind: () -> Unit = { }
+    private var onChange: (Direction) -> Unit = { } // Add this line
     private var topCardIndex = 0
+
     fun initilize(
         direction: Direction,
         visibleCount: Int,
@@ -67,8 +69,9 @@ class StackState(
         rotationMaxDegree: Int,
         swipeDirection: SwipeDirection,
         swipeMethod: SwipeMethod,
-        onSwiped: (Int) -> Unit,
-        onRewind: () -> Unit
+        onSwiped: (Int, Direction) -> Unit,
+        onRewind: () -> Unit,
+        onChange: (Direction) -> Unit // Add this line
     ) {
         this.direction = direction
         this.visibleCount = visibleCount
@@ -81,12 +84,12 @@ class StackState(
         this.swipeMethod = swipeMethod
         this.onSwiped = onSwiped
         this.onRewind = onRewind
+        this.onChange = onChange // Assign the onChange callback
     }
 
-
     private fun getSwipeDirection(): Direction {
-        val isOffsetXNegative = dragOffsetX.isNegative()  //true if user dragged to left
-        val isOffsetYNegative = dragOffsetY.isNegative()  //true if user dragged to upward
+        val isOffsetXNegative = dragOffsetX.isNegative()  // true if user dragged to left
+        val isOffsetYNegative = dragOffsetY.isNegative()  // true if user dragged to upward
         val xThreshHoldReached = abs(dragOffsetX) > displacementThresholdpx
         val yThreshHoldReached = abs(dragOffsetY) > displacementThresholdpx
         return when {
@@ -102,13 +105,11 @@ class StackState(
             xThreshHoldReached -> if (isOffsetXNegative) Direction.Left else Direction.Right
             yThreshHoldReached -> if (isOffsetYNegative) Direction.Top else Direction.Bottom
             else -> Direction.None
-
         }
     }
 
-
     fun onDrag(change: PointerInputChange, dragAmount: Offset) = with(scope) {
-        if(cardQueue.firstOrNull()?.isAnimating() == true)return@with
+        if (cardQueue.firstOrNull()?.isAnimating() == true) return@with
         if (swipeMethod == SwipeMethod.AUTOMATIC || swipeMethod == SwipeMethod.AUTOMATIC_AND_MANUAL) {
             when (swipeDirection) {
                 SwipeDirection.FREEDOM -> {
@@ -122,6 +123,8 @@ class StackState(
             cardQueue.firstOrNull()?.snapToTranslation(Offset(dragOffsetX, dragOffsetY))
             val rotationZ = calculateRotation()
             cardQueue.firstOrNull()?.snapToRotation(rotationZ)
+            val swipeDirection = getSwipeDirection()
+            onChange(swipeDirection)
         }
         change.consume()
     }
@@ -133,12 +136,12 @@ class StackState(
         return if (dragOffsetX.isNegative() || dragOffsetY.isNegative()) finalRotationZ.unaryMinus() else finalRotationZ
     }
 
-
     fun onDragEnd() {
         val swipeDirection: Direction = getSwipeDirection()
         if (swipeMethod.isAutomaticSwipeAllowed()) {
             swipeInternal(swipeDirection)
         }
+        onChange(swipeDirection) // Call the onChange callback with the swipe direction
     }
 
     fun <T> initCardQueue(items: List<T>) {
@@ -197,7 +200,7 @@ class StackState(
                 cardQueue[index].translateTo(translateOffset)
                 cardQueue[index].scaleTo(scaleOffset)
             }
-            onSwiped(topCardIndex++)
+            onSwiped(topCardIndex++, swipeDirection)
         }
         dragOffsetX = 0f
         dragOffsetY = 0f
@@ -206,10 +209,4 @@ class StackState(
     fun rewind() {
         onRewind.invoke()
     }
-
-
 }
-
-
-
-

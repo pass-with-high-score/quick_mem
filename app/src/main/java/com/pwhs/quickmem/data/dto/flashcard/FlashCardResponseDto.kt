@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.data.dto.flashcard
 
 import com.google.gson.annotations.SerializedName
+import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.data.Rating
 
 data class FlashCardResponseDto(
@@ -20,6 +21,8 @@ data class FlashCardResponseDto(
     val studySetId: String,
     @SerializedName("rating")
     val rating: String = Rating.NOT_STUDIED.name,
+    @SerializedName("flipStatus")
+    val flipStatus: String = FlipCardStatus.NONE.name,
     @SerializedName("isStarred")
     val isStarred: Boolean,
     @SerializedName("createdAt")

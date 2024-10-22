@@ -159,6 +159,7 @@ class StudySetDetailViewModel @Inject constructor(
                         }
 
                         is Resources.Success -> {
+                            Timber.d(resource.data?.message)
                             _uiEvent.send(StudySetDetailUiEvent.FlashCardStarred)
                         }
 

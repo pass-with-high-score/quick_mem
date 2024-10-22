@@ -1,18 +1,13 @@
 package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.collection.floatSetOf
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
@@ -32,15 +27,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.msusman.compose.cardstack.CardStack
 import com.msusman.compose.cardstack.Direction
@@ -49,6 +42,7 @@ import com.msusman.compose.cardstack.SwipeDirection
 import com.msusman.compose.cardstack.SwipeMethod
 import com.msusman.compose.cardstack.rememberStackState
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardStatusRow
 import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyFlipFlashCard
 import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -82,6 +76,8 @@ fun FlipFlashCardScreen(
         modifier = modifier,
         flashCards = uiState.flashCardList,
         isLoading = uiState.isLoading,
+        isSwipingLeft = uiState.isSwipingLeft,
+        isSwipingRight = uiState.isSwipingRight,
         onBackClicked = {
             resultNavigator.setResult(true)
             navigator.navigateUp()
@@ -89,8 +85,20 @@ fun FlipFlashCardScreen(
         currentCardIndex = uiState.currentCardIndex,
         countKnown = uiState.countKnown,
         countStillLearning = uiState.countStillLearning,
-        onSwipe = { id ->
-            viewModel.onEvent(FlipFlashCardUiAction.OnSwipe(id))
+        onUpdatedCardIndex = { index ->
+            viewModel.onEvent(FlipFlashCardUiAction.OnUpdateCardIndex(index))
+        },
+        onSwipeRight = { isSwipingRight ->
+            viewModel.onEvent(FlipFlashCardUiAction.OnSwipeRight(isSwipingRight))
+        },
+        onSwipeLeft = { isSwipingLeft ->
+            viewModel.onEvent(FlipFlashCardUiAction.OnSwipeLeft(isSwipingLeft))
+        },
+        onUpdateCountKnown = { isIncrease ->
+            viewModel.onEvent(FlipFlashCardUiAction.OnUpdateCountKnown(isIncrease))
+        },
+        onUpdateCountStillLearning = { isIncrease ->
+            viewModel.onEvent(FlipFlashCardUiAction.OnUpdateCountStillLearning(isIncrease))
         }
     )
 }
@@ -104,8 +112,14 @@ fun FlipFlashCard(
     countStillLearning: Int = 0,
     flashCards: List<FlashCardResponseModel> = emptyList(),
     isLoading: Boolean = false,
+    isSwipingLeft: Boolean = false,
+    isSwipingRight: Boolean = false,
     onBackClicked: () -> Unit = { },
-    onSwipe: (String) -> Unit = { }
+    onUpdatedCardIndex: (Int) -> Unit = { },
+    onSwipeRight: (Boolean) -> Unit = { },
+    onSwipeLeft: (Boolean) -> Unit = { },
+    onUpdateCountKnown: (Boolean) -> Unit = { },
+    onUpdateCountStillLearning: (Boolean) -> Unit = { }
 ) {
     Timber.d("FlipFlashCard: $flashCards")
     Timber.d("FlipFlashCard: $isLoading")
@@ -115,7 +129,6 @@ fun FlipFlashCard(
     val settingBottomSheetState = rememberModalBottomSheetState()
     val stillLearningColor = Color(0xffd05700)
     val knownColor = Color(0xff18ae79)
-    val scope = rememberCoroutineScope()
     val stackState = rememberStackState()
     val suggestedText = listOf(
         "Tap the card to flip",
@@ -134,7 +147,7 @@ fun FlipFlashCard(
     Scaffold(
         topBar = {
             StudyTopAppBar(
-                currentCardIndex = 0,
+                currentCardIndex = currentCardIndex,
                 totalCards = flashCards.size,
                 onBackClicked = onBackClicked,
                 onSettingsClicked = {
@@ -144,7 +157,9 @@ fun FlipFlashCard(
         }
     ) { innerPadding ->
         Box(
-            modifier = modifier.padding(innerPadding)
+            modifier = modifier
+                .padding(innerPadding)
+                .zIndex(1f)
         ) {
             Column(
                 modifier = Modifier
@@ -159,127 +174,104 @@ fun FlipFlashCard(
                         if (currentProgress.isNaN()) 0f else currentProgress
                     }
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                FlipFlashCardStatusRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    countStillLearning = countStillLearning,
+                    countKnown = countKnown,
+                    stillLearningColor = stillLearningColor,
+                    knownColor = knownColor,
+                    suggestedText = suggestedText,
+                    currentTextIndex = currentTextIndex,
+                    isSwipingLeft = isSwipingLeft,
+                    isSwipingRight = isSwipingRight
+                )
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp)
+                        .weight(1f)
+                        .padding(10.dp)
+                        .zIndex(1f)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .height(45.dp)
-                            .width(65.dp)
-                            .border(
-                                width = 2.dp,
-                                color = stillLearningColor.copy(alpha = 0.4f),
-                                shape = RoundedCornerShape(
-                                    topEnd = 50.dp,
-                                    bottomEnd = 50.dp
-                                )
-                            )
-                            .background(
-                                color = stillLearningColor.copy(alpha = 0.1f),
-                                shape = RoundedCornerShape(
-                                    topEnd = 50.dp,
-                                    bottomEnd = 50.dp
-                                )
-                            ),
-                        contentAlignment = Alignment.CenterEnd,
-                        content = {
-                            Text(
-                                text = countStillLearning.toString(),
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = stillLearningColor
-                                ),
-                                modifier = Modifier.padding(end = 25.dp)
-                            )
-                        }
-                    )
+                    if (!isLoading && currentCardIndex < flashCards.size) {
+                        CardStack(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .zIndex(2f),
+                            stackState = stackState,
+                            cardElevation = 10.dp,
+                            scaleRatio = 0.95f,
+                            rotationMaxDegree = 20,
+                            displacementThreshold = 120.dp,
+                            animationDuration = Duration.NORMAL,
+                            visibleCount = if (flashCards.size > 1) flashCards.size - 1 else 1,
+                            stackDirection = Direction.Bottom,
+                            swipeDirection = SwipeDirection.FREEDOM,
+                            swipeMethod = SwipeMethod.AUTOMATIC_AND_MANUAL,
+                            items = flashCards,
+                            onSwiped = { index, direction ->
+                                Timber.d("Direction: ${direction.name}")
+                                onUpdatedCardIndex(index)
+                                when (direction) {
+                                    Direction.Left, Direction.TopAndLeft, Direction.BottomAndLeft, Direction.Top -> {
+                                        Timber.d("Still learning")
+                                        onUpdateCountStillLearning(true)
+                                    }
 
-                    AnimatedContent(
-                        targetState = currentTextIndex,
-                        content = { index ->
-                            Text(
-                                text = suggestedText[index],
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
+                                    Direction.Right, Direction.TopAndRight, Direction.BottomAndRight, Direction.Bottom -> {
+                                        onUpdateCountKnown(true)
+                                        Timber.d("Known")
+                                    }
 
-                    Box(
-                        modifier = Modifier
-                            .height(45.dp)
-                            .width(65.dp)
-                            .border(
-                                width = 2.dp,
-                                color = knownColor.copy(alpha = 0.4f),
-                                shape = RoundedCornerShape(
-                                    topStart = 50.dp,
-                                    bottomStart = 50.dp
-                                )
+                                    else -> {
+                                    }
+                                }
+                            },
+                            onChange = { direction ->
+                                when (direction) {
+                                    Direction.Left, Direction.TopAndLeft, Direction.BottomAndLeft, Direction.Top -> {
+                                        onSwipeLeft(true)
+                                        onSwipeRight(false)
+                                    }
+
+                                    Direction.Right, Direction.TopAndRight, Direction.BottomAndRight, Direction.Bottom -> {
+                                        onSwipeRight(true)
+                                        onSwipeLeft(false)
+                                    }
+
+                                    Direction.None -> {
+                                        onSwipeLeft(false)
+                                        onSwipeRight(false)
+                                    }
+                                }
+                            }
+                        ) {
+                            StudyFlipFlashCard(
+                                flashCard = it,
+                                modifier = Modifier.fillMaxSize(),
+                                isSwipingLeft = isSwipingLeft,
+                                isSwipingRight = isSwipingRight,
+                                stillLearningColor = stillLearningColor,
+                                knownColor = knownColor,
+                                isShowingEffect = currentCardIndex == flashCards.indexOf(it)
                             )
-                            .background(
-                                color = knownColor.copy(alpha = 0.1f),
-                                shape = RoundedCornerShape(
-                                    topStart = 50.dp,
-                                    bottomStart = 50.dp
-                                )
-                            ),
-                        contentAlignment = Alignment.CenterStart,
-                        content = {
+                        }
+
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text(
-                                text = countKnown.toString(),
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = knownColor
-                                ),
-                                modifier = Modifier.padding(start = 25.dp)
+                                text = "No flashcards available",
+                                style = MaterialTheme.typography.bodyLarge
                             )
                         }
-                    )
-                }
-                if (flashCards.isNotEmpty()) {
-                    CardStack(
-                        modifier = Modifier.padding(16.dp),
-                        stackState = stackState,
-                        cardElevation = 10.dp,
-                        scaleRatio = 0.95f,
-                        rotationMaxDegree = 20,
-                        displacementThreshold = 120.dp,
-                        animationDuration = Duration.NORMAL,
-                        visibleCount = if (flashCards.size > 1) flashCards.size - 1 else 1,
-                        stackDirection = Direction.Bottom,
-                        swipeDirection = SwipeDirection.FREEDOM,
-                        swipeMethod = SwipeMethod.AUTOMATIC_AND_MANUAL,
-                        items = flashCards,
-                        onSwiped = { index ->
-                            Timber.d("Swiped: $index")
-//                            onSwipe(flashCards[index].id)
-                        }
-                    ) {
-                        StudyFlipFlashCard(
-                            flashCard = it,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "No flashcards available",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
                     }
                 }
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(10.dp)
                 ) {
                     IconButton(
                         onClick = {}

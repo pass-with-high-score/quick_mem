@@ -22,13 +22,13 @@ fun StudyTopAppBar(
     currentCardIndex: Int,
     totalCards: Int,
     onBackClicked: () -> Unit,
-    onSettingsClicked: () -> Unit
+    onSettingsClicked: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
             Text(
-                text = "Card ${currentCardIndex + 1} of $totalCards",
+                text = "Card $currentCardIndex of $totalCards",
                 style = typography.titleMedium.copy(
                     fontWeight = typography.titleMedium.fontWeight,
                 )

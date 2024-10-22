@@ -10,7 +10,9 @@ import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
+import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -123,5 +125,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body toggleStarredFlashCardDto: ToggleStarredFlashCardDto
-    ): FlashCardResponseDto
+    ): UpdateFlashCardResponseDto
+
+    @PATCH("flashcard/{id}/flip-status")
+    suspend fun updateFlipFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body flipFlashCardDto: FlipFlashCardDto
+    ): UpdateFlashCardResponseDto
 }

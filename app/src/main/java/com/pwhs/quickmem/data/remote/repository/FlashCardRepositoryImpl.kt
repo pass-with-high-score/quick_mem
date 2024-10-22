@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.mapper.flashcard.toDto
 import com.pwhs.quickmem.data.mapper.flashcard.toModel
@@ -8,6 +9,7 @@ import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.EditFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.domain.model.flashcard.UpdateFlashCardResponseModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -60,7 +62,7 @@ class FlashCardRepositoryImpl @Inject constructor(
         token: String,
         id: String,
         isStarred: Boolean
-    ): Flow<Resources<Unit>> {
+    ): Flow<Resources<UpdateFlashCardResponseModel>> {
         return flow {
             emit(Resources.Loading(true))
             try {
@@ -69,7 +71,7 @@ class FlashCardRepositoryImpl @Inject constructor(
                     ToggleStarredFlashCardDto(isStarred)
                 )
                 Timber.d("toggleStarredFlashCard: $response")
-                emit(Resources.Success(Unit))
+                emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
@@ -95,6 +97,27 @@ class FlashCardRepositoryImpl @Inject constructor(
                     editFlashCardModel.toDto()
                 )
                 Timber.d("updateFlashCard: $response")
+                emit(Resources.Success(response.toModel()))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateFlipFlashCard(
+        token: String,
+        id: String,
+        flipStatus: String
+    ): Flow<Resources<UpdateFlashCardResponseModel>> {
+        return flow {
+            try {
+                val response =
+                    apiService.updateFlipFlashCard(token, id, FlipFlashCardDto(flipStatus))
+                Timber.d("updateFlipFlashCard: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)

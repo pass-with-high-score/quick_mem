@@ -3,12 +3,14 @@ package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,6 +65,61 @@ class FlipFlashCardViewModel @Inject constructor(
                     _uiState.update { it.copy(flashCardList = flashCardList) }
                 }
             }
+
+            is FlipFlashCardUiAction.OnUpdateCardIndex -> {
+                Timber.d("UpdateCardIndex: ${event.index}")
+                _uiState.update { it.copy(currentCardIndex = it.currentCardIndex + 1) }
+            }
+
+            is FlipFlashCardUiAction.OnSwipeLeft -> {
+                _uiState.update { it.copy(isSwipingLeft = event.isSwipingLeft) }
+            }
+
+            is FlipFlashCardUiAction.OnSwipeRight -> {
+                _uiState.update { it.copy(isSwipingRight = event.isSwipingRight) }
+            }
+
+            is FlipFlashCardUiAction.OnUpdateCountKnown -> {
+                if (event.isIncrease) {
+                    _uiState.update {
+                        it.copy(
+                            countKnown = it.countKnown + 1,
+                            isSwipingRight = false
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            countKnown = it.countKnown - 1,
+                            isSwipingRight = false
+                        )
+                    }
+                }
+                updateFlashCardFlipStatus(
+                    isRight = true
+                )
+            }
+
+            is FlipFlashCardUiAction.OnUpdateCountStillLearning -> {
+                if (event.isIncrease) {
+                    _uiState.update {
+                        it.copy(
+                            countStillLearning = it.countStillLearning + 1,
+                            isSwipingLeft = false
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            countStillLearning = it.countStillLearning - 1,
+                            isSwipingLeft = false
+                        )
+                    }
+                }
+                updateFlashCardFlipStatus(
+                    isRight = false
+                )
+            }
         }
     }
 
@@ -92,6 +149,42 @@ class FlipFlashCardViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun updateFlashCardFlipStatus(
+        isRight: Boolean
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val currentIndex = _uiState.value.currentCardIndex - 1
+            Timber.d("CurrentIndex: $currentIndex")
+            val flashCardList = _uiState.value.flashCardList
+
+            if (currentIndex in flashCardList.indices) {
+                val id = flashCardList[currentIndex].id
+                val flipStatus =
+                    if (isRight) FlipCardStatus.KNOW.name else FlipCardStatus.STILL_LEARNING.name
+                Timber.d("UpdateFlipStatus: $id, $flipStatus")
+                flashCardRepository.updateFlipFlashCard(token, id, flipStatus)
+                    .collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                Timber.e(resource.message)
+                            }
+
+                            is Resources.Loading -> {
+                                Timber.d("Loading")
+                            }
+
+                            is Resources.Success -> {
+                                Timber.d("Success ${resource.data?.flipStatus}")
+                            }
+                        }
+                    }
+            } else {
+                Timber.e("Invalid currentCardIndex: $currentIndex")
+            }
         }
     }
 }

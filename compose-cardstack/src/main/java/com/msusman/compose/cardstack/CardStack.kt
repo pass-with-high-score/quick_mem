@@ -47,7 +47,8 @@ fun <T> CardStack(
     @IntRange(from = 0, to = 360) rotationMaxDegree: Int = 20,
     swipeDirection: SwipeDirection = SwipeDirection.FREEDOM,
     swipeMethod: SwipeMethod = SwipeMethod.AUTOMATIC_AND_MANUAL,
-    onSwiped: (Int) -> Unit = { _ -> },
+    onSwiped: (Int, Direction) -> Unit = { _, _ -> },
+    onChange: (Direction) -> Unit = { _ -> },
     items: List<T>,
     content: @Composable (item: T) -> Unit
 ) {
@@ -65,8 +66,8 @@ fun <T> CardStack(
         "rotationMaxDegree must be between 0 and 360 (inclusive)"
     }
     val density = LocalDensity.current
-    val onCardSwiped: (Int) -> Unit = {
-        onSwiped.invoke(it)
+    val onCardSwiped: (Int, Direction) -> Unit = { index, direction ->
+        onSwiped.invoke(index, direction)
     }
     var rewind by remember { mutableStateOf(0) }
     val onRewind: () -> Unit = {
@@ -85,6 +86,7 @@ fun <T> CardStack(
         swipeMethod = swipeMethod,
         onSwiped = onCardSwiped,
         onRewind = onRewind,
+        onChange = onChange
     )
 
     //calculate stack padding based on number of card visible

@@ -1,9 +1,11 @@
 package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.EditFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.domain.model.flashcard.UpdateFlashCardResponseModel
 import kotlinx.coroutines.flow.Flow
 
 interface FlashCardRepository {
@@ -21,13 +23,19 @@ interface FlashCardRepository {
         token: String,
         id: String,
         isStarred: Boolean
-    ): Flow<Resources<Unit>>
+    ): Flow<Resources<UpdateFlashCardResponseModel>>
 
     suspend fun updateFlashCard(
         token: String,
         id: String,
         editFlashCardModel: EditFlashCardModel
     ): Flow<Resources<FlashCardResponseModel>>
+
+    suspend fun updateFlipFlashCard(
+        token: String,
+        id: String,
+        flipStatus: String
+    ): Flow<Resources<UpdateFlashCardResponseModel>>
 
     suspend fun getFlashCardsByStudySetId(
         token: String,
