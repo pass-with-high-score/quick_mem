@@ -93,6 +93,7 @@ class UpdateFullNameViewModel @Inject constructor(
                                 isLoading = false
                             )
                         }
+                        _uiEvent.send(UpdateFullNameUIEvent.UpdateSuccess)
                     }
                 }
             }

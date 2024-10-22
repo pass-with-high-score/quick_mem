@@ -34,17 +34,17 @@ fun UpdateFullNameScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    // Lắng nghe sự kiện UI từ ViewModel
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UpdateFullNameUIEvent.UpdateSuccess -> {
-                    viewModel.onEvent(UpdateFullNameUIAction.Submit)
-                    Toast.makeText(
-                        context,
-                        "Update Successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    navigator.navigate(HomeScreenDestination) {
+                        popUpTo(HomeScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
                 }
 
                 is UpdateFullNameUIEvent.ShowError -> {
@@ -66,12 +66,6 @@ fun UpdateFullNameScreen(
         },
         onSubmitClick = {
             viewModel.onEvent(UpdateFullNameUIAction.Submit)
-            navigator.navigate(HomeScreenDestination) {
-                popUpTo(HomeScreenDestination) {
-                    inclusive = true
-                    launchSingleTop = true
-                }
-            }
         }
     )
 }
@@ -173,7 +167,6 @@ fun UpdateFullNameUI(
             Button(
                 onClick = {
                     onSubmitClick()
-
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
