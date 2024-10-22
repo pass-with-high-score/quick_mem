@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.sp
 fun ProgressTabScreen(
     modifier: Modifier = Modifier,
     totalStudySet: Int = 0,
-    studySetsNotLearn: Int = 0,
-    studySetsStillLearn: Int = 0,
-    studySetsMastered: Int = 0,
+    studySetsNotLearnCount: Int = 0,
+    studySetsStillLearningCount: Int = 0,
+    studySetsKnowCount: Int = 0,
     color: Color = MaterialTheme.colorScheme.primary
 ) {
     Scaffold { innerPadding ->
@@ -51,25 +51,25 @@ fun ProgressTabScreen(
                 ) {
                     StudySetDonutChart(
                         color = color,
-                        studySetsNotLearn = studySetsNotLearn,
-                        studySetsStillLearn = studySetsStillLearn,
-                        studySetsMastered = studySetsMastered
+                        studySetsNotLearn = studySetsNotLearnCount,
+                        studySetsStillLearn = studySetsStillLearningCount,
+                        studySetsMastered = studySetsKnowCount
                     )
                     ProgressRow(
                         label = "Not learned",
-                        percentage = studySetsNotLearn * 100 / totalStudySet,
+                        percentage = studySetsNotLearnCount * 100 / totalStudySet,
                         color = color.copy(alpha = 0.6f)
                     )
 
                     ProgressRow(
                         label = "Still learning",
-                        percentage = studySetsStillLearn * 100 / totalStudySet,
+                        percentage = studySetsStillLearningCount * 100 / totalStudySet,
                         color = color.copy(alpha = 0.8f)
                     )
 
                     ProgressRow(
-                        label = "Mastered",
-                        percentage = studySetsMastered * 100 / totalStudySet,
+                        label = "Learn",
+                        percentage = studySetsKnowCount * 100 / totalStudySet,
                         color = color
                     )
                 }
@@ -85,9 +85,9 @@ private fun PressTabScreen() {
     MaterialTheme {
         ProgressTabScreen(
             totalStudySet = 10,
-            studySetsNotLearn = 3,
-            studySetsStillLearn = 4,
-            studySetsMastered = 3
+            studySetsNotLearnCount = 3,
+            studySetsStillLearningCount = 4,
+            studySetsKnowCount = 3
         )
     }
     

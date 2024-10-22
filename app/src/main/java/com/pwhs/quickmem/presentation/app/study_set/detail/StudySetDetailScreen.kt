@@ -401,9 +401,9 @@ fun StudySetDetail(
                     1 -> ProgressTabScreen(
                         totalStudySet = flashCardCount,
                         color = color,
-                        studySetsNotLearn = flashCards.count { it.rating == "NOT_STUDIED" },
-                        studySetsStillLearn = flashCards.count { it.rating == "STILL_LEARNING" },
-                        studySetsMastered = flashCards.count { it.rating == "MASTERED" },
+                        studySetsNotLearnCount = flashCards.count { it.flipStatus == "NONE" },
+                        studySetsStillLearningCount = flashCards.count { it.flipStatus == "STILL_LEARNING" },
+                        studySetsKnowCount = flashCards.count { it.flipStatus == "KNOW" },
                     )
                 }
 

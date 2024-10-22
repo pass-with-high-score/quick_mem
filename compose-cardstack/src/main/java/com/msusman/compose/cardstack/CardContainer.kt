@@ -2,12 +2,9 @@ package com.msusman.compose.cardstack
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.msusman.compose.cardstack.internal.visible
 
@@ -28,8 +25,7 @@ fun CardContainer(stackState: StackState, index: Int, content: @Composable () ->
                 scaleX = cardState.scaleX.value
                 scaleY = cardState.scaleY.value
                 rotationZ = cardState.rotation.value
-            }
-            .shadow(4.dp, RoundedCornerShape(12.dp)),
+            },
     ) {
         content()
     }

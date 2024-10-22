@@ -15,6 +15,7 @@ data class FlipFlashCardUiState(
     val flashCardList: List<FlashCardResponseModel> = emptyList(),
     val currentCardIndex: Int = 0,
     val isSwipingLeft: Boolean = false,
+    val isEndOfList: Boolean = false,
     val isSwipingRight: Boolean = false,
     val countKnown: Int = 0,
     val countStillLearning: Int = 0,

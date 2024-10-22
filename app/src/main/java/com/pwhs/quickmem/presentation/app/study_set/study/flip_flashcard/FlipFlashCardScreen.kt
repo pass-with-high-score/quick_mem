@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
 
-import androidx.collection.floatSetOf
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,6 +77,7 @@ fun FlipFlashCardScreen(
         isLoading = uiState.isLoading,
         isSwipingLeft = uiState.isSwipingLeft,
         isSwipingRight = uiState.isSwipingRight,
+        isEndOfList = uiState.isEndOfList,
         onBackClicked = {
             resultNavigator.setResult(true)
             navigator.navigateUp()
@@ -114,6 +114,7 @@ fun FlipFlashCard(
     isLoading: Boolean = false,
     isSwipingLeft: Boolean = false,
     isSwipingRight: Boolean = false,
+    isEndOfList: Boolean = false,
     onBackClicked: () -> Unit = { },
     onUpdatedCardIndex: (Int) -> Unit = { },
     onSwipeRight: (Boolean) -> Unit = { },
@@ -167,7 +168,7 @@ fun FlipFlashCard(
                     .align(Alignment.TopCenter)
             ) {
                 val currentProgress =
-                    if (flashCards.isNotEmpty()) currentCardIndex / flashCards.size.toFloat() else 0f
+                    if (flashCards.isNotEmpty()) (currentCardIndex + 1) / flashCards.size.toFloat() else 0f
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
                     progress = {
@@ -191,79 +192,87 @@ fun FlipFlashCard(
                         .padding(10.dp)
                         .zIndex(1f)
                 ) {
-                    if (!isLoading && currentCardIndex < flashCards.size) {
-                        CardStack(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .zIndex(2f),
-                            stackState = stackState,
-                            cardElevation = 10.dp,
-                            scaleRatio = 0.95f,
-                            rotationMaxDegree = 20,
-                            displacementThreshold = 120.dp,
-                            animationDuration = Duration.NORMAL,
-                            visibleCount = if (flashCards.size > 1) flashCards.size - 1 else 1,
-                            stackDirection = Direction.Bottom,
-                            swipeDirection = SwipeDirection.FREEDOM,
-                            swipeMethod = SwipeMethod.AUTOMATIC_AND_MANUAL,
-                            items = flashCards,
-                            onSwiped = { index, direction ->
-                                Timber.d("Direction: ${direction.name}")
-                                onUpdatedCardIndex(index)
-                                when (direction) {
-                                    Direction.Left, Direction.TopAndLeft, Direction.BottomAndLeft, Direction.Top -> {
-                                        Timber.d("Still learning")
-                                        onUpdateCountStillLearning(true)
-                                    }
+                    Timber.d("CurrentCardIndex: $currentCardIndex")
+                    Timber.d("FlashCardss: ${flashCards.size}")
+                    Timber.d("${currentCardIndex < flashCards.size}")
+                    when (isEndOfList) {
+                        false -> {
+                            if (flashCards.isNotEmpty()) {
+                                CardStack(
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .zIndex(2f),
+                                    stackState = stackState,
+                                    cardElevation = 10.dp,
+                                    scaleRatio = 0.95f,
+                                    rotationMaxDegree = 0,
+                                    displacementThreshold = 120.dp,
+                                    animationDuration = Duration.NORMAL,
+                                    visibleCount = if (flashCards.size > 1) flashCards.size - 1 else 1,
+                                    stackDirection = Direction.Bottom,
+                                    swipeDirection = SwipeDirection.FREEDOM,
+                                    swipeMethod = SwipeMethod.AUTOMATIC_AND_MANUAL,
+                                    items = flashCards,
+                                    onSwiped = { index, direction ->
+                                        Timber.d("Direction: ${direction.name}")
+                                        onUpdatedCardIndex(index)
+                                        when (direction) {
+                                            Direction.Left, Direction.TopAndLeft, Direction.BottomAndLeft, Direction.Top -> {
+                                                Timber.d("Still learning")
+                                                onUpdateCountStillLearning(true)
+                                            }
 
-                                    Direction.Right, Direction.TopAndRight, Direction.BottomAndRight, Direction.Bottom -> {
-                                        onUpdateCountKnown(true)
-                                        Timber.d("Known")
-                                    }
+                                            Direction.Right, Direction.TopAndRight, Direction.BottomAndRight, Direction.Bottom -> {
+                                                onUpdateCountKnown(true)
+                                                Timber.d("Known")
+                                            }
 
-                                    else -> {
-                                    }
-                                }
-                            },
-                            onChange = { direction ->
-                                when (direction) {
-                                    Direction.Left, Direction.TopAndLeft, Direction.BottomAndLeft, Direction.Top -> {
-                                        onSwipeLeft(true)
-                                        onSwipeRight(false)
-                                    }
+                                            else -> {
+                                            }
+                                        }
+                                    },
+                                    onChange = { direction ->
+                                        when (direction) {
+                                            Direction.Left, Direction.TopAndLeft, Direction.BottomAndLeft, Direction.Top -> {
+                                                onSwipeLeft(true)
+                                                onSwipeRight(false)
+                                            }
 
-                                    Direction.Right, Direction.TopAndRight, Direction.BottomAndRight, Direction.Bottom -> {
-                                        onSwipeRight(true)
-                                        onSwipeLeft(false)
-                                    }
+                                            Direction.Right, Direction.TopAndRight, Direction.BottomAndRight, Direction.Bottom -> {
+                                                onSwipeRight(true)
+                                                onSwipeLeft(false)
+                                            }
 
-                                    Direction.None -> {
-                                        onSwipeLeft(false)
-                                        onSwipeRight(false)
+                                            Direction.None -> {
+                                                onSwipeLeft(false)
+                                                onSwipeRight(false)
+                                            }
+                                        }
                                     }
+                                ) {
+                                    StudyFlipFlashCard(
+                                        flashCard = it,
+                                        modifier = Modifier.fillMaxSize(),
+                                        isSwipingLeft = isSwipingLeft,
+                                        isSwipingRight = isSwipingRight,
+                                        stillLearningColor = stillLearningColor,
+                                        knownColor = knownColor,
+                                        isShowingEffect = currentCardIndex == flashCards.indexOf(it)
+                                    )
                                 }
                             }
-                        ) {
-                            StudyFlipFlashCard(
-                                flashCard = it,
-                                modifier = Modifier.fillMaxSize(),
-                                isSwipingLeft = isSwipingLeft,
-                                isSwipingRight = isSwipingRight,
-                                stillLearningColor = stillLearningColor,
-                                knownColor = knownColor,
-                                isShowingEffect = currentCardIndex == flashCards.indexOf(it)
-                            )
                         }
 
-                    } else {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No flashcards available",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                        true -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "No flashcards available",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
                         }
                     }
                 }

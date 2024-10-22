@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -116,6 +120,7 @@ fun StudyFlipFlashCard(
                             scaleY = effectScale,
                             alpha = effectAlpha
                         )
+                        .padding(vertical = 16.dp)
                 ) {
                     when {
                         isShowingEffect -> when {
@@ -123,8 +128,9 @@ fun StudyFlipFlashCard(
                                 Text(
                                     text = "Still Learning",
                                     style = typography.bodyLarge.copy(
-                                        fontSize = 30.sp,
-                                        color = stillLearningColor
+                                        fontSize = 20.sp,
+                                        color = stillLearningColor,
+                                        fontWeight = FontWeight.Black
                                     )
                                 )
                             }
@@ -133,8 +139,9 @@ fun StudyFlipFlashCard(
                                 Text(
                                     text = "Known",
                                     style = typography.bodyLarge.copy(
-                                        fontSize = 30.sp,
-                                        color = knownColor
+                                        fontSize = 20.sp,
+                                        color = knownColor,
+                                        fontWeight = FontWeight.Black
                                     )
                                 )
                             }
@@ -143,19 +150,23 @@ fun StudyFlipFlashCard(
                                 Text(
                                     text = flashCard.term,
                                     style = typography.bodyLarge.copy(
-                                        fontSize = 30.sp
-                                    )
+                                        fontSize = when {
+                                            // tiny
+                                            flashCard.term.length <= 5 -> 30.sp
+                                            // small
+                                            flashCard.term.length <= 10 -> 25.sp
+                                            // medium
+                                            flashCard.term.length <= 15 -> 20.sp
+                                            // large
+                                            else -> 15.sp
+                                        }
+                                    ),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .padding(40.dp)
+                                        .wrapContentSize(Alignment.Center),
                                 )
                             }
-                        }
-
-                        else -> {
-                            Text(
-                                text = flashCard.term,
-                                style = typography.bodyLarge.copy(
-                                    fontSize = 30.sp
-                                )
-                            )
                         }
                     }
                 }
@@ -178,6 +189,7 @@ fun StudyFlipFlashCard(
                             scaleY = effectScale,
                             alpha = effectAlpha
                         )
+                        .padding(vertical = 16.dp)
                 ) {
                     when {
                         isShowingEffect -> when {
@@ -185,8 +197,9 @@ fun StudyFlipFlashCard(
                                 Text(
                                     text = "Still Learning",
                                     style = typography.bodyLarge.copy(
-                                        fontSize = 30.sp,
-                                        color = stillLearningColor
+                                        fontSize = 20.sp,
+                                        color = stillLearningColor,
+                                        fontWeight = FontWeight.Black
                                     )
                                 )
                             }
@@ -195,45 +208,61 @@ fun StudyFlipFlashCard(
                                 Text(
                                     text = "Known",
                                     style = typography.bodyLarge.copy(
-                                        fontSize = 30.sp,
-                                        color = knownColor
-                                    )
+                                        fontSize = 20.sp,
+                                        color = knownColor,
+                                        fontWeight = FontWeight.Black
+                                    ),
+                                    modifier = Modifier
+                                        .padding(40.dp)
+                                        .wrapContentSize(Alignment.Center),
+                                    softWrap = true
                                 )
                             }
 
                             else -> {
-                                AsyncImage(
-                                    model = flashCard.definitionImageURL ?: "",
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(200.dp)
-                                        .padding(16.dp)
-                                )
-                                Text(
-                                    text = flashCard.definition,
-                                    style = typography.bodyLarge.copy(
-                                        fontSize = 30.sp
-                                    ),
-                                )
+                                LazyColumn(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                    modifier = Modifier.padding(40.dp)
+                                ) {
+                                    item {
+                                        flashCard.definitionImageURL?.let { url ->
+                                            if (url.isEmpty()) {
+                                                return@let
+                                            }
+                                            AsyncImage(
+                                                model = flashCard.definitionImageURL,
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .size(200.dp)
+                                                    .padding(16.dp)
+                                            )
+                                        }
+                                    }
+                                    item {
+                                        Text(
+                                            text = flashCard.definition,
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = when {
+                                                    // tiny
+                                                    flashCard.definition.length <= 5 -> 30.sp
+                                                    // small
+                                                    flashCard.definition.length <= 10 -> 25.sp
+                                                    // medium
+                                                    flashCard.definition.length <= 15 -> 20.sp
+                                                    // large
+                                                    else -> 15.sp
+                                                }
+                                            ),
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .wrapContentSize(Alignment.Center),
+                                            softWrap = true
+                                        )
+                                    }
+                                }
                             }
-                        }
-
-                        else -> {
-                            AsyncImage(
-                                model = flashCard.definitionImageURL ?: "",
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(200.dp)
-                                    .padding(16.dp)
-                            )
-                            Text(
-                                text = flashCard.definition,
-                                style = typography.bodyLarge.copy(
-                                    fontSize = 30.sp
-                                ),
-                            )
                         }
                     }
                 }

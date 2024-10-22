@@ -28,7 +28,7 @@ fun StudyTopAppBar(
         modifier = modifier,
         title = {
             Text(
-                text = "Card $currentCardIndex of $totalCards",
+                text = "Card ${currentCardIndex + 1} of $totalCards",
                 style = typography.titleMedium.copy(
                     fontWeight = typography.titleMedium.fontWeight,
                 )

@@ -68,7 +68,13 @@ class FlipFlashCardViewModel @Inject constructor(
 
             is FlipFlashCardUiAction.OnUpdateCardIndex -> {
                 Timber.d("UpdateCardIndex: ${event.index}")
-                _uiState.update { it.copy(currentCardIndex = it.currentCardIndex + 1) }
+                if (event.index == _uiState.value.flashCardList.size - 1) {
+                    _uiState.update { it.copy(isEndOfList = true) }
+                    return
+//                    _uiEvent.offer(FlipFlashCardUiEvent.OnFinishStudySet)
+                } else {
+                    _uiState.update { it.copy(currentCardIndex = it.currentCardIndex + 1) }
+                }
             }
 
             is FlipFlashCardUiAction.OnSwipeLeft -> {

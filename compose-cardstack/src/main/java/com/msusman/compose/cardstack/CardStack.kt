@@ -53,7 +53,7 @@ fun <T> CardStack(
     content: @Composable (item: T) -> Unit
 ) {
     Log.d("CardStack", "visibleCount: $visibleCount")
-    require(visibleCount in 1 until items.size) {
+    require(visibleCount in 1 until items.size + 1) {
         "visibilityCount must be greater than 0 and less than items size"
     }
     require(cardElevation >= 0.dp) {
