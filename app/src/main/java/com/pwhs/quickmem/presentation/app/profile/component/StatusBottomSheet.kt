@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.status.StatusModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,10 +48,12 @@ fun StatusBottomSheet(
                     "Select Status",
                     style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                 )
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(statuses) { status ->
                         Row(
@@ -65,9 +66,9 @@ fun StatusBottomSheet(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
-                                painter = painterResource(id = status.iconRes ?: R.drawable.ic_school),
+                                painter = painterResource(id = status.iconRes!!),
                                 contentDescription = status.name,
-                                tint = status.color ?: Color.Black,
+                                tint = status.color!!,
                                 modifier = Modifier.size(24.dp)
                             )
 
@@ -79,6 +80,7 @@ fun StatusBottomSheet(
                                 ),
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(vertical = 10.dp)
                                     .padding(start = 10.dp)
                             )
                         }
@@ -88,4 +90,5 @@ fun StatusBottomSheet(
         }
     }
 }
+
 

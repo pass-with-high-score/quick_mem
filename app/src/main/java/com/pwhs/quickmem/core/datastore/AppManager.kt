@@ -14,6 +14,7 @@ class AppManager(private val context: Context) {
         val IS_FIRST_RUN = booleanPreferencesKey("IS_FIRST_RUN")
         val IS_LOGGED_IN = booleanPreferencesKey("IS_LOGGED_IN")
         val USER_ID = stringPreferencesKey("USER_ID")
+        val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -53,6 +54,17 @@ class AppManager(private val context: Context) {
     suspend fun clearAllData() {
         context.dataStore.edit { preferences ->
             preferences.clear()
+        }
+    }
+
+    val userEmail: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_EMAIL] ?: ""
+        }
+
+    suspend fun saveUserEmail(email: String) {
+        context.dataStore.edit { preferences ->
+            preferences[USER_EMAIL] = email
         }
     }
 }

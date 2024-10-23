@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.profile.profile
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,15 +33,24 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.status.StatusModel
+import com.pwhs.quickmem.domain.model.status.getSelectedStatusId
+import com.pwhs.quickmem.domain.model.status.getUserName
+import com.pwhs.quickmem.domain.model.status.saveSelectedStatusId
+import com.pwhs.quickmem.domain.model.status.saveUserName
+import com.pwhs.quickmem.presentation.app.profile.ProfileViewModel
 import com.pwhs.quickmem.presentation.app.profile.component.ProfileTextField
 import com.pwhs.quickmem.presentation.app.profile.component.StatusBottomSheet
 import com.pwhs.quickmem.presentation.app.profile.component.StatusInputField
 
 @Composable
 fun TabProfileScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier ,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
 
@@ -51,16 +61,21 @@ fun TabProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        ProfileTab()
+        ProfileTab(viewModel = viewModel, context = LocalContext.current)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileTab() {
-    var name by remember { mutableStateOf("Huân") }
-    var email by remember { mutableStateOf("huanhvph35061@fpt.edu.vn") }
-    var status by remember { mutableStateOf(StatusModel.defaultStatuses.first()) }
+fun ProfileTab(
+    viewModel: ProfileViewModel,
+    context: Context
+) {
+    val email by viewModel.emailState.collectAsState()
+    var name by remember { mutableStateOf(getUserName(context) ?: "") }
+    var inputName by remember { mutableStateOf(name) }
+    var selectedStatusId by remember { mutableStateOf(getSelectedStatusId(context)) }
+    val status = StatusModel.defaultStatuses.first { it.id == selectedStatusId }
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -78,17 +93,20 @@ fun ProfileTab() {
         ) {
             ProfileTextField(
                 title = "Name",
-                value = name,
+                value = inputName,
                 placeholder = "Enter your name",
-                onValueChange = { name = it },
-                valueError = if (name.isEmpty()) "Name cannot be empty" else ""
+                onValueChange = { newValue ->
+                    inputName = newValue
+                    saveUserName(context, newValue)
+                },
+                valueError = if (inputName.isEmpty()) "Name cannot be empty" else ""
             )
 
             ProfileTextField(
                 title = "Email",
                 value = email,
                 placeholder = "Enter your email",
-                onValueChange = { email = it },
+                onValueChange = { /* Add edit email functionality */ },
                 valueError = if (email.isEmpty()) "Email cannot be empty" else ""
             )
 
@@ -110,7 +128,7 @@ fun ProfileTab() {
             }
 
             StatusInputField(
-                statusModel = StatusModel(),
+                statusModel = status,
                 onShowBottomSheet = { showBottomSheet = true }
             )
 
@@ -176,12 +194,14 @@ fun ProfileTab() {
             }
         }
     }
+
     StatusBottomSheet(
         showBottomSheet = showBottomSheet,
         sheetState = sheetState,
         statuses = StatusModel.defaultStatuses,
-        onStatusSelected = {
-            status = it
+        onStatusSelected = { selectedStatus ->
+            selectedStatusId = selectedStatus.id
+            saveSelectedStatusId(context, selectedStatus.id)
             showBottomSheet = false
         },
         onDismissRequest = {
@@ -189,6 +209,8 @@ fun ProfileTab() {
         }
     )
 }
+
+
 
 
 

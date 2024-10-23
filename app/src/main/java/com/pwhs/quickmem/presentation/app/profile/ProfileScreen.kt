@@ -29,6 +29,8 @@ import com.pwhs.quickmem.presentation.app.profile.statics.TabStatisticsScreen
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
+
 
 @Composable
 @Destination<RootGraph>
@@ -54,7 +56,7 @@ fun ProfileScreen(
         topBar = {
             ProfileTopBar(
                 onSettingsClick = {
-
+                    navigator.navigate(SettingsScreenDestination)
                 },
                 onShareClick = {
 

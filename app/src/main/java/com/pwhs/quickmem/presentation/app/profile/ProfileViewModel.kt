@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -16,9 +17,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val appManager: AppManager,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
+    private val _emailState = MutableStateFlow("")
+    val emailState = _emailState.asStateFlow()
     val uiState = _uiState.asStateFlow()
 
     private val _uiEvent = Channel<ProfileUiEvent>()
@@ -26,6 +29,10 @@ class ProfileViewModel @Inject constructor(
 
     init {
         onEvent(ProfileUiAction.LoadProfile)
+    }
+
+    init {
+        loadEmail()
     }
 
     fun onEvent(event: ProfileUiAction) {
@@ -44,6 +51,14 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             appManager.clearAllData()
             tokenManager.clearTokens()
+        }
+    }
+
+    private fun loadEmail() {
+        viewModelScope.launch {
+            appManager.userEmail.collectLatest { email ->
+                _emailState.value = email
+            }
         }
     }
 }

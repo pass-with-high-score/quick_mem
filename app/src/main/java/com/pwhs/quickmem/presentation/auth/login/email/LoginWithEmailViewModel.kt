@@ -87,12 +87,10 @@ class LoginWithEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        Timber.d("Email is valid: ${resource.data}")
                         if (resource.data == true) {
                             val password = uiState.value.password
                             val provider = AuthProvider.EMAIL.name
-                            val loginRequestModel =
-                                LoginRequestModel(email, password, provider, null)
+                            val loginRequestModel = LoginRequestModel(email, password, provider, null)
 
                             val response = authRepository.login(loginRequestModel)
 
@@ -113,14 +111,16 @@ class LoginWithEmailViewModel @Inject constructor(
                                                 _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
                                             }
                                         } else {
+                                            appManager.saveIsLoggedIn(true)
+                                            appManager.saveUserId(login.data?.id ?: "")
+                                            appManager.saveUserEmail(login.data?.email ?: "")
+
                                             tokenManager.saveAccessToken(
                                                 login.data?.accessToken ?: ""
                                             )
                                             tokenManager.saveRefreshToken(
                                                 login.data?.refreshToken ?: ""
                                             )
-                                            appManager.saveIsLoggedIn(true)
-                                            appManager.saveUserId(login.data?.id ?: "")
                                             _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                                         }
                                     }
@@ -131,10 +131,10 @@ class LoginWithEmailViewModel @Inject constructor(
                         }
                     }
                 }
-
             }
         }
     }
+
 
     private fun checkAccountVerification() {
         viewModelScope.launch {
