@@ -20,9 +20,9 @@ data class FlashCardResponseDto(
     @SerializedName("studySetId")
     val studySetId: String,
     @SerializedName("rating")
-    val rating: String = Rating.NOT_STUDIED.name,
+    val rating: String,
     @SerializedName("flipStatus")
-    val flipStatus: String = FlipCardStatus.NONE.name,
+    val flipStatus: String,
     @SerializedName("isStarred")
     val isStarred: Boolean,
     @SerializedName("createdAt")

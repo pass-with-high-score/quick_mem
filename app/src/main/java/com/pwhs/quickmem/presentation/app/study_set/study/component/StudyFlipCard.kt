@@ -46,6 +46,7 @@ fun StudyFlipFlashCard(
     stillLearningColor: Color,
     knownColor: Color,
     isShowingEffect: Boolean = false,
+    flashCardColor: Color = Color.White,
 ) {
     var isFlipped by remember { mutableStateOf(false) }
     var isAnimationFinished by remember { mutableStateOf(true) }
@@ -83,9 +84,6 @@ fun StudyFlipFlashCard(
             containerColor = MaterialTheme.colorScheme.background,
         ),
         shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp,
-        ),
         modifier = modifier
             .graphicsLayer {
                 rotationY = rotation.value
@@ -97,10 +95,10 @@ fun StudyFlipFlashCard(
                 isShowingEffect -> when {
                     isSwipingLeft -> stillLearningColor
                     isSwipingRight -> knownColor
-                    else -> Color.Transparent
+                    else -> flashCardColor
                 }
 
-                else -> Color.Transparent
+                else -> flashCardColor
             }
         )
     ) {
@@ -287,6 +285,8 @@ fun FlipCardPreview() {
                 isStarred = false,
                 createdAt = "2021-01-01",
                 updatedAt = "2021-01-01",
+                flipStatus = "NONE",
+                rating = "MASTERED"
             ),
             isSwipingLeft = false,
             isSwipingRight = false,

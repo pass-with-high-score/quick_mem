@@ -31,6 +31,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("auth/signup")
@@ -98,7 +99,8 @@ interface ApiService {
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
         @Header("Authorization") token: String,
-        @Path("id") id: String
+        @Path("id") id: String,
+        @Query("learnMode") learnMode: String
     ): List<FlashCardResponseDto>
 
     @POST("flashcard")

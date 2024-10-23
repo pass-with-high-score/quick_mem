@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import com.pwhs.quickmem.core.data.LearnMode
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
@@ -131,12 +132,17 @@ class FlashCardRepositoryImpl @Inject constructor(
 
     override suspend fun getFlashCardsByStudySetId(
         token: String,
-        studySetId: String
+        studySetId: String,
+        learnMode: LearnMode
     ): Flow<Resources<List<FlashCardResponseModel>>> {
         return flow {
             emit(Resources.Loading(true))
             try {
-                val response = apiService.getFlashCardsByStudySetId(token, studySetId)
+                val response = apiService.getFlashCardsByStudySetId(
+                    token = token,
+                    id = studySetId,
+                    learnMode = learnMode.name
+                )
                 Timber.d("getFlashCardsByStudySetId: $response")
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: HttpException) {

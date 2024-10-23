@@ -1,7 +1,7 @@
 package com.pwhs.quickmem.domain.repository
 
+import com.pwhs.quickmem.core.data.LearnMode
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.EditFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
@@ -39,6 +39,7 @@ interface FlashCardRepository {
 
     suspend fun getFlashCardsByStudySetId(
         token: String,
-        studySetId: String
+        studySetId: String,
+        learnMode: LearnMode
     ): Flow<Resources<List<FlashCardResponseModel>>>
 }

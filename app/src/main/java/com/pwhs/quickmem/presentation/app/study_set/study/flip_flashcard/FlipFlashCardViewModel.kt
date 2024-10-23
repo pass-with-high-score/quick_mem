@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.data.FlipCardStatus
+import com.pwhs.quickmem.core.data.LearnMode
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
@@ -37,7 +38,6 @@ class FlipFlashCardViewModel @Inject constructor(
         val studySetId = savedStateHandle.get<String>("studySetId") ?: ""
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
-        val studySetCardCount = savedStateHandle.get<Int>("studySetCardCount") ?: 0
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 0
         _uiState.update {
@@ -45,9 +45,8 @@ class FlipFlashCardViewModel @Inject constructor(
                 studySetId = studySetId,
                 studySetTitle = studySetTitle,
                 studySetDescription = studySetDescription,
-                studySetCardCount = studySetCardCount,
                 studySetColor = ColorModel.defaultColors[studySetColorId],
-                studySetSubject = SubjectModel.defaultSubjects[studySetSubjectId]
+                studySetSubject = SubjectModel.defaultSubjects[studySetSubjectId],
             )
         }
 
@@ -67,13 +66,16 @@ class FlipFlashCardViewModel @Inject constructor(
             }
 
             is FlipFlashCardUiAction.OnUpdateCardIndex -> {
-                Timber.d("UpdateCardIndex: ${event.index}")
+                Timber.d("OnUpdateCardIndex: ${event.index}")
+                _uiState.update {
+                    it.copy(
+                        currentCardIndex = it.currentCardIndex + 1,
+                    )
+                }
                 if (event.index == _uiState.value.flashCardList.size - 1) {
                     _uiState.update { it.copy(isEndOfList = true) }
                     return
-//                    _uiEvent.offer(FlipFlashCardUiEvent.OnFinishStudySet)
-                } else {
-                    _uiState.update { it.copy(currentCardIndex = it.currentCardIndex + 1) }
+//                    _uiEvent.send(FlipFlashCardUiEvent.OnFinishStudySet)
                 }
             }
 
@@ -102,11 +104,13 @@ class FlipFlashCardViewModel @Inject constructor(
                     }
                 }
                 updateFlashCardFlipStatus(
-                    isRight = true
+                    isRight = true,
+                    event.flashCardId
                 )
             }
 
             is FlipFlashCardUiAction.OnUpdateCountStillLearning -> {
+                Timber.d("OnUpdateCountStillLearninggggg")
                 if (event.isIncrease) {
                     _uiState.update {
                         it.copy(
@@ -118,12 +122,13 @@ class FlipFlashCardViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             countStillLearning = it.countStillLearning - 1,
-                            isSwipingLeft = false
+                            isSwipingLeft = false,
                         )
                     }
                 }
                 updateFlashCardFlipStatus(
-                    isRight = false
+                    isRight = false,
+                    event.flashCardId
                 )
             }
         }
@@ -132,65 +137,63 @@ class FlipFlashCardViewModel @Inject constructor(
     private fun getFlashCard() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            flashCardRepository.getFlashCardsByStudySetId(token, _uiState.value.studySetId)
-                .collect { resource ->
-                    when (resource) {
-                        is Resources.Error -> {
-                            Timber.e(resource.message)
-                        }
+            flashCardRepository.getFlashCardsByStudySetId(
+                token = token,
+                studySetId = _uiState.value.studySetId,
+                learnMode = LearnMode.flip
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                    }
 
-                        is Resources.Loading -> {
-                            Timber.d("Loading")
-                            _uiState.update { it.copy(isLoading = true) }
-                        }
+                    is Resources.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
 
-                        is Resources.Success -> {
-                            Timber.d("Success")
+                    is Resources.Success -> {
+                        if (resource.data.isNullOrEmpty()) {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    flashCardList = resource.data ?: emptyList()
+                                    isEndOfList = true
                                 )
                             }
+                            return@collect
+                        }
+
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                flashCardList = resource.data ?: emptyList()
+                            )
                         }
                     }
                 }
+            }
         }
     }
 
     private fun updateFlashCardFlipStatus(
-        isRight: Boolean
+        isRight: Boolean,
+        flashCardId: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val currentIndex = _uiState.value.currentCardIndex - 1
-            Timber.d("CurrentIndex: $currentIndex")
-            val flashCardList = _uiState.value.flashCardList
+            val flipStatus =
+                if (isRight) FlipCardStatus.KNOW.name else FlipCardStatus.STILL_LEARNING.name
+            flashCardRepository.updateFlipFlashCard(token, flashCardId, flipStatus)
+                .collect { resource ->
+                    when (resource) {
+                        is Resources.Error -> {
+                        }
 
-            if (currentIndex in flashCardList.indices) {
-                val id = flashCardList[currentIndex].id
-                val flipStatus =
-                    if (isRight) FlipCardStatus.KNOW.name else FlipCardStatus.STILL_LEARNING.name
-                Timber.d("UpdateFlipStatus: $id, $flipStatus")
-                flashCardRepository.updateFlipFlashCard(token, id, flipStatus)
-                    .collect { resource ->
-                        when (resource) {
-                            is Resources.Error -> {
-                                Timber.e(resource.message)
-                            }
+                        is Resources.Loading -> {
+                        }
 
-                            is Resources.Loading -> {
-                                Timber.d("Loading")
-                            }
-
-                            is Resources.Success -> {
-                                Timber.d("Success ${resource.data?.flipStatus}")
-                            }
+                        is Resources.Success -> {
                         }
                     }
-            } else {
-                Timber.e("Invalid currentCardIndex: $currentIndex")
-            }
+                }
         }
     }
 }

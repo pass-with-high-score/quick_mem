@@ -106,5 +106,4 @@ class CardSate(
         launch { offsetX.snapTo(snapOffset.x) }
         launch { offsetY.snapTo(snapOffset.y) }
     }
-
 }

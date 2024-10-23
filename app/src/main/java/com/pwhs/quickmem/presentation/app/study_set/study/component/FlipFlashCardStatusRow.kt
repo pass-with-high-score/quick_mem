@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.study_set.study.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -70,6 +71,7 @@ fun FlipFlashCardStatusRow(
                         color = stillLearningColor
                     ),
                     modifier = Modifier.padding(end = 25.dp)
+                        .animateContentSize()
                 )
             }
         )
@@ -118,6 +120,7 @@ fun FlipFlashCardStatusRow(
                         color = knownColor
                     ),
                     modifier = Modifier.padding(start = 25.dp)
+                        .animateContentSize()
                 )
             }
         )

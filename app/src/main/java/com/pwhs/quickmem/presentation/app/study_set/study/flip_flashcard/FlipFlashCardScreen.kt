@@ -1,5 +1,8 @@
 package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,15 +10,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -42,9 +49,11 @@ import com.msusman.compose.cardstack.SwipeMethod
 import com.msusman.compose.cardstack.rememberStackState
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardStatusRow
+import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyFlipBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyFlipFlashCard
 import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -88,17 +97,23 @@ fun FlipFlashCardScreen(
         onUpdatedCardIndex = { index ->
             viewModel.onEvent(FlipFlashCardUiAction.OnUpdateCardIndex(index))
         },
+        studySetColor = uiState.studySetColor.hexValue.toColor(),
         onSwipeRight = { isSwipingRight ->
             viewModel.onEvent(FlipFlashCardUiAction.OnSwipeRight(isSwipingRight))
         },
         onSwipeLeft = { isSwipingLeft ->
             viewModel.onEvent(FlipFlashCardUiAction.OnSwipeLeft(isSwipingLeft))
         },
-        onUpdateCountKnown = { isIncrease ->
-            viewModel.onEvent(FlipFlashCardUiAction.OnUpdateCountKnown(isIncrease))
+        onUpdateCountKnown = { isIncrease, flashCardId ->
+            viewModel.onEvent(FlipFlashCardUiAction.OnUpdateCountKnown(isIncrease, flashCardId))
         },
-        onUpdateCountStillLearning = { isIncrease ->
-            viewModel.onEvent(FlipFlashCardUiAction.OnUpdateCountStillLearning(isIncrease))
+        onUpdateCountStillLearning = { isIncrease, flashCardId ->
+            viewModel.onEvent(
+                FlipFlashCardUiAction.OnUpdateCountStillLearning(
+                    isIncrease,
+                    flashCardId
+                )
+            )
         }
     )
 }
@@ -111,6 +126,7 @@ fun FlipFlashCard(
     countKnown: Int = 0,
     countStillLearning: Int = 0,
     flashCards: List<FlashCardResponseModel> = emptyList(),
+    studySetColor: Color = MaterialTheme.colorScheme.primary,
     isLoading: Boolean = false,
     isSwipingLeft: Boolean = false,
     isSwipingRight: Boolean = false,
@@ -119,11 +135,9 @@ fun FlipFlashCard(
     onUpdatedCardIndex: (Int) -> Unit = { },
     onSwipeRight: (Boolean) -> Unit = { },
     onSwipeLeft: (Boolean) -> Unit = { },
-    onUpdateCountKnown: (Boolean) -> Unit = { },
-    onUpdateCountStillLearning: (Boolean) -> Unit = { }
+    onUpdateCountKnown: (Boolean, String) -> Unit = { _, _ -> },
+    onUpdateCountStillLearning: (Boolean, String) -> Unit = { _, _ -> }
 ) {
-    Timber.d("FlipFlashCard: $flashCards")
-    Timber.d("FlipFlashCard: $isLoading")
     var showSettingBottomSheet by remember {
         mutableStateOf(false)
     }
@@ -167,12 +181,19 @@ fun FlipFlashCard(
                     .fillMaxSize()
                     .align(Alignment.TopCenter)
             ) {
-                val currentProgress =
-                    if (flashCards.isNotEmpty()) (currentCardIndex + 1) / flashCards.size.toFloat() else 0f
+                val currentProgress by animateFloatAsState(
+                    targetValue = if (flashCards.isNotEmpty()) currentCardIndex / flashCards.size.toFloat() else 0f
+                )
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
                     progress = {
                         if (currentProgress.isNaN()) 0f else currentProgress
+                    },
+                    color = when {
+                        currentProgress < 0.2f -> studySetColor.copy(alpha = 0.2f)
+                        currentProgress < 0.5f -> studySetColor.copy(alpha = 0.5f)
+                        currentProgress < 0.8f -> studySetColor.copy(alpha = 0.8f)
+                        else -> studySetColor
                     }
                 )
                 FlipFlashCardStatusRow(
@@ -192,9 +213,6 @@ fun FlipFlashCard(
                         .padding(10.dp)
                         .zIndex(1f)
                 ) {
-                    Timber.d("CurrentCardIndex: $currentCardIndex")
-                    Timber.d("FlashCardss: ${flashCards.size}")
-                    Timber.d("${currentCardIndex < flashCards.size}")
                     when (isEndOfList) {
                         false -> {
                             if (flashCards.isNotEmpty()) {
@@ -208,23 +226,25 @@ fun FlipFlashCard(
                                     rotationMaxDegree = 0,
                                     displacementThreshold = 120.dp,
                                     animationDuration = Duration.NORMAL,
-                                    visibleCount = if (flashCards.size > 1) flashCards.size - 1 else 1,
+                                    visibleCount = when (flashCards.size) {
+                                        in 1..3 -> flashCards.size
+                                        else -> 3
+                                    },
                                     stackDirection = Direction.Bottom,
                                     swipeDirection = SwipeDirection.FREEDOM,
                                     swipeMethod = SwipeMethod.AUTOMATIC_AND_MANUAL,
                                     items = flashCards,
                                     onSwiped = { index, direction ->
-                                        Timber.d("Direction: ${direction.name}")
                                         onUpdatedCardIndex(index)
+                                        val flashCardId = flashCards[index].id
+                                        Timber.d("Swiped index: $index, direction: $direction")
                                         when (direction) {
                                             Direction.Left, Direction.TopAndLeft, Direction.BottomAndLeft, Direction.Top -> {
-                                                Timber.d("Still learning")
-                                                onUpdateCountStillLearning(true)
+                                                onUpdateCountStillLearning(true, flashCardId)
                                             }
 
                                             Direction.Right, Direction.TopAndRight, Direction.BottomAndRight, Direction.Bottom -> {
-                                                onUpdateCountKnown(true)
-                                                Timber.d("Known")
+                                                onUpdateCountKnown(true, flashCardId)
                                             }
 
                                             else -> {
@@ -257,7 +277,8 @@ fun FlipFlashCard(
                                         isSwipingRight = isSwipingRight,
                                         stillLearningColor = stillLearningColor,
                                         knownColor = knownColor,
-                                        isShowingEffect = currentCardIndex == flashCards.indexOf(it)
+                                        isShowingEffect = currentCardIndex == flashCards.indexOf(it),
+                                        flashCardColor = studySetColor
                                     )
                                 }
                             }
@@ -276,27 +297,46 @@ fun FlipFlashCard(
                         }
                     }
                 }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
+                AnimatedVisibility(
+                    visible = !isEndOfList,
                 ) {
-                    IconButton(
-                        onClick = {}
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(40.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Back"
-                        )
+                        IconButton(
+                            onClick = {
+                                stackState.swipe(Direction.Left)
+                            },
+                            modifier = Modifier
+                                .border(1.dp, Color.Gray, CircleShape)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
+                                contentDescription = "Swipe Left",
+                                tint = stillLearningColor,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                stackState.swipe(Direction.Right)
+                            },
+                            modifier = Modifier
+                                .border(1.dp, Color.Gray, CircleShape)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                contentDescription = "Swipe Right",
+                                tint = knownColor,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -304,21 +344,13 @@ fun FlipFlashCard(
         }
     }
 
-    if (showSettingBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showSettingBottomSheet = false
-            },
-            sheetState = settingBottomSheetState
-        ) {
-            Column {
-                Text(
-                    text = "Setting",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+    StudyFlipBottomSheet(
+        bottomSheetState = settingBottomSheetState,
+        showBottomSheet = showSettingBottomSheet,
+        onDismiss = {
+            showSettingBottomSheet = false
         }
-    }
+    )
 }
 
 @Preview

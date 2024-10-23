@@ -205,8 +205,4 @@ class StackState(
         dragOffsetX = 0f
         dragOffsetY = 0f
     }
-
-    fun rewind() {
-        onRewind.invoke()
-    }
 }

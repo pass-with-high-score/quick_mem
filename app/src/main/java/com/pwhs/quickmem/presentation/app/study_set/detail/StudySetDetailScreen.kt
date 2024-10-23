@@ -279,9 +279,8 @@ fun StudySetDetailScreen(
                     studySetId = uiState.id,
                     studySetTitle = uiState.title,
                     studySetDescription = uiState.description,
-                    studySetCardCount = uiState.flashCardCount,
                     studySetColorId = uiState.colorModel.id,
-                    studySetSubjectId = uiState.subject.id
+                    studySetSubjectId = uiState.subject.id,
                 )
             )
         }
