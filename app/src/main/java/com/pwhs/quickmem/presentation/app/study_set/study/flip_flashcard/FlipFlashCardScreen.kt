@@ -2,9 +2,6 @@ package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,25 +9,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.outlined.Lightbulb
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,41 +28,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.msusman.compose.cardstack.CardStack
 import com.msusman.compose.cardstack.Direction
 import com.msusman.compose.cardstack.Duration
 import com.msusman.compose.cardstack.SwipeDirection
 import com.msusman.compose.cardstack.SwipeMethod
 import com.msusman.compose.cardstack.rememberStackState
-import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.component.StudyCardBottomSheet
-import com.pwhs.quickmem.presentation.app.study_set.detail.progress.StudySetDonutChart
+import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardButton
+import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardFinish
+import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardIconButton
 import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardStatusRow
 import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyFlipFlashCard
 import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
-import com.pwhs.quickmem.util.toStringTime
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -189,30 +161,14 @@ fun FlipFlashCard(
         "Swipe right to mark as still learning"
     )
     var currentTextIndex by remember { mutableIntStateOf(0) }
-    var flipFlashCardSupport by remember {
-        mutableStateOf(StudySetSupportEnum.NONE)
-    }
-    var isCardFlip by remember {
-        mutableStateOf(true)
-    }
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        isPlaying = isEndOfList,
-    )
-    LaunchedEffect(currentCardIndex, isCardFlip) {
-        val currentFlashCard = flashCards.getOrNull(currentCardIndex)
-        flipFlashCardSupport = when {
-            currentFlashCard?.hint != null && !isCardFlip -> StudySetSupportEnum.SHOW_HINT
-            currentFlashCard?.explanation != null && isCardFlip -> StudySetSupportEnum.SHOW_EXPLANATION
-            else -> StudySetSupportEnum.NONE
-        }
-    }
     LaunchedEffect(Unit) {
         while (true) {
             delay(5000)
             currentTextIndex = (currentTextIndex + 1) % suggestedText.size
         }
+    }
+    var isFlipCard by remember {
+        mutableStateOf(false)
     }
     Scaffold(
         topBar = {
@@ -292,12 +248,8 @@ fun FlipFlashCard(
                                         swipeMethod = SwipeMethod.AUTOMATIC_AND_MANUAL,
                                         items = flashCards,
                                         onSwiped = { index, direction ->
+                                            isFlipCard = false
                                             Timber.d("Index of flashcard: $index")
-                                            if (flipFlashCardSupport == StudySetSupportEnum.SHOW_HINT) {
-                                                isCardFlip = true
-                                            } else if (flipFlashCardSupport == StudySetSupportEnum.SHOW_EXPLANATION) {
-                                                isCardFlip = false
-                                            }
                                             if (index in flashCards.indices) {
                                                 onUpdatedCardIndex(index)
                                                 val flashCardId = flashCards[index].id
@@ -338,6 +290,9 @@ fun FlipFlashCard(
                                             }
                                         }
                                     ) { flashcard ->
+                                        var flipCard by remember {
+                                            mutableStateOf(false)
+                                        }
                                         StudyFlipFlashCard(
                                             flashCard = flashcard,
                                             modifier = Modifier.fillMaxSize(),
@@ -348,9 +303,11 @@ fun FlipFlashCard(
                                             isShowingEffect = currentCardIndex == flashCards.indexOf(
                                                 flashcard
                                             ),
+                                            isFlipped = flipCard,
                                             flashCardColor = studySetColor,
-                                            onFlip = {
-                                                isCardFlip = !isCardFlip
+                                            onChangeFlipped = {
+                                                isFlipCard = it
+                                                flipCard = it
                                             }
                                         )
                                     }
@@ -359,202 +316,23 @@ fun FlipFlashCard(
                         }
 
                         true -> {
-                            Box(
+                            FlipFlashCardFinish(
                                 modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                LottieAnimation(
-                                    composition = composition,
-                                    progress = { progress },
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .zIndex(2f)
-                                )
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(top = 20.dp)
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        text = "You're doing great!",
-                                        style = MaterialTheme.typography.titleLarge.copy(
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    )
-                                    StudySetDonutChart(
-                                        modifier = Modifier
-                                            .size(200.dp)
-                                            .padding(16.dp),
-                                        studySetsStillLearn = countStillLearning,
-                                        studySetsMastered = countKnown,
-                                        color = studySetColor
-                                    )
-
-                                    Text(
-                                        text = "Keep focusing on your study set to master it!",
-                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                            fontWeight = FontWeight.Bold
-                                        ),
-                                        modifier = Modifier.padding(16.dp)
-                                    )
-
-                                    Card(
-                                        onClick = {},
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(bottom = 16.dp),
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = Color.White
-                                        ),
-                                        border = BorderStroke(1.dp, studySetColor),
-                                        elevation = CardDefaults.cardElevation(
-                                            defaultElevation = 3.dp,
-                                        )
-                                    ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp)
-                                        ) {
-                                            Image(
-                                                painter = painterResource(id = R.drawable.ic_card),
-                                                contentDescription = "Card",
-                                                contentScale = ContentScale.Crop
-                                            )
-                                            Text(
-                                                text = "Flashcards learned",
-                                                style = MaterialTheme.typography.bodyMedium.copy(
-                                                    fontSize = 18.sp
-                                                ),
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .padding(
-                                                        start = 8.dp,
-                                                        end = 16.dp
-                                                    ),
-                                                textAlign = TextAlign.Start,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                            )
-                                            Text(
-                                                text = buildAnnotatedString {
-                                                    withStyle(
-                                                        style = SpanStyle(
-                                                            fontWeight = FontWeight.Bold
-                                                        )
-                                                    ) {
-                                                        append(countKnown.toString())
-                                                    }
-                                                    append("/${flashCards.size}")
-                                                },
-                                                fontSize = 18.sp,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                modifier = Modifier.padding(8.dp)
-                                            )
-                                        }
-                                    }
-                                    Card(
-                                        onClick = {},
-                                        modifier = Modifier.fillMaxWidth(),
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = Color.White
-                                        ),
-                                        border = BorderStroke(1.dp, studySetColor),
-                                        elevation = CardDefaults.cardElevation(
-                                            defaultElevation = 3.dp,
-                                        )
-                                    ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp)
-                                        ) {
-                                            Image(
-                                                imageVector = Icons.Default.AccessTime,
-                                                contentDescription = "Time",
-                                            )
-                                            Text(
-                                                text = "Learning Time",
-                                                style = MaterialTheme.typography.bodyMedium.copy(
-                                                    fontSize = 18.sp
-                                                ),
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .padding(
-                                                        start = 8.dp,
-                                                        end = 16.dp
-                                                    ),
-                                                textAlign = TextAlign.Start,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                            )
-                                            Timber.d("toStringTime learningTime: ${learningTime.toStringTime()}")
-                                            Text(
-                                                text = learningTime.toStringTime(),
-                                                style = MaterialTheme.typography.bodyMedium.copy(
-                                                    fontSize = 18.sp,
-                                                    fontWeight = FontWeight.Bold
-                                                ),
-                                                modifier = Modifier.padding(8.dp)
-                                            )
-                                        }
-                                    }
-                                    if (countStillLearning > 0) {
-                                        Button(
-                                            onClick = {
-                                                onContinueLearningClicked()
-                                                stackState.reset()
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp),
-                                            shape = MaterialTheme.shapes.small,
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = studySetColor,
-                                                contentColor = Color.White
-                                            ),
-                                            border = BorderStroke(1.dp, studySetColor)
-                                        ) {
-                                            Text(
-                                                text = "Keep reviewing $countStillLearning terms",
-                                                style = MaterialTheme.typography.bodyMedium.copy(
-                                                    fontSize = 18.sp,
-                                                    fontWeight = FontWeight.Bold
-                                                ),
-                                                modifier = Modifier.padding(8.dp)
-                                            )
-                                        }
-                                    }
-                                    Button(
-                                        onClick = {
-                                            onRestartClicked()
-                                            stackState.reset()
-                                        },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        shape = MaterialTheme.shapes.small,
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color.Transparent,
-                                            contentColor = studySetColor
-                                        ),
-                                        border = BorderStroke(1.dp, studySetColor)
-                                    ) {
-                                        Text(
-                                            text = "Restart Flashcards",
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontSize = 18.sp,
-                                                fontWeight = FontWeight.Bold
-                                            ),
-                                            modifier = Modifier.padding(8.dp)
-                                        )
-                                    }
+                                isEndOfList = isEndOfList,
+                                countStillLearning = countStillLearning,
+                                countKnown = countKnown,
+                                studySetColor = studySetColor,
+                                flashCardSize = flashCards.size,
+                                learningTime = learningTime,
+                                onContinueLearningClicked = {
+                                    onContinueLearningClicked()
+                                    stackState.reset()
+                                },
+                                onRestartClicked = {
+                                    onRestartClicked()
+                                    stackState.reset()
                                 }
-                            }
+                            )
                         }
                     }
                 }
@@ -568,104 +346,51 @@ fun FlipFlashCard(
                             .fillMaxWidth()
                             .padding(40.dp)
                     ) {
-                        IconButton(
+                        FlipFlashCardIconButton(
+                            knownColor = knownColor,
+                            contentDescription = "Swipe Left",
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                             onClick = {
                                 stackState.swipe(Direction.Left)
-                            },
-                            modifier = Modifier
-                                .border(1.dp, Color.Gray, CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
-                                contentDescription = "Swipe Left",
-                                tint = stillLearningColor,
-                                modifier = Modifier
-                                    .padding(10.dp)
-                            )
-                        }
-                        when (flipFlashCardSupport) {
-                            StudySetSupportEnum.SHOW_HINT -> {
-                                ElevatedButton(
+                            }
+                        )
+                        if (flashCards.isNotEmpty()) {
+                            if (flashCards[currentCardIndex].hint?.isNotEmpty() == true && !isFlipCard) {
+                                FlipFlashCardButton(
                                     onClick = {
                                         showHintBottomSheet = true
                                     },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = studySetColor.copy(alpha = 0.6f)
-                                    ),
-                                    elevation = ButtonDefaults.elevatedButtonElevation(
-                                        defaultElevation = 3.dp
-                                    ),
-                                    border = BorderStroke(1.dp, Color.White)
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Lightbulb,
-                                            contentDescription = "Hint",
-                                        )
-                                        Text(
-                                            "Show Hint",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                }
+                                    studySetColor = studySetColor,
+                                    title = "Show Hint"
+                                )
                             }
 
-                            StudySetSupportEnum.SHOW_EXPLANATION -> {
-                                ElevatedButton(
+                            if (flashCards[currentCardIndex].explanation?.isNotEmpty() == true && isFlipCard) {
+                                FlipFlashCardButton(
                                     onClick = {
                                         showExplanationBottomSheet = true
                                     },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = studySetColor.copy(alpha = 0.6f)
-                                    ),
-                                    elevation = ButtonDefaults.elevatedButtonElevation(
-                                        defaultElevation = 3.dp
-                                    ),
-                                    border = BorderStroke(1.dp, Color.White)
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Lightbulb,
-                                            contentDescription = "Explanation",
-                                        )
-                                        Text(
-                                            "Show Explanation",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                }
-                            }
-
-                            StudySetSupportEnum.NONE -> {
-                                // Do nothing
+                                    studySetColor = studySetColor,
+                                    title = "Show Explanation"
+                                )
                             }
                         }
-                        IconButton(
+                        FlipFlashCardIconButton(
+                            knownColor = knownColor,
+                            contentDescription = "Swipe Right",
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                             onClick = {
                                 stackState.swipe(Direction.Right)
-                            },
-                            modifier = Modifier
-                                .border(1.dp, Color.Gray, CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                contentDescription = "Swipe Right",
-                                tint = knownColor,
-                                modifier = Modifier
-                                    .padding(10.dp)
-                            )
-                        }
+                            }
+                        )
 
                     }
                 }
             }
-            LoadingOverlay(isLoading = isLoading)
+            LoadingOverlay(
+                isLoading = isLoading,
+                color = studySetColor.copy(alpha = 0.6f)
+            )
         }
     }
 

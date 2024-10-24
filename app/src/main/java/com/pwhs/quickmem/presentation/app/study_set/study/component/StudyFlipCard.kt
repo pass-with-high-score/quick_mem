@@ -45,9 +45,9 @@ fun StudyFlipFlashCard(
     knownColor: Color,
     isShowingEffect: Boolean = false,
     flashCardColor: Color = Color.White,
-    onFlip: () -> Unit = {}
+    isFlipped: Boolean = false,
+    onChangeFlipped: (Boolean) -> Unit = {},
 ) {
-    var isFlipped by remember { mutableStateOf(false) }
     var isAnimationFinished by remember { mutableStateOf(true) }
 
     // Animate rotation
@@ -75,9 +75,8 @@ fun StudyFlipFlashCard(
     Card(
         onClick = {
             if (isAnimationFinished) {
-                isFlipped = !isFlipped
+                onChangeFlipped(!isFlipped)
                 isAnimationFinished = false
-                onFlip()
             }
         },
         colors = CardDefaults.cardColors(
