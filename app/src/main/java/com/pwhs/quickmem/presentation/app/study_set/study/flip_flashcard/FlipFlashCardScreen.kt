@@ -355,7 +355,7 @@ fun FlipFlashCard(
                             }
                         )
                         if (flashCards.isNotEmpty()) {
-                            if (flashCards[currentCardIndex].hint?.isNotEmpty() == true && !isFlipCard) {
+                            if (flashCards.getOrNull(currentCardIndex)?.hint?.isNotEmpty() == true && !isFlipCard) {
                                 FlipFlashCardButton(
                                     onClick = {
                                         showHintBottomSheet = true
@@ -365,7 +365,7 @@ fun FlipFlashCard(
                                 )
                             }
 
-                            if (flashCards[currentCardIndex].explanation?.isNotEmpty() == true && isFlipCard) {
+                            if (flashCards.getOrNull(currentCardIndex)?.explanation?.isNotEmpty() == true && isFlipCard) {
                                 FlipFlashCardButton(
                                     onClick = {
                                         showExplanationBottomSheet = true
