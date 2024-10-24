@@ -30,12 +30,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
-import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun StudyFlipFlashCard(
@@ -47,6 +45,7 @@ fun StudyFlipFlashCard(
     knownColor: Color,
     isShowingEffect: Boolean = false,
     flashCardColor: Color = Color.White,
+    onFlip: () -> Unit = {}
 ) {
     var isFlipped by remember { mutableStateOf(false) }
     var isAnimationFinished by remember { mutableStateOf(true) }
@@ -78,6 +77,7 @@ fun StudyFlipFlashCard(
             if (isAnimationFinished) {
                 isFlipped = !isFlipped
                 isAnimationFinished = false
+                onFlip()
             }
         },
         colors = CardDefaults.cardColors(
@@ -266,32 +266,5 @@ fun StudyFlipFlashCard(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun FlipCardPreview() {
-    QuickMemTheme {
-        StudyFlipFlashCard(
-            flashCard = FlashCardResponseModel(
-                id = "1",
-                term = "Term",
-                definition = "Definition",
-                definitionImageURL = null,
-                hint = null,
-                explanation = null,
-                studySetId = "1",
-                isStarred = false,
-                createdAt = "2021-01-01",
-                updatedAt = "2021-01-01",
-                flipStatus = "NONE",
-                rating = "MASTERED"
-            ),
-            isSwipingLeft = false,
-            isSwipingRight = false,
-            stillLearningColor = Color.Red,
-            knownColor = Color.Green,
-        )
     }
 }

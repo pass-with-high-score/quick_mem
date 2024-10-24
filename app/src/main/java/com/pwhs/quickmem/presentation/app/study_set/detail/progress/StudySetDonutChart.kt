@@ -1,22 +1,35 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail.progress
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun StudySetDonutChart(
@@ -39,6 +52,14 @@ fun StudySetDonutChart(
         color
     )
 
+    // Animate total progress for each segment
+    val animatedPercentage = percentages.map { target ->
+        animateFloatAsState(
+            targetValue = target,
+            animationSpec = tween(durationMillis = 1000)
+        ).value
+    }
+
     Surface(
         modifier = modifier
             .size(220.dp)
@@ -60,7 +81,7 @@ fun StudySetDonutChart(
                 val strokeWidth = 45f
 
                 var startAngle = -90f
-                percentages.forEachIndexed { index, percentage ->
+                animatedPercentage.forEachIndexed { index, percentage ->
                     val sweepAngle = percentage * 360f
                     drawArc(
                         color = colors[index],
@@ -78,12 +99,40 @@ fun StudySetDonutChart(
                 )
             }
 
-            Text(
-                text = "${(studySetsMastered.toFloat() / total * 100).toInt()} %",
-                style = MaterialTheme.typography.titleLarge,
-                color = color,
-                maxLines = 1
-            )
+            if (studySetsMastered == total) {
+                AnimatedVisibility(
+                    visible = true,
+                    enter = scaleIn() + fadeIn(), 
+                    exit = scaleOut() + fadeOut()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Mastered",
+                        tint = color,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+            } else {
+                val percentAnimationText by animateFloatAsState(
+                    targetValue = (studySetsMastered.toFloat() / total * 100),
+                    animationSpec = tween(
+                        durationMillis = 1000,
+                        easing = {
+                            val x = it * 2 - 1
+                            0.5f * (x * x * x + 1)
+                        },
+                    )
+                )
+
+                Text(
+                    text = "${percentAnimationText.toInt()} %",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Black
+                    ),
+                    color = color,
+                    maxLines = 1
+                )
+            }
         }
     }
 }
@@ -91,12 +140,16 @@ fun StudySetDonutChart(
 @Preview
 @Composable
 private fun StudySetDonutChartPreview() {
-    MaterialTheme {
+    QuickMemTheme {
         Surface(
             modifier = Modifier.padding(16.dp),
             color = Color(0xFFF5F5F5)
         ) {
-            StudySetDonutChart()
+            StudySetDonutChart(
+                studySetsNotLearn = 0,
+                studySetsStillLearn = 0,
+                studySetsMastered = 70
+            )
         }
     }
 }

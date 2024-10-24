@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -69,7 +69,7 @@ fun <T> CardStack(
     val onCardSwiped: (Int, Direction) -> Unit = { index, direction ->
         onSwiped.invoke(index, direction)
     }
-    var rewind by remember { mutableStateOf(0) }
+    var rewind by remember { mutableIntStateOf(0) }
     val onRewind: () -> Unit = {
         rewind += 1
     }
@@ -105,7 +105,8 @@ fun <T> CardStack(
         Direction.BottomAndRight -> stackPadding to stackPadding
     }
     remember(key1 = rewind) {
-        stackState.initCardQueue(items);""
+        stackState.initCardQueue(items)
+        ""
     }
     Box(
         modifier = modifier

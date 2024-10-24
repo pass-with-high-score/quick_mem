@@ -17,6 +17,7 @@ lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.10.00"
 ksp = "2.0.20-1.0.25"
+lottieCompose = "6.4.2-SNAPSHOT"
 materialIconsExtended = "1.7.4"
 # Serialization
 rangVikalp = "1.0.0-alpha02"
@@ -99,6 +100,7 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "
 jakewharton-timber = { module = "com.jakewharton.timber:timber", version.ref = "jakewhartonTimber" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 # Retrofit
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 rang-vikalp = { module = "io.ak1:rang-vikalp", version.ref = "rangVikalp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }

@@ -179,6 +179,13 @@ class StackState(
         }
     }
 
+    fun reset() {
+        topCardIndex = 0
+        cardQueue.clear()
+
+        initCardQueue(cardQueue.map { it })
+    }
+
     private fun swipeInternal(swipeDirection: Direction) = scope.launch {
         if (cardQueue.firstOrNull()?.isAnimating() == true) return@launch
         cardQueue.firstOrNull()?.swipeToward(swipeDirection)

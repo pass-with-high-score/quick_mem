@@ -1,8 +1,11 @@
 package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
 
+import android.app.Application
+import android.media.MediaPlayer
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.data.LearnMode
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -10,6 +13,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
+import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,9 +29,11 @@ import javax.inject.Inject
 @HiltViewModel
 class FlipFlashCardViewModel @Inject constructor(
     private val flashCardRepository: FlashCardRepository,
+    private val studySetRepository: StudySetRepository,
     private val tokenManager: TokenManager,
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
+    savedStateHandle: SavedStateHandle,
+    application: Application
+) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(FlipFlashCardUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -47,6 +53,7 @@ class FlipFlashCardViewModel @Inject constructor(
                 studySetDescription = studySetDescription,
                 studySetColor = ColorModel.defaultColors[studySetColorId],
                 studySetSubject = SubjectModel.defaultSubjects[studySetSubjectId],
+                startTime = System.currentTimeMillis()
             )
         }
 
@@ -73,9 +80,14 @@ class FlipFlashCardViewModel @Inject constructor(
                     )
                 }
                 if (event.index == _uiState.value.flashCardList.size - 1) {
-                    _uiState.update { it.copy(isEndOfList = true) }
+                    _uiState.update {
+                        it.copy(
+                            isEndOfList = true,
+                            learningTime = System.currentTimeMillis() - it.startTime
+                        )
+                    }
+                    playCompleteSound()
                     return
-//                    _uiEvent.send(FlipFlashCardUiEvent.OnFinishStudySet)
                 }
             }
 
@@ -131,6 +143,25 @@ class FlipFlashCardViewModel @Inject constructor(
                     event.flashCardId
                 )
             }
+
+            FlipFlashCardUiAction.OnRestartClicked -> {
+                restartStudySet()
+            }
+
+            FlipFlashCardUiAction.OnContinueLearningClicked -> {
+                _uiState.update {
+                    it.copy(
+                        isEndOfList = false,
+                        countKnown = 0,
+                        countStillLearning = 0,
+                        currentCardIndex = 0,
+                        startTime = System.currentTimeMillis(),
+                        flashCardList = emptyList()
+                    )
+                }
+
+                getFlashCard()
+            }
         }
     }
 
@@ -155,16 +186,18 @@ class FlipFlashCardViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    isEndOfList = true
+                                    isEndOfList = true,
+                                    learningTime = 0,
                                 )
                             }
+                            playCompleteSound()
                             return@collect
                         }
 
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                flashCardList = resource.data ?: emptyList()
+                                flashCardList = resource.data
                             )
                         }
                     }
@@ -195,5 +228,49 @@ class FlipFlashCardViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private fun restartStudySet() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            studySetRepository.resetProgress(token, _uiState.value.studySetId)
+                .collect { resource ->
+                    when (resource) {
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isEndOfList = true,
+                                    learningTime = 0,
+                                )
+                            }
+                        }
+
+                        is Resources.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isEndOfList = false,
+                                    countKnown = 0,
+                                    countStillLearning = 0,
+                                    currentCardIndex = 0,
+                                    startTime = System.currentTimeMillis(),
+                                    flashCardList = emptyList()
+                                )
+                            }
+                            getFlashCard()
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun playCompleteSound() {
+        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.study_complete)
+        mediaPlayer.start()
     }
 }
