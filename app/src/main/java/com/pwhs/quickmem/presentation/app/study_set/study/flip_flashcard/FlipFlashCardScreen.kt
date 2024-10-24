@@ -347,7 +347,7 @@ fun FlipFlashCard(
                             .padding(40.dp)
                     ) {
                         FlipFlashCardIconButton(
-                            knownColor = knownColor,
+                            knownColor = stillLearningColor,
                             contentDescription = "Swipe Left",
                             imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                             onClick = {
