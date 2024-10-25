@@ -318,7 +318,7 @@ fun FlipFlashCard(
                         true -> {
                             FlipFlashCardFinish(
                                 modifier = Modifier.fillMaxSize(),
-                                isEndOfList = isEndOfList,
+                                isEndOfList = true,
                                 countStillLearning = countStillLearning,
                                 countKnown = countKnown,
                                 studySetColor = studySetColor,

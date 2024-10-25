@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.data.LearnMode
+import com.pwhs.quickmem.core.data.ResetType
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
@@ -233,7 +234,11 @@ class FlipFlashCardViewModel @Inject constructor(
     private fun restartStudySet() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            studySetRepository.resetProgress(token, _uiState.value.studySetId)
+            studySetRepository.resetProgress(
+                token,
+                _uiState.value.studySetId,
+                resetType = ResetType.flipStatus.name
+            )
                 .collect { resource ->
                     when (resource) {
                         is Resources.Error -> {

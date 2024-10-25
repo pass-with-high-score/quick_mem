@@ -104,11 +104,11 @@ class StudySetRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun resetProgress(token: String, studySetId: String): Flow<Resources<Unit>> {
+    override suspend fun resetProgress(token: String, studySetId: String, resetType: String): Flow<Resources<Unit>> {
         return flow {
             emit(Resources.Loading())
             try {
-                apiService.resetProgress(token, studySetId)
+                apiService.resetProgress(token, studySetId, resetType)
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)

@@ -87,7 +87,8 @@ interface ApiService {
     @PATCH("study-set/{id}/reset-progress")
     suspend fun resetProgress(
         @Header("Authorization") token: String,
-        @Path("id") id: String
+        @Path("id") id: String,
+        @Query("resetType") resetType: String
     )
 
     @DELETE("study-set/{id}")
