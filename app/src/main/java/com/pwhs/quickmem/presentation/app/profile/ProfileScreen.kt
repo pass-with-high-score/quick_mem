@@ -39,6 +39,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = true) {

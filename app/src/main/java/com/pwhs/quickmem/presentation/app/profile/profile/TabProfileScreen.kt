@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.collectAsState
@@ -38,10 +37,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.status.StatusModel
-import com.pwhs.quickmem.domain.model.status.getSelectedStatusId
-import com.pwhs.quickmem.domain.model.status.getUserName
-import com.pwhs.quickmem.domain.model.status.saveSelectedStatusId
-import com.pwhs.quickmem.domain.model.status.saveUserName
+import com.pwhs.quickmem.presentation.app.profile.component.getSelectedStatusId
+import com.pwhs.quickmem.presentation.app.profile.component.getUserName
+import com.pwhs.quickmem.presentation.app.profile.component.saveSelectedStatusId
+import com.pwhs.quickmem.presentation.app.profile.component.saveUserName
 import com.pwhs.quickmem.presentation.app.profile.ProfileViewModel
 import com.pwhs.quickmem.presentation.app.profile.component.ProfileTextField
 import com.pwhs.quickmem.presentation.app.profile.component.StatusBottomSheet

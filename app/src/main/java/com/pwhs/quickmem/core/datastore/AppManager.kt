@@ -67,4 +67,5 @@ class AppManager(private val context: Context) {
             preferences[USER_EMAIL] = email
         }
     }
+
 }

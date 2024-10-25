@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.domain.model.status
+package com.pwhs.quickmem.presentation.app.profile.component
 
 import android.content.Context
 import android.content.SharedPreferences

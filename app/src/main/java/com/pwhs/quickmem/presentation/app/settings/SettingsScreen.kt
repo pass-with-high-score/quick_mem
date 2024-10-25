@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.profile.settings
+package com.pwhs.quickmem.presentation.app.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,31 +11,55 @@ import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.ReportProblem
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.presentation.app.settings.component.SettingsItem
+import com.pwhs.quickmem.presentation.app.settings.component.SettingsSection
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import kotlinx.coroutines.flow.collectLatest
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
 fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
-    onFeedbackClick: () -> Unit = {},
-    onReportClick: () -> Unit = {},
-    onLogoutClick: () -> Unit = {},
-    onDeleteAccountClick: () -> Unit = {}
+    onLogout: () -> Unit = {}
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is SettingsUiEvent.ConfirmLogout -> {
+                    // Điều hướng đến màn hình đăng nhập khi đăng xuất
+                    onLogout()
+                }
+                is SettingsUiEvent.ShowFeedbackDialog -> {
+                    // Xử lý các sự kiện khác nếu cần
+                }
+                is SettingsUiEvent.ShowReportDialog -> {
+                    // Xử lý các sự kiện khác nếu cần
+                }
+                is SettingsUiEvent.ConfirmDeleteAccount -> {
+                    // Xử lý khi xóa tài khoản (có thể là hiển thị thông báo hoặc điều hướng)
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+                title = { Text("Settings", fontSize = 20.sp) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -56,13 +80,13 @@ fun SettingsScreen(
         ) {
             SettingsSection(
                 title = "Appearance",
-                selectedOption = "Device Theme",
+                selectedOption = uiState.appearance,
                 onClick = { /* Mở bottom sheet để chọn tùy chọn mới */ }
             )
 
             SettingsSection(
                 title = "Language",
-                selectedOption = "English (US)",
+                selectedOption = uiState.language,
                 onClick = { /* Mở bottom sheet để chọn ngôn ngữ mới */ }
             )
 
@@ -71,25 +95,25 @@ fun SettingsScreen(
             SettingsItem(
                 title = "Give feedback",
                 icon = Icons.Default.Feedback,
-                onClick = onFeedbackClick
+                onClick = { viewModel.onEvent(SettingsUiAction.GiveFeedback) }
             )
 
             SettingsItem(
                 title = "Report a problem",
                 icon = Icons.Default.ReportProblem,
-                onClick = onReportClick
+                onClick = { viewModel.onEvent(SettingsUiAction.ReportProblem) }
             )
 
             SettingsItem(
                 title = "Logout",
                 icon = Icons.Default.ExitToApp,
-                onClick = onLogoutClick
+                onClick = { viewModel.onEvent(SettingsUiAction.Logout) }
             )
 
             SettingsItem(
                 title = "Delete account",
                 icon = Icons.Default.Delete,
-                onClick = onDeleteAccountClick,
+                onClick = { viewModel.onEvent(SettingsUiAction.DeleteAccount) },
                 textColor = Color.Red,
                 iconColor = Color.Red
             )
@@ -98,8 +122,3 @@ fun SettingsScreen(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun SettingsScreenPreview() {
-    SettingsScreen()
-}

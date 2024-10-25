@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.profile.settings
+package com.pwhs.quickmem.presentation.app.settings.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

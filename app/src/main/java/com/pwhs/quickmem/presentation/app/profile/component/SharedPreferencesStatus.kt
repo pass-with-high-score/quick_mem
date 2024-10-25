@@ -1,7 +1,8 @@
-package com.pwhs.quickmem.domain.model.status
+package com.pwhs.quickmem.presentation.app.profile.component
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.pwhs.quickmem.domain.model.status.StatusModel
 
 fun saveSelectedStatusId(context: Context, id: Int) {
     val sharedPreferences: SharedPreferences = context.getSharedPreferences("profile_prefs", Context.MODE_PRIVATE)
