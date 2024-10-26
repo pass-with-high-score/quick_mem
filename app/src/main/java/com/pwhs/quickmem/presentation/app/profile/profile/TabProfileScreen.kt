@@ -133,23 +133,6 @@ fun ProfileTab(
 
             Box(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .height(38.dp)
-                    .border(1.dp, Color.Gray, shape = RoundedCornerShape(25.dp))
-                    .clip(RoundedCornerShape(25.dp))
-                    .clickable { /* Add edit education functionality */ }
-                    .padding(8.dp)
-                    .background(Color.White)
-            ) {
-                Text(
-                    text = "Edit education information",
-                    color = Color.Black,
-                    modifier = Modifier.padding(2.dp)
-                )
-            }
-
-            Box(
-                modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.small)
                     .clip(MaterialTheme.shapes.small)

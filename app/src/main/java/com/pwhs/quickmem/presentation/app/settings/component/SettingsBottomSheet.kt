@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.settings.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.pwhs.quickmem.domain.model.settings.SettingModel
+import com.pwhs.quickmem.domain.model.settings.SettingAppearanceModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,8 +28,8 @@ fun SettingsBottomSheet(
     modifier: Modifier = Modifier,
     showBottomSheet: Boolean,
     sheetState: SheetState,
-    options: List<SettingModel>,
-    onOptionSelected: (SettingModel) -> Unit,
+    options: List<SettingAppearanceModel>,
+    onOptionSelected: (SettingAppearanceModel) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     if (showBottomSheet) {
@@ -49,8 +50,7 @@ fun SettingsBottomSheet(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(horizontal = 8.dp)
                 ) {
                     items(options) { option ->
                         Row(
@@ -59,10 +59,11 @@ fun SettingsBottomSheet(
                                 .padding(top = 10.dp)
                                 .clickable {
                                     onOptionSelected(option)
-                                },
+                                }
+                                .background(Color.LightGray)
+                                .padding(vertical = 10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            // Hiển thị tên của từng option từ SettingModel
                             Text(
                                 text = option.name,
                                 style = typography.bodyMedium.copy(
@@ -71,7 +72,6 @@ fun SettingsBottomSheet(
                                 ),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 10.dp)
                                     .padding(start = 10.dp)
                             )
                         }
