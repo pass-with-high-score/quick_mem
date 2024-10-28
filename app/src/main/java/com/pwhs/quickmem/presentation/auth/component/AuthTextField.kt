@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.auth.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,7 +38,7 @@ fun AuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    iconId: Int,
+    @DrawableRes iconId: Int? = null,
     contentDescription: String,
     readOnly: Boolean = false,
     enabled: Boolean = true,
@@ -74,12 +75,14 @@ fun AuthTextField(
                 }
             ),
             leadingIcon = {
-                Icon(
-                    painter = painterResource(id = iconId),
-                    contentDescription = contentDescription,
-                    modifier = Modifier.size(24.dp),
-                    tint = colorScheme.onSurface
-                )
+                iconId?.let {
+                    Icon(
+                        painter = painterResource(id = iconId),
+                        contentDescription = contentDescription,
+                        modifier = Modifier.size(24.dp),
+                        tint = colorScheme.onSurface
+                    )
+                }
             },
             trailingIcon = {
                 if (type == TextFieldType.PASSWORD) {
