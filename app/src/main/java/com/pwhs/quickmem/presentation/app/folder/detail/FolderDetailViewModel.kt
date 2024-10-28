@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.folder
+package com.pwhs.quickmem.presentation.app.folder.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -12,18 +12,18 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class FolderViewModel @Inject constructor(
+class FolderDetailViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(FolderUiState())
+    private val _uiState = MutableStateFlow(FolderDetailUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<FolderUiEvent>()
+    private val _uiEvent = Channel<FolderDetailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun onEvent(event: FolderUiAction) {
+    fun onEvent(event: FolderDetailUiAction) {
         when (event) {
 
             else -> {}

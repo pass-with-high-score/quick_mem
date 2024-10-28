@@ -72,7 +72,7 @@ fun ClassDetail(
 
 @Preview
 @Composable
-private fun ClassScreenPreview() {
+private fun ClassDetailScreenPreview() {
     MaterialTheme {
         ClassDetail(code = "123")
     }
