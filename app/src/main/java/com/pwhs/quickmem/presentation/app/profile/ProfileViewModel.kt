@@ -56,7 +56,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadEmail() {
         viewModelScope.launch {
-            appManager.saveUserEmail.collectLatest { email ->
+            appManager.userEmail.collectLatest { email ->
                 _emailState.value = email
             }
         }

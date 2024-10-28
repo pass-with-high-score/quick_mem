@@ -14,10 +14,10 @@ class AppManager(private val context: Context) {
         val IS_FIRST_RUN = booleanPreferencesKey("IS_FIRST_RUN")
         val IS_LOGGED_IN = booleanPreferencesKey("IS_LOGGED_IN")
         val USER_ID = stringPreferencesKey("USER_ID")
-        val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
         val USER_FULL_NAME = stringPreferencesKey("USER_FULL_NAME")
         val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_NAME = stringPreferencesKey("USER_NAME")
+        val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -36,10 +36,6 @@ class AppManager(private val context: Context) {
         .map { preferences ->
             preferences[USER_FULL_NAME] ?: ""
         }
-    
-    val saveUserEmail: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[USER_EMAIL] ?: ""
     val userAvatar: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_AVATAR] ?: ""
@@ -77,9 +73,6 @@ class AppManager(private val context: Context) {
         }
     }
 
-    suspend fun saveUserEmail(email: String) {
-        context.dataStore.edit { preferences ->
-            preferences[USER_EMAIL] = email
     suspend fun saveUserAvatar(userAvatar: String) {
         Timber.d("Saving user avatar: $userAvatar")
         context.dataStore.edit { preferences ->
@@ -99,5 +92,16 @@ class AppManager(private val context: Context) {
             preferences.clear()
         }
     }
-    
+
+    val userEmail: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_EMAIL] ?: ""
+        }
+
+    suspend fun saveUserEmail(email: String) {
+        context.dataStore.edit { preferences ->
+            preferences[USER_EMAIL] = email
+        }
+    }
+
 }
