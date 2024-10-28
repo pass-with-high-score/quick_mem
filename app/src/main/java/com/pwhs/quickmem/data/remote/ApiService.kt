@@ -13,6 +13,8 @@ import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
+import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
+import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -136,4 +138,10 @@ interface ApiService {
         @Path("id") id: String,
         @Body flipFlashCardDto: FlipFlashCardDto
     ): UpdateFlashCardResponseDto
+
+    @POST("folder")
+    suspend fun createFolder(
+        @Header("Authorization") token: String,
+        @Body createFolderRequestDto: CreateFolderRequestDto
+    ): CreateFolderResponseDto
 }
