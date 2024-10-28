@@ -4,6 +4,8 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -20,6 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SendVerifyEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val appManager: AppManager,
+    private val tokenManager: TokenManager,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -65,15 +69,19 @@ class SendVerifyEmailViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.sendResetPassword(SendResetPasswordRequestModel(email))
                 .collect { resource ->
-                    when (resource){
+                    when (resource) {
                         is Resources.Error -> {
                             Timber.e(resource.message ?: "Unknown error")
                             _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure)
                         }
+
                         is Resources.Loading -> {
                             _uiState.update { it.copy(isLoading = true) }
                         }
+
                         is Resources.Success -> {
+                            appManager.saveResetEmail(resource.data?.email ?: "")
+                            tokenManager.saveResetToken(resource.data?.resetPasswordToken ?: "")
                             _uiEvent.trySend(SendVerifyEmailUiEvent.SendEmailSuccess)
                         }
                     }

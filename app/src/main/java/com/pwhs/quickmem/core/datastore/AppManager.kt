@@ -18,7 +18,6 @@ class AppManager(private val context: Context) {
         val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val RESET_EMAIL = stringPreferencesKey("RESET_EMAIL")
-        val RESET_TOKEN = stringPreferencesKey("RESET_TOKEN")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -51,10 +50,6 @@ class AppManager(private val context: Context) {
             preferences[RESET_EMAIL] ?: ""
         }
 
-    val resetToken: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[RESET_TOKEN] ?: ""
-        }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
         Timber.d("Saving is first run: $isFirstRun")
@@ -102,13 +97,6 @@ class AppManager(private val context: Context) {
         Timber.d("Saving reset email: $email")
         context.dataStore.edit { preferences ->
             preferences[RESET_EMAIL] = email
-        }
-    }
-
-    suspend fun saveResetToken(token: String) {
-        Timber.d("Saving reset token: $token")
-        context.dataStore.edit { preferences ->
-            preferences[RESET_TOKEN] = token
         }
     }
 

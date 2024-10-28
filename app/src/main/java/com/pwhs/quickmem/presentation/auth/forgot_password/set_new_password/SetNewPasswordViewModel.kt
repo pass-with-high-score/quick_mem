@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class SetNewPasswordViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val appManager: AppManager,
+    private val tokenManager: TokenManager,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -80,7 +82,7 @@ class SetNewPasswordViewModel @Inject constructor(
         viewModelScope.launch {
             val password = uiState.value.password
             val email = appManager.resetEmail.firstOrNull() ?: ""
-            val token = appManager.resetToken.firstOrNull() ?: ""
+            val token = tokenManager.resetToken.firstOrNull() ?: ""
 
             authRepository.resetPassword(
                 ResetPasswordRequestModel(
