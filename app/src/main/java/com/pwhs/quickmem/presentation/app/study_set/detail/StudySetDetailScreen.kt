@@ -45,9 +45,7 @@ import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScre
 import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnFlashCardScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.MatchFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.TestFlashCardScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -68,8 +66,6 @@ fun StudySetDetailScreen(
     resultEditFlashCard: ResultRecipient<EditFlashCardScreenDestination, Boolean>,
     resultFlipFlashCard: ResultRecipient<FlipFlashCardScreenDestination, Boolean>,
     resultLearnFlashCard: ResultRecipient<LearnFlashCardScreenDestination, Boolean>,
-    resultTestFlashCard: ResultRecipient<TestFlashCardScreenDestination, Boolean>,
-    resultMatchFlashCard: ResultRecipient<MatchFlashCardScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -127,27 +123,6 @@ fun StudySetDetailScreen(
         }
     }
 
-    resultTestFlashCard.onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> {}
-            is NavResult.Value -> {
-                if (result.value) {
-                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
-                }
-            }
-        }
-    }
-
-    resultMatchFlashCard.onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> {}
-            is NavResult.Value -> {
-                if (result.value) {
-                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
-                }
-            }
-        }
-    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -260,22 +235,28 @@ fun StudySetDetailScreen(
         },
         onNavigateToLearnFlashCard = {
             navigator.navigate(
-                LearnFlashCardScreenDestination()
+                LearnFlashCardScreenDestination(
+                    studySetId = uiState.id,
+                    studySetTitle = uiState.title,
+                    studySetDescription = uiState.description,
+                    studySetColorId = uiState.colorModel.id,
+                    studySetSubjectId = uiState.subject.id,
+                )
             )
         },
         onNavigateToTestFlashCard = {
-            navigator.navigate(
-                TestFlashCardScreenDestination()
-            )
         },
         onNavigateToMatchFlashCard = {
-            navigator.navigate(
-                MatchFlashCardScreenDestination()
-            )
         },
         onNavigateToFlipFlashCard = {
             navigator.navigate(
-                FlipFlashCardScreenDestination()
+                FlipFlashCardScreenDestination(
+                    studySetId = uiState.id,
+                    studySetTitle = uiState.title,
+                    studySetDescription = uiState.description,
+                    studySetColorId = uiState.colorModel.id,
+                    studySetSubjectId = uiState.subject.id,
+                )
             )
         }
     )
@@ -394,9 +375,9 @@ fun StudySetDetail(
                     1 -> ProgressTabScreen(
                         totalStudySet = flashCardCount,
                         color = color,
-                        studySetsNotLearn = flashCards.count { it.rating == "NOT_STUDIED" },
-                        studySetsStillLearn = flashCards.count { it.rating == "STILL_LEARNING" },
-                        studySetsMastered = flashCards.count { it.rating == "MASTERED" },
+                        studySetsNotLearnCount = flashCards.count { it.flipStatus == "NONE" },
+                        studySetsStillLearningCount = flashCards.count { it.flipStatus == "STILL_LEARNING" },
+                        studySetsKnowCount = flashCards.count { it.flipStatus == "KNOW" },
                     )
                 }
 

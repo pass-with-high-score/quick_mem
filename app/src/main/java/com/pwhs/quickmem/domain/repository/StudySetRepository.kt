@@ -37,6 +37,7 @@ interface StudySetRepository {
 
     suspend fun resetProgress(
         token: String,
-        studySetId: String
+        studySetId: String,
+        resetType: String
     ): Flow<Resources<Unit>>
 }

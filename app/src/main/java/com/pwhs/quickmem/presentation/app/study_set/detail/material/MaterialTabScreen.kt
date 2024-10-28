@@ -133,7 +133,7 @@ fun MaterialTabScreen(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 items(flashCards) { flashCard ->
-                                    FlipCard(
+                                    StudySetFlipCard(
                                         frontText = flashCard.term,
                                         backText = flashCard.definition,
                                         backgroundColor = colorScheme.background,

@@ -139,7 +139,7 @@ fun CardDetail(
             }
 
             Text(text = back, modifier = Modifier.padding(vertical = 8.dp))
-            if (imageURL != null && imageURL.isNotEmpty()) {
+            if (!imageURL.isNullOrEmpty()) {
                 AsyncImage(
                     model = imageURL,
                     contentDescription = null,

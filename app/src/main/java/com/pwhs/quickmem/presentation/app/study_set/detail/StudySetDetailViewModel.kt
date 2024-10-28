@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.ResetType
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
@@ -159,6 +160,7 @@ class StudySetDetailViewModel @Inject constructor(
                         }
 
                         is Resources.Success -> {
+                            Timber.d(resource.data?.message)
                             _uiEvent.send(StudySetDetailUiEvent.FlashCardStarred)
                         }
 
@@ -195,7 +197,7 @@ class StudySetDetailViewModel @Inject constructor(
     private fun resetProgress(id: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            studySetRepository.resetProgress(token, id)
+            studySetRepository.resetProgress(token, id, resetType = ResetType.resetAll.name)
                 .collect { resource ->
                     when (resource) {
                         is Resources.Loading -> {

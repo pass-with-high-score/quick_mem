@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.domain.model.flashcard
 
+import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.data.Rating
 
 data class StudySetFlashCardResponseModel(
@@ -10,6 +11,7 @@ data class StudySetFlashCardResponseModel(
     val hint: String? = null,
     val explanation: String? = null,
     val rating: String = Rating.NOT_STUDIED.name,
+    val flipStatus: String = FlipCardStatus.NONE.name,
     val isStarred: Boolean = false,
     val createdAt: String = "",
     val updatedAt: String = ""
