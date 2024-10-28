@@ -74,7 +74,8 @@ fun SignupWithEmailScreen(
                     navigator.navigate(
                         VerifyEmailScreenDestination(
                             email = uiState.value.email,
-                            isFromSignup = true
+                            isFromSignup = true,
+                            resetPasswordToken = ""
                         )
                     )
                 }

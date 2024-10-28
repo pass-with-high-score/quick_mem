@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.auth.forgot_password.send_email
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +33,7 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
@@ -69,7 +71,8 @@ fun SendVerifyEmailScreen(
                     navigator.navigate(
                         VerifyEmailScreenDestination(
                             email = uiState.value.email,
-                            isFromSignup = false
+                            isFromSignup = false,
+                            resetPasswordToken = uiState.value.resetPasswordToken
                         )
                     )
                 }
@@ -79,6 +82,7 @@ fun SendVerifyEmailScreen(
 
     SendVerifyEmail(
         modifier,
+        isLoading = uiState.value.isLoading,
         onNavigationIconClick = {
             navigator.popBackStack()
         },
@@ -96,6 +100,7 @@ fun SendVerifyEmailScreen(
 @Composable
 private fun SendVerifyEmail(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
     emailError: String = "",
@@ -109,54 +114,59 @@ private fun SendVerifyEmail(
             AuthTopAppBar(onClick = onNavigationIconClick)
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp)
-                .padding(top = 40.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.forgot_password_verify_email),
-                contentDescription = "Forgot Password Image",
-                contentScale = ContentScale.Crop,
+        Box {
+            Column(
                 modifier = Modifier
-                    .size(120.dp)
-            )
-            Spacer(modifier = Modifier.height(26.dp))
-            Text(
-                text = "Forgot Your Password?",
-                style = typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
-                ),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .padding(top = 40.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.forgot_password_verify_email),
+                    contentDescription = "Forgot Password Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                )
+                Spacer(modifier = Modifier.height(26.dp))
+                Text(
+                    text = "Forgot Your Password?",
+                    style = typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
 
-            AuthTextField(
-                value = email,
-                onValueChange = onEmailChanged,
-                label = "Email Address",
-                iconId = R.drawable.ic_email,
-                contentDescription = "Email",
-                type = TextFieldType.EMAIL,
-                error = emailError
-            )
+                AuthTextField(
+                    value = email,
+                    onValueChange = onEmailChanged,
+                    label = "Email Address",
+                    iconId = R.drawable.ic_email,
+                    contentDescription = "Email",
+                    type = TextFieldType.EMAIL,
+                    error = emailError
+                )
 
-            AuthButton(
-                text = "Reset Password",
-                onClick = onResetClick,
-                modifier = Modifier.padding(top = 16.dp),
-                textColor = Color.White,
+                AuthButton(
+                    text = "Reset Password",
+                    onClick = onResetClick,
+                    modifier = Modifier.padding(top = 16.dp),
+                    textColor = Color.White,
+                )
+            }
+            LoadingOverlay(
+                isLoading = isLoading
             )
         }
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+@PreviewLightDark
 @Composable
 fun PreviewForgotPasswordVerifyEmailScreen() {
     QuickMemTheme {

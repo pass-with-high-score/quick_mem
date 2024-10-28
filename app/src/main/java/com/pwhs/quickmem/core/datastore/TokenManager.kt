@@ -14,7 +14,6 @@ class TokenManager(private val context: Context) {
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")
         val REFRESH_TOKEN = stringPreferencesKey("REFRESH_TOKEN")
-        val RESET_TOKEN = stringPreferencesKey("RESET_TOKEN")
     }
 
     val accessToken: Flow<String?> = context.dataStore.data
@@ -27,11 +26,6 @@ class TokenManager(private val context: Context) {
             "Bearer ${preferences[REFRESH_TOKEN]}"
         }
 
-    val resetToken: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[RESET_TOKEN] ?: ""
-        }
-
     suspend fun saveAccessToken(token: String) {
         Timber.d("Saving access token: $token")
         context.dataStore.edit { preferences ->
@@ -42,13 +36,6 @@ class TokenManager(private val context: Context) {
     suspend fun saveRefreshToken(token: String) {
         context.dataStore.edit { preferences ->
             preferences[REFRESH_TOKEN] = token
-        }
-    }
-
-    suspend fun saveResetToken(token: String) {
-        Timber.d("Saving reset token: $token")
-        context.dataStore.edit { preferences ->
-            preferences[RESET_TOKEN] = token
         }
     }
 

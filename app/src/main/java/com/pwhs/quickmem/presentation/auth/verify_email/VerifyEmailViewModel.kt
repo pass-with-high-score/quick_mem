@@ -40,10 +40,12 @@ class VerifyEmailViewModel @Inject constructor(
     init {
         val email = stateHandle.get<String>("email") ?: ""
         val isFromSignup = stateHandle.get<Boolean>("isFromSignup") ?: false
+        val resetPasswordToken = stateHandle.get<String>("resetPasswordToken") ?: ""
         _uiState.update {
             it.copy(
                 email = email,
-                isFromSignup = isFromSignup
+                isFromSignup = isFromSignup,
+                resetPasswordToken = resetPasswordToken
             )
         }
         updateCountdown()
@@ -103,38 +105,40 @@ class VerifyEmailViewModel @Inject constructor(
                 _uiEvent.send(VerifyEmailUiEvent.WrongOtp)
                 return@launch
             }
+            if (_uiState.value.isFromSignup) {
+                authRepository.verifyEmail(
+                    VerifyEmailResponseModel(
+                        email = email,
+                        otp = otp
+                    )
+                ).collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
 
-            val response = authRepository.verifyEmail(
-                VerifyEmailResponseModel(
-                    email = email,
-                    otp = otp
-                )
-            )
+                        is Resources.Success -> {
+                            tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
+                            tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
+                            appManager.saveUserAvatar(resource.data?.avatarUrl ?: "")
+                            appManager.saveUserFullName(resource.data?.fullName ?: "")
+                            appManager.saveUserName(resource.data?.username ?: "")
+                            appManager.saveUserId(resource.data?.id ?: "")
+                            appManager.saveIsLoggedIn(true)
+                            _uiState.update { it.copy(isLoading = false) }
+                            Timber.d("Navigate to verify success")
+                            _uiEvent.send(VerifyEmailUiEvent.VerifySuccess)
+                        }
 
-            response.collectLatest { resource ->
-                when (resource) {
-                    is Resources.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-
-                    is Resources.Success -> {
-                        tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
-                        tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
-                        appManager.saveUserAvatar(resource.data?.avatarUrl ?: "")
-                        appManager.saveUserFullName(resource.data?.fullName ?: "")
-                        appManager.saveUserName(resource.data?.username ?: "")
-                        appManager.saveUserId(resource.data?.id ?: "")
-                        appManager.saveIsLoggedIn(true)
-                        _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(VerifyEmailUiEvent.VerifySuccess)
-                    }
-
-                    is Resources.Error -> {
-                        Timber.e(resource.message)
-                        _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(VerifyEmailUiEvent.VerifyFailure)
+                        is Resources.Error -> {
+                            Timber.e(resource.message)
+                            _uiState.update { it.copy(isLoading = false) }
+                            _uiEvent.send(VerifyEmailUiEvent.VerifyFailure)
+                        }
                     }
                 }
+            } else {
+                _uiEvent.send(VerifyEmailUiEvent.NavigateToSetNewPassword)
             }
         }
     }
