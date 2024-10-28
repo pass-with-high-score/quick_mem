@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.sp
 fun LoadingOverlay(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
-    color: Color? = null
+    color: Color? = null,
+    text: String? = null
 ) {
     if (isLoading) {
         AlertDialog(
@@ -39,16 +40,16 @@ fun LoadingOverlay(
                         verticalArrangement = Arrangement.Center
                     ) {
                         CircularProgressIndicator(
-                            color = color ?: MaterialTheme.colorScheme.primary,
+                            color = color ?: MaterialTheme.colorScheme.background,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         Text(
-                            text = "Loading...",
+                            text = text ?: "Loading...",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
                             ),
-                            color = color ?: MaterialTheme.colorScheme.onSurface,
+                            color = color ?: MaterialTheme.colorScheme.background,
                         )
                     }
                 }

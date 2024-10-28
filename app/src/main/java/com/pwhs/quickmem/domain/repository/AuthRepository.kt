@@ -7,6 +7,8 @@ import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import kotlinx.coroutines.flow.Flow
 
@@ -24,4 +26,9 @@ interface AuthRepository {
     suspend fun resendOtp(
         resendEmailRequestModel: ResendEmailRequestModel
     ): Flow<Resources<OtpResponseModel>>
+
+    suspend fun updateFullName(
+        token:String,
+        updateFullNameRequestModel: UpdateFullNameRequestModel
+    ):Flow<Resources<UpdateFullNameResponseModel>>
 }

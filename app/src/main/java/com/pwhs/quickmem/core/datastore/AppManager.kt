@@ -14,6 +14,7 @@ class AppManager(private val context: Context) {
         val IS_FIRST_RUN = booleanPreferencesKey("IS_FIRST_RUN")
         val IS_LOGGED_IN = booleanPreferencesKey("IS_LOGGED_IN")
         val USER_ID = stringPreferencesKey("USER_ID")
+        val USER_FULL_NAME = stringPreferencesKey("USER_FULL_NAME")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -27,6 +28,10 @@ class AppManager(private val context: Context) {
     val userId: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_ID] ?: ""
+        }
+    val userFullName: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_FULL_NAME] ?: ""
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -47,6 +52,13 @@ class AppManager(private val context: Context) {
         Timber.d("Saving user id: $userId")
         context.dataStore.edit { preferences ->
             preferences[USER_ID] = userId
+        }
+    }
+
+    suspend fun saveUserFullName(userFullName: String) {
+        Timber.d("Saving user full name: $userFullName")
+        context.dataStore.edit { preferences ->
+            preferences[USER_FULL_NAME] = userFullName
         }
     }
 
