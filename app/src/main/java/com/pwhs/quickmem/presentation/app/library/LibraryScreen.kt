@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.library
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +56,7 @@ fun LibraryScreen(
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     resultStudySetDetail.onNavResult { result ->
         when (result) {
@@ -70,15 +73,22 @@ fun LibraryScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is LibraryUiEvent.Error -> {}
-                LibraryUiEvent.Loading -> {}
+                is LibraryUiEvent.Error -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
     Library(
         modifier = modifier,
+        isLoading = uiState.isLoading,
+        userAvatar = uiState.userAvatar,
+        username = uiState.username,
         studySets = uiState.studySets,
+        onStudySetRefresh = {
+            viewModel.onEvent(LibraryUiAction.Refresh)
+        },
         onStudySetClick = {
             navigator.navigate(StudySetDetailScreenDestination(id = it))
         },
@@ -98,6 +108,10 @@ fun LibraryScreen(
 @Composable
 fun Library(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    userAvatar: String = "",
+    username: String = "",
+    onStudySetRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     navigateToCreateStudySet: () -> Unit = {},
@@ -122,15 +136,15 @@ fun Library(
                     IconButton(
                         onClick = {
                             when (tabIndex) {
-                                0 -> {
+                                LibraryTabEnum.STUDY_SET.index -> {
                                     navigateToCreateStudySet()
                                 }
 
-                                1 -> {
+                                LibraryTabEnum.CLASS.index -> {
                                     navigateToCreateClass()
                                 }
 
-                                2 -> {
+                                LibraryTabEnum.FOLDER.index -> {
                                     navigateToCreateFolder()
                                 }
                             }
@@ -176,22 +190,27 @@ fun Library(
                         onClick = { tabIndex = index },
                         icon = {
                             when (index) {
-                                0 -> {}
-                                1 -> {}
-                                2 -> {}
+                                LibraryTabEnum.STUDY_SET.index -> {}
+                                LibraryTabEnum.CLASS.index -> {}
+                                LibraryTabEnum.FOLDER.index -> {}
                             }
                         }
                     )
                 }
             }
             when (tabIndex) {
-                0 -> ListStudySetScreen(
+                LibraryTabEnum.STUDY_SET.index -> ListStudySetScreen(
+                    modifier = Modifier.padding(top = 8.dp),
+                    isLoading = isLoading,
                     studySets = studySets,
-                    onStudySetClick = onStudySetClick
+                    onStudySetClick = onStudySetClick,
+                    onStudySetRefresh = onStudySetRefresh,
+                    userAvatar = userAvatar,
+                    username = username
                 )
 
-                1 -> ListClassesScreen()
-                2 -> ListFolderScreen()
+                LibraryTabEnum.CLASS.index -> ListClassesScreen()
+                LibraryTabEnum.FOLDER.index -> ListFolderScreen()
             }
         }
     }

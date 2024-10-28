@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password.component
+package com.pwhs.quickmem.presentation.auth.forgot_password.send_email
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,21 +32,19 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password.SetNewPasswordUiAction
-import com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password.SetNewPasswordUiEvent
-import com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password.SetNewPasswordViewModel
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>
-fun SetNewPasswordScreen(
+fun SendVerifyEmailScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: SetNewPasswordViewModel = hiltViewModel()
+    viewModel: SendVerifyEmailViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -55,63 +52,55 @@ fun SetNewPasswordScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SetNewPasswordUiEvent.None -> {
+                SendVerifyEmailUiEvent.None -> {
                     //
                 }
 
-                SetNewPasswordUiEvent.ResetFailure -> {
+                SendVerifyEmailUiEvent.SendEmailFailure -> {
                     Toast.makeText(
                         context,
-                        "Password reset failed",
+                        "Email verification failed",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
 
-                SetNewPasswordUiEvent.ResetSuccess -> {
+                SendVerifyEmailUiEvent.SendEmailSuccess -> {
                     navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination) {
-                        popUpTo(HomeScreenDestination) {
-                            inclusive = true
-                            launchSingleTop = true
-                        }
-                    }
+                    navigator.navigate(
+                        VerifyEmailScreenDestination(
+                            email = uiState.value.email,
+                            isFromSignup = false
+                        )
+                    )
                 }
             }
         }
     }
 
-    SetNewPassword(
+    SendVerifyEmail(
         modifier,
         onNavigationIconClick = {
             navigator.popBackStack()
         },
-        password = uiState.value.password,
-        confirmPassword = uiState.value.confirmPassword,
-        passwordError = uiState.value.passwordError,
-        confirmPasswordError = uiState.value.confirmPasswordError,
-        onPasswordChanged = { password ->
-            viewModel.onEvent(SetNewPasswordUiAction.PasswordChanged(password))
+        email = uiState.value.email,
+        emailError = uiState.value.emailError,
+        onEmailChanged = { email ->
+            viewModel.onEvent(SendVerifyEmailUiAction.EmailChangedAction(email))
         },
-        onConfirmPasswordChanged = { confirmPassword ->
-            viewModel.onEvent(SetNewPasswordUiAction.ConfirmPasswordChanged(confirmPassword))
-        },
-        onSubmitClick = {
-            viewModel.onEvent(SetNewPasswordUiAction.Submit)
+        onResetClick = {
+            viewModel.onEvent(SendVerifyEmailUiAction.ResetPassword)
         }
     )
 }
 
 @Composable
-private fun SetNewPassword(
+private fun SendVerifyEmail(
     modifier: Modifier = Modifier,
     onNavigationIconClick: () -> Unit = {},
-    password: String = "",
-    confirmPassword: String = "",
-    passwordError: String = "",
-    confirmPasswordError: String = "",
-    onPasswordChanged: (String) -> Unit = {},
-    onConfirmPasswordChanged: (String) -> Unit = {},
-    onSubmitClick: () -> Unit = {}
+    email: String = "",
+    emailError: String = "",
+    onEmailChanged: (String) -> Unit = {},
+    onResetClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -130,14 +119,15 @@ private fun SetNewPassword(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.forgot_password_verify_password),
+                painter = painterResource(id = R.drawable.forgot_password_verify_email),
                 contentDescription = "Forgot Password Image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier
+                    .size(120.dp)
             )
-
+            Spacer(modifier = Modifier.height(26.dp))
             Text(
-                text = "Please enter your new password",
+                text = "Forgot Your Password?",
                 style = typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
@@ -146,34 +136,21 @@ private fun SetNewPassword(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
-            Spacer(modifier = Modifier.height(26.dp))
-
             AuthTextField(
-                value = password,
-                onValueChange = onPasswordChanged,
-                label = "New Password",
-                iconId = R.drawable.ic_lock,
-                contentDescription = "New Password",
-                type = TextFieldType.PASSWORD,
-                error = passwordError
-            )
-
-            AuthTextField(
-                value = confirmPassword,
-                onValueChange = onConfirmPasswordChanged,
-                label = "Confirm Password",
-                iconId = R.drawable.ic_lock,
-                contentDescription = "Confirm Password",
-                type = TextFieldType.PASSWORD,
-                error = confirmPasswordError
+                value = email,
+                onValueChange = onEmailChanged,
+                label = "Email Address",
+                iconId = R.drawable.ic_email,
+                contentDescription = "Email",
+                type = TextFieldType.EMAIL,
+                error = emailError
             )
 
             AuthButton(
-                text = "Done",
-                onClick = onSubmitClick,
+                text = "Reset Password",
+                onClick = onResetClick,
                 modifier = Modifier.padding(top = 16.dp),
-                colors = colorScheme.onSecondaryContainer,
-                textColor = Color.White
+                textColor = Color.White,
             )
         }
     }
@@ -181,6 +158,8 @@ private fun SetNewPassword(
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun PreviewForgotPasswordVerifyPasswordScreen() {
-    SetNewPassword()
+fun PreviewForgotPasswordVerifyEmailScreen() {
+    QuickMemTheme {
+        SendVerifyEmail()
+    }
 }

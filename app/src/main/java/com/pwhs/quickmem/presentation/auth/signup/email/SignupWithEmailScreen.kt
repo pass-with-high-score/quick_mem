@@ -1,8 +1,9 @@
-package com.pwhs.quickmem.presentation.auth.signup.email.component
+package com.pwhs.quickmem.presentation.auth.signup.email
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,16 +36,15 @@ import com.pwhs.quickmem.core.data.UserRole
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiAction
-import com.pwhs.quickmem.presentation.auth.signup.email.SignUpWithEmailUiEvent
-import com.pwhs.quickmem.presentation.auth.signup.email.SignupWithEmailViewModel
+import com.pwhs.quickmem.presentation.auth.signup.email.component.DatePickerModalInput
+import com.pwhs.quickmem.presentation.auth.signup.email.component.RadioGroup
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.util.gradientBackground
 import com.pwhs.quickmem.util.isDateSmallerThan
 import com.pwhs.quickmem.util.toFormattedString
 import com.pwhs.quickmem.util.toTimestamp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber
@@ -62,10 +62,6 @@ fun SignupWithEmailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SignUpWithEmailUiEvent.None -> {
-                    // Do nothing
-                }
-
                 SignUpWithEmailUiEvent.SignUpFailure -> {
                     Toast.makeText(
                         context,
@@ -75,13 +71,12 @@ fun SignupWithEmailScreen(
                 }
 
                 SignUpWithEmailUiEvent.SignUpSuccess -> {
-                    navigator.popBackStack()
-                    navigator.navigate(VerifyEmailScreenDestination(email = uiState.value.email)) {
-                        popUpTo(VerifyEmailScreenDestination(email = uiState.value.email)) {
-                            inclusive = true
-                            launchSingleTop = true
-                        }
-                    }
+                    navigator.navigate(
+                        VerifyEmailScreenDestination(
+                            email = uiState.value.email,
+                            isFromSignup = true
+                        )
+                    )
                 }
             }
 
@@ -89,6 +84,7 @@ fun SignupWithEmailScreen(
     }
     SignupWithEmail(
         modifier,
+        isLoading = uiState.value.isLoading,
         onNavigationIconClick = {
             navigator.popBackStack()
         },
@@ -119,6 +115,7 @@ fun SignupWithEmailScreen(
 @Composable
 private fun SignupWithEmail(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
     emailError: String = "",
@@ -143,75 +140,81 @@ private fun SignupWithEmail(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp)
-                .padding(top = 40.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_logo),
-                contentDescription = "Logo",
-                contentScale = ContentScale.Crop,
+        Box {
+            Column(
                 modifier = Modifier
-                    .size(60.dp)
-            )
-
-            Text(
-                text = "Signup with email",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.primary
-                ),
-                modifier = Modifier.padding(16.dp)
-            )
-            AuthTextField(
-                value = birthday,
-                onValueChange = onBirthdayChanged,
-                label = "Select your birthday",
-                iconId = R.drawable.ic_calendar,
-                contentDescription = "Birthday",
-                readOnly = true,
-                enabled = false,
-                onClick = { isDatePickerVisible = true },
-                type = TextFieldType.BIRTHDAY,
-                error = birthdayError
-            )
-            AuthTextField(
-                value = email,
-                onValueChange = onEmailChanged,
-                label = "example@email.com",
-                iconId = R.drawable.ic_email,
-                contentDescription = "Email",
-                type = TextFieldType.EMAIL,
-                error = emailError
-            )
-            AuthTextField(
-                value = password,
-                onValueChange = onPasswordChanged,
-                label = "Create your password",
-                iconId = R.drawable.ic_lock,
-                contentDescription = "Password",
-                type = TextFieldType.PASSWORD,
-                error = passwordError
-            )
-
-            if (isRoleVisible) {
-                RadioGroup(
-                    modifier = Modifier.fillMaxWidth(),
-                    onRoleChanged = onRoleChanged
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .padding(top = 40.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_logo),
+                    contentDescription = "Logo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(60.dp)
                 )
+
+                Text(
+                    text = "Signup with email",
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = colorScheme.primary
+                    ),
+                    modifier = Modifier.padding(16.dp)
+                )
+                AuthTextField(
+                    value = birthday,
+                    onValueChange = onBirthdayChanged,
+                    label = "Select your birthday",
+                    iconId = R.drawable.ic_calendar,
+                    contentDescription = "Birthday",
+                    readOnly = true,
+                    enabled = false,
+                    onClick = { isDatePickerVisible = true },
+                    type = TextFieldType.BIRTHDAY,
+                    error = birthdayError
+                )
+                AuthTextField(
+                    value = email,
+                    onValueChange = onEmailChanged,
+                    label = "example@email.com",
+                    iconId = R.drawable.ic_email,
+                    contentDescription = "Email",
+                    type = TextFieldType.EMAIL,
+                    error = emailError
+                )
+                AuthTextField(
+                    value = password,
+                    onValueChange = onPasswordChanged,
+                    label = "Create your password",
+                    iconId = R.drawable.ic_lock,
+                    contentDescription = "Password",
+                    type = TextFieldType.PASSWORD,
+                    error = passwordError
+                )
+
+                if (isRoleVisible) {
+                    RadioGroup(
+                        modifier = Modifier.fillMaxWidth(),
+                        onRoleChanged = onRoleChanged
+                    )
+                }
+
+                AuthButton(
+                    text = "Sign up",
+                    onClick = onSignUpClick,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+
             }
-
-            AuthButton(
-                text = "Sign up",
-                onClick = onSignUpClick,
-                modifier = Modifier.padding(top = 16.dp)
+            LoadingOverlay(
+                isLoading = isLoading,
+                text = "Signing up..."
             )
-
         }
     }
 

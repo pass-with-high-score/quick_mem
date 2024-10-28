@@ -8,11 +8,13 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,6 +39,13 @@ class LibraryViewModel @Inject constructor(
             is LibraryUiAction.Refresh -> {
                 getStudySets()
             }
+
+            LibraryUiAction.RefreshStudySets -> {
+                viewModelScope.launch {
+                    delay(500)
+                    getStudySets()
+                }
+            }
         }
     }
 
@@ -44,21 +53,37 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
             val ownerId = appManager.userId.firstOrNull() ?: return@launch
+            val userAvatar = appManager.userAvatar.firstOrNull() ?: return@launch
+            val username = appManager.userName.firstOrNull() ?: return@launch
 
             studySetRepository.getStudySetsByOwnerId(token, ownerId).collectLatest { resources ->
                 when (resources) {
                     is Resources.Success -> {
-                        _uiState.value =
-                            resources.data?.let { _uiState.value.copy(studySets = it) }!!
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                studySets = resources.data ?: emptyList(),
+                                userAvatar = userAvatar,
+                                username = username
+                            )
+                        }
                     }
 
                     is Resources.Error -> {
-                        resources.message?.let { LibraryUiEvent.Error(it) }
-                            ?.let { _uiEvent.send(it) }
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            LibraryUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
                     }
 
                     is Resources.Loading -> {
-                        _uiEvent.send(LibraryUiEvent.Loading)
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
                     }
                 }
             }

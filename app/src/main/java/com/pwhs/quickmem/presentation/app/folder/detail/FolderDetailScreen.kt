@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.folder
+package com.pwhs.quickmem.presentation.app.folder.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -20,9 +20,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>
-fun FolderScreen(
+fun FolderDetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: FolderViewModel = hiltViewModel(),
+    viewModel: FolderDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -35,13 +35,13 @@ fun FolderScreen(
         }
     }
 
-    Folder(modifier = modifier)
+    FolderDetail(modifier = modifier)
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Folder(modifier: Modifier = Modifier) {
+fun FolderDetail(modifier: Modifier = Modifier) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -59,9 +59,9 @@ fun Folder(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun FolderPreview() {
+private fun FolderDetailPreview() {
     MaterialTheme {
-        Folder()
+        FolderDetail()
     }
 
 }
