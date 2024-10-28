@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,10 +34,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mr0xf00.easycrop.CropError
 import com.mr0xf00.easycrop.CropResult
 import com.mr0xf00.easycrop.CropperStyle
@@ -51,6 +52,8 @@ import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextField
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextFieldContainer
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTopAppBar
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.ImageCompressor
 import com.pwhs.quickmem.util.bitmapToUri
 import com.pwhs.quickmem.util.loadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
@@ -59,6 +62,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
 
 @Destination<RootGraph>(
     navArgs = EditFlashCardArgs::class
@@ -72,6 +76,8 @@ fun EditFlashCardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val imageCompressor = remember { ImageCompressor(context) }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -113,12 +119,24 @@ fun EditFlashCardScreen(
                 )
             )
         },
-        onDefinitionImageChanged = {
-            viewModel.onEvent(
-                EditFlashCardUiAction.FlashCardDefinitionImageChanged(
-                    it
+        onDefinitionImageChanged = { uri ->
+            if (uri == null) {
+                viewModel.onEvent(EditFlashCardUiAction.FlashCardDefinitionImageChanged(null))
+                return@CreateFlashCard
+            }
+            scope.launch {
+                val compressedImageBytes = imageCompressor.compressImage(uri, 200 * 1024L) // 200KB
+                val compressedImageUri = compressedImageBytes?.let {
+                    Uri.fromFile(File(context.cacheDir, "compressed_image.jpg").apply {
+                        writeBytes(it)
+                    })
+                }
+                viewModel.onEvent(
+                    EditFlashCardUiAction.FlashCardDefinitionImageChanged(
+                        compressedImageUri
+                    )
                 )
-            )
+            }
         },
         onHintChanged = { viewModel.onEvent(EditFlashCardUiAction.FlashCardHintChanged(it)) },
         onShowHintClicked = { viewModel.onEvent(EditFlashCardUiAction.ShowHintClicked(it)) },
@@ -155,7 +173,7 @@ fun EditFlashCardScreen(
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class,
+    ExperimentalMaterial3Api::class,
 )
 @Composable
 fun CreateFlashCard(
@@ -182,7 +200,7 @@ fun CreateFlashCard(
     onSaveFlashCardClicked: () -> Unit = {},
 ) {
 
-    var bottomSheetSetting = rememberModalBottomSheetState()
+    val bottomSheetSetting = rememberModalBottomSheetState()
     var showBottomSheetSetting by remember {
         mutableStateOf(false)
     }
@@ -192,8 +210,7 @@ fun CreateFlashCard(
     val context = LocalContext.current
     val imagePicker = rememberImagePicker(onImage = { uri ->
         scope.launch {
-            val result = imageCropper.crop(uri, context)
-            when (result) {
+            when (val result = imageCropper.crop(uri, context)) {
                 CropResult.Cancelled -> { /* Handle cancellation */
                 }
 
@@ -352,6 +369,17 @@ fun CreateFlashCard(
                 }
 
                 item {
+                    Text(
+                        "Make your term and definition as clear as possible. You can add hint and explanation to help you remember better.",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                item {
                     HorizontalDivider(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -409,8 +437,10 @@ fun CreateFlashCard(
 }
 
 
-@PreviewLightDark()
+@PreviewLightDark
 @Composable
 fun CreateFlashCardPreview() {
-    CreateFlashCard()
+    QuickMemTheme {
+        CreateFlashCard()
+    }
 }

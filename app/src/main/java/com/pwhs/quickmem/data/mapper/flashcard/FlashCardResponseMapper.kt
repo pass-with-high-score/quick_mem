@@ -14,7 +14,8 @@ fun FlashCardResponseDto.toModel() = FlashCardResponseModel(
     rating = rating,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    isStarred = isStarred
+    isStarred = isStarred,
+    flipStatus = flipStatus
 )
 
 fun FlashCardResponseModel.toDto() = FlashCardResponseDto(
@@ -28,5 +29,6 @@ fun FlashCardResponseModel.toDto() = FlashCardResponseDto(
     rating = rating,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    isStarred = isStarred
+    isStarred = isStarred,
+    flipStatus = flipStatus
 )

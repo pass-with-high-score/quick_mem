@@ -16,9 +16,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
     }
 }
 
 rootProject.name = "QuickMem"
 include(":app")
+include(":compose-cardstack")
  

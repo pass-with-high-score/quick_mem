@@ -141,15 +141,17 @@ fun EditStudySet(
         ) {
             StudySetTextField(
                 value = title,
-                title = "Study Set Name",
+                title = "Study Set Title",
                 valueError = titleError,
-                onValueChange = onTitleChange
+                onValueChange = onTitleChange,
+                placeholder = "Enter Study Set Title"
             )
             StudySetTextField(
                 value = description,
                 valueError = descriptionError,
                 onValueChange = onDescriptionChange,
-                title = "Description (optional)"
+                title = "Description (optional)",
+                placeholder = "Enter Description"
             )
             StudySetSubjectInput(
                 subjectModel = subjectModel,

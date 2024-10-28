@@ -1,7 +1,5 @@
 package com.pwhs.quickmem.domain.model.color
 
-import androidx.compose.ui.graphics.Color
-
 data class ColorModel(
     val id: Int = 0,
     val name: String = "",

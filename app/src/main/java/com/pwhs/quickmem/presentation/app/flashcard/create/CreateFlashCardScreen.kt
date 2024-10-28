@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,14 +35,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.mr0xf00.easycrop.CropError
-import com.mr0xf00.easycrop.CropResult
 import com.mr0xf00.easycrop.CropperStyle
-import com.mr0xf00.easycrop.crop
 import com.mr0xf00.easycrop.rememberImageCropper
 import com.mr0xf00.easycrop.rememberImagePicker
 import com.mr0xf00.easycrop.ui.ImageCropperDialog
@@ -52,7 +50,8 @@ import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextField
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextFieldContainer
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTopAppBar
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
-import com.pwhs.quickmem.util.bitmapToUri
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.ImageCompressor
 import com.pwhs.quickmem.util.loadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -63,6 +62,7 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
 
 @Destination<RootGraph>(
     navArgs = CreateFlashCardArgs::class
@@ -169,7 +169,7 @@ fun CreateFlashCardScreen(
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class,
+    ExperimentalMaterial3Api::class,
 )
 @Composable
 fun CreateFlashCard(
@@ -196,7 +196,7 @@ fun CreateFlashCard(
     onSaveFlashCardClicked: () -> Unit = {},
 ) {
 
-    var bottomSheetSetting = rememberModalBottomSheetState()
+    val bottomSheetSetting = rememberModalBottomSheetState()
     var showBottomSheetSetting by remember {
         mutableStateOf(false)
     }
@@ -204,21 +204,16 @@ fun CreateFlashCard(
     val imageCropper = rememberImageCropper()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val imageCompressor = remember { ImageCompressor(context) }
     val imagePicker = rememberImagePicker(onImage = { uri ->
         scope.launch {
-            val result = imageCropper.crop(uri, context)
-            when (result) {
-                CropResult.Cancelled -> { /* Handle cancellation */
-                }
-
-                is CropError -> { /* Handle error */
-                }
-
-                is CropResult.Success -> {
-                    Timber.d("Cropped image: ${result.bitmap}")
-                    onDefinitionImageChanged(context.bitmapToUri(result.bitmap))
-                }
+            val compressedImageBytes = imageCompressor.compressImage(uri, 200 * 1024L) // 200KB
+            val compressedImageUri = compressedImageBytes?.let {
+                Uri.fromFile(File(context.cacheDir, "compressed_image.jpg").apply {
+                    writeBytes(it)
+                })
             }
+            onDefinitionImageChanged(compressedImageUri)
         }
     })
 
@@ -366,6 +361,17 @@ fun CreateFlashCard(
                 }
 
                 item {
+                    Text(
+                        "Make your term and definition as clear as possible. You can add hint and explanation to help you remember better.",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                item {
                     HorizontalDivider(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -423,8 +429,10 @@ fun CreateFlashCard(
 }
 
 
-@PreviewLightDark()
+@PreviewLightDark
 @Composable
 fun CreateFlashCardPreview() {
-    CreateFlashCard()
+    QuickMemTheme {
+        CreateFlashCard()
+    }
 }

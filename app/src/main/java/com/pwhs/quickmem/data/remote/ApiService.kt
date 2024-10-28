@@ -11,7 +11,10 @@ import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
+import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -30,6 +33,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("auth/signup")
@@ -91,7 +95,8 @@ interface ApiService {
     @PATCH("study-set/{id}/reset-progress")
     suspend fun resetProgress(
         @Header("Authorization") token: String,
-        @Path("id") id: String
+        @Path("id") id: String,
+        @Query("resetType") resetType: String
     )
 
     @DELETE("study-set/{id}")
@@ -99,6 +104,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String
     )
+
+    @GET("/flashcard/study-set/{id}")
+    suspend fun getFlashCardsByStudySetId(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Query("learnMode") learnMode: String
+    ): List<FlashCardResponseDto>
 
     @POST("flashcard")
     suspend fun createFlashCard(
@@ -124,5 +136,19 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body toggleStarredFlashCardDto: ToggleStarredFlashCardDto
-    ): FlashCardResponseDto
+    ): UpdateFlashCardResponseDto
+
+    @PATCH("flashcard/{id}/flip-status")
+    suspend fun updateFlipFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body flipFlashCardDto: FlipFlashCardDto
+    ): UpdateFlashCardResponseDto
+
+    @PATCH("flashcard/{id}/rating")
+    suspend fun updateRatingFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body ratingFlashCardDto: RatingFlashCardDto
+    ): UpdateFlashCardResponseDto
 }

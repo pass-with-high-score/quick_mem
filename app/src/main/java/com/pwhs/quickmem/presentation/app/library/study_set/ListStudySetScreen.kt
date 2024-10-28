@@ -26,7 +26,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.util.toColor
 
@@ -64,7 +66,8 @@ fun ListStudySetScreen(
                                 ),
                                 border = BorderStroke(
                                     width = 1.dp,
-                                    color = studySet.color!!.hexValue.toColor()
+                                    color = studySet.color?.hexValue?.toColor()
+                                        ?: ColorModel.defaultColors[0].hexValue.toColor()
                                 )
                             ) {
                                 Column(
@@ -79,8 +82,10 @@ fun ListStudySetScreen(
                                         ),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
-                                        color = studySet.color.hexValue.toColor()
-                                            .copy(alpha = 0.8f),
+                                        color = studySet.color?.hexValue?.toColor()
+                                            ?.copy(alpha = 0.8f)
+                                            ?: ColorModel.defaultColors[0].hexValue.toColor()
+                                                .copy(alpha = 0.8f),
                                     )
                                     Text(
                                         buildAnnotatedString {
@@ -103,7 +108,8 @@ fun ListStudySetScreen(
                                         }
                                     )
                                     Text(
-                                        studySet.subject!!.name,
+                                        studySet.subject?.name
+                                            ?: SubjectModel.defaultSubjects[0].name,
                                         style = MaterialTheme.typography.bodySmall.copy(
                                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                         )

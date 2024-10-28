@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.util
 
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -20,5 +21,15 @@ fun Long.isDateSmallerThan(): Boolean {
     if (calendarCompare.get(Calendar.DAY_OF_YEAR) < calendarBirth.get(Calendar.DAY_OF_YEAR)) {
         age--
     }
-    return age < 18
+    return age < 20
+}
+
+fun Long.toStringTime(): String {
+    Timber.d("toStringTime: $this")
+    val totalSeconds = this / 1000
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+
+    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
 }

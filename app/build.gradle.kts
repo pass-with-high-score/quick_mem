@@ -85,6 +85,9 @@ dependencies {
 
     implementation(libs.play.services.ads)
 
+    implementation(project(":compose-cardstack"))
+    implementation(libs.lottie.compose)
+
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
