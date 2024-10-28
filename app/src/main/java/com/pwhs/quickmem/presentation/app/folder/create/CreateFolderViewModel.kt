@@ -76,12 +76,22 @@ class CreateFolderViewModel @Inject constructor(
                     ).collectLatest { resources ->
                         when (resources) {
                             is Resources.Loading -> {
-                                _uiEvent.send(CreateFolderUiEvent.ShowLoading)
+                                _uiState.update {
+                                    it.copy(isLoading = true)
+                                }
                             }
+
                             is Resources.Success -> {
+                                _uiState.update {
+                                    it.copy(isLoading = false)
+                                }
                                 _uiEvent.send(CreateFolderUiEvent.FolderCreated(resources.data!!.id))
                             }
+
                             is Resources.Error -> {
+                                _uiState.update {
+                                    it.copy(isLoading = false)
+                                }
                                 _uiEvent.send(CreateFolderUiEvent.ShowError(resources.message!!))
                             }
                         }
