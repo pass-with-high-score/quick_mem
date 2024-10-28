@@ -3,6 +3,9 @@ package com.pwhs.quickmem.presentation.auth.forgot_password.send_email
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -10,6 +13,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,7 +60,25 @@ class SendVerifyEmailViewModel @Inject constructor(
     }
 
     private fun resetPassword() {
-        _uiEvent.trySend(SendVerifyEmailUiEvent.SendEmailSuccess)
+        val email = uiState.value.email
+
+        viewModelScope.launch {
+            authRepository.sendResetPassword(SendResetPasswordRequestModel(email))
+                .collect { resource ->
+                    when (resource){
+                        is Resources.Error -> {
+                            Timber.e(resource.message ?: "Unknown error")
+                            _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure)
+                        }
+                        is Resources.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+                        is Resources.Success -> {
+                            _uiEvent.trySend(SendVerifyEmailUiEvent.SendEmailSuccess)
+                        }
+                    }
+                }
+        }
     }
 
     override fun onCleared() {
