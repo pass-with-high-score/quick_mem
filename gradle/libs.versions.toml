@@ -1,4 +1,12 @@
 [versions]
+# default versions
+compileSdk = "35"
+minSdk = "29"
+targetSdk = "35"
+versionCode = "1"
+versionName = "1.0"
+jvmTarget = "17"
+# dependencies versions
 accompanistPermissions = "0.36.0"
 agp = "8.6.0"
 datastorePreferences = "1.1.1"
@@ -124,6 +132,7 @@ debugging = ["androidx-ui-tooling", "androidx-ui-test-manifest"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
