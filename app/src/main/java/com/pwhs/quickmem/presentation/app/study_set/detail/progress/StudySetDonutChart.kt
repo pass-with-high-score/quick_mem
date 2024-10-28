@@ -24,6 +24,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
@@ -47,12 +49,11 @@ fun StudySetDonutChart(
     )
 
     val colors = listOf(
-        color.copy(alpha = 0.5f),
-        color.copy(alpha = 0.8f),
+        color.copy(alpha = 0.3f),
+        color.copy(alpha = 0.6f),
         color
     )
 
-    // Animate total progress for each segment
     val animatedPercentage = percentages.map { target ->
         animateFloatAsState(
             targetValue = target,
@@ -93,6 +94,20 @@ fun StudySetDonutChart(
                     startAngle += sweepAngle
                 }
 
+                drawOval(
+                    color = Color.White,
+                    topLeft = Offset(strokeWidth / 2, strokeWidth / 2),
+                    size = Size(size - strokeWidth, size - strokeWidth)
+                )
+
+                drawArc(
+                    color = Color.White,
+                    startAngle = 0f,
+                    sweepAngle = 360f,
+                    useCenter = false,
+                    style = Stroke(width = 1.dp.toPx())
+                )
+
                 drawCircle(
                     color = Color.White,
                     radius = radius - strokeWidth / 2
@@ -102,7 +117,7 @@ fun StudySetDonutChart(
             if (studySetsMastered == total) {
                 AnimatedVisibility(
                     visible = true,
-                    enter = scaleIn() + fadeIn(), 
+                    enter = scaleIn() + fadeIn(),
                     exit = scaleOut() + fadeOut()
                 ) {
                     Icon(
@@ -136,6 +151,7 @@ fun StudySetDonutChart(
         }
     }
 }
+
 
 @Preview
 @Composable

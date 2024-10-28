@@ -11,6 +11,7 @@ import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
@@ -135,5 +136,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body flipFlashCardDto: FlipFlashCardDto
+    ): UpdateFlashCardResponseDto
+
+    @PATCH("flashcard/{id}/rating")
+    suspend fun updateRatingFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body ratingFlashCardDto: RatingFlashCardDto
     ): UpdateFlashCardResponseDto
 }

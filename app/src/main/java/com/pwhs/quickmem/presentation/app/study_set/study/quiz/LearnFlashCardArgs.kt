@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.learn
+package com.pwhs.quickmem.presentation.app.study_set.study.quiz
 
 data class LearnFlashCardArgs(
     val studySetId: String,

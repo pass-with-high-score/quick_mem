@@ -58,13 +58,13 @@ fun ProgressTabScreen(
                     ProgressRow(
                         label = "Not learned",
                         percentage = studySetsNotLearnCount * 100 / totalStudySet,
-                        color = color.copy(alpha = 0.6f)
+                        color = color.copy(alpha = 0.3f)
                     )
 
                     ProgressRow(
                         label = "Still learning",
                         percentage = studySetsStillLearningCount * 100 / totalStudySet,
-                        color = color.copy(alpha = 0.8f)
+                        color = color.copy(alpha = 0.6f)
                     )
 
                     ProgressRow(

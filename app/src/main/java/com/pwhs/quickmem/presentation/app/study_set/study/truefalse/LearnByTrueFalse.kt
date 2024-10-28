@@ -1,5 +1,6 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.learn.component
+package com.pwhs.quickmem.presentation.app.study_set.study.truefalse
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -11,7 +12,7 @@ fun LearnByTrueFalse(
     modifier: Modifier = Modifier,
     flashCard: FlashCardResponseModel
 ) {
-
+    Text(text = "LearnByTrueFalse")
 }
 
 @Preview
