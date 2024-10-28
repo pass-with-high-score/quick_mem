@@ -4,6 +4,8 @@ import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
 import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
+import com.pwhs.quickmem.data.dto.auth.ResetPasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.SendResetPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
@@ -25,6 +27,9 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
+import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -56,6 +61,16 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body updateFullNameRequestDto: UpdateFullNameRequestDto
     ): UpdateFullNameResponseDto
+
+    @POST("auth/send-reset-password")
+    suspend fun sendResetPassword(
+        @Body sendResetPasswordRequestDto: SendResetPasswordRequestDto
+    ): SendResetPasswordResponseModel
+
+    @POST("auth/reset-password")
+    suspend fun resetPassword(
+        @Body resetPasswordRequestDto: ResetPasswordRequestDto
+    ): ResetPasswordResponseModel
 
     @Multipart
     @POST("upload")

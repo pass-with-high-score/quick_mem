@@ -1,10 +1,15 @@
 package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.auth.SendResetPasswordRequestDto
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
+import com.pwhs.quickmem.domain.model.auth.ResetPasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
+import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
@@ -28,7 +33,15 @@ interface AuthRepository {
     ): Flow<Resources<OtpResponseModel>>
 
     suspend fun updateFullName(
-        token:String,
+        token: String,
         updateFullNameRequestModel: UpdateFullNameRequestModel
-    ):Flow<Resources<UpdateFullNameResponseModel>>
+    ): Flow<Resources<UpdateFullNameResponseModel>>
+
+    suspend fun sendResetPassword(
+        sendResetPasswordRequestModel: SendResetPasswordRequestModel
+    ): Flow<Resources<SendResetPasswordResponseModel>>
+
+    suspend fun resetPassword(
+        resetPasswordRequestModel: ResetPasswordRequestModel
+    ): Flow<Resources<ResetPasswordResponseModel>>
 }

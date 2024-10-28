@@ -5,5 +5,8 @@ data class SetNewPasswordUiState(
     val confirmPassword: String = "",
     val passwordError: String = "",
     val confirmPasswordError: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val resetPasswordToken: String = "",
+    val email: String = "",
+    val otp: String = "",
 )
