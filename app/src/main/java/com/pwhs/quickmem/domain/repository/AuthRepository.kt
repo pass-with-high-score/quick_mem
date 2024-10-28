@@ -8,6 +8,7 @@ import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import kotlinx.coroutines.flow.Flow
 
@@ -29,5 +30,5 @@ interface AuthRepository {
     suspend fun updateFullName(
         token:String,
         updateFullNameRequestModel: UpdateFullNameRequestModel
-    ):Flow<Resources<UpdateFullNameRequestModel>>
+    ):Flow<Resources<UpdateFullNameResponseModel>>
 }

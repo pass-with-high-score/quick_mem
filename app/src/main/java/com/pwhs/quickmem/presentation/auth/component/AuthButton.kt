@@ -31,10 +31,12 @@ fun AuthButton(
     borderColor: Color = Color.Transparent,
     textColor: Color = Color.White,
     text: String,
+    isEnable: Boolean = true,
     @DrawableRes icon: Int? = null
 ) {
     ElevatedButton(
         onClick = onClick,
+        enabled = isEnable,
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp),

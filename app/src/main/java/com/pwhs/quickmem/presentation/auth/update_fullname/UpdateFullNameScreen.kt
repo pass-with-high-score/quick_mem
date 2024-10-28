@@ -1,24 +1,39 @@
 package com.pwhs.quickmem.presentation.auth.update_fullname
 
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults.colors
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.presentation.auth.component.AuthButton
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -42,7 +57,6 @@ fun UpdateFullNameScreen(
                     navigator.navigate(HomeScreenDestination) {
                         popUpTo(HomeScreenDestination) {
                             inclusive = true
-                            launchSingleTop = true
                         }
                     }
                 }
@@ -50,7 +64,7 @@ fun UpdateFullNameScreen(
                 is UpdateFullNameUIEvent.ShowError -> {
                     Toast.makeText(
                         context,
-                        "Update failure",
+                        uiState.errorMessage,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -58,135 +72,136 @@ fun UpdateFullNameScreen(
         }
     }
 
-    UpdateFullNameUI(
+    UpdateFullName(
         modifier,
         fullName = uiState.fullName,
+        isLoading = uiState.isLoading,
         onNameChanged = { name ->
             viewModel.onEvent(UpdateFullNameUIAction.FullNameChanged(name))
         },
         onSubmitClick = {
             viewModel.onEvent(UpdateFullNameUIAction.Submit)
-        }
+        },
+        onSkipClick = {
+            navigator.navigate(HomeScreenDestination) {
+                popUpTo(HomeScreenDestination) {
+                    inclusive = true
+                }
+            }
+        },
+        errorMessage = uiState.errorMessage
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateFullNameUI(
+fun UpdateFullName(
     modifier: Modifier = Modifier,
     fullName: String = "",
     onNameChanged: (String) -> Unit = {},
-    onSubmitClick: () -> Unit = {}
+    onSubmitClick: () -> Unit = {},
+    onSkipClick: () -> Unit = {},
+    isLoading: Boolean = false,
+    errorMessage: String? = null
 ) {
-    var name by remember { mutableStateOf(fullName) }
-
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row {
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = null,
-                    tint = Color(0xFFB3B8FF),
-                    modifier = Modifier.size(64.dp)
-                )
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = null,
-                    tint = Color(0xFFB3B8FF),
-                    modifier = Modifier.size(64.dp)
-                )
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = null,
-                    tint = Color(0xFFB3B8FF),
-                    modifier = Modifier.size(64.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFF454ADE),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .background(
-                        color = Color(0xFF454ADE),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(12.dp)
-            ) {
-                Text(
-                    text = "Let's get started... How can I call you?",
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color(0xFFEBEBFF)
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-
-            OutlinedTextField(
-                value = name,
-                onValueChange = { newName ->
-                    name = newName
-                    onNameChanged(newName)
-                },
-                placeholder = {
+        topBar = {
+            CenterAlignedTopAppBar(
+                colors = topAppBarColors(
+                    containerColor = Color.Transparent,
+                ),
+                title = {
                     Text(
-                        text = "Your first name...",
-                        color = Color(0xFFA8ADFC),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        text = "What should we call you?",
+                        style = typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     )
                 },
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(
-                        Color(0xFF5E5CE6),
-                        RoundedCornerShape(12.dp)
-                    )
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFF454ADE),
-                        shape = RoundedCornerShape(12.dp)
-                    ),
-                shape = RoundedCornerShape(12.dp)
+                actions = {
+                    TextButton(
+                        onClick = onSkipClick
+                    ) {
+                        Text(
+                            text = "Skip",
+                            style = typography.bodyMedium.copy(
+                                color = colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        )
+                    }
+                }
             )
-            Spacer(modifier = Modifier.height(120.dp))
-
-            Button(
-                onClick = {
-                    onSubmitClick()
-                },
+        }
+    ) {
+        Box {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.85f)
-                    .height(48.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF696969),
-                    contentColor = Color(0xFFEBEBFF)
-                )
+                    .fillMaxSize()
+                    .padding(it),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Continue")
+                TextField(
+                    value = fullName,
+                    onValueChange = onNameChanged,
+                    label = { Text("Full Name") },
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(top = 40.dp)
+                        .padding(vertical = 16.dp),
+                    shape = shapes.medium,
+                    supportingText = {
+                        errorMessage?.let {
+                            Text(
+                                text = it,
+                                style = typography.bodyMedium.copy(
+                                    color = colorScheme.error,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    },
+                    colors = colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        disabledTextColor = colorScheme.onSurface,
+                        disabledPlaceholderColor = colorScheme.onSurface,
+                        focusedTextColor = colorScheme.onSurface,
+                        focusedPlaceholderColor = colorScheme.onSurface,
+                        cursorColor = colorScheme.onSurface,
+                        errorContainerColor = Color.Transparent,
+                    ),
+                )
+                AuthButton(
+                    text = "Submit",
+                    onClick = onSubmitClick,
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(48.dp)
+                )
             }
+
+            LoadingOverlay(
+                isLoading = isLoading,
+                modifier = Modifier.fillMaxSize(),
+                text = "Updating...",
+            )
         }
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewSetName() {
-    UpdateFullNameUI()
+    QuickMemTheme(
+        darkTheme = false
+    ) {
+        UpdateFullName()
+    }
 }
 
 

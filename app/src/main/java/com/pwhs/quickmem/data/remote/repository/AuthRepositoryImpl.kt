@@ -13,6 +13,7 @@ import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -102,10 +103,11 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
     override suspend fun updateFullName(
         token: String,
         updateFullNameRequestModel: UpdateFullNameRequestModel
-    ): Flow<Resources<UpdateFullNameRequestModel>> {
+    ): Flow<Resources<UpdateFullNameResponseModel>> {
         return flow {
             emit(Resources.Loading(true))
             Timber.d("updateFullName: $updateFullNameRequestModel")
@@ -114,7 +116,7 @@ class AuthRepositoryImpl @Inject constructor(
                     token,
                     updateFullNameRequestModel.toDto()
                 )
-                Timber.d("updateFullName: $response")
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

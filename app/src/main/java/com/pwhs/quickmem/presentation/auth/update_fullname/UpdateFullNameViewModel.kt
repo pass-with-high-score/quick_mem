@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +33,6 @@ class UpdateFullNameViewModel @Inject constructor(
     fun onEvent(event: UpdateFullNameUIAction) {
         when (event) {
             is UpdateFullNameUIAction.FullNameChanged -> {
-                Timber.d("FullNameChanged: New name = ${event.fullname}")
                 if (event.fullname.isBlank()) {
                     _uiState.update {
                         it.copy(
@@ -53,7 +51,6 @@ class UpdateFullNameViewModel @Inject constructor(
             }
 
             is UpdateFullNameUIAction.Submit -> {
-                Timber.d("Submit action triggered. Full name: ${_uiState.value.fullName}")
                 updateFullName()
             }
         }
@@ -63,7 +60,6 @@ class UpdateFullNameViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            Timber.d("Updating full name. Token: $token, UserId: $userId, FullName: ${_uiState.value.fullName}")
 
             _uiState.update { it.copy(isLoading = true) }
 
@@ -75,34 +71,30 @@ class UpdateFullNameViewModel @Inject constructor(
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
-                        Timber.e("Error: ${resource.message}")
-                        _uiState.update { it.copy(isLoading = false) }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = resource.message
+                            )
+                        }
                     }
 
                     is Resources.Loading -> {
-                        Timber.d("Loading")
                         _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
-                        Timber.d("Update Success: ${resource.data}")
                         _uiState.update {
-                            Timber.d("Resetting fullName after successful update.")
                             it.copy(
-                                fullName = "",
-                                isLoading = false
+                                isLoading = false,
+                                fullName = resource.data?.fullname ?: ""
                             )
                         }
+                        appManager.saveUserFullName(_uiState.value.fullName)
                         _uiEvent.send(UpdateFullNameUIEvent.UpdateSuccess)
                     }
                 }
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Timber.d("ViewModel onCleared called, closing UI Event Channel.")
-        _uiEvent.close()
     }
 }
