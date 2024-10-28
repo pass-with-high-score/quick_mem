@@ -47,7 +47,7 @@ fun RadioGroup(
                         }
                     )
                     Text(
-                        text = option.name.upperCaseFirstLetter(),
+                        text = option.name.lowercase().upperCaseFirstLetter(),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(start = 8.dp)
                     )

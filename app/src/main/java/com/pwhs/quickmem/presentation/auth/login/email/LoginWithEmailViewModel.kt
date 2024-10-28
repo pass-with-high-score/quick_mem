@@ -78,7 +78,12 @@ class LoginWithEmailViewModel @Inject constructor(
             authRepository.checkEmailValidity(email).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
-                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(
+                                emailError = "Email is not registered",
+                                isLoading = false
+                            )
+                        }
                         _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
                     }
 
@@ -94,17 +99,22 @@ class LoginWithEmailViewModel @Inject constructor(
                             val loginRequestModel =
                                 LoginRequestModel(email, password, provider, null)
 
-                            val response = authRepository.login(loginRequestModel)
-
-                            response.collectLatest { login ->
+                            authRepository.login(loginRequestModel).collectLatest { login ->
                                 when (login) {
                                     is Resources.Error -> {
                                         Timber.e(login.message)
+                                        _uiState.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                emailError = "Invalid email or password",
+                                                passwordError = "Invalid email or password"
+                                            )
+                                        }
                                         _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
                                     }
 
                                     is Resources.Loading -> {
-                                        _uiState.update { it.copy(isLoading = true) }
+                                        // Show loading
                                     }
 
                                     is Resources.Success -> {
@@ -121,13 +131,19 @@ class LoginWithEmailViewModel @Inject constructor(
                                             )
                                             appManager.saveIsLoggedIn(true)
                                             appManager.saveUserId(login.data?.id ?: "")
+                                            _uiState.update { it.copy(isLoading = false) }
                                             _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                                         }
                                     }
                                 }
                             }
                         } else {
-                            _uiState.update { it.copy(emailError = "Email is not registered") }
+                            _uiState.update {
+                                it.copy(
+                                    emailError = "Email is not registered",
+                                    isLoading = false
+                                )
+                            }
                         }
                     }
                 }
@@ -139,24 +155,23 @@ class LoginWithEmailViewModel @Inject constructor(
     private fun checkAccountVerification() {
         viewModelScope.launch {
             val email = uiState.value.email
-            val response = authRepository.resendOtp(
+            authRepository.resendOtp(
                 ResendEmailRequestModel(
                     email = email
                 )
-            )
-
-            response.collectLatest { resource ->
+            ).collectLatest { resource ->
                 when (resource) {
                     is Resources.Loading -> {
                         // Show loading
                     }
 
                     is Resources.Success -> {
+                        _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                     }
 
                     is Resources.Error -> {
-                        Timber.e(resource.message)
+                        _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
                     }
                 }

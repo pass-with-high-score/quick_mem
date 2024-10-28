@@ -7,8 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
@@ -116,8 +120,7 @@ fun UpdateFullName(
                     Text(
                         text = "What should we call you?",
                         style = typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                            fontSize = 18.sp
                         )
                     )
                 },
@@ -125,13 +128,13 @@ fun UpdateFullName(
                     TextButton(
                         onClick = onSkipClick
                     ) {
-                        Text(
-                            text = "Skip",
-                            style = typography.bodyMedium.copy(
-                                color = colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
+                        IconButton(onClick = onSkipClick) {
+                            Icon(
+                                Icons.Filled.Close,
+                                tint = colorScheme.primary,
+                                contentDescription = "Close",
                             )
-                        )
+                        }
                     }
                 }
             )
@@ -150,7 +153,7 @@ fun UpdateFullName(
                     label = { Text("Full Name") },
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
-                        .padding(top = 40.dp)
+                        .padding(top = 140.dp)
                         .padding(vertical = 16.dp),
                     shape = shapes.medium,
                     supportingText = {

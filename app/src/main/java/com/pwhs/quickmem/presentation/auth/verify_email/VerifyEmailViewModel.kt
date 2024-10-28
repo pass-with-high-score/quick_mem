@@ -39,7 +39,13 @@ class VerifyEmailViewModel @Inject constructor(
 
     init {
         val email = stateHandle.get<String>("email") ?: ""
-        _uiState.update { it.copy(email = email) }
+        val isFromSignup = stateHandle.get<Boolean>("isFromSignup") ?: false
+        _uiState.update {
+            it.copy(
+                email = email,
+                isFromSignup = isFromSignup
+            )
+        }
         updateCountdown()
     }
 
@@ -63,7 +69,7 @@ class VerifyEmailViewModel @Inject constructor(
 
             is VerifyEmailUiAction.ResendEmail -> {
                 _uiState.update { it.copy(countdown = 60) }
-                resendOtp(event.email)
+                resendOtp(uiState.value.email)
             }
         }
     }
@@ -108,7 +114,7 @@ class VerifyEmailViewModel @Inject constructor(
             response.collectLatest { resource ->
                 when (resource) {
                     is Resources.Loading -> {
-                        // Show loading
+                        _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
@@ -116,11 +122,13 @@ class VerifyEmailViewModel @Inject constructor(
                         tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
                         appManager.saveUserId(resource.data?.id ?: "")
                         appManager.saveIsLoggedIn(true)
+                        _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(VerifyEmailUiEvent.VerifySuccess)
                     }
 
                     is Resources.Error -> {
                         Timber.e(resource.message)
+                        _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(VerifyEmailUiEvent.VerifyFailure)
                     }
                 }
@@ -139,15 +147,17 @@ class VerifyEmailViewModel @Inject constructor(
             response.collectLatest { resource ->
                 when (resource) {
                     is Resources.Loading -> {
-                        // Show loading
+                        _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
+                        _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(VerifyEmailUiEvent.ResendSuccess)
                     }
 
                     is Resources.Error -> {
                         Timber.e(resource.message)
+                        _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(VerifyEmailUiEvent.ResendFailure)
                     }
                 }

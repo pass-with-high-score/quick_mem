@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.forgot_password.send_email.component
+package com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -33,21 +33,18 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.forgot_password.send_email.SendVerifyEmailUiAction
-import com.pwhs.quickmem.presentation.auth.forgot_password.send_email.SendVerifyEmailUiEvent
-import com.pwhs.quickmem.presentation.auth.forgot_password.send_email.SendVerifyEmailViewModel
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.ForgotPasswordVerifyOtpScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>
-fun SendVerifyEmailScreen(
+fun SetNewPasswordScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: SendVerifyEmailViewModel = hiltViewModel()
+    viewModel: SetNewPasswordViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -55,22 +52,22 @@ fun SendVerifyEmailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SendVerifyEmailUiEvent.None -> {
+                SetNewPasswordUiEvent.None -> {
                     //
                 }
 
-                SendVerifyEmailUiEvent.SendEmailFailure -> {
+                SetNewPasswordUiEvent.ResetFailure -> {
                     Toast.makeText(
                         context,
-                        "Email verification failed",
+                        "Password reset failed",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
 
-                SendVerifyEmailUiEvent.SendEmailSuccess -> {
+                SetNewPasswordUiEvent.ResetSuccess -> {
                     navigator.popBackStack()
-                    navigator.navigate(ForgotPasswordVerifyOtpScreenDestination) {
-                        popUpTo(ForgotPasswordVerifyOtpScreenDestination) {
+                    navigator.navigate(HomeScreenDestination) {
+                        popUpTo(HomeScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }
@@ -80,30 +77,38 @@ fun SendVerifyEmailScreen(
         }
     }
 
-    SendVerifyEmail(
+    SetNewPassword(
         modifier,
         onNavigationIconClick = {
             navigator.popBackStack()
         },
-        email = uiState.value.email,
-        emailError = uiState.value.emailError,
-        onEmailChanged = { email ->
-            viewModel.onEvent(SendVerifyEmailUiAction.EmailChangedAction(email))
+        password = uiState.value.password,
+        confirmPassword = uiState.value.confirmPassword,
+        passwordError = uiState.value.passwordError,
+        confirmPasswordError = uiState.value.confirmPasswordError,
+        onPasswordChanged = { password ->
+            viewModel.onEvent(SetNewPasswordUiAction.PasswordChanged(password))
         },
-        onResetClick = {
-            viewModel.onEvent(SendVerifyEmailUiAction.ResetPassword)
+        onConfirmPasswordChanged = { confirmPassword ->
+            viewModel.onEvent(SetNewPasswordUiAction.ConfirmPasswordChanged(confirmPassword))
+        },
+        onSubmitClick = {
+            viewModel.onEvent(SetNewPasswordUiAction.Submit)
         }
     )
 }
 
 @Composable
-private fun SendVerifyEmail(
+private fun SetNewPassword(
     modifier: Modifier = Modifier,
     onNavigationIconClick: () -> Unit = {},
-    email: String = "",
-    emailError: String = "",
-    onEmailChanged: (String) -> Unit = {},
-    onResetClick: () -> Unit = {}
+    password: String = "",
+    confirmPassword: String = "",
+    passwordError: String = "",
+    confirmPasswordError: String = "",
+    onPasswordChanged: (String) -> Unit = {},
+    onConfirmPasswordChanged: (String) -> Unit = {},
+    onSubmitClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -122,15 +127,14 @@ private fun SendVerifyEmail(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.forgot_password_verify_email),
+                painter = painterResource(id = R.drawable.forgot_password_verify_password),
                 contentDescription = "Forgot Password Image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(150.dp)
+                modifier = Modifier.size(150.dp)
             )
-            Spacer(modifier = Modifier.height(26.dp))
+
             Text(
-                text = "Forgot Your Password?",
+                text = "Please enter your new password",
                 style = typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
@@ -139,22 +143,34 @@ private fun SendVerifyEmail(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
+            Spacer(modifier = Modifier.height(26.dp))
+
             AuthTextField(
-                value = email,
-                onValueChange = onEmailChanged,
-                label = "Email Address",
-                iconId = R.drawable.ic_email,
-                contentDescription = "Email",
-                type = TextFieldType.EMAIL,
-                error = emailError
+                value = password,
+                onValueChange = onPasswordChanged,
+                label = "New Password",
+                iconId = R.drawable.ic_lock,
+                contentDescription = "New Password",
+                type = TextFieldType.PASSWORD,
+                error = passwordError
+            )
+
+            AuthTextField(
+                value = confirmPassword,
+                onValueChange = onConfirmPasswordChanged,
+                label = "Confirm Password",
+                iconId = R.drawable.ic_lock,
+                contentDescription = "Confirm Password",
+                type = TextFieldType.PASSWORD,
+                error = confirmPasswordError
             )
 
             AuthButton(
-                text = "Reset Password",
-                onClick = onResetClick,
+                text = "Done",
+                onClick = onSubmitClick,
                 modifier = Modifier.padding(top = 16.dp),
                 colors = colorScheme.onSecondaryContainer,
-                textColor = Color.White,
+                textColor = Color.White
             )
         }
     }
@@ -162,6 +178,6 @@ private fun SendVerifyEmail(
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun PreviewForgotPasswordVerifyEmailScreen() {
-    SendVerifyEmail()
+fun PreviewForgotPasswordVerifyPasswordScreen() {
+    SetNewPassword()
 }
