@@ -3,6 +3,7 @@ package com.pwhs.quickmem.data.remote.repository
 import com.pwhs.quickmem.core.data.LearnMode
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.mapper.flashcard.toDto
 import com.pwhs.quickmem.data.mapper.flashcard.toModel
@@ -119,6 +120,27 @@ class FlashCardRepositoryImpl @Inject constructor(
                 val response =
                     apiService.updateFlipFlashCard(token, id, FlipFlashCardDto(flipStatus))
                 Timber.d("updateFlipFlashCard: $response")
+                emit(Resources.Success(response.toModel()))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateFlashCardRating(
+        token: String,
+        id: String,
+        rating: String
+    ): Flow<Resources<UpdateFlashCardResponseModel>> {
+        return flow {
+            try {
+                val response =
+                    apiService.updateRatingFlashCard(token, id, RatingFlashCardDto(rating))
+                Timber.d("updateFlashCardRating: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)

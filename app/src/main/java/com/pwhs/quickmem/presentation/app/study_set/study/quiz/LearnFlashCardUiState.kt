@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.learn
+package com.pwhs.quickmem.presentation.app.study_set.study.quiz
 
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel

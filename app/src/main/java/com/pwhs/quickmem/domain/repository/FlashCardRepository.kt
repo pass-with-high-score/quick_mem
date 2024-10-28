@@ -37,6 +37,12 @@ interface FlashCardRepository {
         flipStatus: String
     ): Flow<Resources<UpdateFlashCardResponseModel>>
 
+    suspend fun updateFlashCardRating(
+        token: String,
+        id: String,
+        rating: String
+    ): Flow<Resources<UpdateFlashCardResponseModel>>
+
     suspend fun getFlashCardsByStudySetId(
         token: String,
         studySetId: String,

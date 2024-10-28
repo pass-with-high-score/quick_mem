@@ -11,6 +11,7 @@ import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
@@ -138,10 +139,18 @@ interface ApiService {
         @Path("id") id: String,
         @Body flipFlashCardDto: FlipFlashCardDto
     ): UpdateFlashCardResponseDto
-
+  
     @POST("folder")
     suspend fun createFolder(
         @Header("Authorization") token: String,
         @Body createFolderRequestDto: CreateFolderRequestDto
     ): CreateFolderResponseDto
+
+    @PATCH("flashcard/{id}/rating")
+    suspend fun updateRatingFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body ratingFlashCardDto: RatingFlashCardDto
+    ): UpdateFlashCardResponseDto
+
 }

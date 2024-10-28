@@ -1,9 +1,6 @@
 package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
-import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
-import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.remote.ApiService

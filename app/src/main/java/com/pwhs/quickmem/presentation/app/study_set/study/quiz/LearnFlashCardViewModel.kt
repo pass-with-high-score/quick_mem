@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.learn
+package com.pwhs.quickmem.presentation.app.study_set.study.quiz
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -55,9 +55,10 @@ class LearnFlashCardViewModel @Inject constructor(
         getFlashCard()
     }
 
-    fun onEvent(event: LearnFlashCardUiEvent) {
+    fun onEvent(event: LearnFlashCardUiAction) {
         when (event) {
-            else -> {}
+            LearnFlashCardUiAction.LoadNextFlashCard -> loadNextFlashCard()
+            is LearnFlashCardUiAction.SubmitCorrectAnswer -> submitCorrectAnswer(event.flashCardId)
         }
     }
 
@@ -110,6 +111,57 @@ class LearnFlashCardViewModel @Inject constructor(
         }
     }
 
+    private fun loadNextFlashCard() {
+        _uiState.update {
+            val nextIndex = it.flashCardLearnRoundIndex + 1
+            it.copy(flashCardLearnRoundIndex = nextIndex)
+        }
+    }
+
+    private fun submitCorrectAnswer(flashCardId: String) {
+        Timber.d("SubmitCorrectAnswer: $flashCardId")
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val currentCard =
+                _uiState.value.flashCardLearnRound.firstOrNull { it.id == flashCardId }
+            val rating = when (currentCard?.rating) {
+                "NOT_STUDIED" -> "STILL_LEARNING"
+                "STILL_LEARNING" -> "MASTERED"
+                else -> "MASTERED"
+            }
+            try {
+                flashCardRepository.updateFlashCardRating(token, flashCardId, rating)
+                    .collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                Timber.e("Error updating flash card rating")
+                            }
+
+                            is Resources.Loading -> {
+                                Timber.d("Loading updating flash card rating")
+                            }
+
+                            is Resources.Success -> {
+                                Timber.d("Success updating flash card rating")
+                                loadNextFlashCard()
+                                val randomAnswers = generateRandomAnswers(
+                                    _uiState.value.flashCardList,
+                                    _uiState.value.flashCardLearnRound.getOrNull(_uiState.value.flashCardLearnRoundIndex)
+                                )
+                                _uiState.update {
+                                    it.copy(
+                                        randomAnswers = randomAnswers
+                                    )
+                                }
+                            }
+                        }
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
     private fun generateRandomAnswers(
         flashCards: List<FlashCardResponseModel>,
         currentCard: FlashCardResponseModel?
@@ -118,6 +170,7 @@ class LearnFlashCardViewModel @Inject constructor(
 
         val answers = flashCards
             .filter { it.id != currentCard.id }
+            .distinctBy { it.definition }
             .shuffled()
             .take(3)
             .map {
