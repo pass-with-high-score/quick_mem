@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.classes
+package com.pwhs.quickmem.presentation.app.classes.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -15,15 +15,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ClassViewModel @Inject constructor(
+class ClassDetailViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ClassUiState())
+    private val _uiState = MutableStateFlow(ClassDetailUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<ClassUiEvent>()
+    private val _uiEvent = Channel<ClassDetailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
@@ -34,20 +34,20 @@ class ClassViewModel @Inject constructor(
                     _uiState.update { it.copy(isLogin = true) }
                 } else {
                     _uiState.update { it.copy(isLogin = false) }
-                    onEvent(ClassUiAction.NavigateToWelcomeClicked)
+                    onEvent(ClassDetailUiAction.NavigateToWelcomeClicked)
                 }
             }
         }
     }
 
-    fun onEvent(event: ClassUiAction) {
+    fun onEvent(event: ClassDetailUiAction) {
         when (event) {
-            ClassUiAction.JoinClassClicked -> {
+            ClassDetailUiAction.JoinClassClicked -> {
                 TODO()
             }
 
-            ClassUiAction.NavigateToWelcomeClicked -> {
-                _uiEvent.trySend(ClassUiEvent.NavigateToWelcome)
+            ClassDetailUiAction.NavigateToWelcomeClicked -> {
+                _uiEvent.trySend(ClassDetailUiEvent.NavigateToWelcome)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.classes
+package com.pwhs.quickmem.presentation.app.classes.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -22,17 +22,17 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>(deepLinks = [DeepLink(uriPattern = "quickmem://join/class?code={code}")])
-fun ClassScreen(
+fun ClassDetailScreen(
     modifier: Modifier = Modifier,
     code: String = "",
-    viewModel: ClassViewModel = hiltViewModel(),
+    viewModel: ClassDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                ClassUiEvent.NavigateToWelcome -> {
+                ClassDetailUiEvent.NavigateToWelcome -> {
                     navigator.navigate(WelcomeScreenDestination) {
                         popUpTo(WelcomeScreenDestination) {
                             inclusive = true
@@ -40,17 +40,17 @@ fun ClassScreen(
                     }
                 }
 
-                ClassUiEvent.OnJoinClass -> TODO()
+                ClassDetailUiEvent.OnJoinClass -> TODO()
             }
         }
     }
 
-    Class(modifier = modifier, code = code)
+    ClassDetail(modifier = modifier, code = code)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Class(
+fun ClassDetail(
     modifier: Modifier = Modifier,
     code: String
 ) {
@@ -74,6 +74,6 @@ fun Class(
 @Composable
 private fun ClassScreenPreview() {
     MaterialTheme {
-        Class(code = "123")
+        ClassDetail(code = "123")
     }
 }
