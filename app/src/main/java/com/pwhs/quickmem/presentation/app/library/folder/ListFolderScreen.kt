@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ListFolderScreen(modifier: Modifier = Modifier) {
+fun ListFolderScreen(
+    modifier: Modifier = Modifier,
+) {
     Scaffold(
         modifier = modifier
     ) { innerPadding ->

@@ -120,6 +120,9 @@ class VerifyEmailViewModel @Inject constructor(
                     is Resources.Success -> {
                         tokenManager.saveAccessToken(resource.data?.accessToken ?: "")
                         tokenManager.saveRefreshToken(resource.data?.refreshToken ?: "")
+                        appManager.saveUserAvatar(resource.data?.avatarUrl ?: "")
+                        appManager.saveUserFullName(resource.data?.fullName ?: "")
+                        appManager.saveUserName(resource.data?.username ?: "")
                         appManager.saveUserId(resource.data?.id ?: "")
                         appManager.saveIsLoggedIn(true)
                         _uiState.update { it.copy(isLoading = false) }

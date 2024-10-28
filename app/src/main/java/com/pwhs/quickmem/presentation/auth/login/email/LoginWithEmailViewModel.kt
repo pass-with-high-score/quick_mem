@@ -131,6 +131,9 @@ class LoginWithEmailViewModel @Inject constructor(
                                             )
                                             appManager.saveIsLoggedIn(true)
                                             appManager.saveUserId(login.data?.id ?: "")
+                                            appManager.saveUserAvatar(login.data?.avatarUrl ?: "")
+                                            appManager.saveUserFullName(login.data?.fullName ?: "")
+                                            appManager.saveUserName(login.data?.username ?: "")
                                             _uiState.update { it.copy(isLoading = false) }
                                             _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                                         }
