@@ -1,9 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.welcome
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,7 +9,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.ButtonDefaults.elevatedButtonElevation
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,6 +18,8 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -79,53 +80,61 @@ fun WelcomeScreen(
         currentIndex = (currentIndex + 1) % textList.size
     }
     Scaffold(
-        modifier = modifier.gradientBackground(),
+        modifier = modifier
+            .gradientBackground()
+            .padding(horizontal = 10.dp),
         containerColor = Color.Transparent,
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_bear),
+                        contentDescription = "Bear",
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.White
+                    )
+                },
+                colors = topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                actions = {
+                    ElevatedButton(
+                        onClick = {
+                            scope.launch {
+                                showBottomSheetLanguage = true
+                                sheetLanguageState.show()
+                            }
+                        },
+                        modifier = Modifier
+                            .width(140.dp)
+                            .height(40.dp),
+                        elevation = elevatedButtonElevation(
+                            defaultElevation = 3.dp
+                        ),
+                        colors = buttonColors(
+                            containerColor = Color(0xFF93b3fc),
+                        )
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("English (US)")
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = "Arrow Down"
+                            )
+                        }
+                    }
+                }
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_bear),
-                    contentDescription = "Bear",
-                    modifier = Modifier.size(30.dp),
-                    tint = Color.White
-                )
-                ElevatedButton(
-                    onClick = {
-                        scope.launch {
-                            showBottomSheetLanguage = true
-                            sheetLanguageState.show()
-                        }
-                    },
-                    modifier = Modifier
-                        .width(140.dp)
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF93b3fc)
-                    )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("English (US)")
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Arrow Down"
-                        )
-                    }
-                }
-            }
-
             WelcomeScrollingText(
                 textList = textList,
                 displayCount = displayCount,

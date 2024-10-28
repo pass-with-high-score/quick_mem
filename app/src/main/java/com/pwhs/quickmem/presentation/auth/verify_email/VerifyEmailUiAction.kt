@@ -4,5 +4,5 @@ sealed class VerifyEmailUiAction {
     data class OtpChange(val otp: String) : VerifyEmailUiAction()
     data class EmailChange(val email: String) : VerifyEmailUiAction()
     data object VerifyEmail : VerifyEmailUiAction()
-    data class ResendEmail(val email: String) : VerifyEmailUiAction()
+    data object ResendEmail : VerifyEmailUiAction()
 }

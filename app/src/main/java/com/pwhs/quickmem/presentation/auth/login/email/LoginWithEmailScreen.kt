@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.auth.login.email.component
+package com.pwhs.quickmem.presentation.auth.login.email
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -33,15 +33,12 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailViewModel
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiAction
-import com.pwhs.quickmem.presentation.auth.login.email.LoginWithEmailUiEvent
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -57,7 +54,6 @@ fun LoginWithEmailScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                LoginWithEmailUiEvent.None -> {}
                 LoginWithEmailUiEvent.LoginFailure -> {
                     Toast.makeText(context, "Login failure", Toast.LENGTH_SHORT).show()
                 }
@@ -74,7 +70,9 @@ fun LoginWithEmailScreen(
                 }
 
                 LoginWithEmailUiEvent.NavigateToVerifyEmail -> {
-                    navigator.navigate(VerifyEmailScreenDestination(uiState.email))
+                    navigator.navigate(
+                        SendVerifyEmailScreenDestination()
+                    )
                 }
             }
         }
@@ -84,6 +82,7 @@ fun LoginWithEmailScreen(
 
     LoginWithEmail(
         modifier = modifier,
+        isLoading = uiState.isLoading,
         onNavigationIconClick = { navigator.popBackStack() },
         email = uiState.email,
         emailError = uiState.emailError,
@@ -109,6 +108,7 @@ fun LoginWithEmailScreen(
 @Composable
 private fun LoginWithEmail(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
     emailError: String = "",
@@ -127,90 +127,87 @@ private fun LoginWithEmail(
             AuthTopAppBar(onClick = onNavigationIconClick)
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp)
-                .padding(top = 40.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_logo),
-                contentDescription = "Logo",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(60.dp)
-            )
-
-            Text(
-                text = "Login with email",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                ),
-                modifier = Modifier.padding(16.dp)
-            )
-
-            AuthTextField(
-                value = email,
-                onValueChange = onEmailChanged,
-                label = "Email",
-                iconId = R.drawable.ic_email,
-                contentDescription = "Email",
-                type = TextFieldType.EMAIL,
-                error = emailError
-            )
-
-            AuthTextField(
-                value = password,
-                onValueChange = onPasswordChanged,
-                label = "Password",
-                iconId = R.drawable.ic_lock,
-                contentDescription = "Password",
-                type = TextFieldType.PASSWORD,
-                error = passwordError
-            )
-
-            Box(
+        Box {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                contentAlignment = Alignment.Center
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .padding(top = 40.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextButton(
-                    onClick = onForgotPasswordClick
-                ) {
-                    Text(
-                        text = "Forgot password?",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color(0xFF2d333d),
-                            fontWeight = FontWeight.Bold
-                        ),
-                        textAlign = TextAlign.End
-                    )
-                }
-            }
+                Image(
+                    painter = painterResource(id = R.drawable.ic_logo),
+                    contentDescription = "Logo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(60.dp)
+                )
 
-            AuthButton(
-                text = "Log in",
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(top = 18.dp),
-                onClick = {
-                    if (emailError.isEmpty() && passwordError.isEmpty()) {
+                Text(
+                    text = "Login with email",
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    ),
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                AuthTextField(
+                    value = email,
+                    onValueChange = onEmailChanged,
+                    label = "Email",
+                    iconId = R.drawable.ic_email,
+                    contentDescription = "Email",
+                    type = TextFieldType.EMAIL,
+                    error = emailError
+                )
+
+                AuthTextField(
+                    value = password,
+                    onValueChange = onPasswordChanged,
+                    label = "Password",
+                    iconId = R.drawable.ic_lock,
+                    contentDescription = "Password",
+                    type = TextFieldType.PASSWORD,
+                    error = passwordError
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TextButton(
+                        onClick = onForgotPasswordClick
+                    ) {
+                        Text(
+                            text = "Forgot password?",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = Color(0xFF2d333d),
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.End
+                        )
+                    }
+                }
+
+                AuthButton(
+                    text = "Log in",
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(top = 18.dp),
+                    onClick = {
                         onLoginClick()
                     }
-                },
-                colors = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
-                    0xFFf3f4f6
-                ),
-                borderColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color(0xFF2d333d) else Color(
-                    0xFFf3f4f6
-                ),
-                textColor = if (emailError.isEmpty() && passwordError.isEmpty()) Color.White else Color(
-                    0xFF9095a0
                 )
+            }
+
+            LoadingOverlay(
+                isLoading = isLoading,
+                modifier = Modifier.fillMaxSize(),
+                text = "Logging in..."
             )
         }
     }

@@ -92,6 +92,12 @@ class SignupWithEmailViewModel @Inject constructor(
                 when (resource) {
                     is Resources.Error -> {
                         Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(
+                                emailError = "Email is already registered",
+                                isLoading = false
+                            )
+                        }
                         _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
                     }
 
@@ -105,7 +111,7 @@ class SignupWithEmailViewModel @Inject constructor(
                             val username = uiState.value.email.getUsernameFromEmail()
                             val fullName = uiState.value.email.getNameFromEmail()
 
-                            val response = authRepository.signup(
+                            authRepository.signup(
                                 signUpRequestModel = SignupRequestModel(
                                     avatarUrl = avatarUrl,
                                     email = uiState.value.email,
@@ -116,20 +122,25 @@ class SignupWithEmailViewModel @Inject constructor(
                                     password = uiState.value.password,
                                     authProvider = AuthProvider.EMAIL.name
                                 )
-                            )
-
-                            response.collectLatest { signup ->
+                            ).collectLatest { signup ->
                                 when (signup) {
                                     is Resources.Error -> {
                                         Timber.e(signup.message)
+                                        _uiState.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                emailError = "Sign up failed"
+                                            )
+                                        }
                                         _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
                                     }
 
                                     is Resources.Loading -> {
-                                        _uiState.update { it.copy(isLoading = true) }
+                                        // Do nothing
                                     }
 
                                     is Resources.Success -> {
+                                        _uiState.update { it.copy(isLoading = false) }
                                         _uiEvent.send(SignUpWithEmailUiEvent.SignUpSuccess)
                                     }
                                 }
