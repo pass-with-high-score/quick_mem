@@ -22,10 +22,11 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Composable
 @Destination<RootGraph>
+@Composable
 fun CreateFolderScreen(
     modifier: Modifier = Modifier,
     viewModel: CreateFolderViewModel = hiltViewModel(),
@@ -43,6 +44,7 @@ fun CreateFolderScreen(
                 is CreateFolderUiEvent.FolderCreated -> {
                     Toast.makeText(context, "Folder Created", Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
+                    navigator.navigate(FolderDetailScreenDestination(id= event.id))
                 }
             }
         }
