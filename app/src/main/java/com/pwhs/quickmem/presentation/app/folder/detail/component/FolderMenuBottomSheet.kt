@@ -22,6 +22,8 @@ fun FolderMenuBottomSheet(
     modifier: Modifier = Modifier,
     onEditFolder: () -> Unit,
     onDeleteFolder: () -> Unit,
+    onShareFolder: () -> Unit,
+    onReportFolder: () -> Unit,
     showMoreBottomSheet: Boolean,
     sheetShowMoreState: SheetState,
     onDismissRequest: () -> Unit,
@@ -42,12 +44,12 @@ fun FolderMenuBottomSheet(
                     title = "Edit"
                 )
                 ItemMenuBottomSheet(
-                    onClick = {},
+                    onClick = onShareFolder,
                     icon = Default.IosShare,
                     title = "Report study set"
                 )
                 ItemMenuBottomSheet(
-                    onClick = {},
+                    onClick = onReportFolder,
                     icon = Outlined.Report,
                     title = "Report study set"
                 )

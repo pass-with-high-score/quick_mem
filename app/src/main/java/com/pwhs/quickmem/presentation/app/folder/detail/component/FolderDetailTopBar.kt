@@ -24,22 +24,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.app.folder.detail.SortOptionEnum
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderDetailTopAppBar(
     modifier: Modifier = Modifier,
-    title : String,
+    title: String,
     dateLabel: String,
     onNavigateBack: () -> Unit,
     onMoreClicked: () -> Unit,
-    onAddStudySet: () -> Unit
+    onAddStudySet: () -> Unit,
+    onStudyFolderDetailClicked: () -> Unit,
+    currentSortOption: SortOptionEnum,
+    onSortOptionClicked: () -> Unit
 ) {
     LargeTopAppBar(
         title = {
-            Column {
+            Column(
+                modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
+            ) {
                 Text(
                     title, style = typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold,
@@ -49,13 +56,13 @@ fun FolderDetailTopAppBar(
                     overflow = TextOverflow.Ellipsis
                 )
                 Row(
-                    modifier = Modifier.padding(top = 15.dp),
+                    modifier = Modifier.padding(top = 8.dp, bottom = 26.dp),
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_history),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(22.dp),
                         tint = Color.Black
                     )
                     Text(
@@ -67,12 +74,20 @@ fun FolderDetailTopAppBar(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+                ButtonStudyFolderDetail(
+                    title = "Study",
+                    onStudyFolderDetailClicked = onStudyFolderDetailClicked
+                )
+                FolderSortOptionTextButton(
+                    currentSortOption = currentSortOption,
+                    onSortOptionClicked = onSortOptionClicked
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
         ),
-        expandedHeight = 120.dp,
+        expandedHeight = 240.dp,
         collapsedHeight = 56.dp,
         navigationIcon = {
             IconButton(
@@ -105,5 +120,23 @@ fun FolderDetailTopAppBar(
                 )
             }
         }
+    )
+}
+
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun FolderDetailTopAppBarPreview() {
+    FolderDetailTopAppBar(
+        title = "Folder Title",
+        dateLabel = "Date Label",
+        onNavigateBack = {},
+        onMoreClicked = {},
+        onAddStudySet = {},
+        onStudyFolderDetailClicked = {},
+        currentSortOption = SortOptionEnum.RECENT,
+        onSortOptionClicked = {}
     )
 }
