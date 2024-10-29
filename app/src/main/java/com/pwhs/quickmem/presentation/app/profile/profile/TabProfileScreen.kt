@@ -1,203 +1,128 @@
 package com.pwhs.quickmem.presentation.app.profile.profile
 
-import android.content.Context
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.pwhs.quickmem.R
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.domain.model.status.StatusModel
-import com.pwhs.quickmem.presentation.app.profile.component.getSelectedStatusId
-import com.pwhs.quickmem.presentation.app.profile.component.getUserName
-import com.pwhs.quickmem.presentation.app.profile.component.saveSelectedStatusId
-import com.pwhs.quickmem.presentation.app.profile.component.saveUserName
-import com.pwhs.quickmem.presentation.app.profile.ProfileViewModel
-import com.pwhs.quickmem.presentation.app.profile.component.ProfileTextField
-import com.pwhs.quickmem.presentation.app.profile.component.StatusBottomSheet
-import com.pwhs.quickmem.presentation.app.profile.component.StatusInputField
-
-@Composable
-fun TabProfileScreen(
-    modifier: Modifier = Modifier ,
-    viewModel: ProfileViewModel = hiltViewModel()
-) {
-    val scrollState = rememberScrollState()
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        ProfileTab(viewModel = viewModel, context = LocalContext.current)
-    }
-}
+import coil.compose.AsyncImage
+import com.pwhs.quickmem.presentation.app.profile.component.SettingsButton
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import coil.request.ImageRequest
+import com.pwhs.quickmem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination<RootGraph>
 @Composable
-fun ProfileTab(
-    viewModel: ProfileViewModel,
-    context: Context
+fun TabProfileScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator,
+
 ) {
-    val email by viewModel.emailState.collectAsState()
-    var name by remember { mutableStateOf(getUserName(context) ?: "") }
-    var inputName by remember { mutableStateOf(name) }
-    var selectedStatusId by remember { mutableStateOf(getSelectedStatusId(context)) }
-    val status = StatusModel.defaultStatuses.first { it.id == selectedStatusId }
-    val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val name by viewModel.nameState.collectAsState(initial = "")
+    val avatarUrl by viewModel.avatarUrlState.collectAsState(initial = "")
+    val context = LocalContext.current
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.small)
-            .clip(MaterialTheme.shapes.small)
-            .padding(16.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            ProfileTextField(
-                title = "Name",
-                value = inputName,
-                placeholder = "Enter your name",
-                onValueChange = { newValue ->
-                    inputName = newValue
-                    saveUserName(context, newValue)
-                },
-                valueError = if (inputName.isEmpty()) "Name cannot be empty" else ""
-            )
-
-            ProfileTextField(
-                title = "Email",
-                value = email,
-                placeholder = "Enter your email",
-                onValueChange = { /* Add edit email functionality */ },
-                valueError = if (email.isEmpty()) "Email cannot be empty" else ""
-            )
-
-            Box(
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .height(38.dp)
-                    .border(1.dp, Color.Gray, shape = RoundedCornerShape(25.dp))
-                    .clip(RoundedCornerShape(25.dp))
-                    .clickable { /* Add resend email functionality */ }
-                    .padding(8.dp)
-                    .background(Color.White)
-            ) {
-                Text(
-                    text = "Resend email",
-                    color = Color.Black,
-                    modifier = Modifier.padding(2.dp)
-                )
-            }
-
-            StatusInputField(
-                statusModel = status,
-                onShowBottomSheet = { showBottomSheet = true }
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.small)
-                    .clip(MaterialTheme.shapes.small)
-                    .padding(16.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ratings),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .width(250.dp)
-                            .height(130.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .align(Alignment.CenterHorizontally)
-                    )
-
-                    Text("Study together", style = MaterialTheme.typography.titleMedium)
-                    Text("Friends referred: 0", style = MaterialTheme.typography.bodySmall)
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(38.dp)
-                            .border(1.dp, Color.Gray, shape = RoundedCornerShape(25.dp))
-                            .clip(RoundedCornerShape(25.dp))
-                            .clickable { /* Add share functionality */ }
-                            .background(Color.White)
-                    ) {
-                        Text(
-                            text = "Share",
-                            color = Color.Black,
-                            modifier = Modifier
-                                .padding(12.dp)
-                                .align(Alignment.Center)
-                        )
-                    }
-                }
-            }
-        }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            viewModel.updateAvatar(it.toString())
+        } ?: Toast.makeText(context, "Không thể chọn ảnh", Toast.LENGTH_SHORT).show()
     }
 
-    StatusBottomSheet(
-        showBottomSheet = showBottomSheet,
-        sheetState = sheetState,
-        statuses = StatusModel.defaultStatuses,
-        onStatusSelected = { selectedStatus ->
-            selectedStatusId = selectedStatus.id
-            saveSelectedStatusId(context, selectedStatus.id)
-            showBottomSheet = false
-        },
-        onDismissRequest = {
-            showBottomSheet = false
+    Scaffold(
+        topBar = {},
+        content = { paddingValues ->
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                ProfileTab(
+                    name = name,
+                    avatarUrl = avatarUrl,
+                    navigator = navigator,
+                    onImageClick = {
+                        launcher.launch("image/*")
+                    }
+                )
+            }
         }
     )
 }
 
-
-
-
-
-@Preview(showBackground = true)
 @Composable
-fun TabProfileScreenPreview() {
-    TabProfileScreen()
+fun ProfileTab(
+    name: String,
+    avatarUrl: String,
+    navigator: DestinationsNavigator,
+    onImageClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(avatarUrl.ifEmpty { null })
+                .placeholder(R.drawable.default_avatar)
+                .error(R.drawable.default_avatar)
+                .build(),
+            contentDescription = "User Avatar",
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape)
+                .background(Color.Gray)
+                .clickable { onImageClick() },
+            contentScale = ContentScale.Crop
+        )
+
+        Text(
+            text = name,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SettingsButton(
+            text = "Cài đặt của bạn",
+            onClick = { /* Hành động khi nhấn vào cài đặt */ }
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+    }
 }
+
+
+
+
+

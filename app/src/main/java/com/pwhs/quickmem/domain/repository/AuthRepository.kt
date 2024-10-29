@@ -31,4 +31,5 @@ interface AuthRepository {
         token:String,
         updateFullNameRequestModel: UpdateFullNameRequestModel
     ):Flow<Resources<UpdateFullNameResponseModel>>
+
 }

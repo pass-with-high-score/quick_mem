@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,11 +35,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
+import com.pwhs.quickmem.presentation.app.profile.profile.ProfileViewModel
 import com.pwhs.quickmem.util.toColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,8 +54,19 @@ fun ListStudySetScreen(
     onStudySetRefresh: () -> Unit = {},
     userAvatar: String = "",
     username: String = "",
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val refreshState = rememberPullToRefreshState()
+    val avatarUrl by profileViewModel.avatarUrlState.collectAsState(initial = "")
+    val userName by profileViewModel.nameState.collectAsState(initial = "")
+
+    val updatedStudySets = studySets.map { studySet ->
+        studySet.copy(
+            user = studySet.user.copy(avatarUrl = avatarUrl)
+        )
+    }
+
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
     ) { innerPadding ->
@@ -76,14 +90,14 @@ fun ListStudySetScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         AsyncImage(
-                            model = userAvatar,
+                            model = avatarUrl,
                             contentDescription = "User avatar",
                             modifier = Modifier
                                 .size(60.dp),
                             contentScale = ContentScale.Crop
                         )
                         Text(
-                            text = "Hello, $username",
+                            text = "Hello, $userName",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 24.sp
@@ -112,7 +126,7 @@ fun ListStudySetScreen(
                             item {
                                 // TODO: Add search bar
                             }
-                            items(studySets) { studySet ->
+                            items(updatedStudySets) { studySet ->
                                 Card(
                                     onClick = { onStudySetClick(studySet.id) },
                                     colors = CardDefaults.cardColors(

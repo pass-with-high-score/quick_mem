@@ -23,20 +23,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.presentation.app.profile.profile.ProfileTopBar
 import com.pwhs.quickmem.presentation.app.profile.profile.TabProfileScreen
 import com.pwhs.quickmem.presentation.app.profile.statics.TabStatisticsScreen
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 
 
 @Composable
 @Destination<RootGraph>
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: ProfileAndStaticsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
 
@@ -45,7 +43,7 @@ fun ProfileScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is ProfileUiEvent.LoadProfile -> TODO()
+                is ProfileAndStaticsUiEventUiEvent.LoadProfile -> {}
             }
         }
     }
@@ -55,14 +53,6 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            ProfileTopBar(
-                onSettingsClick = {
-                    navigator.navigate(SettingsScreenDestination)
-                },
-                onShareClick = {
-
-                }
-            )
         }
     ) { innerPadding ->
         Column(
@@ -98,7 +88,7 @@ fun ProfileScreen(
             }
 
             when (tabIndex) {
-                0 -> TabProfileScreen()
+                0 -> TabProfileScreen(navigator = navigator)
                 1 -> TabStatisticsScreen()
             }
         }
