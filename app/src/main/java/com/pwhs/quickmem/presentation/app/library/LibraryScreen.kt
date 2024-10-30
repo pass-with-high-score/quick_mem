@@ -83,8 +83,6 @@ fun LibraryScreen(
     Library(
         modifier = modifier,
         isLoading = uiState.isLoading,
-        userAvatar = uiState.userAvatar,
-        username = uiState.username,
         studySets = uiState.studySets,
         onStudySetRefresh = {
             viewModel.onEvent(LibraryUiAction.Refresh)
