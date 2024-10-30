@@ -45,7 +45,7 @@ fun FolderDetailTopAppBar(
     LargeTopAppBar(
         title = {
             Column(
-                modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
+                modifier = Modifier.padding(end = 16.dp)
             ) {
                 Text(
                     title, style = typography.titleLarge.copy(
