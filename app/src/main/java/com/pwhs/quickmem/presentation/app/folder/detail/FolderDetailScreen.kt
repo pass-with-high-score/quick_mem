@@ -106,6 +106,11 @@ fun FolderDetail(
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
 
+    val sortedStudySet = when (currentSortOption) {
+        SortOptionEnum.RECENT -> studySet.sortedByDescending { it.createdAt }
+        SortOptionEnum.TITLE -> studySet.sortedBy { it.title }
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -135,7 +140,7 @@ fun FolderDetail(
                     modifier = Modifier.fillMaxWidth()
                 ){
                     ListStudySetInnerFolder (
-                        studySet = studySet,
+                        studySet = sortedStudySet,
                         onStudySetClick = onStudySetClick,
                         onAddFlashCardClick = onAddStudySet
                     )
