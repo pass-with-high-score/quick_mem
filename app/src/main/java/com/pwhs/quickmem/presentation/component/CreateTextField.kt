@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.classes.component
+package com.pwhs.quickmem.presentation.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ClassesTextField(
+fun CreateTextField(
     modifier: Modifier = Modifier,
     title: String,
     value: String,

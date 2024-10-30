@@ -13,4 +13,5 @@ data class EditStudySetUiState(
     val colorModel: ColorModel = ColorModel.defaultColors.first(),
     val colorError: String = "",
     val isPublic: Boolean = false,
+    val isLoading: Boolean = false
 )

@@ -3,12 +3,8 @@ package com.pwhs.quickmem.presentation.app.classes.create
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,15 +14,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.presentation.app.classes.component.ClassesTextField
-import com.pwhs.quickmem.presentation.app.classes.component.ClassesTopBar
-import com.pwhs.quickmem.presentation.app.classes.component.MemberManagementSwitch
-import com.pwhs.quickmem.presentation.app.folder.component.FolderPublicSwitch
-import com.pwhs.quickmem.presentation.app.folder.component.FolderTextField
-import com.pwhs.quickmem.presentation.app.folder.create.CreateFolderUiAction
+import com.pwhs.quickmem.presentation.component.CreateTextField
+import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.presentation.component.SwitchContainer
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -43,7 +38,14 @@ fun CreateClassScreen(
             when (event) {
                 is CreateClassUiEvent.ClassesCreated -> {
                     Toast.makeText(context, "Class Created", Toast.LENGTH_SHORT).show()
-                    navigator.navigateUp()
+                    navigator.navigate(
+                        ClassDetailScreenDestination(
+                            code = "",
+                            id = event.id,
+                            title = uiState.title,
+                            description = uiState.description
+                        )
+                    )
                 }
 
                 is CreateClassUiEvent.ShowError -> {
@@ -102,10 +104,10 @@ fun CreateClass(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
-            ClassesTopBar(
+            CreateTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateBack = onNavigateBack,
-                title = "New Class"
+                title = "Create new class"
             )
         }
     ) { innerPadding ->
@@ -114,25 +116,29 @@ fun CreateClass(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            ClassesTextField(
+            CreateTextField(
                 value = title,
                 title = "Class Title",
                 valueError = titleError,
                 onValueChange = onTitleChange,
                 placeholder = "Enter Class Title"
             )
-            ClassesTextField(
+            CreateTextField(
                 value = description,
                 title = "Description (Optional)",
                 valueError = descriptionError,
                 onValueChange = onDescriptionChange,
                 placeholder = "Enter Class Description"
             )
-            MemberManagementSwitch(
-                allowMemberManagement = allowMemberManagement,
-                onAllowMemberManagementChange = onAllowMemberManagementChange,
-                allowSetManagement = allowSetManagement,
-                onAllowSetManagementChange = onAllowSetManagementChange
+            SwitchContainer(
+                text = "Allow class members to send invites to other people",
+                checked = allowMemberManagement,
+                onCheckedChange = onAllowMemberManagementChange
+            )
+            SwitchContainer(
+                text = "Allow class members to add study set and folders",
+                checked = allowSetManagement,
+                onCheckedChange = onAllowSetManagementChange
             )
         }
 
@@ -146,7 +152,7 @@ fun CreateClass(
 @Preview
 @Composable
 private fun CreateClassesPreview() {
-    MaterialTheme {
+    QuickMemTheme {
         CreateClass()
     }
 }
