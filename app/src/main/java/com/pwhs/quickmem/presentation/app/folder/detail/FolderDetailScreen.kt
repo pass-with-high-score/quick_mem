@@ -27,12 +27,11 @@ import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderSortOpti
 import com.pwhs.quickmem.presentation.app.folder.detail.component.ListStudySetInnerFolder
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
+import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Destination<RootGraph>(
     navArgs = FolderDetailArgs::class
@@ -178,16 +177,6 @@ fun FolderDetail(
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false }
     )
-}
-
-fun formatDate(dateString: String): String {
-    if (dateString.isEmpty()) {
-        return ""
-    }
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-    val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    val date = inputFormat.parse(dateString)
-    return outputFormat.format(date)
 }
 
 @Preview
