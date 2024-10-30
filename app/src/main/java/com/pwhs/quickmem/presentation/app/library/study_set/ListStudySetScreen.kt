@@ -54,8 +54,6 @@ fun ListStudySetScreen(
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onStudySetRefresh: () -> Unit = {},
-    userAvatar: String = "",
-    username: String = "",
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val refreshState = rememberPullToRefreshState()

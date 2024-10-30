@@ -10,7 +10,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val appManager: AppManager,
     private val tokenManager: TokenManager
 ) : ViewModel() {
 

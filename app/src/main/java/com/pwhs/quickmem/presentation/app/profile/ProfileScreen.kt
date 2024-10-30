@@ -39,7 +39,6 @@ fun ProfileScreen(
     ) {
     val name by viewModel.nameState.collectAsState(initial = "")
     val avatarUrl by viewModel.avatarUrlState.collectAsState(initial = "")
-    val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
