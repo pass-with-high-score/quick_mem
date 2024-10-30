@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.profile.profile
+package com.pwhs.quickmem.presentation.app.profile
 
 sealed class ProfileUiEvent {
     data object Loading : ProfileUiEvent()

@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.profile.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ fun SettingsButton(
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFFF5F5F5))
             .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
+            .clickable { onClick() }
             .padding(vertical = 16.dp, horizontal = 12.dp)
     ) {
         Row(

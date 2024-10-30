@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.profile.profile
+package com.pwhs.quickmem.presentation.app.profile
 
 data class ProfileUiState(
     val userAvatar: String = "",
