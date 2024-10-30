@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.domain.model.study_set.FolderStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderSortOptionBottomSheet
@@ -82,7 +82,7 @@ fun FolderDetail(
     updatedAt: String = "",
     isLoading: Boolean = false,
     onFolderRefresh: () -> Unit = {},
-    studySet: List<FolderStudySetResponseModel> = emptyList(),
+    studySet: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onEditFolder: () -> Unit = {},
     onStudyFolderDetailClicked: () -> Unit = {},
@@ -136,7 +136,8 @@ fun FolderDetail(
                 ){
                     ListStudySetInnerFolder (
                         studySet = studySet,
-                        onStudySetClick = onStudySetClick
+                        onStudySetClick = onStudySetClick,
+                        onAddFlashCardClick = onAddStudySet
                     )
                 }
             }

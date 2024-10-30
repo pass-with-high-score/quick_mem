@@ -1,10 +1,10 @@
 package com.pwhs.quickmem.data.dto.folder
 
 import com.google.gson.annotations.SerializedName
-import com.pwhs.quickmem.data.dto.study_set.FolderStudySetResponseDto
+import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.user.UserResponseDto
 
-data class GetFolderResponseDto(
+data class GetFolderDetailResponseDto(
     @SerializedName("id")
     val id: String,
 
@@ -27,7 +27,7 @@ data class GetFolderResponseDto(
     val user: UserResponseDto,
 
     @SerializedName("studySets")
-    val studySets: List<FolderStudySetResponseDto>,
+    val studySets: List<GetStudySetResponseDto>,
 
     @SerializedName("createdAt")
     val createdAt: String,
