@@ -11,6 +11,8 @@ import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
+import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
+import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
@@ -162,7 +164,7 @@ interface ApiService {
         @Path("id") id: String,
         @Body flipFlashCardDto: FlipFlashCardDto
     ): UpdateFlashCardResponseDto
-  
+
     @POST("folder")
     suspend fun createFolder(
         @Header("Authorization") token: String,
@@ -182,4 +184,9 @@ interface ApiService {
         @Body ratingFlashCardDto: RatingFlashCardDto
     ): UpdateFlashCardResponseDto
 
+    @POST("class")
+    suspend fun createClass(
+        @Header("Authorization") token: String,
+        @Body createClassRequestDto: CreateClassRequestDto
+    ): CreateClassResponseDto
 }

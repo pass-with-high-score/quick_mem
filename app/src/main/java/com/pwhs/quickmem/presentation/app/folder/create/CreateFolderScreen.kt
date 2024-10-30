@@ -15,10 +15,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.presentation.app.folder.component.FolderAppBar
-import com.pwhs.quickmem.presentation.app.folder.component.FolderPublicSwitch
-import com.pwhs.quickmem.presentation.app.folder.component.FolderTextField
+import com.pwhs.quickmem.presentation.component.CreateTextField
+import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.presentation.component.SwitchContainer
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -85,10 +85,10 @@ fun CreateFolder(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
-            FolderAppBar(
+            CreateTopAppBar(
                 onNavigateBack = onNavigateBack,
                 onDoneClick = onDoneClick,
-                title = "New Folder"
+                title = "Create new folder"
             )
         }
     ) { innerPadding ->
@@ -98,23 +98,24 @@ fun CreateFolder(
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
             ) {
-                FolderTextField(
+                CreateTextField(
                     value = title,
                     title = "Folder Title",
                     valueError = titleError,
                     onValueChange = onTitleChange,
                     placeholder = "Enter Folder Title"
                 )
-                FolderTextField(
+                CreateTextField(
                     value = description,
                     title = "Description (Optional)",
                     valueError = descriptionError,
                     onValueChange = onDescriptionChange,
                     placeholder = "Enter Description"
                 )
-                FolderPublicSwitch(
-                    isPublic = isPublic,
-                    onIsPublicChange = onIsPublicChange
+                SwitchContainer(
+                    text = "When you make a folder public, anyone can see it and use it.",
+                    checked = isPublic,
+                    onCheckedChange = onIsPublicChange
                 )
             }
 

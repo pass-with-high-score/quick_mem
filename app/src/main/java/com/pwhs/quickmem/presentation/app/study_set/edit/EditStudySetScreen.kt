@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.study_set.edit
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,12 +24,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetColorInput
-import com.pwhs.quickmem.presentation.app.study_set.component.StudySetPublicSwitch
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetSubjectBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetSubjectInput
-import com.pwhs.quickmem.presentation.app.study_set.component.StudySetTextField
-import com.pwhs.quickmem.presentation.app.study_set.component.StudySetTopAppBar
-import com.pwhs.quickmem.util.loadingOverlay
+import com.pwhs.quickmem.presentation.component.CreateTextField
+import com.pwhs.quickmem.presentation.component.CreateTopAppBar
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.presentation.component.SwitchContainer
+import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -46,26 +48,15 @@ fun EditStudySetScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    var showLoading by remember {
-        mutableStateOf(false)
-    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                EditStudySetUiEvent.None -> TODO()
-
                 is EditStudySetUiEvent.ShowError -> {
-                    showLoading = false
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
 
-                EditStudySetUiEvent.ShowLoading -> {
-                    showLoading = true
-                }
-
                 is EditStudySetUiEvent.StudySetEdited -> {
-                    showLoading = false
                     Toast.makeText(context, "Study Set Edited", Toast.LENGTH_SHORT).show()
                     resultNavigator.setResult(true)
                     navigator.popBackStack()
@@ -75,7 +66,8 @@ fun EditStudySetScreen(
     }
 
     EditStudySet(
-        modifier = modifier.loadingOverlay(showLoading),
+        modifier = modifier,
+        isLoading = uiState.isLoading,
         title = uiState.title,
         titleError = uiState.titleError,
         onTitleChange = { viewModel.onEvent(EditStudySetUiAction.TitleChanged(it)) },
@@ -96,6 +88,7 @@ fun EditStudySetScreen(
 @Composable
 fun EditStudySet(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     title: String = "",
     titleError: String = "",
     onTitleChange: (String) -> Unit = {},
@@ -127,48 +120,55 @@ fun EditStudySet(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
-            StudySetTopAppBar(
+            CreateTopAppBar(
                 onNavigateBack = onNavigateBack,
                 onDoneClick = onDoneClick,
                 title = "Edit Study Set"
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-        ) {
-            StudySetTextField(
-                value = title,
-                title = "Study Set Title",
-                valueError = titleError,
-                onValueChange = onTitleChange,
-                placeholder = "Enter Study Set Title"
-            )
-            StudySetTextField(
-                value = description,
-                valueError = descriptionError,
-                onValueChange = onDescriptionChange,
-                title = "Description (optional)",
-                placeholder = "Enter Description"
-            )
-            StudySetSubjectInput(
-                subjectModel = subjectModel,
-                onShowBottomSheet = {
-                    showBottomSheetEdit = true
-                }
-            )
-            StudySetColorInput(
-                colorModel = colorModel,
-                onColorChange = onColorChange
-            )
-            StudySetPublicSwitch(
-                isPublic = isPublic,
-                onIsPublicChange = onIsPublicChange
-            )
+        Box {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp)
+            ) {
+                CreateTextField(
+                    value = title,
+                    title = "Study Set Title",
+                    valueError = titleError,
+                    onValueChange = onTitleChange,
+                    placeholder = "Enter Study Set Title"
+                )
+                CreateTextField(
+                    value = description,
+                    valueError = descriptionError,
+                    onValueChange = onDescriptionChange,
+                    title = "Description (optional)",
+                    placeholder = "Enter Description"
+                )
+                StudySetSubjectInput(
+                    subjectModel = subjectModel,
+                    onShowBottomSheet = {
+                        showBottomSheetEdit = true
+                    }
+                )
+                StudySetColorInput(
+                    colorModel = colorModel,
+                    onColorChange = onColorChange
+                )
+                SwitchContainer(
+                    checked = isPublic,
+                    onCheckedChange = onIsPublicChange,
+                    text = "When you make a study set public, anyone can see it and use it."
+                )
 
+            }
         }
+        LoadingOverlay(
+            isLoading = isLoading,
+            color = colorModel?.hexValue?.toColor()
+        )
 
         StudySetSubjectBottomSheet(
             showBottomSheet = showBottomSheetEdit,

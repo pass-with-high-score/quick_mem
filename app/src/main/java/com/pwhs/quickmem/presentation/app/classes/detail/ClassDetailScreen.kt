@@ -16,15 +16,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.annotation.parameters.DeepLink
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
-@Destination<RootGraph>(deepLinks = [DeepLink(uriPattern = "quickmem://join/class?code={code}")])
+@Destination<RootGraph>(
+    navArgs = ClassDetailArgs::class
+)
 fun ClassDetailScreen(
     modifier: Modifier = Modifier,
-    code: String = "",
     viewModel: ClassDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
@@ -45,7 +45,10 @@ fun ClassDetailScreen(
         }
     }
 
-    ClassDetail(modifier = modifier, code = code)
+    ClassDetail(
+        modifier = modifier,
+        code = uiState.joinClassCode
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

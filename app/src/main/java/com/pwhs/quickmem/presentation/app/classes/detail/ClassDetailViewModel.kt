@@ -28,10 +28,21 @@ class ClassDetailViewModel @Inject constructor(
 
     init {
         val joinClassCode: String = savedStateHandle["code"] ?: ""
+        val id: String = savedStateHandle["id"] ?: ""
+        val title: String = savedStateHandle["title"] ?: ""
+        val description: String = savedStateHandle["description"] ?: ""
         viewModelScope.launch {
             appManager.isLoggedIn.collect { isLoggedIn ->
                 if (isLoggedIn) {
-                    _uiState.update { it.copy(isLogin = true) }
+                    _uiState.update {
+                        it.copy(
+                            isLogin = true,
+                            joinClassCode = joinClassCode,
+                            id = id,
+                            title = title,
+                            description = description
+                        )
+                    }
                 } else {
                     _uiState.update { it.copy(isLogin = false) }
                     onEvent(ClassDetailUiAction.NavigateToWelcomeClicked)

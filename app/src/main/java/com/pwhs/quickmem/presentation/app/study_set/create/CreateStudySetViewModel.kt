@@ -55,35 +55,7 @@ class CreateStudySetViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(titleError = "")
                     }
-                }
-                viewModelScope.launch {
-                    val ownerId = appManager.userId.firstOrNull { true } ?: ""
-                    val createStudySetRequestModel = CreateStudySetRequestModel(
-                        title = uiState.title,
-                        subjectId = uiState.subjectModel.id,
-                        colorId = uiState.colorModel.id,
-                        isPublic = uiState.isPublic,
-                        description = uiState.description,
-                        ownerId = ownerId
-                    )
-                    studySetRepository.createStudySet(
-                        token = tokenManager.accessToken.firstOrNull { true } ?: "",
-                        createStudySetRequestModel
-                    ).collectLatest { resource ->
-                        when (resource) {
-                            is Resources.Loading -> {
-                                _uiEvent.send(CreateStudySetUiEvent.ShowLoading)
-                            }
-
-                            is Resources.Success -> {
-                                _uiEvent.send(CreateStudySetUiEvent.StudySetCreated(resource.data!!.id))
-                            }
-
-                            is Resources.Error -> {
-                                _uiEvent.send(CreateStudySetUiEvent.ShowError(resource.message!!))
-                            }
-                        }
-                    }
+                    createStudySet()
                 }
             }
 
@@ -102,6 +74,46 @@ class CreateStudySetViewModel @Inject constructor(
             is CreateStudySetUiAction.DescriptionChanged -> {
                 _uiState.update {
                     it.copy(description = event.description)
+                }
+            }
+        }
+    }
+
+    private fun createStudySet() {
+        viewModelScope.launch {
+            val ownerId = appManager.userId.firstOrNull { true } ?: ""
+            val createStudySetRequestModel = CreateStudySetRequestModel(
+                title = _uiState.value.title,
+                subjectId = _uiState.value.subjectModel.id,
+                colorId = _uiState.value.colorModel.id,
+                isPublic = _uiState.value.isPublic,
+                description = _uiState.value.description,
+                ownerId = ownerId
+            )
+            studySetRepository.createStudySet(
+                token = tokenManager.accessToken.firstOrNull { true } ?: "",
+                createStudySetRequestModel
+            ).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(CreateStudySetUiEvent.StudySetCreated(resource.data!!.id))
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(CreateStudySetUiEvent.ShowError(resource.message!!))
+                    }
                 }
             }
         }
