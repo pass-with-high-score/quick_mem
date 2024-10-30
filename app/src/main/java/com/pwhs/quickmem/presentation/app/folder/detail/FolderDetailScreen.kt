@@ -1,16 +1,12 @@
 package com.pwhs.quickmem.presentation.app.folder.detail
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -20,24 +16,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import com.pwhs.quickmem.domain.model.study_set.FolderStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderSortOptionBottomSheet
+import com.pwhs.quickmem.presentation.app.folder.detail.component.ListStudySetInnerFolder
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Destination<RootGraph>(
     navArgs = FolderDetailArgs::class
@@ -46,19 +41,35 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun FolderDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: FolderDetailViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    resultNavigator: ResultBackNavigator<Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-
-                else -> {}
+                FolderDetailUiEvent.StudySetDeleted -> {}
             }
         }
     }
 
-    FolderDetail(modifier = modifier)
+    FolderDetail(
+        modifier = modifier,
+        title = uiState.title,
+        createdAt = uiState.createdAt,
+        updatedAt = uiState.updatedAt,
+        isLoading = uiState.isLoading,
+        onFolderRefresh = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
+        studySet = uiState.studySets,
+        onStudySetClick = {  },
+        onEditFolder = { viewModel.onEvent(FolderDetailUiAction.OnEditFolderClicked) },
+        onStudyFolderDetailClicked = {  },
+        onNavigateBack = {
+            resultNavigator.setResult(true)
+            navigator.navigateUp()
+        },
+        onAddStudySet = {  }
+    )
 
 }
 
@@ -66,16 +77,27 @@ fun FolderDetailScreen(
 @Composable
 fun FolderDetail(
     modifier: Modifier = Modifier,
+    title: String = "",
+    createdAt: String = "",
+    updatedAt: String = "",
     isLoading: Boolean = false,
     onFolderRefresh: () -> Unit = {},
-    username: String = "User",
-    userAvatar: String = "",
-    folders: List<Any> = emptyList(),
+    studySet: List<FolderStudySetResponseModel> = emptyList(),
+    onStudySetClick: (String) -> Unit = {},
     onEditFolder: () -> Unit = {},
     onStudyFolderDetailClicked: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onAddStudySet: () -> Unit = {}
 ) {
+
+    val formattedCreatedAt = formatDate(createdAt)
+    val formattedUpdatedAt = formatDate(updatedAt)
+    val dateLabel = if (createdAt != updatedAt) {
+        "Modified $formattedUpdatedAt"
+    } else {
+        "Created $formattedCreatedAt"
+    }
+
     var refreshState = rememberPullToRefreshState()
     var sortOptionBottomSheet by remember { mutableStateOf(false) }
     var showMoreBottomSheet by remember { mutableStateOf(false) }
@@ -88,8 +110,8 @@ fun FolderDetail(
         modifier = modifier,
         topBar = {
             FolderDetailTopAppBar(
-                title = "Folder Title",
-                dateLabel = "Date Label",
+                title = title,
+                dateLabel = dateLabel,
                 onNavigateBack = onNavigateBack,
                 onMoreClicked = { showMoreBottomSheet = true },
                 onAddStudySet = onAddStudySet,
@@ -99,65 +121,26 @@ fun FolderDetail(
             )
         }
     ) { innerPadding ->
-        PullToRefreshBox(
-            modifier = Modifier.fillMaxWidth(),
-            state = refreshState,
-            isRefreshing = isLoading,
-            onRefresh = { onFolderRefresh() }
-        ) {
-            when {
-                folders.isEmpty() -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(innerPadding)
-                            .padding(top = 40.dp)
-                            .padding(horizontal = 16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        AsyncImage(
-                            model = userAvatar,
-                            contentDescription = "User avatar",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                        Text(
-                            text = "Hello, $username",
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 24.sp
-                            )
-                        )
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                        )
-                        Text(
-                            text = "Get started by searching for a study set or creating your own",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
-                            ),
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                    }
-                }
-                else -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(innerPadding)
-                    ) {
-                        // Folder content
-                        Text(text = "Folder content")
-                    }
+        Box(
+            modifier = Modifier
+                .background(Color.Transparent)
+                .padding(innerPadding)
+        ){
+            PullToRefreshBox(
+                state = refreshState,
+                isRefreshing = isLoading,
+                onRefresh = onFolderRefresh
+            ) {
+                Column{
+                    ListStudySetInnerFolder (
+                        studySet = studySet,
+                        onStudySetClick = onStudySetClick
+                    )
                 }
             }
+            LoadingOverlay(
+                isLoading = isLoading
+            )
         }
     }
     if (showDeleteConfirmationDialog) {
@@ -195,6 +178,16 @@ fun FolderDetail(
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false }
     )
+}
+
+fun formatDate(dateString: String): String {
+    if (dateString.isEmpty()) {
+        return ""
+    }
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val date = inputFormat.parse(dateString)
+    return outputFormat.format(date)
 }
 
 @Preview

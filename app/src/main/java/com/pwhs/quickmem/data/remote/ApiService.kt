@@ -20,6 +20,7 @@ import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
+import com.pwhs.quickmem.data.dto.folder.GetFolderResponseDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -28,7 +29,6 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
-import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -168,6 +168,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body createFolderRequestDto: CreateFolderRequestDto
     ): CreateFolderResponseDto
+
+    @GET("folder/{id}")
+    suspend fun getFolderById(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : GetFolderResponseDto
 
     @PATCH("flashcard/{id}/rating")
     suspend fun updateRatingFlashCard(
