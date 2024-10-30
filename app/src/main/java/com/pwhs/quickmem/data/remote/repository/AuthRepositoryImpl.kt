@@ -10,6 +10,10 @@ import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
+import com.pwhs.quickmem.domain.model.auth.ResetPasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
+import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
@@ -124,4 +128,35 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun sendResetPassword(
+        sendResetPasswordRequestModel: SendResetPasswordRequestModel
+    ): Flow<Resources<SendResetPasswordResponseModel>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val params = sendResetPasswordRequestModel.toDto()
+                val response = apiService.sendResetPassword(params)
+                emit(Resources.Success(response))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun resetPassword(
+        resetPasswordRequestModel: ResetPasswordRequestModel
+    ): Flow<Resources<ResetPasswordResponseModel>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val params = resetPasswordRequestModel.toDto()
+                val response = apiService.resetPassword(params)
+                emit(Resources.Success(response))
+            }catch (e:Exception){
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

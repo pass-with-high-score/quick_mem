@@ -1,25 +1,32 @@
 plugins {
-    id 'com.android.library'
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace 'com.msusman.compose.cardstack'
-    compileSdk 35
+    namespace = "com.msusman.compose.cardstack"
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk 29
-        targetSdk 35
+        minSdk = libs.versions.minSdk.get().toInt()
+    }
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+    testOptions {
+        targetSdk = libs.versions.targetSdk.get().toInt()
+    }
+
+    lint {
+        targetSdk = libs.versions.targetSdk.get().toInt()
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -27,18 +34,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = libs.versions.jvmTarget.get()
     }
     buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.4.8'
+        compose = true
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.runtime)
     // Unit Test

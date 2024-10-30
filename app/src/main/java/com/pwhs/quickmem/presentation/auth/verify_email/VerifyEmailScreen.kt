@@ -52,6 +52,7 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.SetNewPasswordScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber
@@ -103,6 +104,17 @@ fun VerifyEmailScreen(
 
                 VerifyEmailUiEvent.ErrorLengthOtp -> {
                     Toast.makeText(context, "OTP must be 6 digits", Toast.LENGTH_SHORT).show()
+                }
+
+                VerifyEmailUiEvent.NavigateToSetNewPassword -> {
+                    Timber.d(uiState.resetPasswordToken)
+                    navigator.navigate(
+                        SetNewPasswordScreenDestination(
+                            email = uiState.email,
+                            resetPasswordToken = uiState.resetPasswordToken,
+                            otp = uiState.otp
+                        )
+                    )
                 }
             }
 

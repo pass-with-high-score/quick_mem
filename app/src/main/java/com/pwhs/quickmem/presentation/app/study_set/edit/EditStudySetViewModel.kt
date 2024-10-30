@@ -78,37 +78,7 @@ class EditStudySetViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(titleError = "")
                     }
-                }
-
-                viewModelScope.launch {
-                    val ownerId = appManager.userId.firstOrNull { true } ?: ""
-                    val updateStudySetRequestModel = UpdateStudySetRequestModel(
-                        title = uiState.title,
-                        subjectId = uiState.subjectModel.id,
-                        colorId = uiState.colorModel.id,
-                        isPublic = uiState.isPublic,
-                        description = uiState.description,
-                        ownerId = ownerId
-                    )
-                    studySetRepository.updateStudySet(
-                        token = tokenManager.accessToken.firstOrNull { true } ?: "",
-                        studySetId = uiState.id,
-                        updateStudySetRequestModel
-                    ).collectLatest { resource ->
-                        when (resource) {
-                            is Resources.Loading -> {
-                                _uiEvent.send(EditStudySetUiEvent.ShowLoading)
-                            }
-
-                            is Resources.Success -> {
-                                _uiEvent.send(EditStudySetUiEvent.StudySetEdited(resource.data!!.id))
-                            }
-
-                            is Resources.Error -> {
-                                _uiEvent.send(EditStudySetUiEvent.ShowError(resource.message!!))
-                            }
-                        }
-                    }
+                    saveStudySet()
                 }
             }
 
@@ -127,6 +97,47 @@ class EditStudySetViewModel @Inject constructor(
             is EditStudySetUiAction.DescriptionChanged -> {
                 _uiState.update {
                     it.copy(description = event.description)
+                }
+            }
+        }
+    }
+
+    private fun saveStudySet() {
+        viewModelScope.launch {
+            val ownerId = appManager.userId.firstOrNull { true } ?: ""
+            val updateStudySetRequestModel = UpdateStudySetRequestModel(
+                title = uiState.value.title,
+                subjectId = uiState.value.subjectModel.id,
+                colorId = uiState.value.colorModel.id,
+                isPublic = uiState.value.isPublic,
+                description = uiState.value.description,
+                ownerId = ownerId
+            )
+            studySetRepository.updateStudySet(
+                token = tokenManager.accessToken.firstOrNull { true } ?: "",
+                studySetId = uiState.value.id,
+                updateStudySetRequestModel
+            ).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(EditStudySetUiEvent.StudySetEdited(resource.data!!.id))
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(EditStudySetUiEvent.ShowError(resource.message!!))
+                    }
                 }
             }
         }

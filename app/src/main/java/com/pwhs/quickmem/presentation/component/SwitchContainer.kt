@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.component
+package com.pwhs.quickmem.presentation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,14 +15,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
-fun StudySetPublicSwitch(
+fun SwitchContainer(
     modifier: Modifier = Modifier,
-    isPublic: Boolean,
-    onIsPublicChange: (Boolean) -> Unit
+    text: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Card(
         modifier = modifier
@@ -43,24 +46,34 @@ fun StudySetPublicSwitch(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "Make Study Set public",
-                    style = typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                    text = text,
+                    style = typography.bodySmall.copy(
+                        color = colorScheme.onSurface.copy(alpha = 0.6f),
+                        fontSize = 14.sp
+                    ),
+                    modifier = Modifier
+                        .padding(top = 8.dp, end = 10.dp)
+                        .weight(1f)
                 )
                 Switch(
-                    checked = isPublic,
-                    onCheckedChange = onIsPublicChange,
+                    checked = checked,
+                    onCheckedChange = onCheckedChange,
                 )
             }
 
-            Text(
-                text = "When you make a study set public, anyone can see it and use it.",
-                style = typography.bodySmall.copy(
-                    color = colorScheme.onSurface.copy(alpha = 0.6f)
-                ),
-                modifier = Modifier.padding(top = 8.dp)
-            )
         }
+    }
+
+}
+
+@PreviewLightDark
+@Composable
+private fun SwitchContainerPreview() {
+    QuickMemTheme {
+        SwitchContainer(
+            text = "Allow class members to add study set and folders",
+            checked = true,
+            onCheckedChange = {}
+        )
     }
 }

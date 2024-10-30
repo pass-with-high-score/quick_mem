@@ -8,4 +8,5 @@ sealed class VerifyEmailUiEvent {
     data object WrongOtp : VerifyEmailUiEvent()
     data object EmptyOtp : VerifyEmailUiEvent()
     data object ErrorLengthOtp : VerifyEmailUiEvent()
+    data object NavigateToSetNewPassword : VerifyEmailUiEvent()
 }

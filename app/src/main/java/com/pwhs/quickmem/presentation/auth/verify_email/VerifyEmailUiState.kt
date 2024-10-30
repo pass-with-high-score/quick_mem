@@ -5,6 +5,7 @@ data class VerifyEmailUiState(
     val isFromSignup: Boolean = false,
     val otp: String = "",
     val email: String = "",
+    val resetPasswordToken: String = "",
     val isOtpValid: Boolean = false,
     val countdown: Int = 0,
 )

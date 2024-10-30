@@ -180,7 +180,7 @@ fun StandardScaffold(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     BottomSheetItem(
-                        title = "Flashcard set",
+                        title = "Study set",
                         icon = R.drawable.ic_card,
                         onClick = {
                             showBottomSheetCreate = false
@@ -196,7 +196,7 @@ fun StandardScaffold(
                         }
                     )
                     BottomSheetItem(
-                        title = "Create a class",
+                        title = "Class",
                         icon = R.drawable.ic_school,
                         onClick = {
                             showBottomSheetCreate = false

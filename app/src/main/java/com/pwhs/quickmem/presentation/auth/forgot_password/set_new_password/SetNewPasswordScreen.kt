@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,14 +34,18 @@ import com.pwhs.quickmem.core.data.TextFieldType
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
-@Destination<RootGraph>
+@Destination<RootGraph>(
+    navArgs = SetNewPasswordArgs::class
+)
 fun SetNewPasswordScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
@@ -52,10 +57,6 @@ fun SetNewPasswordScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SetNewPasswordUiEvent.None -> {
-                    //
-                }
-
                 SetNewPasswordUiEvent.ResetFailure -> {
                     Toast.makeText(
                         context,
@@ -65,9 +66,14 @@ fun SetNewPasswordScreen(
                 }
 
                 SetNewPasswordUiEvent.ResetSuccess -> {
+                    Toast.makeText(
+                        context,
+                        "Password reset successful",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination) {
-                        popUpTo(HomeScreenDestination) {
+                    navigator.navigate(LoginWithEmailScreenDestination) {
+                        popUpTo(LoginWithEmailScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }
@@ -79,6 +85,7 @@ fun SetNewPasswordScreen(
 
     SetNewPassword(
         modifier,
+        isLoading = uiState.value.isLoading,
         onNavigationIconClick = {
             navigator.popBackStack()
         },
@@ -101,6 +108,7 @@ fun SetNewPasswordScreen(
 @Composable
 private fun SetNewPassword(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     onNavigationIconClick: () -> Unit = {},
     password: String = "",
     confirmPassword: String = "",
@@ -117,60 +125,65 @@ private fun SetNewPassword(
             AuthTopAppBar(onClick = onNavigationIconClick)
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp)
-                .padding(top = 40.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.forgot_password_verify_password),
-                contentDescription = "Forgot Password Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(150.dp)
-            )
+        Box {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .padding(top = 40.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.forgot_password_verify_password),
+                    contentDescription = "Forgot Password Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(120.dp)
+                )
 
-            Text(
-                text = "Please enter your new password",
-                style = typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
-                ),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+                Text(
+                    text = "Please enter your new password",
+                    style = typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
 
-            Spacer(modifier = Modifier.height(26.dp))
+                Spacer(modifier = Modifier.height(26.dp))
 
-            AuthTextField(
-                value = password,
-                onValueChange = onPasswordChanged,
-                label = "New Password",
-                iconId = R.drawable.ic_lock,
-                contentDescription = "New Password",
-                type = TextFieldType.PASSWORD,
-                error = passwordError
-            )
+                AuthTextField(
+                    value = password,
+                    onValueChange = onPasswordChanged,
+                    label = "New Password",
+                    iconId = R.drawable.ic_lock,
+                    contentDescription = "New Password",
+                    type = TextFieldType.PASSWORD,
+                    error = passwordError
+                )
 
-            AuthTextField(
-                value = confirmPassword,
-                onValueChange = onConfirmPasswordChanged,
-                label = "Confirm Password",
-                iconId = R.drawable.ic_lock,
-                contentDescription = "Confirm Password",
-                type = TextFieldType.PASSWORD,
-                error = confirmPasswordError
-            )
+                AuthTextField(
+                    value = confirmPassword,
+                    onValueChange = onConfirmPasswordChanged,
+                    label = "Confirm Password",
+                    iconId = R.drawable.ic_lock,
+                    contentDescription = "Confirm Password",
+                    type = TextFieldType.PASSWORD,
+                    error = confirmPasswordError
+                )
 
-            AuthButton(
-                text = "Done",
-                onClick = onSubmitClick,
-                modifier = Modifier.padding(top = 16.dp),
-                colors = colorScheme.onSecondaryContainer,
-                textColor = Color.White
+                AuthButton(
+                    text = "Done",
+                    onClick = onSubmitClick,
+                    modifier = Modifier.padding(top = 16.dp),
+                    colors = colorScheme.primary,
+                    textColor = Color.White
+                )
+            }
+            LoadingOverlay(
+                isLoading = isLoading
             )
         }
     }
@@ -179,5 +192,7 @@ private fun SetNewPassword(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreviewForgotPasswordVerifyPasswordScreen() {
-    SetNewPassword()
+    QuickMemTheme {
+        SetNewPassword()
+    }
 }

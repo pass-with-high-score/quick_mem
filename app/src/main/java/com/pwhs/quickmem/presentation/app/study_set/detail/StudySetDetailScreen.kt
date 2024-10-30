@@ -14,6 +14,8 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
@@ -258,6 +261,9 @@ fun StudySetDetailScreen(
                     studySetSubjectId = uiState.subject.id,
                 )
             )
+        },
+        onRefresh = {
+            viewModel.onEvent(StudySetDetailUiAction.Refresh)
         }
     )
 }
@@ -287,6 +293,7 @@ fun StudySetDetail(
     onNavigateToTestFlashCard: () -> Unit = {},
     onNavigateToMatchFlashCard: () -> Unit = {},
     onNavigateToFlipFlashCard: () -> Unit = {},
+    onRefresh: () -> Unit = {},
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -295,12 +302,12 @@ fun StudySetDetail(
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var showResetProgressDialog by remember { mutableStateOf(false) }
+    val refreshState = rememberPullToRefreshState()
     Scaffold(
         modifier = modifier,
         containerColor = Color.Transparent,
         topBar = {
             StudySetDetailTopAppBar(
-
                 title = title,
                 color = color,
                 userResponse = userResponse,
@@ -326,64 +333,72 @@ fun StudySetDetail(
                 .background(Color.Transparent)
                 .padding(innerPadding)
         ) {
-            Column {
-                TabRow(
-                    selectedTabIndex = tabIndex,
-                    indicator = { tabPositions ->
-                        SecondaryIndicator(
-                            Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                            color = color,
-                        )
-                    },
-                    contentColor = colorScheme.onSurface,
-                ) {
-                    tabTitles.forEachIndexed { index, title ->
-                        Tab(
-                            text = {
-                                Text(
-                                    title, style = typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Bold,
-                                        color = if (tabIndex == index) Color.Black else Color.Gray
+            PullToRefreshBox(
+                onRefresh = onRefresh,
+                isRefreshing = isLoading,
+                state = refreshState
+            ) {
+                Column {
+                    TabRow(
+                        selectedTabIndex = tabIndex,
+                        indicator = { tabPositions ->
+                            SecondaryIndicator(
+                                Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                                color = color,
+                            )
+                        },
+                        contentColor = colorScheme.onSurface,
+                    ) {
+                        tabTitles.forEachIndexed { index, title ->
+                            Tab(
+                                text = {
+                                    Text(
+                                        title, style = typography.titleMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (tabIndex == index) Color.Black else Color.Gray
+                                        )
                                     )
-                                )
-                            },
-                            selected = tabIndex == index,
-                            onClick = { tabIndex = index },
-                            icon = {
-                                when (index) {
-                                    0 -> {}
-                                    1 -> {}
+                                },
+                                selected = tabIndex == index,
+                                onClick = { tabIndex = index },
+                                icon = {
+                                    when (index) {
+                                        StudySetDetailEnum.MATERIAL.index -> {}
+                                        StudySetDetailEnum.PROGRESS.index -> {}
+                                    }
                                 }
-                            }
+                            )
+                        }
+                    }
+                    when (tabIndex) {
+                        StudySetDetailEnum.MATERIAL.index -> MaterialTabScreen(
+                            flashCards = flashCards,
+                            onFlashCardClick = onFlashCardClick,
+                            onDeleteFlashCardClick = onDeleteFlashCard,
+                            onToggleStarClick = onToggleStarredFlashCard,
+                            onEditFlashCardClick = onEditFlashCard,
+                            onAddFlashCardClick = onAddFlashcard,
+                            onNavigateToLearnFlashCard = onNavigateToLearnFlashCard,
+                            onNavigateToTestFlashCard = onNavigateToTestFlashCard,
+                            onNavigateToMatchFlashCard = onNavigateToMatchFlashCard,
+                            onNavigateToFlipFlashCard = onNavigateToFlipFlashCard
+                        )
+
+                        StudySetDetailEnum.PROGRESS.index -> ProgressTabScreen(
+                            totalStudySet = flashCardCount,
+                            color = color,
+                            studySetsNotLearnCount = flashCards.count { it.flipStatus == FlipCardStatus.NONE.name },
+                            studySetsStillLearningCount = flashCards.count { it.flipStatus == FlipCardStatus.STILL_LEARNING.name },
+                            studySetsKnowCount = flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name },
                         )
                     }
-                }
-                when (tabIndex) {
-                    0 -> MaterialTabScreen(
-                        flashCards = flashCards,
-                        onFlashCardClick = onFlashCardClick,
-                        onDeleteFlashCardClick = onDeleteFlashCard,
-                        onToggleStarClick = onToggleStarredFlashCard,
-                        onEditFlashCardClick = onEditFlashCard,
-                        onAddFlashCardClick = onAddFlashcard,
-                        onNavigateToLearnFlashCard = onNavigateToLearnFlashCard,
-                        onNavigateToTestFlashCard = onNavigateToTestFlashCard,
-                        onNavigateToMatchFlashCard = onNavigateToMatchFlashCard,
-                        onNavigateToFlipFlashCard = onNavigateToFlipFlashCard
-                    )
 
-                    1 -> ProgressTabScreen(
-                        totalStudySet = flashCardCount,
-                        color = color,
-                        studySetsNotLearnCount = flashCards.count { it.flipStatus == "NONE" },
-                        studySetsStillLearningCount = flashCards.count { it.flipStatus == "STILL_LEARNING" },
-                        studySetsKnowCount = flashCards.count { it.flipStatus == "KNOW" },
-                    )
                 }
-
             }
 
-            LoadingOverlay(isLoading = isLoading)
+            LoadingOverlay(
+                isLoading = isLoading
+            )
         }
     }
     StudySetMoreOptionsBottomSheet(

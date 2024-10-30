@@ -45,4 +45,5 @@ class TokenManager(private val context: Context) {
             preferences.remove(REFRESH_TOKEN)
         }
     }
+
 }
