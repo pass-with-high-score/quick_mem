@@ -109,8 +109,6 @@ fun LibraryScreen(
 fun Library(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    userAvatar: String = "",
-    username: String = "",
     onStudySetRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
@@ -204,9 +202,7 @@ fun Library(
                     isLoading = isLoading,
                     studySets = studySets,
                     onStudySetClick = onStudySetClick,
-                    onStudySetRefresh = onStudySetRefresh,
-                    userAvatar = userAvatar,
-                    username = username
+                    onStudySetRefresh = onStudySetRefresh
                 )
 
                 LibraryTabEnum.CLASS.index -> ListClassesScreen()
