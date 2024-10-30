@@ -46,7 +46,7 @@ fun FolderMenuBottomSheet(
                 ItemMenuBottomSheet(
                     onClick = onShareFolder,
                     icon = Default.IosShare,
-                    title = "Report study set"
+                    title = "Share study set"
                 )
                 ItemMenuBottomSheet(
                     onClick = onReportFolder,
