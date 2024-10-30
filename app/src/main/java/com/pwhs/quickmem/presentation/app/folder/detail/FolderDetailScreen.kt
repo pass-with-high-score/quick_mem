@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.folder.detail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -62,7 +63,7 @@ fun FolderDetailScreen(
         studySet = uiState.studySets,
         onStudySetClick = {  },
         onEditFolder = { viewModel.onEvent(FolderDetailUiAction.OnEditFolderClicked) },
-        onStudyFolderDetailClicked = {  },
+        onStudyFolderDetailClicked = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         onNavigateBack = {
             resultNavigator.setResult(true)
             navigator.navigateUp()
@@ -130,7 +131,9 @@ fun FolderDetail(
                 isRefreshing = isLoading,
                 onRefresh = onFolderRefresh
             ) {
-                Column{
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ){
                     ListStudySetInnerFolder (
                         studySet = studySet,
                         onStudySetClick = onStudySetClick
