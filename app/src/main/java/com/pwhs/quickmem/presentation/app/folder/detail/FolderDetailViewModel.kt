@@ -114,43 +114,7 @@ class FolderDetailViewModel @Inject constructor(
                         _uiEvent.send(FolderDetailUiEvent.FolderDeleted)
                     }
 
-
-    private fun getFolderSetById(id: String) {
-        viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: run {
-                _uiEvent.send(FolderDetailUiEvent.ShowError("Please login again!"))
-                return@launch
-            }
-            folderRepository.getFolderById(token, id).collectLatest { resource ->
-                when (resource) {
-                    is Resources.Loading -> {
-                        Timber.d("Loading")
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-                    is Resources.Success -> {
-                        resource.data?.let { data ->
-                            _uiState.update {
-                                it.copy(
-                                    title = data.title,
-                                    description = data.description,
-                                    isPublic = data.isPublic,
-                                    studySetCount = data.studySetCount,
-                                    ownerId = data.ownerId,
-                                    user = data.user,
-                                    studySets = data.studySets,
-                                    createdAt = data.createdAt,
-                                    updatedAt = data.updatedAt,
-                                    isLoading = false
-                                )
-                            }
-                        } ?: run {
-                            _uiEvent.send(FolderDetailUiEvent.ShowError("Folder not found"))
-                        }
-                    }
-                    is Resources.Error -> {
-                        Timber.e(resource.message)
-                        _uiState.update { it.copy(isLoading = false) }
-                    }
+                    is Resources.Error -> TODO()
                 }
             }
         }

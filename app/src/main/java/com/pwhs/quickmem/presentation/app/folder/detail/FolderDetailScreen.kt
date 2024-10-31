@@ -34,6 +34,7 @@ import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -100,7 +101,7 @@ fun FolderDetailScreen(
         isLoading = uiState.isLoading,
         onFolderRefresh = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         studySet = uiState.studySets,
-        onStudySetClick = {  },
+        onStudySetClick = { navigator.navigate(StudySetDetailScreenDestination(id = it)) },
         onEditFolder = { viewModel.onEvent(FolderDetailUiAction.EditFolder) },
         onStudyFolderDetailClicked = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         onNavigateBack = {
@@ -139,6 +140,7 @@ fun FolderDetail(
         "Created $formattedCreatedAt"
     }
 
+    val context = LocalContext.current
     var refreshState = rememberPullToRefreshState()
     var sortOptionBottomSheet by remember { mutableStateOf(false) }
     var showMoreBottomSheet by remember { mutableStateOf(false) }
@@ -221,7 +223,16 @@ fun FolderDetail(
             showDeleteConfirmationDialog = true
             showMoreBottomSheet = false
         },
-        onShareFolder = {},
+        onShareFolder = {
+//            val link = AppConstant.BASE_URL + "folder/share/" + linkShareCode
+//            val text = "Check out this folder: $title\n$link"
+//            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+//                putExtra(Intent.EXTRA_TEXT, text)
+//                type = "text/plain"
+//            }
+//            val shareIntent = Intent.createChooser(sendIntent, null)
+//            context.startActivity(shareIntent)
+        },
         onReportFolder = {},
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
