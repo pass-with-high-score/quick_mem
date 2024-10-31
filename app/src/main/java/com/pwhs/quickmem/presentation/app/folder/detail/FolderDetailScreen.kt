@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.folder.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -50,6 +52,7 @@ fun FolderDetailScreen(
     resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     resultEditFolder.onNavResult { result ->
         when (result) {
@@ -67,7 +70,7 @@ fun FolderDetailScreen(
             when (event) {
                 FolderDetailUiEvent.StudySetDeleted -> {}
                 FolderDetailUiEvent.NavigateToEditFolder -> {
-                    Timber.d("${uiState.id} ${uiState.title} ${uiState.description} ${uiState.isPublic}")
+                    Timber.d(uiState.id)
                     navigator.navigate(
                         EditFolderScreenDestination(
                             folderId = uiState.id,
@@ -76,6 +79,10 @@ fun FolderDetailScreen(
                             folderIsPublic = uiState.isPublic
                         )
                     )
+                }
+                is FolderDetailUiEvent.ShowError -> {
+                    Timber.d("ShowError: ${event.message}")
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -90,7 +90,10 @@ class EditFolderViewModel @Inject constructor(
                 isPublic = uiState.value.isPublic
             )
             folderRepository.updateFolder(
-                token = tokenManager.accessToken.firstOrNull { true } ?: "",
+                token = tokenManager.accessToken.firstOrNull() ?: run {
+                    _uiEvent.send(EditFolderUiEvent.ShowError("Please login again!"))
+                    return@launch
+                },
                 folderId = uiState.value.id,
                 updateFolderRequestModel
             ).collectLatest { resource ->
