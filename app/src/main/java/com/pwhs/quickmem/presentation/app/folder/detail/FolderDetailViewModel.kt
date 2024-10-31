@@ -22,7 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FolderDetailViewModel @Inject constructor(
     private val tokenManager: TokenManager,
-    private val appManager: AppManager,
     savedStateHandle: SavedStateHandle,
     private val folderRepository: FolderRepository
 ) : ViewModel() {
@@ -49,6 +48,7 @@ class FolderDetailViewModel @Inject constructor(
             }
             FolderDetailUiAction.OnEditFolderClicked -> {
                 Timber.d("OnEditFolderClicked")
+                _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
             }
             is FolderDetailUiAction.OnResetProgressClicked -> {
                 Timber.d("OnResetProgressClicked: ${event.studySetId}")

@@ -31,8 +31,12 @@ import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import com.ramcosta.composedestinations.result.ResultRecipient
+import timber.log.Timber
 
 @Destination<RootGraph>(
     navArgs = FolderDetailArgs::class
@@ -42,13 +46,37 @@ fun FolderDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: FolderDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    resultNavigator: ResultBackNavigator<Boolean>
+    resultNavigator: ResultBackNavigator<Boolean>,
+    resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    resultEditFolder.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(FolderDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 FolderDetailUiEvent.StudySetDeleted -> {}
+                FolderDetailUiEvent.NavigateToEditFolder -> {
+                    Timber.d("${uiState.id} ${uiState.title} ${uiState.description} ${uiState.isPublic}")
+                    navigator.navigate(
+                        EditFolderScreenDestination(
+                            folderId = uiState.id,
+                            folderTitle = uiState.title,
+                            folderDescription = uiState.description,
+                            folderIsPublic = uiState.isPublic
+                        )
+                    )
+                }
             }
         }
     }
