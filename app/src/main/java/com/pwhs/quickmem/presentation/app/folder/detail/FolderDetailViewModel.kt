@@ -44,6 +44,7 @@ class FolderDetailViewModel @Inject constructor(
             }
             FolderDetailUiAction.DeleteFolder -> {
                 Timber.d("OnDeleteFolderClicked")
+                deleteFolder()
             }
             FolderDetailUiAction.EditFolder -> {
                 Timber.d("OnEditFolderClicked")
@@ -87,6 +88,32 @@ class FolderDetailViewModel @Inject constructor(
                             _uiEvent.send(FolderDetailUiEvent.ShowError("Folder not found"))
                         }
                     }
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteFolder() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: run {
+                _uiEvent.send(FolderDetailUiEvent.ShowError("Please login again!"))
+                return@launch
+            }
+            folderRepository.deleteFolder(token, _uiState.value.id).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        Timber.d("Loading")
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is Resources.Success -> {
+                        _uiEvent.send(FolderDetailUiEvent.FolderDeleted)
+                    }
+
                     is Resources.Error -> {
                         Timber.e(resource.message)
                         _uiState.update { it.copy(isLoading = false) }

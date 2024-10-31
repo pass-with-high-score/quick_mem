@@ -65,4 +65,20 @@ class FolderRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun deleteFolder(
+        token: String,
+        folderId: String
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.deleteFolder(token, folderId)
+                emit(Resources.Success(null))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

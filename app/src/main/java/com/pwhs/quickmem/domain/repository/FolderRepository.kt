@@ -24,4 +24,9 @@ interface FolderRepository {
         folderId: String,
         updateFolderRequestModel: UpdateFolderRequestModel
     ): Flow<Resources<UpdateFolderResponseModel>>
+
+    suspend fun deleteFolder(
+        token: String,
+        folderId: String
+    ): Flow<Resources<Unit>>
 }

@@ -68,7 +68,11 @@ fun FolderDetailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                FolderDetailUiEvent.StudySetDeleted -> {}
+                FolderDetailUiEvent.FolderDeleted -> {
+                    Timber.d("FolderDeleted")
+                    resultNavigator.setResult(true)
+                    navigator.navigateUp()
+                }
                 FolderDetailUiEvent.NavigateToEditFolder -> {
                     Timber.d(uiState.id)
                     navigator.navigate(
@@ -103,7 +107,8 @@ fun FolderDetailScreen(
             resultNavigator.setResult(true)
             navigator.navigateUp()
         },
-        onAddStudySet = {  }
+        onAddStudySet = {  },
+        onDeleteFolder = { viewModel.onEvent(FolderDetailUiAction.DeleteFolder) }
     )
 
 }

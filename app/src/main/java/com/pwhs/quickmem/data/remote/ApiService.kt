@@ -186,6 +186,12 @@ interface ApiService {
         @Body updateFolderRequestDto: UpdateFolderRequestDto
     ): UpdateFolderResponseDto
 
+    @DELETE("folder/{id}")
+    suspend fun deleteFolder(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
     @PATCH("flashcard/{id}/rating")
     suspend fun updateRatingFlashCard(
         @Header("Authorization") token: String,
