@@ -95,7 +95,8 @@ class LoginWithEmailViewModel @Inject constructor(
                         if (resource.data == true) {
                             val password = uiState.value.password
                             val provider = AuthProvider.EMAIL.name
-                            val loginRequestModel = LoginRequestModel(email, password, provider, null)
+                            val loginRequestModel =
+                                LoginRequestModel(email, password, provider, null)
                             authRepository.login(loginRequestModel).collectLatest { login ->
                                 when (login) {
                                     is Resources.Error -> {
@@ -120,10 +121,6 @@ class LoginWithEmailViewModel @Inject constructor(
                                                 _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
                                             }
                                         } else {
-                                            appManager.saveIsLoggedIn(true)
-                                            appManager.saveUserId(login.data?.id ?: "")
-                                            appManager.saveUserEmail(login.data?.email ?: "")
-
                                             tokenManager.saveAccessToken(
                                                 login.data?.accessToken ?: ""
                                             )
@@ -134,6 +131,7 @@ class LoginWithEmailViewModel @Inject constructor(
                                             appManager.saveUserId(login.data?.id ?: "")
                                             appManager.saveUserAvatar(login.data?.avatarUrl ?: "")
                                             appManager.saveUserFullName(login.data?.fullName ?: "")
+                                            appManager.saveUserEmail(login.data?.email ?: "")
                                             appManager.saveUserName(login.data?.username ?: "")
                                             _uiState.update { it.copy(isLoading = false) }
                                             _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)

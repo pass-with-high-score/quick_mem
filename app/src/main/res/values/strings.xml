@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">QuickMem</string>
-    <string name="settings_icon_description">Settings Icon</string>
-    <string name="arrow_icon_description">Arrow Icon</string>
 </resources>
