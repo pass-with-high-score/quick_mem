@@ -41,3 +41,13 @@ fun String.toColor(): Color {
     val color = Color(android.graphics.Color.parseColor(this))
     return color
 }
+
+fun formatDate(dateString: String): String {
+    if (dateString.isEmpty()) {
+        return ""
+    }
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val date = inputFormat.parse(dateString)
+    return outputFormat.format(date)
+}
