@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.profile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -132,7 +133,14 @@ fun Profile(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp),
-                shape = MaterialTheme.shapes.large
+                shape = MaterialTheme.shapes.large,
+                border = BorderStroke(
+                    width = 0.5.dp,
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
