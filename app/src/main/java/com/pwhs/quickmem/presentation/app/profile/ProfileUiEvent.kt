@@ -1,6 +1,8 @@
 package com.pwhs.quickmem.presentation.app.profile
 
+
 sealed class ProfileUiEvent {
-    data class LoadProfile(val userId: String) : ProfileUiEvent()
-    data object Logout : ProfileUiEvent()
+    data object Loading : ProfileUiEvent()
+    data object LoadingSuccess : ProfileUiEvent()
+    data class ShowError(val message: String) : ProfileUiEvent()
 }

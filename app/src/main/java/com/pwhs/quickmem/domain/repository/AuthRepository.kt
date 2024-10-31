@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.data.dto.auth.SendResetPasswordRequestDto
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
