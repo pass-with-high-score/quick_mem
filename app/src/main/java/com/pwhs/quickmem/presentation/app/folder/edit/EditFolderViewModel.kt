@@ -104,7 +104,11 @@ class EditFolderViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(isLoading = false)
                         }
-                        _uiEvent.send(EditFolderUiEvent.FolderEdited(resource.data!!.id))
+                        resource.data?.let { data ->
+                            _uiEvent.send(EditFolderUiEvent.FolderEdited(data.id))
+                        }?: run {
+                            _uiEvent.send(EditFolderUiEvent.ShowError("Failed to update folder"))
+                        }
                     }
                     is Resources.Error -> {
                         _uiState.update {

@@ -90,7 +90,7 @@ fun FolderDetailScreen(
         onFolderRefresh = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         studySet = uiState.studySets,
         onStudySetClick = {  },
-        onEditFolder = { viewModel.onEvent(FolderDetailUiAction.OnEditFolderClicked) },
+        onEditFolder = { viewModel.onEvent(FolderDetailUiAction.EditFolder) },
         onStudyFolderDetailClicked = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         onNavigateBack = {
             resultNavigator.setResult(true)
@@ -113,6 +113,7 @@ fun FolderDetail(
     studySet: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onEditFolder: () -> Unit = {},
+    onDeleteFolder: () -> Unit = {},
     onStudyFolderDetailClicked: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onAddStudySet: () -> Unit = {}
@@ -135,7 +136,7 @@ fun FolderDetail(
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
 
     val sortedStudySet = when (currentSortOption) {
-        SortOptionEnum.RECENT -> studySet.sortedByDescending { it.createdAt }
+        SortOptionEnum.RECENT -> studySet.sortedByDescending { it.updatedAt }
         SortOptionEnum.TITLE -> studySet.sortedBy { it.title }
     }
 
@@ -185,7 +186,7 @@ fun FolderDetail(
                 showDeleteConfirmationDialog = false
                 showMoreBottomSheet = true},
             onConfirm = {
-                onEditFolder()
+                onDeleteFolder()
                 showDeleteConfirmationDialog = false
             },
             title = "Delete Folder",

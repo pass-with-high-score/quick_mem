@@ -28,13 +28,13 @@ fun ButtonStudyFolderDetail(
             .fillMaxWidth()
             .height(33.dp)
             .border(
-                BorderStroke(2.dp, Color.Gray),
+                BorderStroke(2.dp, colorScheme.outline),
                 shape = RoundedCornerShape(10.dp)
             ),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent
         ),
-        contentPadding = PaddingValues()
+        contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
         Text(
             text = title,
