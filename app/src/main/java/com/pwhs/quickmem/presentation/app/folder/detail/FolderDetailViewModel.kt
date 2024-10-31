@@ -3,7 +3,6 @@ package com.pwhs.quickmem.presentation.app.folder.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.FolderRepository
@@ -43,14 +42,14 @@ class FolderDetailViewModel @Inject constructor(
             is FolderDetailUiAction.Refresh -> {
                 getFolderSetById(_uiState.value.id)
             }
-            FolderDetailUiAction.OnDeleteFolderClicked -> {
+            FolderDetailUiAction.DeleteFolder -> {
                 Timber.d("OnDeleteFolderClicked")
             }
-            FolderDetailUiAction.OnEditFolderClicked -> {
+            FolderDetailUiAction.EditFolder -> {
                 Timber.d("OnEditFolderClicked")
                 _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
             }
-            is FolderDetailUiAction.OnResetProgressClicked -> {
+            is FolderDetailUiAction.ResetProgress -> {
                 Timber.d("OnResetProgressClicked: ${event.studySetId}")
             }
         }
