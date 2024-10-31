@@ -2,6 +2,8 @@ package com.pwhs.quickmem.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val premiumColor = Color(0xFFfa6c3e)
+
 val primaryLight = Color(0xFF4C662B)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFCDEDA3)

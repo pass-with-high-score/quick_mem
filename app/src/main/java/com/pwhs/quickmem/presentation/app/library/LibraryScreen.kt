@@ -84,6 +84,8 @@ fun LibraryScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         studySets = uiState.studySets,
+        avatarUrl = uiState.userAvatar,
+        username = uiState.username,
         onStudySetRefresh = {
             viewModel.onEvent(LibraryUiAction.Refresh)
         },
@@ -107,6 +109,8 @@ fun LibraryScreen(
 fun Library(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    avatarUrl: String = "",
+    username: String = "",
     onStudySetRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
@@ -199,6 +203,8 @@ fun Library(
                     modifier = Modifier.padding(top = 8.dp),
                     isLoading = isLoading,
                     studySets = studySets,
+                    avatarUrl = avatarUrl,
+                    username = username,
                     onStudySetClick = onStudySetClick,
                     onStudySetRefresh = onStudySetRefresh
                 )

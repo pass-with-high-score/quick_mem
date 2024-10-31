@@ -23,8 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,13 +35,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
-import com.pwhs.quickmem.presentation.app.profile.ProfileViewModel
 import com.pwhs.quickmem.util.toColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,18 +50,10 @@ fun ListStudySetScreen(
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onStudySetRefresh: () -> Unit = {},
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    avatarUrl: String = "",
+    username: String = "",
 ) {
     val refreshState = rememberPullToRefreshState()
-    val avatarUrl by profileViewModel.avatarUrlState.collectAsState(initial = "")
-    val userName by profileViewModel.nameState.collectAsState(initial = "")
-
-    val updatedStudySets = studySets.map { studySet ->
-        studySet.copy(
-            user = studySet.user.copy(avatarUrl = avatarUrl)
-        )
-    }
-
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -98,7 +86,7 @@ fun ListStudySetScreen(
                             contentScale = ContentScale.Crop
                         )
                         Text(
-                            text = "Hello, $userName",
+                            text = "Hello, $username",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 24.sp
@@ -127,7 +115,7 @@ fun ListStudySetScreen(
                             item {
                                 // TODO: Add search bar
                             }
-                            items(updatedStudySets) { studySet ->
+                            items(studySets) { studySet ->
                                 Card(
                                     onClick = { onStudySetClick(studySet.id) },
                                     colors = CardDefaults.cardColors(
