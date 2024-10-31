@@ -57,7 +57,10 @@ class FolderDetailViewModel @Inject constructor(
 
     private fun getFolderSetById(id: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val token = tokenManager.accessToken.firstOrNull() ?: run {
+                _uiEvent.send(FolderDetailUiEvent.ShowError("Please login again!"))
+                return@launch
+            }
             folderRepository.getFolderById(token, id).collectLatest { resource ->
                 when (resource) {
                     is Resources.Loading -> {
@@ -65,19 +68,23 @@ class FolderDetailViewModel @Inject constructor(
                         _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                title = resource.data!!.title,
-                                description = resource.data.description,
-                                isPublic = resource.data.isPublic,
-                                studySetCount = resource.data.studySetCount,
-                                ownerId = resource.data.ownerId,
-                                user = resource.data.user,
-                                studySets = resource.data.studySets,
-                                createdAt = resource.data.createdAt,
-                                updatedAt = resource.data.updatedAt,
-                                isLoading = false
-                            )
+                        resource.data?.let { data ->
+                            _uiState.update {
+                                it.copy(
+                                    title = data.title,
+                                    description = data.description,
+                                    isPublic = data.isPublic,
+                                    studySetCount = data.studySetCount,
+                                    ownerId = data.ownerId,
+                                    user = data.user,
+                                    studySets = data.studySets,
+                                    createdAt = data.createdAt,
+                                    updatedAt = data.updatedAt,
+                                    isLoading = false
+                                )
+                            }
+                        } ?: run {
+                            _uiEvent.send(FolderDetailUiEvent.ShowError("Folder not found"))
                         }
                     }
                     is Resources.Error -> {
