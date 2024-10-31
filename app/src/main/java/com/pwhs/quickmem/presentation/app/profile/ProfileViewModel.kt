@@ -8,7 +8,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -36,11 +36,13 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadProfile() {
         viewModelScope.launch {
-            appManager.userName.collectLatest { name ->
-            }
-            appManager.userAvatar.collect { avatarUrl ->
-                Timber.d("Loaded avatar: $avatarUrl")
-            }
+            val username = appManager.userName.firstOrNull() ?: ""
+            val avatar = appManager.userAvatar.firstOrNull() ?: ""
+            Timber.d("Loaded profile: $username, $avatar")
+            _uiState.value = _uiState.value.copy(
+                username = username,
+                userAvatar = avatar
+            )
         }
     }
 }

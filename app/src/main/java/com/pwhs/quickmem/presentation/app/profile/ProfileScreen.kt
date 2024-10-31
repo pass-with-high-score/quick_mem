@@ -84,6 +84,7 @@ fun Profile(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = premiumColor
                         ),
+                        modifier = Modifier.padding(end = 16.dp),
                         shape = MaterialTheme.shapes.extraLarge,
                     ) {
                         Text(
