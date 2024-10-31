@@ -13,6 +13,7 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
+import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
@@ -177,7 +178,7 @@ interface ApiService {
     suspend fun getFolderById(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ) : GetFolderDetailResponseDto
+    ): GetFolderDetailResponseDto
 
     @PUT("folder/{id}")
     suspend fun updateFolder(
@@ -198,4 +199,16 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body createClassRequestDto: CreateClassRequestDto
     ): CreateClassResponseDto
+
+    @GET("class/{id}")
+    suspend fun getClassByID(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): GetClassDetailResponseDto
+
+    @GET("class/user/{userId}")
+    suspend fun getClassByOwnerID(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): List<GetClassDetailResponseDto>
 }

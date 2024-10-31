@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.library
 
+import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 
 data class LibraryUiState(
@@ -7,5 +8,6 @@ data class LibraryUiState(
     val isLoading: Boolean = false,
     val userAvatar: String = "",
     val username: String = "",
-    val studySets: List<GetStudySetResponseModel> = emptyList()
+    val studySets: List<GetStudySetResponseModel> = emptyList(),
+    val classes:List<GetClassDetailResponseModel> = emptyList()
 )

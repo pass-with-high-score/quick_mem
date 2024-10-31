@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val studySetRepository: StudySetRepository,
+    private val classRepository: ClassRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
 ) : ViewModel() {
@@ -32,18 +34,27 @@ class LibraryViewModel @Inject constructor(
 
     init {
         getStudySets()
+        getClasses()
     }
 
     fun onEvent(event: LibraryUiAction) {
         when (event) {
             is LibraryUiAction.Refresh -> {
                 getStudySets()
+                getClasses()
             }
 
             LibraryUiAction.RefreshStudySets -> {
                 viewModelScope.launch {
                     delay(500)
                     getStudySets()
+                }
+            }
+
+            LibraryUiAction.RefreshClasses -> {
+                viewModelScope.launch {
+                    delay(500)
+                    getClasses()
                 }
             }
         }
@@ -83,6 +94,47 @@ class LibraryViewModel @Inject constructor(
                     is Resources.Loading -> {
                         _uiState.update {
                             it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getClasses() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: return@launch
+            val ownerId = appManager.userId.firstOrNull() ?: return@launch
+            val userAvatar = appManager.userAvatar.firstOrNull() ?: return@launch
+            val username = appManager.userName.firstOrNull() ?: return@launch
+
+            classRepository.getClassByOwnerID(token, ownerId).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            LibraryUiEvent.Error(
+                                resource.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                classes = resource.data ?: emptyList(),
+                                username = username,
+                                isLoading = false,
+                                userAvatar = userAvatar
+                            )
                         }
                     }
                 }

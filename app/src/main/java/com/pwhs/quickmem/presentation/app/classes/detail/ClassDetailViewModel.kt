@@ -5,10 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
+import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.repository.ClassRepository
+import com.pwhs.quickmem.presentation.app.folder.detail.FolderDetailUiEvent
+import com.wajahatkarim3.easyvalidation.core.collection_ktx.allUperCaseList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassDetailViewModel @Inject constructor(
+    private val classRepository: ClassRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     savedStateHandle: SavedStateHandle
@@ -49,6 +56,8 @@ class ClassDetailViewModel @Inject constructor(
                 }
             }
         }
+
+        getClassByOwnerID()
     }
 
     fun onEvent(event: ClassDetailUiAction) {
@@ -59,6 +68,26 @@ class ClassDetailViewModel @Inject constructor(
 
             ClassDetailUiAction.NavigateToWelcomeClicked -> {
                 _uiEvent.trySend(ClassDetailUiEvent.NavigateToWelcome)
+            }
+        }
+    }
+
+    private fun getClassByOwnerID() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            classRepository.getClassByOwnerID(token, userId).collectLatest { resources ->
+                when(resources){
+                    is Resources.Error -> {
+
+                    }
+                    is Resources.Loading -> {
+                        TODO()
+                    }
+                    is Resources.Success -> {
+                        TODO()
+                    }
+                }
             }
         }
     }
