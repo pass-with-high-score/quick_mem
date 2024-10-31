@@ -129,7 +129,8 @@ fun Profile(
 
             OutlinedButton(
                 onClick = navigateToSettings,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(vertical = 10.dp),
                 shape = MaterialTheme.shapes.large
             ) {
