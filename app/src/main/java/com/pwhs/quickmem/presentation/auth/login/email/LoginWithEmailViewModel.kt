@@ -96,7 +96,6 @@ class LoginWithEmailViewModel @Inject constructor(
                             val password = uiState.value.password
                             val provider = AuthProvider.EMAIL.name
                             val loginRequestModel = LoginRequestModel(email, password, provider, null)
-
                             authRepository.login(loginRequestModel).collectLatest { login ->
                                 when (login) {
                                     is Resources.Error -> {
@@ -172,7 +171,7 @@ class LoginWithEmailViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
                     }
 
                     is Resources.Error -> {

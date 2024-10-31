@@ -9,6 +9,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * A top bar component for the profile screen.
+ * Note: Uses experimental Material3 API which may change in future releases.
+ *
+ * @param onUpgradeClick Callback when upgrade button is clicked
+ * @param backgroundColor Background color of the top bar, defaults to theme background
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileTopBar(

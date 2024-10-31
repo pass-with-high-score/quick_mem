@@ -30,7 +30,6 @@ fun DeleteAccountButton(
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-
     Row(
         modifier = modifier
             .fillMaxWidth()

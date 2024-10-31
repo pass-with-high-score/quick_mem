@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +19,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 
+/**
+* A composable function that creates a settings button with an icon and text.
+*
+* @param modifier Modifier to be applied to the button
+* @param text Text to be displayed on the button
+* @param onClick Callback to be invoked when the button is clicked
+*/
+
 @Composable
 fun SettingsButton(
     modifier: Modifier = Modifier,
@@ -28,7 +37,7 @@ fun SettingsButton(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFF5F5F5))
+            .background(MaterialTheme.colorScheme.background)
             .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
             .clickable { onClick() }
             .padding(vertical = 16.dp, horizontal = 12.dp)
