@@ -92,13 +92,11 @@ class LoginWithEmailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        Timber.d("Email is valid: ${resource.data}")
                         if (resource.data == true) {
                             val password = uiState.value.password
                             val provider = AuthProvider.EMAIL.name
                             val loginRequestModel =
                                 LoginRequestModel(email, password, provider, null)
-
                             authRepository.login(loginRequestModel).collectLatest { login ->
                                 when (login) {
                                     is Resources.Error -> {
@@ -133,6 +131,7 @@ class LoginWithEmailViewModel @Inject constructor(
                                             appManager.saveUserId(login.data?.id ?: "")
                                             appManager.saveUserAvatar(login.data?.avatarUrl ?: "")
                                             appManager.saveUserFullName(login.data?.fullName ?: "")
+                                            appManager.saveUserEmail(login.data?.email ?: "")
                                             appManager.saveUserName(login.data?.username ?: "")
                                             _uiState.update { it.copy(isLoading = false) }
                                             _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
@@ -150,10 +149,10 @@ class LoginWithEmailViewModel @Inject constructor(
                         }
                     }
                 }
-
             }
         }
     }
+
 
     private fun checkAccountVerification() {
         viewModelScope.launch {
@@ -170,7 +169,7 @@ class LoginWithEmailViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                        _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
                     }
 
                     is Resources.Error -> {

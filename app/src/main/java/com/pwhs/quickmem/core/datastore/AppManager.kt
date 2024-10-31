@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.core.datastore
 
 import android.content.Context
+import android.util.Patterns
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -17,6 +18,7 @@ class AppManager(private val context: Context) {
         val USER_FULL_NAME = stringPreferencesKey("USER_FULL_NAME")
         val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_NAME = stringPreferencesKey("USER_NAME")
+        val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -38,6 +40,10 @@ class AppManager(private val context: Context) {
     val userAvatar: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_AVATAR] ?: ""
+        }
+    val userEmail: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_EMAIL] ?: ""
         }
     val userName: Flow<String> = context.dataStore.data
         .map { preferences ->
@@ -89,6 +95,14 @@ class AppManager(private val context: Context) {
     suspend fun clearAllData() {
         context.dataStore.edit { preferences ->
             preferences.clear()
+        }
+    }
+
+    suspend fun saveUserEmail(email: String) {
+        require(email.isNotEmpty()) { "Email cannot be empty" }
+        require(Patterns.EMAIL_ADDRESS.matcher(email).matches()) { "Invalid email address" }
+        context.dataStore.edit { preferences ->
+            preferences[USER_EMAIL] = email
         }
     }
 }

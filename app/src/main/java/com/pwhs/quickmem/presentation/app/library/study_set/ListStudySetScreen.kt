@@ -50,10 +50,11 @@ fun ListStudySetScreen(
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onStudySetRefresh: () -> Unit = {},
-    userAvatar: String = "",
+    avatarUrl: String = "",
     username: String = "",
 ) {
     val refreshState = rememberPullToRefreshState()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
     ) { innerPadding ->
@@ -77,7 +78,7 @@ fun ListStudySetScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         AsyncImage(
-                            model = userAvatar,
+                            model = avatarUrl,
                             contentDescription = "User avatar",
                             modifier = Modifier
                                 .size(60.dp)

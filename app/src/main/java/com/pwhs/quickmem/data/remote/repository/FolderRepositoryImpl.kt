@@ -57,7 +57,8 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.updateFolder(token, folderId, updateFolderRequestModel.toDto())
+                val response =
+                    apiService.updateFolder(token, folderId, updateFolderRequestModel.toDto())
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)

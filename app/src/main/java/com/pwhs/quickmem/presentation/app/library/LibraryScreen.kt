@@ -83,9 +83,9 @@ fun LibraryScreen(
     Library(
         modifier = modifier,
         isLoading = uiState.isLoading,
-        userAvatar = uiState.userAvatar,
-        username = uiState.username,
         studySets = uiState.studySets,
+        avatarUrl = uiState.userAvatar,
+        username = uiState.username,
         onStudySetRefresh = {
             viewModel.onEvent(LibraryUiAction.Refresh)
         },
@@ -109,7 +109,7 @@ fun LibraryScreen(
 fun Library(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    userAvatar: String = "",
+    avatarUrl: String = "",
     username: String = "",
     onStudySetRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
@@ -203,10 +203,10 @@ fun Library(
                     modifier = Modifier.padding(top = 8.dp),
                     isLoading = isLoading,
                     studySets = studySets,
+                    avatarUrl = avatarUrl,
+                    username = username,
                     onStudySetClick = onStudySetClick,
-                    onStudySetRefresh = onStudySetRefresh,
-                    userAvatar = userAvatar,
-                    username = username
+                    onStudySetRefresh = onStudySetRefresh
                 )
 
                 LibraryTabEnum.CLASS.index -> ListClassesScreen()

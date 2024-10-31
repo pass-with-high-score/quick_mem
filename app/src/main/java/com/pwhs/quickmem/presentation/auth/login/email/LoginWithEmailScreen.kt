@@ -34,6 +34,7 @@ import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -216,5 +217,7 @@ private fun LoginWithEmail(
 @Preview
 @Composable
 fun PreviewLoginWithEmailScreen() {
-    LoginWithEmail()
+    QuickMemTheme {
+        LoginWithEmail()
+    }
 }

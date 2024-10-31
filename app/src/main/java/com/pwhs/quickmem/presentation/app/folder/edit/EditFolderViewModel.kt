@@ -50,8 +50,15 @@ class EditFolderViewModel @Inject constructor(
             EditFolderUiAction.SaveClicked -> {
                 val uiState = _uiState.value
                 if (uiState.title.isEmpty()) {
+                val trimmedTitle = uiState.title.trim()
+                if (trimmedTitle.isEmpty()) {
                     _uiState.update {
                         it.copy(titleError = "Title is required")
+                    }
+                    return
+                } else if (trimmedTitle.length < 3) {
+                    _uiState.update {
+                        it.copy(titleError = "Title must be at least 3 characters")
                     }
                     return
                 } else {

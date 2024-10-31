@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.welcome.component.WelcomeScrollingText
+import com.pwhs.quickmem.ui.theme.premiumColor
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -159,7 +160,7 @@ fun WelcomeScreen(
                             append("All the tools for \nlearning success.\n")
                             withStyle(
                                 style = SpanStyle(
-                                    color = Color(0xFFfa6c3e),
+                                    color = premiumColor,
                                 )
                             ) {
                                 append("In one app.")
