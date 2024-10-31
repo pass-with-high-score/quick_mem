@@ -4,6 +4,8 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.folder.CreateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
+import com.pwhs.quickmem.domain.model.folder.UpdateFolderRequestModel
+import com.pwhs.quickmem.domain.model.folder.UpdateFolderResponseModel
 import kotlinx.coroutines.flow.Flow
 
 interface FolderRepository {
@@ -16,4 +18,10 @@ interface FolderRepository {
         token: String,
         folderId: String
     ): Flow<Resources<GetFolderResponseModel>>
+
+    suspend fun updateFolder(
+        token: String,
+        folderId: String,
+        updateFolderRequestModel: UpdateFolderRequestModel
+    ): Flow<Resources<UpdateFolderResponseModel>>
 }
