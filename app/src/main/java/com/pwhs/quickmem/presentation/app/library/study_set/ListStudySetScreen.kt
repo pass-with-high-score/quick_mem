@@ -23,6 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +44,7 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
+import com.pwhs.quickmem.presentation.app.library.study_set.component.SearchBarStudySet
 import com.pwhs.quickmem.util.toColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +59,13 @@ fun ListStudySetScreen(
     username: String = "",
 ) {
     val refreshState = rememberPullToRefreshState()
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filterStudySets = studySets.filter {
+        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
+            it.title.contains(query, ignoreCase = true)
+        } ?: true
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -110,12 +122,27 @@ fun ListStudySetScreen(
                 }
 
                 else -> {
-                    Column(modifier = Modifier.padding(innerPadding)) {
-                        LazyColumn {
-                            item {
-                                // TODO: Add search bar
+                    Column(modifier = Modifier.padding(top = 5.dp)) {
+                        SearchBarStudySet(
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { searchQuery = it }
+                        )
+                        if (filterStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Không tìm thấy study set nào",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.Center
+                                )
                             }
-                            items(studySets) { studySet ->
+                        }
+                        LazyColumn {
+                            items(filterStudySets) { studySet ->
                                 Card(
                                     onClick = { onStudySetClick(studySet.id) },
                                     colors = CardDefaults.cardColors(
