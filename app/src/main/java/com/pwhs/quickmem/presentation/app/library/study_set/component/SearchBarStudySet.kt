@@ -13,14 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun SearchBarStudySet(
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -48,8 +49,6 @@ fun SearchBarStudySet(
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             },
-            visualTransformation = VisualTransformation.None,
-            shape = MaterialTheme.shapes.medium,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
@@ -61,5 +60,13 @@ fun SearchBarStudySet(
                 .fillMaxWidth()
                 .padding(top = 4.dp),
         )
+    }
+}
+
+@PreviewLightDark
+@Composable
+fun SearchBarStudySetPreview() {
+    QuickMemTheme {
+        SearchBarStudySet()
     }
 }
