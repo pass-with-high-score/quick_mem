@@ -1,39 +1,37 @@
 package com.pwhs.quickmem.presentation.app.folder.detail
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
-import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderSortOptionBottomSheet
-import com.pwhs.quickmem.presentation.app.folder.detail.component.ListStudySetInnerFolder
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -80,6 +78,7 @@ fun FolderDetailScreen(
                         )
                     )
                 }
+
                 is FolderDetailUiEvent.ShowError -> {
                     Timber.d("ShowError: ${event.message}")
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
@@ -95,15 +94,21 @@ fun FolderDetailScreen(
         updatedAt = uiState.updatedAt,
         isLoading = uiState.isLoading,
         onFolderRefresh = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
-        studySet = uiState.studySets,
-        onStudySetClick = {  },
+        studySets = uiState.studySets,
+        onStudySetClick = {
+            navigator.navigate(
+                StudySetDetailScreenDestination(
+                    id = it
+                )
+            )
+        },
         onEditFolder = { viewModel.onEvent(FolderDetailUiAction.EditFolder) },
-        onStudyFolderDetailClicked = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
+        onStudyFolderClick = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         onNavigateBack = {
             resultNavigator.setResult(true)
             navigator.navigateUp()
         },
-        onAddStudySet = {  }
+        onAddStudySet = { }
     )
 
 }
@@ -117,11 +122,11 @@ fun FolderDetail(
     updatedAt: String = "",
     isLoading: Boolean = false,
     onFolderRefresh: () -> Unit = {},
-    studySet: List<GetStudySetResponseModel> = emptyList(),
+    studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onEditFolder: () -> Unit = {},
     onDeleteFolder: () -> Unit = {},
-    onStudyFolderDetailClicked: () -> Unit = {},
+    onStudyFolderClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onAddStudySet: () -> Unit = {}
 ) {
@@ -134,18 +139,10 @@ fun FolderDetail(
         "Created $formattedCreatedAt"
     }
 
-    var refreshState = rememberPullToRefreshState()
-    var sortOptionBottomSheet by remember { mutableStateOf(false) }
+    val refreshState = rememberPullToRefreshState()
     var showMoreBottomSheet by remember { mutableStateOf(false) }
-    var currentSortOption by remember { mutableStateOf(SortOptionEnum.RECENT) }
-    val sheetSortOptionState = rememberModalBottomSheetState()
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
-
-    val sortedStudySet = when (currentSortOption) {
-        SortOptionEnum.RECENT -> studySet.sortedByDescending { it.updatedAt }
-        SortOptionEnum.TITLE -> studySet.sortedBy { it.title }
-    }
 
     Scaffold(
         modifier = modifier,
@@ -156,31 +153,26 @@ fun FolderDetail(
                 onNavigateBack = onNavigateBack,
                 onMoreClicked = { showMoreBottomSheet = true },
                 onAddStudySet = onAddStudySet,
-                onStudyFolderDetailClicked = onStudyFolderDetailClicked,
-                currentSortOption = currentSortOption,
-                onSortOptionClicked = { sortOptionBottomSheet = true }
             )
-        }
+        },
     ) { innerPadding ->
         Box(
             modifier = Modifier
-                .background(Color.Transparent)
                 .padding(innerPadding)
-        ){
+        ) {
             PullToRefreshBox(
                 state = refreshState,
                 isRefreshing = isLoading,
                 onRefresh = onFolderRefresh
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    ListStudySetInnerFolder (
-                        studySet = sortedStudySet,
-                        onStudySetClick = onStudySetClick,
-                        onAddFlashCardClick = onAddStudySet
-                    )
-                }
+                FolderDetailStudySetList(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    studySet = studySets,
+                    onStudySetClick = onStudySetClick,
+                    onAddFlashCardClick = onAddStudySet,
+                    onStudyFolderClick = onStudyFolderClick
+                )
             }
             LoadingOverlay(
                 isLoading = isLoading
@@ -191,7 +183,8 @@ fun FolderDetail(
         QuickMemAlertDialog(
             onDismissRequest = {
                 showDeleteConfirmationDialog = false
-                showMoreBottomSheet = true},
+                showMoreBottomSheet = true
+            },
             onConfirm = {
                 onDeleteFolder()
                 showDeleteConfirmationDialog = false
@@ -202,14 +195,6 @@ fun FolderDetail(
             dismissButtonTitle = "Cancel",
         )
     }
-    FolderSortOptionBottomSheet(
-        onSortOptionClicked = {
-            currentSortOption = it
-            sortOptionBottomSheet = false },
-        sortOptionBottomSheet = sortOptionBottomSheet,
-        sheetSortOptionState = sheetSortOptionState,
-        onDismissRequest = { sortOptionBottomSheet = false }
-    )
     FolderMenuBottomSheet(
         onEditFolder = onEditFolder,
         onDeleteFolder = {
@@ -224,10 +209,12 @@ fun FolderDetail(
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun FolderDetailPreview() {
-    MaterialTheme {
-        FolderDetail()
+    QuickMemTheme {
+        FolderDetail(
+            title = "Folder Title",
+        )
     }
 }

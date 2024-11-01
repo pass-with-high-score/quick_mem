@@ -15,9 +15,9 @@ data class GetClassDetailResponseModel(
     val allowMemberManagement: Boolean,
     val allowSetManagement: Boolean,
     val folderCount: Int,
-    val folders: List<GetFolderResponseModel>,
+    val folders: List<GetFolderResponseModel>? = emptyList(),
     val memberCount: Int,
     val members: List<Unit>,
     val studySetCount: Int,
-    val studySets: List<GetStudySetResponseModel>
+    val studySets: List<GetStudySetResponseModel>? = emptyList()
 )
