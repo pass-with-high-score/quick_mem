@@ -23,6 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +44,7 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
+import com.pwhs.quickmem.presentation.app.library.study_set.component.SearchBarStudySet
 import com.pwhs.quickmem.util.toColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +59,11 @@ fun ListStudySetScreen(
     username: String = "",
 ) {
     val refreshState = rememberPullToRefreshState()
+    var searchQuery by remember { mutableStateOf("") }
+
+    val searchStudySets = studySets.filter {
+        it.title.contains(searchQuery, ignoreCase = true)
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -110,12 +120,13 @@ fun ListStudySetScreen(
                 }
 
                 else -> {
-                    Column(modifier = Modifier.padding(innerPadding)) {
+                    Column(modifier = Modifier.padding(top = 5.dp)) {
+                        SearchBarStudySet(
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { searchQuery = it }
+                        )
                         LazyColumn {
-                            item {
-                                // TODO: Add search bar
-                            }
-                            items(studySets) { studySet ->
+                            items(searchStudySets) { studySet ->
                                 Card(
                                     onClick = { onStudySetClick(studySet.id) },
                                     colors = CardDefaults.cardColors(
