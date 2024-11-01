@@ -62,7 +62,9 @@ fun ListStudySetScreen(
     var searchQuery by remember { mutableStateOf("") }
 
     val searchStudySets = studySets.filter {
-        it.title.contains(searchQuery, ignoreCase = true)
+        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
+            it.title.contains(query, ignoreCase = true)
+        } ?: true
     }
 
     Scaffold(
