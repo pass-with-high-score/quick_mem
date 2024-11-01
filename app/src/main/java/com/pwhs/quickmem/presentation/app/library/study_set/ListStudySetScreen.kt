@@ -125,6 +125,21 @@ fun ListStudySetScreen(
                             searchQuery = searchQuery,
                             onSearchQueryChange = { searchQuery = it }
                         )
+                        if (searchStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Không tìm thấy study set nào",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                        LazyColumn {
                         LazyColumn {
                             items(searchStudySets) { studySet ->
                                 Card(
