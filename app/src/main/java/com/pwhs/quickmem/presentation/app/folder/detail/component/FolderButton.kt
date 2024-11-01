@@ -17,13 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ButtonStudyFolderDetail(
+fun ButtonFolder(
     modifier: Modifier = Modifier,
     title: String,
-    onStudyFolderDetailClicked: () -> Unit
+    onFolderClicked: () -> Unit
 ) {
     Button(
-        onClick = onStudyFolderDetailClicked,
+        onClick = onFolderClicked,
         modifier = modifier
             .fillMaxWidth()
             .height(33.dp)

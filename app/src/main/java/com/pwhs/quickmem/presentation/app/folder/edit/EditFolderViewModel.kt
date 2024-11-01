@@ -60,7 +60,7 @@ class EditFolderViewModel @Inject constructor(
                         _uiState.update { it.copy(titleError = "Title is required") }
                     }
                     trimmedTitle.length < 3 -> {
-                        _uiState.update { it.copy(titleError = "Title must be at least 3 characters") }
+                        _uiState.update { it.copy(titleError = "Title must be at least 1 characters") }
                     }
                     else -> {
                         _uiState.update { it.copy(titleError = "") }

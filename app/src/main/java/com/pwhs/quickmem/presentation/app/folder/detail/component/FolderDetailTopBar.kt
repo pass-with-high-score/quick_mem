@@ -74,9 +74,9 @@ fun FolderDetailTopAppBar(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                ButtonStudyFolderDetail(
+                ButtonFolder(
                     title = "Study",
-                    onStudyFolderDetailClicked = onStudyFolderDetailClicked
+                    onFolderClicked = onStudyFolderDetailClicked
                 )
                 FolderSortOptionTextButton(
                     currentSortOption = currentSortOption,
