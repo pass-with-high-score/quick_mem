@@ -61,7 +61,7 @@ fun ListStudySetScreen(
     val refreshState = rememberPullToRefreshState()
     var searchQuery by remember { mutableStateOf("") }
 
-    val searchStudySets = studySets.filter {
+    val filterStudySets = studySets.filter {
         searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
             it.title.contains(query, ignoreCase = true)
         } ?: true
@@ -127,7 +127,7 @@ fun ListStudySetScreen(
                             searchQuery = searchQuery,
                             onSearchQueryChange = { searchQuery = it }
                         )
-                        if (searchStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                        if (filterStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -142,8 +142,7 @@ fun ListStudySetScreen(
                             }
                         }
                         LazyColumn {
-                        LazyColumn {
-                            items(searchStudySets) { studySet ->
+                            items(filterStudySets) { studySet ->
                                 Card(
                                     onClick = { onStudySetClick(studySet.id) },
                                     colors = CardDefaults.cardColors(
