@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import com.pwhs.quickmem.R
 import androidx.compose.ui.text.googlefonts.GoogleFont
@@ -13,23 +12,19 @@ val provider = GoogleFont.Provider(
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-val Abrilfatface_Font = FontFamily(
+val firasansExtraboldFont = FontFamily(
     androidx.compose.ui.text.font.Font(R.font.firasans_extrabold)
 )
-val FontAbrilfatface = TextStyle(
-    fontFamily = Abrilfatface_Font
-)
-
 val bodyFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Open Sans"),
+        googleFont = GoogleFont("Itim"),
         fontProvider = provider,
     )
 )
 
 val displayFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Roboto"),
+        googleFont = GoogleFont("Itim"),
         fontProvider = provider,
     )
 )

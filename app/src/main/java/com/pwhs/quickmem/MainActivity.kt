@@ -1,5 +1,7 @@
 package com.pwhs.quickmem
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,7 +27,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            QuickMemTheme {
+            QuickMemTheme(
+                darkTheme = false,
+                dynamicColor = false
+            ) {
                 val navController = rememberNavController()
                 val navHostEngine = rememberNavHostEngine(
                     navHostContentAlignment = Alignment.TopCenter,
@@ -51,7 +56,8 @@ class MainActivity : ComponentActivity() {
             }
 
         }
-        this.requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        @SuppressLint("SourceLockedOrientationActivity")
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
 }

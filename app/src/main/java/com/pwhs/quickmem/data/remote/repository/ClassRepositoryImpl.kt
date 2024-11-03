@@ -6,6 +6,7 @@ import com.pwhs.quickmem.data.mapper.classes.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +59,7 @@ class ClassRepositoryImpl @Inject constructor(
     override suspend fun getClassByOwnerID(
         token: String,
         userId: String
-    ): Flow<Resources<List<GetClassDetailResponseModel>>> {
+    ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {

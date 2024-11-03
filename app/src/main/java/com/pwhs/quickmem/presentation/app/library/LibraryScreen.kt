@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
@@ -92,13 +92,16 @@ fun LibraryScreen(
         avatarUrl = uiState.userAvatar,
         username = uiState.username,
         onStudySetRefresh = {
-            viewModel.onEvent(LibraryUiAction.Refresh)
+            viewModel.onEvent(LibraryUiAction.RefreshStudySets)
+        },
+        onClassRefresh = {
+            viewModel.onEvent(LibraryUiAction.RefreshClasses)
+        },
+        onFolderRefresh = {
+            viewModel.onEvent(LibraryUiAction.RefreshFolders)
         },
         onStudySetClick = {
             navigator.navigate(StudySetDetailScreenDestination(id = it))
-        },
-        onClassRefresh = {
-            viewModel.onEvent(LibraryUiAction.Refresh)
         },
         onClassClick = {
             navigator.navigate(CreateClassScreenDestination)
@@ -127,8 +130,9 @@ fun Library(
     username: String = "",
     onStudySetRefresh: () -> Unit = {},
     onClassRefresh: () -> Unit = {},
+    onFolderRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
-    classes: List<GetClassDetailResponseModel> = emptyList(),
+    classes: List<GetClassByOwnerResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onClassClick: (String) -> Unit = {},
@@ -232,17 +236,17 @@ fun Library(
                     modifier = modifier,
                     isLoading = isLoading,
                     classes = classes,
-                    username = username,
                     onClassClicked = onClassClick,
                     onClassRefresh = onClassRefresh,
-                    avatarUrl = avatarUrl
                 )
 
                 LibraryTabEnum.FOLDER.index -> ListFolderScreen(
                     modifier = modifier,
+                    isLoading = isLoading,
                     folders = folders,
                     onFolderClick = onFolderClick,
-                    onAddFolderClick = navigateToCreateFolder
+                    onAddFolderClick = navigateToCreateFolder,
+                    onFolderRefresh = onFolderRefresh
                 )
             }
         }

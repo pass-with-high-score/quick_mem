@@ -13,6 +13,7 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
+import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
@@ -228,5 +229,5 @@ interface ApiService {
     suspend fun getClassByOwnerID(
         @Header("Authorization") token: String,
         @Path("userId") userId: String
-    ): List<GetClassDetailResponseDto>
+    ): List<GetClassByOwnerResponseDto>
 }
