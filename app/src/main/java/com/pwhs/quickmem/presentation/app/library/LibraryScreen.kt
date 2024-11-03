@@ -101,13 +101,23 @@ fun LibraryScreen(
             viewModel.onEvent(LibraryUiAction.RefreshFolders)
         },
         onStudySetClick = {
-            navigator.navigate(StudySetDetailScreenDestination(id = it))
+            navigator.navigate(
+                StudySetDetailScreenDestination(
+                    id = it,
+                    code = ""
+                )
+            )
         },
         onClassClick = {
             navigator.navigate(CreateClassScreenDestination)
         },
         onFolderClick = {
-            navigator.navigate(FolderDetailScreenDestination(id = it))
+            navigator.navigate(
+                FolderDetailScreenDestination(
+                    id = it,
+                    code = ""
+                )
+            )
         },
         navigateToCreateStudySet = {
             navigator.navigate(CreateStudySetScreenDestination)

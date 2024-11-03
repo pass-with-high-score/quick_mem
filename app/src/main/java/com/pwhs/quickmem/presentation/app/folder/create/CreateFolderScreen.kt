@@ -44,7 +44,12 @@ fun CreateFolderScreen(
                 is CreateFolderUiEvent.FolderCreated -> {
                     Toast.makeText(context, "Folder Created", Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
-                    navigator.navigate(FolderDetailScreenDestination(id= event.id))
+                    navigator.navigate(
+                        FolderDetailScreenDestination(
+                            id = event.id,
+                            code = ""
+                        )
+                    )
                 }
             }
         }
