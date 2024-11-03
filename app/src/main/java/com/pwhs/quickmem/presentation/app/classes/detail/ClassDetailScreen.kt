@@ -1,19 +1,37 @@
 package com.pwhs.quickmem.presentation.app.classes.detail
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTopAppBar
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -55,20 +73,93 @@ fun ClassDetailScreen(
 @Composable
 fun ClassDetail(
     modifier: Modifier = Modifier,
-    code: String
+    color: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Blue,
+    title: String = "",
+    isLoading: Boolean = false,
+    setCount: Int = 0,
+    code: String,
+    onNavigateBack: () -> Unit = {},
+    onMoreClicked: () -> Unit = {},
+    onRefresh: () -> Unit = {},
 ) {
+    var tabIndex by remember { mutableIntStateOf(0) }
+    val tabTitles = listOf("SETS", "MEMBERS")
+    var showMoreBottomSheet by remember { mutableStateOf(false) }
+    val sheetShowMoreState = rememberModalBottomSheetState()
+    val refreshState = rememberPullToRefreshState()
+
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(text = "Classes") }
+            ClassDetailTopAppBar(
+                title = title,
+                userResponse = UserResponseModel(),
+                color = color,
+                onNavigateBack = onNavigateBack,
+                onMoreClicked = onMoreClicked,
+                modifier = modifier,
+                setCount = setCount
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier.padding(innerPadding)
+        Box(
+            modifier = Modifier
+                .background(androidx.compose.ui.graphics.Color.Transparent)
+                .padding(innerPadding)
         ) {
-            Text(text = "Classes Screen")
-            Text(text = "Code: $code")
+            PullToRefreshBox(
+                onRefresh = onRefresh,
+                isRefreshing = isLoading,
+                state = refreshState
+            ) {
+                Column {
+                    Text("Code: ${code}")
+                    TabRow(
+                        selectedTabIndex = tabIndex,
+                        indicator = { tabPositions ->
+                            SecondaryIndicator(
+                                Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                                color = color,
+                            )
+                        },
+                        contentColor = colorScheme.onSurface,
+                    ) {
+                        tabTitles.forEachIndexed { index, title ->
+                            Tab(
+                                text = {
+                                    Text(
+                                        title, style = typography.titleMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (tabIndex == index) androidx.compose.ui.graphics.Color.Black else androidx.compose.ui.graphics.Color.Gray
+                                        )
+                                    )
+                                },
+                                selected = tabIndex == index,
+                                onClick = { tabIndex = index },
+                                icon = {
+                                    when (index) {
+                                        ClassDetailEnums.SETS.index -> {}
+                                        ClassDetailEnums.MEMBERS.index -> {}
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    when (tabIndex) {
+                        ClassDetailEnums.SETS.index -> {
+
+                        }
+
+                        ClassDetailEnums.MEMBERS.index -> {
+
+                        }
+                    }
+
+                }
+            }
+
+            LoadingOverlay(
+                isLoading = isLoading
+            )
         }
     }
 }

@@ -13,6 +13,7 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
+import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
@@ -48,6 +49,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+    // Auth
     @POST("auth/signup")
     suspend fun signUp(@Body signupRequestDto: SignupRequestDto): SignupResponseDto
 
@@ -76,6 +78,7 @@ interface ApiService {
         @Body resetPasswordRequestDto: ResetPasswordRequestDto
     ): ResetPasswordResponseModel
 
+    // Upload
     @Multipart
     @POST("upload")
     suspend fun uploadImage(
@@ -89,6 +92,7 @@ interface ApiService {
         @Body deleteImageDto: DeleteImageDto
     )
 
+    // Study Set
     @POST("study-set")
     suspend fun createStudySet(
         @Header("Authorization") token: String,
@@ -127,6 +131,7 @@ interface ApiService {
         @Path("id") id: String
     )
 
+    // Flash Card
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
         @Header("Authorization") token: String,
@@ -167,6 +172,14 @@ interface ApiService {
         @Body flipFlashCardDto: FlipFlashCardDto
     ): UpdateFlashCardResponseDto
 
+    @PATCH("flashcard/{id}/rating")
+    suspend fun updateRatingFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body ratingFlashCardDto: RatingFlashCardDto
+    ): UpdateFlashCardResponseDto
+
+    // Folder
     @POST("folder")
     suspend fun createFolder(
         @Header("Authorization") token: String,
@@ -177,7 +190,7 @@ interface ApiService {
     suspend fun getFolderById(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ) : GetFolderDetailResponseDto
+    ): GetFolderDetailResponseDto
 
     @PUT("folder/{id}")
     suspend fun updateFolder(
@@ -186,22 +199,29 @@ interface ApiService {
         @Body updateFolderRequestDto: UpdateFolderRequestDto
     ): UpdateFolderResponseDto
 
-    @DELETE("folder/{id}")
-    suspend fun deleteFolder(
+    @GET("folder/owner/{ownerId}")
+    suspend fun getFoldersByOwnerId(
         @Header("Authorization") token: String,
-        @Path("id") id: String
-    )
+        @Path("ownerId") ownerId: String
+    ): List<GetFolderDetailResponseDto>
 
-    @PATCH("flashcard/{id}/rating")
-    suspend fun updateRatingFlashCard(
-        @Header("Authorization") token: String,
-        @Path("id") id: String,
-        @Body ratingFlashCardDto: RatingFlashCardDto
-    ): UpdateFlashCardResponseDto
 
+    // Class
     @POST("class")
     suspend fun createClass(
         @Header("Authorization") token: String,
         @Body createClassRequestDto: CreateClassRequestDto
     ): CreateClassResponseDto
+
+    @GET("class/{id}")
+    suspend fun getClassByID(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): GetClassDetailResponseDto
+
+    @GET("class/user/{userId}")
+    suspend fun getClassByOwnerID(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): List<GetClassDetailResponseDto>
 }

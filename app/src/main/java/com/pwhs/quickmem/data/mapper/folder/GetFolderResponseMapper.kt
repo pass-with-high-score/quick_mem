@@ -13,9 +13,8 @@ fun GetFolderDetailResponseDto.toModel() = GetFolderResponseModel(
     description = description,
     isPublic = isPublic,
     studySetCount = studySetCount,
-    ownerId = ownerId,
     user = user.toModel(),
-    studySets = studySets.map { it.toModel() },
+    studySets = studySets?.map { it.toModel() },
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
@@ -25,10 +24,9 @@ fun GetFolderResponseModel.toDto() = GetFolderDetailResponseDto(
     title = title,
     description = description,
     isPublic = isPublic,
-    studySetCount = studySets.size,
-    ownerId = ownerId,
+    studySetCount = studySetCount,
     user = user.toDto(),
-    studySets = studySets.map { it.toDto() },
+    studySets = studySets?.map { it.toDto() },
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
