@@ -72,7 +72,6 @@ fun FolderDetailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                FolderDetailUiEvent.StudySetDeleted -> {}
                 FolderDetailUiEvent.NavigateToEditFolder -> {
                     Timber.d(uiState.id)
                     navigator.navigate(
@@ -88,6 +87,11 @@ fun FolderDetailScreen(
                 is FolderDetailUiEvent.ShowError -> {
                     Timber.d("ShowError: ${event.message}")
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                FolderDetailUiEvent.FolderDeleted -> {
+                    resultNavigator.setResult(true)
+                    navigator.navigateUp()
                 }
             }
         }
