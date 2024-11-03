@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.library.folder.component
+package com.pwhs.quickmem.presentation.app.library.classes.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons.Outlined
-import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,15 +30,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
-fun FolderItem(
+fun ClassItem(
     modifier: Modifier = Modifier,
-    title: String = "",
-    numOfStudySets: Int = 0,
-    userResponseModel: UserResponseModel = UserResponseModel(),
+    classItem: GetClassByOwnerResponseModel,
     onClick: () -> Unit = {}
 ) {
     Card(
@@ -65,11 +64,11 @@ fun FolderItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Outlined.Folder,
-                    contentDescription = "Folder Icon"
+                    imageVector = Outlined.Groups,
+                    contentDescription = "Class Icon"
                 )
                 Text(
-                    text = title,
+                    text = classItem.title,
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -80,10 +79,10 @@ fun FolderItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = when (numOfStudySets) {
-                        0 -> "No study sets"
-                        1 -> "1 study set"
-                        else -> "$numOfStudySets study sets"
+                    text = when (classItem.studySetCount) {
+                        0 -> "No members"
+                        1 -> "1 member"
+                        else -> "${classItem.memberCount} members"
                     },
                     style = typography.bodyMedium
                 )
@@ -99,7 +98,7 @@ fun FolderItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     AsyncImage(
-                        model = userResponseModel.avatarUrl,
+                        model = classItem.owner.avatarUrl,
                         contentDescription = "User Avatar",
                         modifier = Modifier
                             .size(24.dp)
@@ -107,7 +106,7 @@ fun FolderItem(
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = userResponseModel.username,
+                        text = classItem.owner.username,
                         style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -118,25 +117,35 @@ fun FolderItem(
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+@Preview
 @Composable
-private fun FolderItemPreview() {
+private fun ClassItemPreview() {
     QuickMemTheme {
         Scaffold {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(it)
             ) {
                 item {
-                    repeat(10) {
-                        FolderItem(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            title = "Folder 1",
-                            numOfStudySets = 3,
-                            userResponseModel = UserResponseModel(
-                                username = "User 1",
-                                avatarUrl = "https://avatars.githubusercontent.com/u/1"
+                    repeat(3) {
+                        ClassItem(
+                            classItem = GetClassByOwnerResponseModel(
+                                title = "Class Title",
+                                allowSetManagement = true,
+                                allowMemberManagement = true,
+                                studySetCount = 10,
+                                owner = UserResponseModel(
+                                    username = "User",
+                                    avatarUrl = "https://example.com/avatar.jpg"
+                                ),
+                                createdAt = "2021-01-01T00:00:00Z",
+                                updatedAt = "2021-01-01T00:00:00Z",
+                                description = "Class Description",
+                                id = "1",
+                                folderCount = 3,
+                                memberCount = 5,
+                                joinToken = "123456",
                             )
                         )
                     }

@@ -12,11 +12,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,76 +32,89 @@ import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListFolderScreen(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     folders: List<GetFolderResponseModel> = emptyList(),
     onFolderClick: (String) -> Unit = {},
-    onAddFolderClick: () -> Unit = {}
+    onAddFolderClick: () -> Unit = {},
+    onFolderRefresh: () -> Unit = {}
 ) {
+    val refreshState = rememberPullToRefreshState()
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
-        when (folders.isEmpty()) {
-            true -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(top = 40.dp)
-                        .padding(horizontal = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Folder,
-                        contentDescription = "Folder",
-                        modifier = Modifier.size(60.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "Organize your study sets in folders by subject, teacher, course, or any other way you like.",
-                        style = typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center
-                        ),
-                    )
-                    Button(
-                        shape = MaterialTheme.shapes.medium,
-                        onClick = onAddFolderClick,
+        PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
+            state = refreshState,
+            isRefreshing = isLoading,
+            onRefresh = {
+                onFolderRefresh()
+            }
+        ) {
+            when (folders.isEmpty()) {
+                true -> {
+                    Column(
                         modifier = Modifier
-                            .width(150.dp)
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(top = 40.dp)
+                            .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Text(
-                            "Create a folder",
-                            style = typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Medium
-                            )
+                        Icon(
+                            imageVector = Icons.Outlined.Folder,
+                            contentDescription = "Folder",
+                            modifier = Modifier.size(60.dp),
+                            tint = MaterialTheme.colorScheme.primary
                         )
+                        Text(
+                            text = "Organize your study sets in folders by subject, teacher, course, or any other way you like.",
+                            style = typography.bodyLarge.copy(
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
+                            ),
+                        )
+                        Button(
+                            shape = MaterialTheme.shapes.medium,
+                            onClick = onAddFolderClick,
+                            modifier = Modifier
+                                .width(150.dp)
+                        ) {
+                            Text(
+                                "Create a folder",
+                                style = typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
                     }
                 }
-            }
 
-            false -> {
-                LazyColumn(
-                    modifier = Modifier.padding(innerPadding)
-                ) {
-                    items(folders) { folder ->
-                        FolderItem(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            title = folder.title,
-                            numOfStudySets = folder.studySetCount,
-                            onClick = { onFolderClick(folder.id) },
-                            userResponseModel = folder.user
-                        )
-                    }
-                    item {
-                        BannerAds(
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                    item {
-                        Spacer(modifier = Modifier.padding(60.dp))
+                false -> {
+                    LazyColumn(
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        items(folders) { folder ->
+                            FolderItem(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                title = folder.title,
+                                numOfStudySets = folder.studySetCount,
+                                onClick = { onFolderClick(folder.id) },
+                                userResponseModel = folder.user
+                            )
+                        }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.padding(60.dp))
+                        }
                     }
                 }
             }
