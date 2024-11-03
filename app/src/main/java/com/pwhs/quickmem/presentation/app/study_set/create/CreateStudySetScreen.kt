@@ -57,7 +57,12 @@ fun CreateStudySetScreen(
                 is CreateStudySetUiEvent.StudySetCreated -> {
                     Toast.makeText(context, "Study Set Created", Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
-                    navigator.navigate(StudySetDetailScreenDestination(id = event.id))
+                    navigator.navigate(
+                        StudySetDetailScreenDestination(
+                            id = event.id,
+                            code = ""
+                        )
+                    )
                 }
             }
         }
