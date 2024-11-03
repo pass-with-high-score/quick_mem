@@ -38,6 +38,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -119,7 +120,15 @@ fun FolderDetailScreen(
             resultNavigator.setResult(true)
             navigator.navigateUp()
         },
-        onAddStudySet = { }
+        onAddStudySet = { },
+        onDeleteFolder = { viewModel.onEvent(FolderDetailUiAction.DeleteFolder) },
+        onNavigateToUserDetail = {
+            navigator.navigate(
+                UserDetailScreenDestination(
+                    userId = uiState.user.id
+                )
+            )
+        }
     )
 
 }
@@ -140,7 +149,8 @@ fun FolderDetail(
     onDeleteFolder: () -> Unit = {},
     onStudyFolderClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    onAddStudySet: () -> Unit = {}
+    onAddStudySet: () -> Unit = {},
+    onNavigateToUserDetail: () -> Unit = {}
 ) {
 
     val formattedCreatedAt = formatDate(createdAt)
@@ -165,7 +175,8 @@ fun FolderDetail(
                 onNavigateBack = onNavigateBack,
                 onMoreClicked = { showMoreBottomSheet = true },
                 onAddStudySet = onAddStudySet,
-                avatarUrl = userAvatar
+                avatarUrl = userAvatar,
+                onNavigateToUserDetail = onNavigateToUserDetail
             )
         },
         floatingActionButton = {

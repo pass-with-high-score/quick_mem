@@ -48,8 +48,7 @@ fun StudySetItem(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .padding(horizontal = 8.dp),
+            .padding(vertical = 8.dp),
         elevation = CardDefaults.elevatedCardElevation(
             defaultElevation = 4.dp
         ),
@@ -134,6 +133,7 @@ private fun StudySetItemPreview() {
         Scaffold {
             LazyColumn(
                 modifier = Modifier.padding(it)
+                    .padding(horizontal = 16.dp)
             ) {
                 item {
                     repeat(10) {

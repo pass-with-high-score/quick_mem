@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.folder.detail.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -46,7 +47,8 @@ fun FolderDetailTopAppBar(
     avatarUrl: String = "",
     onNavigateBack: () -> Unit = {},
     onMoreClicked: () -> Unit = {},
-    onAddStudySet: () -> Unit = {}
+    onAddStudySet: () -> Unit = {},
+    onNavigateToUserDetail: () -> Unit = {}
 ) {
     LargeTopAppBar(
         modifier = modifier.background(colorScheme.primary.gradientBackground()),
@@ -93,7 +95,10 @@ fun FolderDetailTopAppBar(
                     contentDescription = null,
                     modifier = Modifier
                         .size(40.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
+                        .clickable {
+                            onNavigateToUserDetail()
+                        },
                     contentScale = ContentScale.Crop
                 )
             }

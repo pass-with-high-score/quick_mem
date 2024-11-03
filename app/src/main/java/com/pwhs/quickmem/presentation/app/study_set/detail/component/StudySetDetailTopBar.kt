@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,8 @@ fun StudySetDetailTopAppBar(
     onNavigateBack: () -> Unit,
     onAddFlashcard: () -> Unit,
     onShareClicked: () -> Unit,
-    onMoreClicked: () -> Unit
+    onMoreClicked: () -> Unit,
+    onNavigateToUserDetail: () -> Unit = {}
 ) {
     LargeTopAppBar(
         title = {
@@ -61,7 +63,8 @@ fun StudySetDetailTopAppBar(
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.clickable { onNavigateToUserDetail() }
                 ) {
                     AsyncImage(
                         model = userResponse.avatarUrl,

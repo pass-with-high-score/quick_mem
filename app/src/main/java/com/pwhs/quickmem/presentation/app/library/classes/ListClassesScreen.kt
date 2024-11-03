@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,6 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
+import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +47,13 @@ fun ListClassesScreen(
     onClassRefresh: () -> Unit = {},
 ) {
     val refreshState = rememberPullToRefreshState()
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filterClass = classes.filter {
+        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
+            it.title.contains(query, ignoreCase = true)
+        } ?: true
+    }
     Scaffold(
         modifier = modifier.fillMaxSize(),
     ) { innerPadding ->
@@ -93,29 +106,46 @@ fun ListClassesScreen(
                 }
 
                 else -> {
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .padding(horizontal = 16.dp),
-                    ) {
-                        LazyColumn {
-                            item {
-                                // TODO: Add search bar
-                            }
-                            items(classes) { classItem ->
-                                ClassItem(
-                                    classItem = classItem,
-                                    onClick = { onClassClicked(classItem.id) }
+                    LazyColumn {
+                        item {
+                            if (classes.isNotEmpty()) {
+                                SearchTextField(
+                                    searchQuery = searchQuery,
+                                    onSearchQueryChange = { searchQuery = it },
+                                    placeholder = "Search folders",
                                 )
                             }
-                            item {
-                                BannerAds(
-                                    modifier = Modifier.padding(8.dp)
-                                )
+                        }
+                        items(filterClass) { classItem ->
+                            ClassItem(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                classItem = classItem,
+                                onClick = { onClassClicked(classItem.id) }
+                            )
+                        }
+                        item {
+                            if (filterClass.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "No classes found",
+                                        style = typography.bodyLarge,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
-                            item {
-                                Spacer(modifier = Modifier.padding(60.dp))
-                            }
+                        }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.padding(60.dp))
                         }
                     }
                 }

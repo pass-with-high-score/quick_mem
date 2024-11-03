@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
-import com.pwhs.quickmem.presentation.app.library.study_set.component.SearchBarStudySet
+import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -113,40 +113,46 @@ fun ListStudySetScreen(
                 }
 
                 else -> {
-                    Column(modifier = Modifier.padding(top = 5.dp)) {
-                        SearchBarStudySet(
-                            searchQuery = searchQuery,
-                            onSearchQueryChange = { searchQuery = it }
-                        )
-                        if (filterStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = "No study sets found",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    textAlign = TextAlign.Center
+                    LazyColumn {
+                        item {
+                            if (studySets.isNotEmpty()) {
+                                SearchTextField(
+                                    searchQuery = searchQuery,
+                                    onSearchQueryChange = { searchQuery = it },
+                                    placeholder = "Search study sets"
                                 )
                             }
                         }
-                        LazyColumn {
-                            items(filterStudySets) { studySet ->
-                                StudySetItem(
-                                    studySet = studySet,
-                                    onStudySetClick = { onStudySetClick(studySet.id) }
-                                )
+                        items(filterStudySets) { studySet ->
+                            StudySetItem(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                studySet = studySet,
+                                onStudySetClick = { onStudySetClick(studySet.id) }
+                            )
+                        }
+                        item {
+                            if (filterStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "No study sets found",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
-                            item {
-                                BannerAds(
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
-                            item {
-                                Spacer(modifier = Modifier.padding(60.dp))
-                            }
+                        }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.padding(60.dp))
                         }
                     }
                 }
