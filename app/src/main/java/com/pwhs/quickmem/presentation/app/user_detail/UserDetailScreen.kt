@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.search_result
+package com.pwhs.quickmem.presentation.app.user_detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -17,12 +17,12 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>(
-    navArgs = SearchResultArgs::class
+    navArgs = UserDetailArgs::class
 )
 @Composable
-fun SearchResultScreen(
+fun UserDetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchResultViewModel = hiltViewModel(),
+    viewModel: UserDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -35,30 +35,30 @@ fun SearchResultScreen(
 
         }
     }
-    SearchResult(
+    UserDetail(
         modifier = modifier,
-        query = uiState.query
+        userId = uiState.userId
     )
 }
 
 @Composable
-fun SearchResult(
+fun UserDetail(
     modifier: Modifier = Modifier,
-    query: String = ""
+    userId: String = ""
 ) {
     Scaffold { innerPadding ->
         Column(
             modifier = modifier.padding(innerPadding),
         ) {
-            Text(text = "Search Result: $query")
+            Text(text = "User Detail: $userId")
         }
     }
 }
 
 @Preview
 @Composable
-private fun SearchResultScreen() {
+private fun UserDetailPreview() {
     QuickMemTheme {
-        SearchResult()
+        UserDetail()
     }
 }

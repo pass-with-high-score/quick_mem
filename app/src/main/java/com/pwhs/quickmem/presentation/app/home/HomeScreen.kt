@@ -87,20 +87,23 @@ fun Home(
                         style = typography.titleLarge.copy(
                             fontFamily = firasansExtraboldFont,
                             color = MaterialTheme.colorScheme.onPrimary
-                        )
+                        ),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 },
+                expandedHeight = 140.dp,
+                collapsedHeight = 56.dp,
                 title = {
                     // only view, search in another screen
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp)
-                            .padding(end = 16.dp),
+                            .padding(end = 16.dp, bottom = 8.dp),
                         shape = CircleShape,
                         onClick = onNavigateToSearch,
                         colors = CardDefaults.cardColors(
-                            contentColor = Color.White
+                            containerColor = Color.White
                         ),
                     ) {
                         Row(

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.search_result
+package com.pwhs.quickmem.presentation.app.user_detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,21 +9,21 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class SearchResultViewModel @Inject constructor(
+class UserDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(SearchResultUiState())
+    private val _uiState = MutableStateFlow(UserDetailUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<SearchResultUiEvent>()
+    private val _uiEvent = Channel<UserDetailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val query = savedStateHandle.get<String>("query") ?: ""
-        _uiState.update { it.copy(query = query) }
+        val userId = savedStateHandle.get<String>("userId") ?: ""
+        _uiState.update { it.copy(userId = userId) }
     }
 
-    fun onEvent(event: SearchResultUiAction) {
+    fun onEvent(event: UserDetailUiEvent) {
         when (event) {
 
             else -> {}
