@@ -194,7 +194,7 @@ fun FolderDetail(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    studySet = studySets,
+                    studySets = studySets,
                     onStudySetClick = onStudySetClick,
                     onAddFlashCardClick = onAddStudySet
                 )

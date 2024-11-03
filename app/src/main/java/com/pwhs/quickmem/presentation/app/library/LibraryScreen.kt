@@ -241,7 +241,8 @@ fun Library(
                 LibraryTabEnum.FOLDER.index -> ListFolderScreen(
                     modifier = modifier,
                     folders = folders,
-                    onFolderClick = onFolderClick
+                    onFolderClick = onFolderClick,
+                    onAddFolderClick = navigateToCreateFolder
                 )
             }
         }
