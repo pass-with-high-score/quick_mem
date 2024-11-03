@@ -18,10 +18,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +51,6 @@ fun FolderDetailStudySetList(
     studySet: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onAddFlashCardClick: () -> Unit = {},
-    onStudyFolderClick: () -> Unit = {}
 ) {
     Box(modifier = modifier) {
         when {
@@ -102,28 +99,6 @@ fun FolderDetailStudySetList(
                 LazyColumn(
                     horizontalAlignment = CenterHorizontally,
                 ) {
-                    item {
-                        OutlinedButton(
-                            onClick = onStudyFolderClick,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            shape = MaterialTheme.shapes.medium,
-                            border = BorderStroke(
-                                width = 2.dp,
-                                color = colorScheme.primary
-                            )
-                        ) {
-                            Text(
-                                text = "Study",
-                                style = typography.titleMedium.copy(
-                                    fontWeight = Bold,
-                                    color = colorScheme.primary
-                                ),
-                                modifier = Modifier.padding(4.dp)
-                            )
-                        }
-                    }
                     items(studySet) { studySetItem ->
                         Card(
                             onClick = { onStudySetClick(studySetItem.id) },

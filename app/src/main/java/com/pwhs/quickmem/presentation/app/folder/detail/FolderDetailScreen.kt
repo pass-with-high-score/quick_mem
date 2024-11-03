@@ -4,7 +4,12 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -159,6 +164,18 @@ fun FolderDetail(
                 avatarUrl = userAvatar
             )
         },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onStudyFolderClick,
+                containerColor = colorScheme.secondary,
+                contentColor = colorScheme.onSecondary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Study"
+                )
+            }
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -175,8 +192,7 @@ fun FolderDetail(
                         .padding(horizontal = 16.dp),
                     studySet = studySets,
                     onStudySetClick = onStudySetClick,
-                    onAddFlashCardClick = onAddStudySet,
-                    onStudyFolderClick = onStudyFolderClick
+                    onAddFlashCardClick = onAddStudySet
                 )
             }
             LoadingOverlay(
