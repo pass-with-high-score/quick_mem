@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.repository.ClassRepository
+import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,6 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val studySetRepository: StudySetRepository,
+    private val classRepository: ClassRepository,
+    private val folderRepository: FolderRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
 ) : ViewModel() {
@@ -31,13 +35,32 @@ class LibraryViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        getStudySets()
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: return@launch
+            val ownerId = appManager.userId.firstOrNull() ?: return@launch
+            val userAvatar = appManager.userAvatar.firstOrNull() ?: return@launch
+            val username = appManager.userName.firstOrNull() ?: return@launch
+            _uiState.update {
+                it.copy(
+                    token = token,
+                    userId = ownerId,
+                    userAvatar = userAvatar,
+                    username = username
+                )
+            }
+            getStudySets()
+            getClasses()
+            getFolders()
+        }
+
     }
 
     fun onEvent(event: LibraryUiAction) {
         when (event) {
             is LibraryUiAction.Refresh -> {
                 getStudySets()
+                getClasses()
+                getFolders()
             }
 
             LibraryUiAction.RefreshStudySets -> {
@@ -46,47 +69,119 @@ class LibraryViewModel @Inject constructor(
                     getStudySets()
                 }
             }
+
+            LibraryUiAction.RefreshClasses -> {
+                viewModelScope.launch {
+                    delay(500)
+                    getClasses()
+                }
+            }
         }
     }
 
     private fun getStudySets() {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: return@launch
-            val ownerId = appManager.userId.firstOrNull() ?: return@launch
-            val userAvatar = appManager.userAvatar.firstOrNull() ?: return@launch
-            val username = appManager.userName.firstOrNull() ?: return@launch
+            studySetRepository.getStudySetsByOwnerId(_uiState.value.token, _uiState.value.userId)
+                .collectLatest { resources ->
+                    when (resources) {
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    studySets = resources.data ?: emptyList(),
+                                )
+                            }
+                        }
 
-            studySetRepository.getStudySetsByOwnerId(token, ownerId).collectLatest { resources ->
-                when (resources) {
-                    is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                studySets = resources.data ?: emptyList(),
-                                userAvatar = userAvatar,
-                                username = username
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(
+                                LibraryUiEvent.Error(
+                                    resources.message ?: "An error occurred"
+                                )
                             )
                         }
-                    }
 
-                    is Resources.Error -> {
-                        _uiState.update {
-                            it.copy(isLoading = false)
-                        }
-                        _uiEvent.send(
-                            LibraryUiEvent.Error(
-                                resources.message ?: "An error occurred"
-                            )
-                        )
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
                         }
                     }
                 }
-            }
+        }
+    }
+
+    private fun getClasses() {
+        viewModelScope.launch {
+
+            classRepository.getClassByOwnerID(_uiState.value.token, _uiState.value.userId)
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(
+                                LibraryUiEvent.Error(
+                                    resource.message ?: "An error occurred"
+                                )
+                            )
+                        }
+
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    classes = resource.data ?: emptyList(),
+                                    isLoading = false,
+                                )
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun getFolders() {
+        viewModelScope.launch {
+            folderRepository.getFoldersByUserId(_uiState.value.token, _uiState.value.userId)
+                .collectLatest { resources ->
+                    when (resources) {
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    folders = resources.data ?: emptyList(),
+                                )
+                            }
+                        }
+
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(
+                                LibraryUiEvent.Error(
+                                    resources.message ?: "An error occurred"
+                                )
+                            )
+                        }
+
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+                    }
+                }
         }
     }
 }

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,23 +49,24 @@ class EditFolderViewModel @Inject constructor(
     fun onEvent(event: EditFolderUiAction) {
         when (event) {
             EditFolderUiAction.SaveClicked -> {
+                Timber.d("SaveClicked")
                 val uiState = _uiState.value
                 val trimmedTitle = uiState.title.trim()
-                if (trimmedTitle.isEmpty()) {
-                    _uiState.update {
-                        it.copy(titleError = "Title is required")
+
+                Timber.d("SaveClicked: $trimmedTitle")
+
+                when {
+                    trimmedTitle.isEmpty() -> {
+                        _uiState.update { it.copy(titleError = "Title is required") }
                     }
-                    return
-                } else if (trimmedTitle.length < 3) {
-                    _uiState.update {
-                        it.copy(titleError = "Title must be at least 3 characters")
+                    trimmedTitle.length < 3 -> {
+                        _uiState.update { it.copy(titleError = "Title must be at least 1 characters") }
                     }
-                    return
-                } else {
-                    _uiState.update {
-                        it.copy(titleError = "")
+                    else -> {
+                        _uiState.update { it.copy(titleError = "") }
+                        Timber.d("SaveClicked: $trimmedTitle")
+                        saveFolder()
                     }
-                    saveFolder()
                 }
             }
 
