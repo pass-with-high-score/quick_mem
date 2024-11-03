@@ -38,7 +38,7 @@ class App : Application() {
     private fun sendTokenToServer(token: String?) {
         // Implement logic to send token to your server
         if (token != null) {
-            // Example: make an HTTP request to your backend to send the token
+           Timber.d("Token sent to server: $token")
         }
     }
 }

@@ -87,9 +87,11 @@ fun FolderItem(
                     style = typography.bodyMedium
                 )
                 VerticalDivider(
-                    modifier = Modifier.height(16.dp).padding(horizontal = 8.dp),
+                    modifier = Modifier
+                        .height(16.dp)
+                        .padding(horizontal = 8.dp),
                     thickness = 1.dp,
-                    color = colorScheme.primary
+                    color = colorScheme.onSurface.copy(alpha = 0.12f)
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

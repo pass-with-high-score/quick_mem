@@ -15,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.ui.theme.Abrilfatface_Font
+import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.util.splashBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -47,36 +46,48 @@ fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(key1 = uiState) {
-        when (uiState) {
-            is SplashUiState.IsLoggedIn -> {
-                navigator.navigate(HomeScreenDestination) {
-                    popUpTo(HomeScreenDestination) {
-                        inclusive = true
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is SplashUiEvent.IsLoggedIn -> {
+                    navigator.navigate(HomeScreenDestination) {
+                        popUpTo(HomeScreenDestination) {
+                            inclusive = true
+                        }
                     }
                 }
-            }
 
-            is SplashUiState.FirstRun -> {
-                navigator.navigate(OnboardingScreenDestination) {
-                    popUpTo(WelcomeScreenDestination) {
-                        inclusive = true
+                is SplashUiEvent.FirstRun -> {
+                    navigator.navigate(OnboardingScreenDestination) {
+                        popUpTo(WelcomeScreenDestination) {
+                            inclusive = true
+                        }
                     }
                 }
-            }
 
-            is SplashUiState.NotFirstRun -> {
-                navigator.navigate(WelcomeScreenDestination) {
-                    popUpTo(WelcomeScreenDestination) {
-                        inclusive = true
-                        launchSingleTop = true
+                is SplashUiEvent.NotFirstRun -> {
+                    navigator.navigate(WelcomeScreenDestination) {
+                        popUpTo(WelcomeScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
                     }
                 }
-            }
 
-            else -> Unit
+                is SplashUiEvent.NotLoggedIn -> {
+                    navigator.navigate(WelcomeScreenDestination) {
+                        popUpTo(WelcomeScreenDestination) {
+                            inclusive = true
+                            launchSingleTop = true
+                        }
+                    }
+                }
+
+                else -> {
+                    // Do nothing
+                }
+            }
         }
     }
 
@@ -126,7 +137,7 @@ fun AnimatedText(modifier: Modifier = Modifier) {
                 fontSize = 32.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontFamily = Abrilfatface_Font,
+                fontFamily = firasansExtraboldFont,
                 textAlign = TextAlign.Center,
                 modifier = modifier
             )
