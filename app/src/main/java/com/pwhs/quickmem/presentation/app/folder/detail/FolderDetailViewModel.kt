@@ -42,13 +42,16 @@ class FolderDetailViewModel @Inject constructor(
             is FolderDetailUiAction.Refresh -> {
                 getFolderSetById(_uiState.value.id)
             }
+
             FolderDetailUiAction.DeleteFolder -> {
                 Timber.d("OnDeleteFolderClicked")
             }
+
             FolderDetailUiAction.EditFolder -> {
                 Timber.d("OnEditFolderClicked")
                 _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
             }
+
             is FolderDetailUiAction.ResetProgress -> {
                 Timber.d("OnResetProgressClicked: ${event.studySetId}")
             }
@@ -67,6 +70,7 @@ class FolderDetailViewModel @Inject constructor(
                         Timber.d("Loading")
                         _uiState.update { it.copy(isLoading = true) }
                     }
+
                     is Resources.Success -> {
                         resource.data?.let { data ->
                             _uiState.update {
@@ -75,9 +79,8 @@ class FolderDetailViewModel @Inject constructor(
                                     description = data.description,
                                     isPublic = data.isPublic,
                                     studySetCount = data.studySetCount,
-                                    ownerId = data.ownerId,
                                     user = data.user,
-                                    studySets = data.studySets,
+                                    studySets = data.studySets ?: emptyList(),
                                     createdAt = data.createdAt,
                                     updatedAt = data.updatedAt,
                                     isLoading = false
@@ -87,6 +90,7 @@ class FolderDetailViewModel @Inject constructor(
                             _uiEvent.send(FolderDetailUiEvent.ShowError("Folder not found"))
                         }
                     }
+
                     is Resources.Error -> {
                         Timber.e(resource.message)
                         _uiState.update { it.copy(isLoading = false) }

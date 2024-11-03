@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
@@ -94,6 +95,7 @@ fun FolderDetailScreen(
         updatedAt = uiState.updatedAt,
         isLoading = uiState.isLoading,
         onFolderRefresh = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
+        userAvatar = uiState.user.avatarUrl,
         studySets = uiState.studySets,
         onStudySetClick = {
             navigator.navigate(
@@ -123,6 +125,7 @@ fun FolderDetail(
     isLoading: Boolean = false,
     onFolderRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
+    userAvatar: String = "",
     onStudySetClick: (String) -> Unit = {},
     onEditFolder: () -> Unit = {},
     onDeleteFolder: () -> Unit = {},
@@ -153,6 +156,7 @@ fun FolderDetail(
                 onNavigateBack = onNavigateBack,
                 onMoreClicked = { showMoreBottomSheet = true },
                 onAddStudySet = onAddStudySet,
+                avatarUrl = userAvatar
             )
         },
     ) { innerPadding ->
@@ -167,7 +171,8 @@ fun FolderDetail(
             ) {
                 FolderDetailStudySetList(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     studySet = studySets,
                     onStudySetClick = onStudySetClick,
                     onAddFlashCardClick = onAddStudySet,

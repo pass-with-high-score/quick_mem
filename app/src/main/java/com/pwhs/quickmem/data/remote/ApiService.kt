@@ -49,6 +49,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+    // Auth
     @POST("auth/signup")
     suspend fun signUp(@Body signupRequestDto: SignupRequestDto): SignupResponseDto
 
@@ -77,6 +78,7 @@ interface ApiService {
         @Body resetPasswordRequestDto: ResetPasswordRequestDto
     ): ResetPasswordResponseModel
 
+    // Upload
     @Multipart
     @POST("upload")
     suspend fun uploadImage(
@@ -90,6 +92,7 @@ interface ApiService {
         @Body deleteImageDto: DeleteImageDto
     )
 
+    // Study Set
     @POST("study-set")
     suspend fun createStudySet(
         @Header("Authorization") token: String,
@@ -128,6 +131,7 @@ interface ApiService {
         @Path("id") id: String
     )
 
+    // Flash Card
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
         @Header("Authorization") token: String,
@@ -168,6 +172,14 @@ interface ApiService {
         @Body flipFlashCardDto: FlipFlashCardDto
     ): UpdateFlashCardResponseDto
 
+    @PATCH("flashcard/{id}/rating")
+    suspend fun updateRatingFlashCard(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body ratingFlashCardDto: RatingFlashCardDto
+    ): UpdateFlashCardResponseDto
+
+    // Folder
     @POST("folder")
     suspend fun createFolder(
         @Header("Authorization") token: String,
@@ -187,13 +199,14 @@ interface ApiService {
         @Body updateFolderRequestDto: UpdateFolderRequestDto
     ): UpdateFolderResponseDto
 
-    @PATCH("flashcard/{id}/rating")
-    suspend fun updateRatingFlashCard(
+    @GET("folder/owner/{ownerId}")
+    suspend fun getFoldersByOwnerId(
         @Header("Authorization") token: String,
-        @Path("id") id: String,
-        @Body ratingFlashCardDto: RatingFlashCardDto
-    ): UpdateFlashCardResponseDto
+        @Path("ownerId") ownerId: String
+    ): List<GetFolderDetailResponseDto>
 
+
+    // Class
     @POST("class")
     suspend fun createClass(
         @Header("Authorization") token: String,

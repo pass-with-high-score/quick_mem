@@ -66,4 +66,20 @@ class FolderRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getFoldersByUserId(
+        token: String,
+        userId: String
+    ): Flow<Resources<List<GetFolderResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getFoldersByOwnerId(token, userId)
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

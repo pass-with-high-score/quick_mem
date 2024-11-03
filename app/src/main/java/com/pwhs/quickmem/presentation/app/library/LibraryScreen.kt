@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
@@ -42,6 +43,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -85,6 +87,8 @@ fun LibraryScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         studySets = uiState.studySets,
+        classes = uiState.classes,
+        folders = uiState.folders,
         avatarUrl = uiState.userAvatar,
         username = uiState.username,
         onStudySetRefresh = {
@@ -92,6 +96,15 @@ fun LibraryScreen(
         },
         onStudySetClick = {
             navigator.navigate(StudySetDetailScreenDestination(id = it))
+        },
+        onClassRefresh = {
+            viewModel.onEvent(LibraryUiAction.Refresh)
+        },
+        onClassClick = {
+            navigator.navigate(CreateClassScreenDestination)
+        },
+        onFolderClick = {
+            navigator.navigate(FolderDetailScreenDestination(id = it))
         },
         navigateToCreateStudySet = {
             navigator.navigate(CreateStudySetScreenDestination)
@@ -116,8 +129,10 @@ fun Library(
     onClassRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
     classes: List<GetClassDetailResponseModel> = emptyList(),
+    folders: List<GetFolderResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
     onClassClick: (String) -> Unit = {},
+    onFolderClick: (String) -> Unit = {},
     navigateToCreateStudySet: () -> Unit = {},
     navigateToCreateClass: () -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
@@ -215,14 +230,19 @@ fun Library(
 
                 LibraryTabEnum.CLASS.index -> ListClassesScreen(
                     modifier = modifier,
-                    isLoading=isLoading,
+                    isLoading = isLoading,
                     classes = classes,
                     username = username,
                     onClassClicked = onClassClick,
                     onClassRefresh = onClassRefresh,
                     avatarUrl = avatarUrl
                 )
-                LibraryTabEnum.FOLDER.index -> ListFolderScreen()
+
+                LibraryTabEnum.FOLDER.index -> ListFolderScreen(
+                    modifier = modifier,
+                    folders = folders,
+                    onFolderClick = onFolderClick
+                )
             }
         }
     }
