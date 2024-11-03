@@ -49,17 +49,17 @@ fun FolderMenuBottomSheet(
                 ItemMenuBottomSheet(
                     onClick = onShareFolder,
                     icon = Default.IosShare,
-                    title = "Share study set"
+                    title = "Share Folder"
                 )
                 ItemMenuBottomSheet(
                     onClick = onReportFolder,
                     icon = Outlined.Report,
-                    title = "Report study set"
+                    title = "Report Folder"
                 )
                 ItemMenuBottomSheet(
                     onClick = onDeleteFolder,
                     icon = Default.DeleteOutline,
-                    title = "Delete study set",
+                    title = "Delete Folder",
                     color = Color.Red
                 )
             }

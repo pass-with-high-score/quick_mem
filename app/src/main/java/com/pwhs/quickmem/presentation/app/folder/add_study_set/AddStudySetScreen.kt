@@ -2,8 +2,10 @@ package com.pwhs.quickmem.presentation.app.folder.add_study_set
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.app.folder.add_study_set.component.AddStudySetTopAppBar
-import com.pwhs.quickmem.presentation.app.folder.detail.component.ButtonFolder
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -57,14 +58,16 @@ fun AddStudySet(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
                 .padding(horizontal = 16.dp)
-        ){
-            ButtonFolder(
+        ) {
+            Button(
                 modifier = Modifier.padding(top = 16.dp),
-                title = "Create new Study Set",
-                onFolderClicked = onAddStudySetClicked
-            )
+                onClick = onAddStudySetClicked
+            ) {
+                Text("Add Study Set")
+            }
         }
     }
 }

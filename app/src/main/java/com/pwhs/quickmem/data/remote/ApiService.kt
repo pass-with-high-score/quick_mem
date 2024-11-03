@@ -205,6 +205,12 @@ interface ApiService {
         @Path("ownerId") ownerId: String
     ): List<GetFolderDetailResponseDto>
 
+    @DELETE("folder/{id}")
+    suspend fun deleteFolder(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
 
     // Class
     @POST("class")

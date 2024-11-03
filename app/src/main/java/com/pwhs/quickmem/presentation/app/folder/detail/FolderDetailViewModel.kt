@@ -115,10 +115,19 @@ class FolderDetailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        _uiEvent.send(FolderDetailUiEvent.FolderDeleted)
+                        resource.data?.let {
+                            Timber.d("Folder deleted")
+                            _uiState.update { it.copy(isLoading = false) }
+                            _uiEvent.send(FolderDetailUiEvent.FolderDeleted)
+                        }
                     }
 
-                    is Resources.Error -> TODO()
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                 }
             }
         }
