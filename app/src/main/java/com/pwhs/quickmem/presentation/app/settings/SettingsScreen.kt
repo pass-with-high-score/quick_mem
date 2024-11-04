@@ -102,6 +102,7 @@ fun Setting(
     onEnablePushNotifications: () -> Unit = {},
     onEnableSoundEffects: () -> Unit = {},
     onNavigateToPrivacyPolicy: () -> Unit = {},
+    onNavigateToChangeLanguage: () -> Unit = {},
     onNavigateToTermsOfService: () -> Unit = {},
     onNavigateToOpenSourceLicenses: () -> Unit = {},
     onNavigateToHelpCenter: () -> Unit = {},
@@ -157,7 +158,7 @@ fun Setting(
                             title = "Full name",
                             subtitle = fullName,
                             onClick = {
-                                //TODO: navigate to edit full name
+                                onNavigateToEditFullName()
                             }
                         )
                         HorizontalDivider()
@@ -165,7 +166,7 @@ fun Setting(
                             title = "Username",
                             subtitle = username,
                             onClick = {
-                                //TODO: navigate to edit username
+                                onNavigateToEditUsername()
                             }
                         )
                         HorizontalDivider()
@@ -173,14 +174,14 @@ fun Setting(
                             title = "Email",
                             subtitle = email,
                             onClick = {
-                                //TODO: navigate to edit email
+                                onNavigateToEditEmail()
                             }
                         )
                         HorizontalDivider()
                         SettingItem(
                             title = "Change password",
                             onClick = {
-                                //TODO: navigate to change password
+                                onNavigateToChangePassword()
                             }
                         )
                     }
@@ -205,14 +206,14 @@ fun Setting(
                             subtitle = "Your 8 most recently studied sets will be saved for offline studying",
                             value = true,
                             onChangeValue = {
-                                //TODO: save study sets for offline studying
+                                onEnablePushNotifications()
                             }
                         )
                         HorizontalDivider()
                         SettingItem(
                             title = "Manage storage",
                             onClick = {
-                                //TODO: navigate to manage storage
+                                onNavigateToManageStorage()
                             }
                         )
                     }
@@ -232,10 +233,17 @@ fun Setting(
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
+                        SettingItem(
+                            title = "Language",
+                            subtitle = "English",
+                            onClick = {
+                                onNavigateToChangeLanguage()
+                            }
+                        )
                         SettingSwitch(
                             title = "Push notifications",
                             onChangeValue = {
-                                //TODO: enable push notifications
+                                onEnablePushNotifications()
                             },
                             value = true
                         )
@@ -243,7 +251,7 @@ fun Setting(
                         SettingSwitch(
                             title = "Sound effects",
                             onChangeValue = {
-                                //TODO: enable sound effects
+                                onEnableSoundEffects()
                             },
                             value = true
                         )
@@ -268,28 +276,28 @@ fun Setting(
                         SettingItem(
                             title = "Privacy policy",
                             onClick = {
-                                //TODO: navigate to privacy policy
+                                onNavigateToPrivacyPolicy()
                             }
                         )
                         HorizontalDivider()
                         SettingItem(
                             title = "Terms of service",
                             onClick = {
-                                //TODO: navigate to terms of service
+                                onNavigateToTermsOfService()
                             }
                         )
                         HorizontalDivider()
                         SettingItem(
                             title = "Open source licenses",
                             onClick = {
-                                //TODO: navigate to open source licenses
+                                onNavigateToOpenSourceLicenses()
                             }
                         )
                         HorizontalDivider()
                         SettingItem(
                             title = "Help center",
                             onClick = {
-                                //TODO: navigate to help center
+                                onNavigateToHelpCenter()
                             }
                         )
                     }
@@ -350,7 +358,7 @@ fun Setting(
 
                 )
                 Text(
-                    text = "QuickMem", style = typography.titleMedium.copy(
+                    text = "QuickMem", style = typography.titleSmall.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
