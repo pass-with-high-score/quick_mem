@@ -153,7 +153,6 @@ private fun StudySetItemPreview() {
                                 ),
                                 description = "Study Set Description",
                                 isPublic = true,
-                                ownerId = "1",
                                 createdAt = "2021-01-01T00:00:00Z",
                                 updatedAt = "2021-01-01T00:00:00Z",
                                 flashcards = emptyList()
