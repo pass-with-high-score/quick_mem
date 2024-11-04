@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
@@ -41,19 +41,27 @@ fun SettingItem(
                 .padding(vertical = 8.dp, horizontal = 8.dp)
                 .clip(shapes.medium)
         ) {
-            Text(text = title, fontWeight = FontWeight.Medium)
+            Text(
+                text = title,
+                style = typography.titleMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                    color = colorScheme.onSurface
+                )
+            )
             subtitle?.let {
                 Text(
                     text = it,
-                    fontSize = 12.sp,
-                    color = colorScheme.onSurface.copy(alpha = 0.7f)
+                    style = typography.bodySmall.copy(
+                        color = colorScheme.onSurfaceVariant
+                    )
                 )
             }
         }
         Icon(
             imageVector = AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = "Navigate to $title",
-            modifier = Modifier.size(30.dp)
+            modifier = Modifier.size(30.dp),
+            tint = colorScheme.onSurfaceVariant
         )
     }
 
