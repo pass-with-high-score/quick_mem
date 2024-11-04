@@ -75,6 +75,14 @@ class ClassDetailViewModel @Inject constructor(
             ClassDetailUiAction.NavigateToWelcomeClicked -> {
                 _uiEvent.trySend(ClassDetailUiEvent.NavigateToWelcome)
             }
+
+            ClassDetailUiAction.DeleteClass -> {
+                deleteClass(id = _uiState.value.id)
+            }
+
+            ClassDetailUiAction.EditClass -> {
+                TODO()
+            }
         }
     }
 
@@ -105,6 +113,37 @@ class ClassDetailViewModel @Inject constructor(
                         } ?: run {
                             _uiEvent.send(ClassDetailUiEvent.ShowError("Class not found"))
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteClass(id: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            classRepository.deleteClass(token, id).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resources.Success -> {
+                        resource.data?.let {
+                            Timber.d("Folder deleted")
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(ClassDetailUiEvent.ClassDeleted)
+                        }
+
                     }
                 }
             }

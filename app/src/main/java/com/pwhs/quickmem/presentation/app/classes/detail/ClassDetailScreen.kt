@@ -30,11 +30,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailBottomSheet
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.sets.SetsTabScreen
+import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -68,6 +71,10 @@ fun ClassDetailScreen(
                 is ClassDetailUiEvent.ShowError -> {
 
                 }
+
+                ClassDetailUiEvent.ClassDeleted -> {
+
+                }
             }
         }
     }
@@ -78,12 +85,14 @@ fun ClassDetailScreen(
         onNavigateBack = {
             navigator.navigateUp()
         },
-        onMoreClicked = {
-
-        },
         title = uiState.title,
         isLoading = uiState.isLoading,
-        description = uiState.description
+        description = uiState.description,
+        onEditClass = {},
+        onDeleteClass = {
+            viewModel.onEvent(ClassDetailUiAction.DeleteClass)
+            navigator.navigateUp()
+        }
     )
 }
 
@@ -96,21 +105,24 @@ fun ClassDetail(
     description: String = "",
     code: String,
     onNavigateBack: () -> Unit = {},
-    onMoreClicked: () -> Unit = {},
+    onEditClass: () -> Unit = {},
+    onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("SETS", "FOLDERS", "MEMBERS")
+
+    val refreshState = rememberPullToRefreshState()
     var showMoreBottomSheet by remember { mutableStateOf(false) }
     val sheetShowMoreState = rememberModalBottomSheetState()
-    val refreshState = rememberPullToRefreshState()
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             ClassDetailTopAppBar(
                 title = title,
                 onNavigateBack = onNavigateBack,
-                onMoreClicked = onMoreClicked,
+                onMoreClicked = { showMoreBottomSheet = true },
                 modifier = modifier,
                 description = description
             )
@@ -132,7 +144,7 @@ fun ClassDetail(
                         style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
-                        modifier= modifier.padding(start = 15.dp)
+                        modifier = modifier.padding(start = 15.dp)
                     )
                     TabRow(
                         selectedTabIndex = tabIndex,
@@ -185,6 +197,35 @@ fun ClassDetail(
             )
         }
     }
+
+    if (showDeleteConfirmationDialog) {
+        QuickMemAlertDialog(
+            onDismissRequest = {
+                showDeleteConfirmationDialog = false
+                showMoreBottomSheet = true
+            },
+            onConfirm = {
+                onDeleteClass()
+                showDeleteConfirmationDialog = false
+            },
+            title = "Delete class",
+            text = "Are you sure you want to delete this class?",
+            confirmButtonTitle = "Delete",
+            dismissButtonTitle = "Cancel",
+        )
+    }
+    ClassDetailBottomSheet(
+        onEditClass = onEditClass,
+        onDeleteClass = {
+            showDeleteConfirmationDialog = true
+            showMoreBottomSheet = false
+        },
+        onShareClass = {},
+        onReportClass = {},
+        showMoreBottomSheet = showMoreBottomSheet,
+        sheetShowMoreState = sheetShowMoreState,
+        onDismissRequest = { showMoreBottomSheet = false }
+    )
 }
 
 @Preview

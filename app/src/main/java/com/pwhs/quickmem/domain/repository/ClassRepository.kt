@@ -5,6 +5,8 @@ import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import kotlinx.coroutines.flow.Flow
 
 interface ClassRepository {
@@ -22,4 +24,15 @@ interface ClassRepository {
         token: String,
         userId: String
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>>
+
+    suspend fun updateClass(
+        token: String,
+        classId: String,
+        updateClassRequestModel: UpdateClassRequestModel
+    ): Flow<Resources<UpdateClassResponseModel>>
+
+    suspend fun deleteClass(
+        token: String,
+        classId: String
+    ): Flow<Resources<Unit>>
 }

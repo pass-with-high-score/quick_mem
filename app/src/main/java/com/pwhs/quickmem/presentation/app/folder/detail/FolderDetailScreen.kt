@@ -131,7 +131,6 @@ fun FolderDetailScreen(
             )
         }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

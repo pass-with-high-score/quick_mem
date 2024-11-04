@@ -29,59 +29,62 @@ import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 @Composable
 fun SetsTabScreen(
     modifier: Modifier = Modifier,
-    onFolderClicked: () -> Unit = {},
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
-    folder: List<GetFolderResponseModel> = emptyList(),
     onAddSetsClicked: () -> Unit = {},
-    onFlashcardClicked: () -> Unit = {},
-
-    ) {
+    onStudyCardClicked: () -> Unit = {},
+) {
     Scaffold { innerPadding ->
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
         ) {
             when {
-                flashCards.isEmpty() && folder.isEmpty() -> {
+                flashCards.isEmpty()-> {
                     Card(
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                     ) {
-                        Column(
+                        Box(
                             modifier = Modifier
+                                .fillMaxWidth()
                                 .padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "This class has no sets",
-                                color = Color.White,
-                                style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
-                            Text(
-                                text = "Add flashcard sets to share them with your class.",
-                                color = Color.Gray,
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-                            Button(
-                                onClick = onAddSetsClicked,
-                                shape = RoundedCornerShape(8.dp),
-                                modifier = Modifier
-                                    .width(150.dp)
-                                    .height(40.dp)
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text(
-                                    text = "Add sets",
+                                    text = "This class has no sets",
                                     color = Color.White,
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleLarge,
+                                    modifier = Modifier.padding(bottom = 8.dp)
                                 )
+                                Text(
+                                    text = "Add flashcard sets to share them with your class.",
+                                    color = Color.Gray,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                                Button(
+                                    onClick = onAddSetsClicked,
+                                    shape = RoundedCornerShape(8.dp),
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .height(40.dp)
+                                ) {
+                                    Text(
+                                        text = "Add sets",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                }
                             }
-
                         }
                     }
                 }
@@ -93,13 +96,15 @@ fun SetsTabScreen(
                             .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-
+                        // Items go here if there are flashcards or folders
                     }
                 }
             }
         }
     }
 }
+
+
 
 @Preview
 @Composable

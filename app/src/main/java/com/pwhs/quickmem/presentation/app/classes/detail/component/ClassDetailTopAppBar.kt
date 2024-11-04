@@ -73,7 +73,7 @@ fun ClassDetailTopAppBar(
                     )
 
                     Text(
-                        title, style = typography.titleLarge.copy(
+                        description, style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             color = colorScheme.onSurface
                         ),

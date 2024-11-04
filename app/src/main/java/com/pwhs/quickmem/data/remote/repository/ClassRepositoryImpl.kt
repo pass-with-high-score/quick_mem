@@ -8,6 +8,8 @@ import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -66,6 +68,40 @@ class ClassRepositoryImpl @Inject constructor(
                 val response = apiService.getClassByOwnerID(token, userId)
                 Timber.d("listClass: $response")
                 emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateClass(
+        token: String,
+        classId: String,
+        updateClassRequestModel: UpdateClassRequestModel
+    ): Flow<Resources<UpdateClassResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.updateClass(
+                    token, classId, updateClassRequestModel.toDto()
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun deleteClass(token: String, classId: String): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.deleteClass(
+                    token, classId
+                )
+                emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
