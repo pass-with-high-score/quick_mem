@@ -88,7 +88,9 @@ fun ClassDetailScreen(
         title = uiState.title,
         isLoading = uiState.isLoading,
         description = uiState.description,
-        onEditClass = {},
+        onEditClass = {
+            viewModel.onEvent(ClassDetailUiAction.EditClass)
+        },
         onDeleteClass = {
             viewModel.onEvent(ClassDetailUiAction.DeleteClass)
             navigator.navigateUp()
