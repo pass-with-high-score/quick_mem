@@ -11,6 +11,8 @@ import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
+import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
@@ -78,6 +80,12 @@ interface ApiService {
     suspend fun resetPassword(
         @Body resetPasswordRequestDto: ResetPasswordRequestDto
     ): ResetPasswordResponseModel
+
+    @POST("auth/verify-password")
+    suspend fun verifyPassword(
+        @Header("Authorization") token: String,
+        @Body verifyPasswordRequestDto: VerifyPasswordRequestDto
+    ): VerifyPasswordResponseDto
 
     // Upload
     @Multipart

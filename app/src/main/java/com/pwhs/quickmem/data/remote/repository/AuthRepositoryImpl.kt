@@ -19,6 +19,8 @@ import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
+import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -153,7 +155,24 @@ class AuthRepositoryImpl @Inject constructor(
                 val params = resetPasswordRequestModel.toDto()
                 val response = apiService.resetPassword(params)
                 emit(Resources.Success(response))
-            }catch (e:Exception){
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun verifyPassword(
+        token: String,
+        verifyPasswordRequestModel: VerifyPasswordRequestModel
+    ): Flow<Resources<VerifyPasswordResponseModel>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val params = verifyPasswordRequestModel.toDto()
+                val response = apiService.verifyPassword(token, params)
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
             }
