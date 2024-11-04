@@ -38,7 +38,7 @@ fun SettingItem(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(vertical = 8.dp, horizontal = 8.dp)
+                .padding(8.dp)
                 .clip(shapes.medium)
         ) {
             Text(
