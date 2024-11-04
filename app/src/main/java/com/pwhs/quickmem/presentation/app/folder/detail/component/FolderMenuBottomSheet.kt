@@ -11,22 +11,25 @@ import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderMenuBottomSheet(
     modifier: Modifier = Modifier,
-    onEditFolder: () -> Unit,
-    onDeleteFolder: () -> Unit,
-    onShareFolder: () -> Unit,
-    onReportFolder: () -> Unit,
-    showMoreBottomSheet: Boolean,
-    sheetShowMoreState: SheetState,
-    onDismissRequest: () -> Unit,
+    onEditFolder: () -> Unit = {},
+    onDeleteFolder: () -> Unit = {},
+    onShareFolder: () -> Unit = {},
+    onReportFolder: () -> Unit = {},
+    showMoreBottomSheet: Boolean = false,
+    sheetShowMoreState: SheetState = rememberModalBottomSheetState(),
+    onDismissRequest: () -> Unit = {},
 ) {
     if (showMoreBottomSheet) {
         ModalBottomSheet(
@@ -46,20 +49,31 @@ fun FolderMenuBottomSheet(
                 ItemMenuBottomSheet(
                     onClick = onShareFolder,
                     icon = Default.IosShare,
-                    title = "Share study set"
+                    title = "Share Folder"
                 )
                 ItemMenuBottomSheet(
                     onClick = onReportFolder,
                     icon = Outlined.Report,
-                    title = "Report study set"
+                    title = "Report Folder"
                 )
                 ItemMenuBottomSheet(
                     onClick = onDeleteFolder,
                     icon = Default.DeleteOutline,
-                    title = "Delete study set",
+                    title = "Delete Folder",
                     color = Color.Red
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun FolderMenuBottomSheetPreview() {
+    QuickMemTheme {
+        FolderMenuBottomSheet(
+            showMoreBottomSheet = true
+        )
     }
 }

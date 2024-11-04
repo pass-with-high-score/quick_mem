@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.zIndex
+import com.pwhs.quickmem.ui.theme.primaryLight
 
 fun Modifier.gradientBackground(): Modifier {
     return this.background(
@@ -30,8 +31,8 @@ fun Modifier.splashBackground(): Modifier {
     return this.background(
         brush = Brush.verticalGradient(
             colors = listOf(
-                Color(0xFF2CB2CF),
-                Color(0xFF2CB2CF)
+                primaryLight,
+                primaryLight
             ),
             tileMode = TileMode.Mirror
         )

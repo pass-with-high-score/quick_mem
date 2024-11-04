@@ -5,9 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,8 +18,8 @@ class SplashViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow<SplashUiState>(SplashUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _uiEvent = Channel<SplashUiEvent>(Channel.BUFFERED)
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
         checkAuth()
@@ -28,12 +28,12 @@ class SplashViewModel @Inject constructor(
     private fun checkAuth() {
         Timber.d("Checking auth")
         viewModelScope.launch {
-            delay(1500)
+            delay(3000)
             appManager.isLoggedIn.collect { isLoggedIn ->
                 if (isLoggedIn) {
-                    _uiState.value = SplashUiState.IsLoggedIn
+                    _uiEvent.send(SplashUiEvent.IsLoggedIn)
                 } else {
-                    _uiState.value = SplashUiState.NotLoggedIn
+                    _uiEvent.send(SplashUiEvent.NotLoggedIn)
                     checkFirstRun()
                 }
             }
@@ -43,21 +43,15 @@ class SplashViewModel @Inject constructor(
     private fun checkFirstRun() {
         Timber.d("Checking first run")
         viewModelScope.launch {
-            delay(1500)
+            delay(3000)
             appManager.isFirstRun.collect { isFirstRun ->
                 if (isFirstRun) {
-                    _uiState.value = SplashUiState.FirstRun
+                    _uiEvent.send(SplashUiEvent.FirstRun)
                 } else {
-                    _uiState.value = SplashUiState.NotFirstRun
+                    appManager.saveIsFirstRun(true)
+                    _uiEvent.send(SplashUiEvent.NotFirstRun)
                 }
             }
-        }
-    }
-
-    fun saveIsFirstRun(isFirstRun: Boolean) {
-        viewModelScope.launch {
-            delay(1500)
-            appManager.saveIsFirstRun(isFirstRun)
         }
     }
 }

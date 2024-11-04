@@ -32,6 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
@@ -41,6 +43,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -84,13 +87,37 @@ fun LibraryScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         studySets = uiState.studySets,
+        classes = uiState.classes,
+        folders = uiState.folders,
         avatarUrl = uiState.userAvatar,
         username = uiState.username,
         onStudySetRefresh = {
-            viewModel.onEvent(LibraryUiAction.Refresh)
+            viewModel.onEvent(LibraryUiAction.RefreshStudySets)
+        },
+        onClassRefresh = {
+            viewModel.onEvent(LibraryUiAction.RefreshClasses)
+        },
+        onFolderRefresh = {
+            viewModel.onEvent(LibraryUiAction.RefreshFolders)
         },
         onStudySetClick = {
-            navigator.navigate(StudySetDetailScreenDestination(id = it))
+            navigator.navigate(
+                StudySetDetailScreenDestination(
+                    id = it,
+                    code = ""
+                )
+            )
+        },
+        onClassClick = {
+            navigator.navigate(CreateClassScreenDestination)
+        },
+        onFolderClick = {
+            navigator.navigate(
+                FolderDetailScreenDestination(
+                    id = it,
+                    code = ""
+                )
+            )
         },
         navigateToCreateStudySet = {
             navigator.navigate(CreateStudySetScreenDestination)
@@ -112,8 +139,14 @@ fun Library(
     avatarUrl: String = "",
     username: String = "",
     onStudySetRefresh: () -> Unit = {},
+    onClassRefresh: () -> Unit = {},
+    onFolderRefresh: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
+    classes: List<GetClassByOwnerResponseModel> = emptyList(),
+    folders: List<GetFolderResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
+    onClassClick: (String) -> Unit = {},
+    onFolderClick: (String) -> Unit = {},
     navigateToCreateStudySet: () -> Unit = {},
     navigateToCreateClass: () -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
@@ -209,8 +242,22 @@ fun Library(
                     onStudySetRefresh = onStudySetRefresh
                 )
 
-                LibraryTabEnum.CLASS.index -> ListClassesScreen()
-                LibraryTabEnum.FOLDER.index -> ListFolderScreen()
+                LibraryTabEnum.CLASS.index -> ListClassesScreen(
+                    modifier = modifier,
+                    isLoading = isLoading,
+                    classes = classes,
+                    onClassClicked = onClassClick,
+                    onClassRefresh = onClassRefresh,
+                )
+
+                LibraryTabEnum.FOLDER.index -> ListFolderScreen(
+                    modifier = modifier,
+                    isLoading = isLoading,
+                    folders = folders,
+                    onFolderClick = onFolderClick,
+                    onAddFolderClick = navigateToCreateFolder,
+                    onFolderRefresh = onFolderRefresh
+                )
             }
         }
     }

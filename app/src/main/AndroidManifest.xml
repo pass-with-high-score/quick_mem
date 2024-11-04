@@ -65,6 +65,28 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
+                    android:host="share"
+                    android:path="/folder"
+                    android:scheme="quickmem" />
+            </intent-filter>
+            <intent-filter android:label="filter_react_native">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="share"
+                    android:path="/studyset"
+                    android:scheme="quickmem" />
+            </intent-filter>
+            <intent-filter android:label="filter_react_native">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
                     android:host="join"
                     android:path="/class"
                     android:scheme="quickmem" />

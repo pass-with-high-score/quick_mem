@@ -6,6 +6,8 @@ import com.pwhs.quickmem.data.mapper.classes.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,6 +29,43 @@ class ClassRepositoryImpl @Inject constructor(
                 )
                 Timber.d("createClass: $response")
                 emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getClassByID(
+        token: String,
+        classId: String
+    ): Flow<Resources<GetClassDetailResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getClassByID(
+                    token,
+                    classId
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+
+    }
+
+    override suspend fun getClassByOwnerID(
+        token: String,
+        userId: String
+    ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getClassByOwnerID(token, userId)
+                Timber.d("listClass: $response")
+                emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

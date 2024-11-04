@@ -49,6 +49,7 @@ import com.ramcosta.composedestinations.generated.destinations.EditStudySetScree
 import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -264,6 +265,13 @@ fun StudySetDetailScreen(
         },
         onRefresh = {
             viewModel.onEvent(StudySetDetailUiAction.Refresh)
+        },
+        onNavigateToUserDetail = {
+            navigator.navigate(
+                UserDetailScreenDestination(
+                    userId = uiState.user.id
+                )
+            )
         }
     )
 }
@@ -294,6 +302,7 @@ fun StudySetDetail(
     onNavigateToMatchFlashCard: () -> Unit = {},
     onNavigateToFlipFlashCard: () -> Unit = {},
     onRefresh: () -> Unit = {},
+    onNavigateToUserDetail: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -314,6 +323,7 @@ fun StudySetDetail(
                 flashCardCount = flashCardCount,
                 onNavigateBack = onNavigateBack,
                 onAddFlashcard = onAddFlashcard,
+                onNavigateToUserDetail = onNavigateToUserDetail,
                 onMoreClicked = { showMoreBottomSheet = true },
                 onShareClicked = {
                     val link = AppConstant.BASE_URL + "study-set/share/" + linkShareCode
