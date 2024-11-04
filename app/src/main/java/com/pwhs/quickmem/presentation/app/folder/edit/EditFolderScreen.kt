@@ -46,6 +46,7 @@ fun EditFolderScreen(
                     resultNavigator.setResult(true)
                     navigator.popBackStack()
                 }
+
                 is EditFolderUiEvent.ShowError -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
@@ -63,7 +64,10 @@ fun EditFolderScreen(
         onDescriptionChange = { viewModel.onEvent(EditFolderUiAction.DescriptionChanged(it)) },
         isPublic = uiState.isPublic,
         onIsPublicChange = { viewModel.onEvent(EditFolderUiAction.IsPublicChanged(it)) },
-        onDoneClick = { viewModel.onEvent(EditFolderUiAction.SaveClicked) },
+        onDoneClick = {
+            viewModel.onEvent(EditFolderUiAction.SaveClicked)
+            navigator.navigateUp()
+        },
         onNavigateBack = { navigator.navigateUp() }
     )
 

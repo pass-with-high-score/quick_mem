@@ -81,7 +81,7 @@ class ClassDetailViewModel @Inject constructor(
             }
 
             ClassDetailUiAction.EditClass -> {
-                TODO()
+                _uiEvent.trySend(ClassDetailUiEvent.NavigateToEditClass)
             }
         }
     }
@@ -107,7 +107,9 @@ class ClassDetailViewModel @Inject constructor(
                                     description = data.description,
                                     joinClassCode = data.joinToken,
                                     id = data.id,
-                                    isLoading = false
+                                    isLoading = false,
+                                    allowSet = data.allowSetManagement,
+                                    allowMember = data.allowMemberManagement
                                 )
                             }
                         } ?: run {

@@ -35,11 +35,13 @@ import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTo
 import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.sets.SetsTabScreen
+import com.pwhs.quickmem.presentation.app.classes.edit.EditClassScreen
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -75,6 +77,18 @@ fun ClassDetailScreen(
                 ClassDetailUiEvent.ClassDeleted -> {
 
                 }
+
+                ClassDetailUiEvent.NavigateToEditClass -> {
+                    navigator.navigate(
+                        EditClassScreenDestination(
+                            classId = uiState.id,
+                            classTitle = uiState.title,
+                            classDescription = uiState.description,
+                            classAllowSet = uiState.allowSet,
+                            classAllowMember = uiState.allowMember
+                        )
+                    )
+                }
             }
         }
     }
@@ -82,6 +96,9 @@ fun ClassDetailScreen(
     ClassDetail(
         modifier = modifier,
         code = uiState.joinClassCode,
+        onRefresh = {
+            viewModel.onEvent(ClassDetailUiAction.Refresh)
+        },
         onNavigateBack = {
             navigator.navigateUp()
         },

@@ -5,4 +5,5 @@ sealed class ClassDetailUiEvent {
     data object NavigateToWelcome : ClassDetailUiEvent()
     data class ShowError(val message: String) : ClassDetailUiEvent()
     data object ClassDeleted : ClassDetailUiEvent()
+    data object NavigateToEditClass : ClassDetailUiEvent()
 }

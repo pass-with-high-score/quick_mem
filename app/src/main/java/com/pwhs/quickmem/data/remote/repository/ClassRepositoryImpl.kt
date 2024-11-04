@@ -86,6 +86,7 @@ class ClassRepositoryImpl @Inject constructor(
                 val response = apiService.updateClass(
                     token, classId, updateClassRequestModel.toDto()
                 )
+                Timber.d("updateClass: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)

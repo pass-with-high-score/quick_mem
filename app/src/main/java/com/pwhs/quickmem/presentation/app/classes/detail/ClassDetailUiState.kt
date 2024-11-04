@@ -7,4 +7,6 @@ data class ClassDetailUiState(
     val title: String = "",
     val description: String = "",
     val isLoading: Boolean = false,
+    val allowSet: Boolean = false,
+    val allowMember: Boolean = false,
 )
