@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.classes.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,6 +56,7 @@ fun ClassDetailScreen(
     viewModel: ClassDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -71,11 +74,11 @@ fun ClassDetailScreen(
                 }
 
                 is ClassDetailUiEvent.ShowError -> {
-
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
 
                 ClassDetailUiEvent.ClassDeleted -> {
-
+                    Toast.makeText(context, "Class Deleted", Toast.LENGTH_SHORT).show()
                 }
 
                 ClassDetailUiEvent.NavigateToEditClass -> {
@@ -84,8 +87,8 @@ fun ClassDetailScreen(
                             classId = uiState.id,
                             classTitle = uiState.title,
                             classDescription = uiState.description,
-                            classAllowSet = uiState.allowSet,
-                            classAllowMember = uiState.allowMember
+                            isMemberAllowed = uiState.allowSet,
+                            isSetAllowed = uiState.allowMember
                         )
                     )
                 }
@@ -110,7 +113,6 @@ fun ClassDetailScreen(
         },
         onDeleteClass = {
             viewModel.onEvent(ClassDetailUiAction.DeleteClass)
-            navigator.navigateUp()
         }
     )
 }

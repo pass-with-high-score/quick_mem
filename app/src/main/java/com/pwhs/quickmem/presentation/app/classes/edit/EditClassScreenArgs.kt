@@ -4,6 +4,6 @@ data class EditClassScreenArgs(
     val classId: String,
     val classTitle:String,
     val classDescription:String,
-    val classAllowSet:Boolean,
-    val classAllowMember:Boolean
+    val isSetAllowed:Boolean,
+    val isMemberAllowed:Boolean
 )

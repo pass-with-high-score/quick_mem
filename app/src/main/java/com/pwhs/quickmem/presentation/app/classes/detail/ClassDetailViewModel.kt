@@ -78,6 +78,7 @@ class ClassDetailViewModel @Inject constructor(
 
             ClassDetailUiAction.DeleteClass -> {
                 deleteClass(id = _uiState.value.id)
+                _uiEvent.trySend(ClassDetailUiEvent.ClassDeleted)
             }
 
             ClassDetailUiAction.EditClass -> {
