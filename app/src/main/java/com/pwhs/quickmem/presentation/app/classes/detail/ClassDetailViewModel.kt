@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,12 +57,17 @@ class ClassDetailViewModel @Inject constructor(
                 }
             }
         }
-
-        getClassByOwnerID()
+        Timber.d("ClassDetailViewModel: $id")
+        _uiState.update { it.copy(id = id) }
+        getClassByID(id)
     }
 
     fun onEvent(event: ClassDetailUiAction) {
         when (event) {
+            is ClassDetailUiAction.Refresh -> {
+                getClassByID(id = _uiState.value.id)
+            }
+
             ClassDetailUiAction.JoinClassClicked -> {
                 TODO()
             }
@@ -72,20 +78,33 @@ class ClassDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getClassByOwnerID() {
+    private fun getClassByID(id: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
-            classRepository.getClassByOwnerID(token, userId).collectLatest { resources ->
-                when(resources){
+            classRepository.getClassByID(token, id).collectLatest { resource ->
+                when (resource) {
                     is Resources.Error -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
 
-                    }
                     is Resources.Loading -> {
-                        TODO()
+                        _uiState.update { it.copy(isLoading = true) }
                     }
+
                     is Resources.Success -> {
-                        TODO()
+                        resource.data?.let { data ->
+                            _uiState.update {
+                                it.copy(
+                                    title = data.title,
+                                    description = data.description,
+                                    joinClassCode = data.joinToken,
+                                    id = data.id,
+                                    isLoading = false
+                                )
+                            }
+                        } ?: run {
+                            _uiEvent.send(ClassDetailUiEvent.ShowError("Class not found"))
+                        }
                     }
                 }
             }

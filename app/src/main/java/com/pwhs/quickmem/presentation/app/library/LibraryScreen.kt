@@ -40,6 +40,7 @@ import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
@@ -109,7 +110,14 @@ fun LibraryScreen(
             )
         },
         onClassClick = {
-            navigator.navigate(CreateClassScreenDestination)
+            navigator.navigate(
+                ClassDetailScreenDestination(
+                    id = it,
+                    code = it,
+                    title = it,
+                    description = it
+                )
+            )
         },
         onFolderClick = {
             navigator.navigate(

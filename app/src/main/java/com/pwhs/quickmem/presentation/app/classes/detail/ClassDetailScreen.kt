@@ -28,9 +28,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTopAppBar
+import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
+import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
+import com.pwhs.quickmem.presentation.app.classes.detail.sets.SetsTabScreen
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -58,14 +61,29 @@ fun ClassDetailScreen(
                     }
                 }
 
-                ClassDetailUiEvent.OnJoinClass -> TODO()
+                ClassDetailUiEvent.OnJoinClass -> {
+
+                }
+
+                is ClassDetailUiEvent.ShowError -> {
+
+                }
             }
         }
     }
 
     ClassDetail(
         modifier = modifier,
-        code = uiState.joinClassCode
+        code = uiState.joinClassCode,
+        onNavigateBack = {
+            navigator.navigateUp()
+        },
+        onMoreClicked = {
+
+        },
+        title = uiState.title,
+        isLoading = uiState.isLoading,
+        description = uiState.description
     )
 }
 
@@ -73,17 +91,16 @@ fun ClassDetailScreen(
 @Composable
 fun ClassDetail(
     modifier: Modifier = Modifier,
-    color: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Blue,
     title: String = "",
     isLoading: Boolean = false,
-    setCount: Int = 0,
+    description: String = "",
     code: String,
     onNavigateBack: () -> Unit = {},
     onMoreClicked: () -> Unit = {},
     onRefresh: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabTitles = listOf("SETS", "MEMBERS")
+    val tabTitles = listOf("SETS", "FOLDERS", "MEMBERS")
     var showMoreBottomSheet by remember { mutableStateOf(false) }
     val sheetShowMoreState = rememberModalBottomSheetState()
     val refreshState = rememberPullToRefreshState()
@@ -92,12 +109,10 @@ fun ClassDetail(
         topBar = {
             ClassDetailTopAppBar(
                 title = title,
-                userResponse = UserResponseModel(),
-                color = color,
                 onNavigateBack = onNavigateBack,
                 onMoreClicked = onMoreClicked,
                 modifier = modifier,
-                setCount = setCount
+                description = description
             )
         }
     ) { innerPadding ->
@@ -112,13 +127,18 @@ fun ClassDetail(
                 state = refreshState
             ) {
                 Column {
-                    Text("Code: ${code}")
+                    Text(
+                        "Code: ${code}",
+                        style = typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier= modifier.padding(start = 15.dp)
+                    )
                     TabRow(
                         selectedTabIndex = tabIndex,
                         indicator = { tabPositions ->
                             SecondaryIndicator(
                                 Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                                color = color,
                             )
                         },
                         contentColor = colorScheme.onSurface,
@@ -138,6 +158,7 @@ fun ClassDetail(
                                 icon = {
                                     when (index) {
                                         ClassDetailEnums.SETS.index -> {}
+                                        ClassDetailEnums.FOLDER.index -> {}
                                         ClassDetailEnums.MEMBERS.index -> {}
                                     }
                                 }
@@ -145,13 +166,15 @@ fun ClassDetail(
                         }
                     }
                     when (tabIndex) {
-                        ClassDetailEnums.SETS.index -> {
+                        ClassDetailEnums.SETS.index -> SetsTabScreen(
 
-                        }
+                        )
 
-                        ClassDetailEnums.MEMBERS.index -> {
+                        ClassDetailEnums.FOLDER.index -> FoldersTabScreen(
 
-                        }
+                        )
+
+                        ClassDetailEnums.MEMBERS.index -> MembersTabScreen()
                     }
 
                 }

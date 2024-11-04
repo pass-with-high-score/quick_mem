@@ -93,17 +93,7 @@ fun SetsTabScreen(
                             .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(flashCards) {
-                            FlashCardItem(
-                                onFlashcardClick = onFlashcardClicked
-                            )
-                        }
 
-                        items(folder) {
-                            FolderItem(
-                                onFolderClicked = onFolderClicked
-                            )
-                        }
                     }
                 }
             }

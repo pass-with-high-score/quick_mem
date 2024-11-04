@@ -5,5 +5,6 @@ data class ClassDetailUiState(
     val isLogin: Boolean = false,
     val id: String = "",
     val title: String = "",
-    val description: String = ""
+    val description: String = "",
+    val isLoading: Boolean = false,
 )
