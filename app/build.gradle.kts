@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.pwhs.quickmem"
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = 21
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = libs.versions.versionCode.get().toInt()
         versionName = libs.versions.versionName.get()
