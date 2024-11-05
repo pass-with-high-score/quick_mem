@@ -233,7 +233,6 @@ fun Library(
             }
             when (tabIndex) {
                 LibraryTabEnum.STUDY_SET.index -> ListStudySetScreen(
-                    modifier = Modifier.padding(top = 8.dp),
                     isLoading = isLoading,
                     studySets = studySets,
                     avatarUrl = avatarUrl,
