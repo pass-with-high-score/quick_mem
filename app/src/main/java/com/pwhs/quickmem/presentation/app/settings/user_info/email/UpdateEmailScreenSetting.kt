@@ -19,7 +19,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
-@Destination<RootGraph>(navArgs = UpdateEmailArgs::class)
+@Destination<RootGraph>(navArgs = UpdateEmailSettingArgs::class)
 @Composable
 fun UpdateEmailSettingScreen(
     modifier: Modifier = Modifier,
@@ -35,7 +35,10 @@ fun UpdateEmailSettingScreen(
                 is UpdateEmailSettingUiEvent.OnError -> {
                     Toast.makeText(context, event.errorMessage, Toast.LENGTH_SHORT).show()
                 }
+
                 UpdateEmailSettingUiEvent.OnEmailChanged -> {
+                    Toast.makeText(context, "Check your email for verification", Toast.LENGTH_SHORT)
+                        .show()
                     resultNavigator.navigateBack(true)
                 }
             }

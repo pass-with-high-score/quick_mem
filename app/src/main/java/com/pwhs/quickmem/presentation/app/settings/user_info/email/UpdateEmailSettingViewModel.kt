@@ -3,9 +3,9 @@ package com.pwhs.quickmem.presentation.app.settings.user_info.email
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,7 +21,6 @@ import javax.inject.Inject
 class UpdateEmailSettingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val tokenManager: TokenManager,
-    private val appManager: AppManager,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UpdateEmailSettingUiState())
@@ -45,46 +44,87 @@ class UpdateEmailSettingViewModel @Inject constructor(
         when (event) {
             is UpdateEmailSettingUiAction.OnEmailChanged -> {
                 _uiState.update {
-                    it.copy(email = event.email)
+                    it.copy(
+                        email = event.email,
+                        errorMessage = ""
+                    )
                 }
             }
 
             is UpdateEmailSettingUiAction.OnSaveClicked -> {
-                saveEmail(_uiState.value.email)
+                saveEmail()
             }
         }
     }
 
-    private fun saveEmail(email: String) {
+    private fun saveEmail() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = _uiState.value.id
-            authRepository.updateEmail(
-                token,
-                UpdateEmailRequestModel(userId = userId, email = email)
-            ).collect { resource ->
-                when (resource) {
+            val email = _uiState.value.email
+            authRepository.checkEmailValidity(email).collect { validateEmail ->
+                when (validateEmail) {
+                    is Resources.Success -> {
+                        if (validateEmail.data == true) {
+                            authRepository.updateEmail(
+                                token,
+                                UpdateEmailRequestModel(userId = userId, email = email)
+                            ).collect { resource ->
+                                when (resource) {
+                                    is Resources.Error -> {
+                                        _uiState.update {
+                                            it.copy(
+                                                errorMessage = "An error occurred",
+                                                isLoading = false
+                                            )
+                                        }
+                                        _uiEvent.send(
+                                            UpdateEmailSettingUiEvent.OnError(
+                                                resource.message ?: "An error occurred"
+                                            )
+                                        )
+                                    }
+
+                                    is Resources.Loading -> {
+                                        _uiState.update {
+                                            it.copy(isLoading = true)
+                                        }
+                                    }
+
+                                    is Resources.Success -> {
+                                        _uiEvent.send(UpdateEmailSettingUiEvent.OnEmailChanged)
+                                    }
+                                }
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = "Invalid email",
+                                    isLoading = false
+                                )
+                            }
+                            _uiEvent.send(UpdateEmailSettingUiEvent.OnError("Invalid email"))
+                        }
+                    }
+
                     is Resources.Error -> {
                         _uiState.update {
                             it.copy(
-                                errorMessage = resource.message ?: "An error occurred",
+                                errorMessage = "Email is valid",
                                 isLoading = false
                             )
                         }
                         _uiEvent.send(
                             UpdateEmailSettingUiEvent.OnError(
-                                resource.message ?: "An error occurred"
+                                "Email is valid"
                             )
                         )
                     }
+
                     is Resources.Loading -> {
                         _uiState.update {
                             it.copy(isLoading = true)
                         }
-                    }
-                    is Resources.Success -> {
-                        appManager.saveUserEmail(email)
-                        _uiEvent.send(UpdateEmailSettingUiEvent.OnEmailChanged)
                     }
                 }
             }

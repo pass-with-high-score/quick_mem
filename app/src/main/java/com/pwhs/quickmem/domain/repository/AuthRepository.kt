@@ -11,13 +11,13 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
-import com.pwhs.quickmem.presentation.app.settings.user_info.email.UpdateEmailRequestModel
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -40,7 +40,10 @@ interface AuthRepository {
         updateFullNameRequestModel: UpdateFullNameRequestModel
     ): Flow<Resources<UpdateFullNameResponseModel>>
 
-    suspend fun updateEmail(token: String, request: UpdateEmailRequestModel): Flow<Resources<Unit>>
+    suspend fun updateEmail(
+        token: String,
+        updateEmailRequestModel: UpdateEmailRequestModel
+    ): Flow<Resources<UpdateEmailResponseModel>>
 
     suspend fun sendResetPassword(
         sendResetPasswordRequestModel: SendResetPasswordRequestModel

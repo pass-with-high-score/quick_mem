@@ -73,10 +73,10 @@ interface ApiService {
         @Body updateFullNameRequestDto: UpdateFullNameRequestDto
     ): UpdateFullNameResponseDto
 
-    @PUT("auth/user/update-email")
+    @PATCH("auth/user/email")
     suspend fun updateEmail(
         @Header("Authorization") token: String,
-        @Body newEmail: UpdateEmailRequestDto
+        @Body updateEmailRequestDto: UpdateEmailRequestDto
     ): UpdateEmailResponseDto
 
     @POST("auth/send-reset-password")
