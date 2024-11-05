@@ -30,7 +30,7 @@ class UserDetailViewModel @Inject constructor(
 
     private fun loadUserDetails(userId: String) {
         viewModelScope.launch {
-            val token = "your_token_here"
+            val token = "token"
             userRepository.getUserById(userId, token).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
