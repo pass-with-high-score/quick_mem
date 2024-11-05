@@ -108,9 +108,7 @@ fun ListFolderScreen(
                 }
 
                 false -> {
-                    LazyColumn(
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
+                    LazyColumn {
                         item {
                             if (folders.isNotEmpty()) {
                                 SearchTextField(
