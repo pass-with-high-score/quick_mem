@@ -37,12 +37,12 @@ import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTo
 import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.sets.SetsTabScreen
-import com.pwhs.quickmem.presentation.app.classes.edit.EditClassScreen
-import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -79,6 +79,7 @@ fun ClassDetailScreen(
 
                 ClassDetailUiEvent.ClassDeleted -> {
                     Toast.makeText(context, "Class Deleted", Toast.LENGTH_SHORT).show()
+                    navigator.navigateUp()
                 }
 
                 ClassDetailUiEvent.NavigateToEditClass -> {
@@ -91,6 +92,18 @@ fun ClassDetailScreen(
                             isSetAllowed = uiState.allowMember
                         )
                     )
+                }
+
+                ClassDetailUiEvent.onNavigateToAddFolder -> {
+                    navigator.navigate(AddFolderToClassScreenDestination)
+                }
+
+                ClassDetailUiEvent.onNavigateToAddMember -> {
+
+                }
+
+                ClassDetailUiEvent.onNavigateToAddStudySets -> {
+                    navigator.navigate(AddStudySetScreenDestination)
                 }
             }
         }
@@ -113,6 +126,15 @@ fun ClassDetailScreen(
         },
         onDeleteClass = {
             viewModel.onEvent(ClassDetailUiAction.DeleteClass)
+        },
+        onNavigateAddStudySets = {
+            viewModel.onEvent(ClassDetailUiAction.onNavigateToAddStudySets)
+        },
+        onNavigateAddFolder = {
+            viewModel.onEvent(ClassDetailUiAction.onNavigateToAddFolder)
+        },
+        onNavigateAddMember = {
+            viewModel.onEvent(ClassDetailUiAction.onNavigateToAddMember)
         }
     )
 }
@@ -126,6 +148,9 @@ fun ClassDetail(
     description: String = "",
     code: String,
     onNavigateBack: () -> Unit = {},
+    onNavigateAddFolder: () -> Unit = {},
+    onNavigateAddMember: () -> Unit = {},
+    onNavigateAddStudySets: () -> Unit = {},
     onEditClass: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
@@ -200,14 +225,19 @@ fun ClassDetail(
                     }
                     when (tabIndex) {
                         ClassDetailEnums.SETS.index -> SetsTabScreen(
+                            onAddSetsClicked = onNavigateAddStudySets,
+                            onStudyCardClicked = {
 
+                            }
                         )
 
                         ClassDetailEnums.FOLDER.index -> FoldersTabScreen(
-
+                            onAddFoldersClicked = onNavigateAddFolder
                         )
 
-                        ClassDetailEnums.MEMBERS.index -> MembersTabScreen()
+                        ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
+                            onAddMembersClicked = onNavigateAddMember
+                        )
                     }
 
                 }

@@ -6,4 +6,7 @@ sealed class ClassDetailUiAction {
     data object Refresh : ClassDetailUiAction()
     data object EditClass : ClassDetailUiAction()
     data object DeleteClass : ClassDetailUiAction()
+    data object onNavigateToAddFolder:ClassDetailUiAction()
+    data object onNavigateToAddStudySets:ClassDetailUiAction()
+    data object onNavigateToAddMember:ClassDetailUiAction()
 }

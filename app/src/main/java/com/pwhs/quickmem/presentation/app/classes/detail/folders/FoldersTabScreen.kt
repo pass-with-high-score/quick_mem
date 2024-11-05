@@ -57,7 +57,7 @@ fun FoldersTabScreen(
                             ) {
                                 Text(
                                     text = "This class has no folders",
-                                    color = Color.White,
+                                    color = Color.Black,
                                     style = MaterialTheme.typography.titleLarge,
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 )

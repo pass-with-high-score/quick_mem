@@ -60,7 +60,7 @@ fun SetsTabScreen(
                             ) {
                                 Text(
                                     text = "This class has no sets",
-                                    color = Color.White,
+                                    color = Color.Black,
                                     style = MaterialTheme.typography.titleLarge,
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 )
@@ -79,7 +79,7 @@ fun SetsTabScreen(
                                         .height(40.dp)
                                 ) {
                                     Text(
-                                        text = "Add sets",
+                                        text = "Add study sets",
                                         color = Color.White,
                                         style = MaterialTheme.typography.titleMedium
                                     )
@@ -96,7 +96,7 @@ fun SetsTabScreen(
                             .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Items go here if there are flashcards or folders
+
                     }
                 }
             }

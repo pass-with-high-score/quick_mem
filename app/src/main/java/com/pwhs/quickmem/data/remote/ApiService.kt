@@ -13,6 +13,7 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
+import com.pwhs.quickmem.data.dto.classes.AddMemberToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
@@ -257,5 +258,18 @@ interface ApiService {
     @POST("class/join")
     suspend fun addMemberToClass(
         @Header("Authorization") token: String,
-        )
+        @Body addMemberToClassRequestDto: AddMemberToClassRequestDto
+    )
+
+    @POST("class/folders")
+    suspend fun addFolderToClass()
+
+    @POST("class/study-sets")
+    suspend fun addStudySetsToClass()
+
+    @DELETE("class/folders")
+    suspend fun removeFolderToClass()
+
+    @DELETE("class/study-sets")
+    suspend fun removeStudySetToClass()
 }
