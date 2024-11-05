@@ -36,6 +36,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -121,7 +122,11 @@ fun FolderDetailScreen(
             resultNavigator.setResult(true)
             navigator.navigateUp()
         },
-        onAddStudySet = { },
+        onAddStudySet = {
+            navigator.navigate(
+                AddStudySetScreenDestination()
+            )
+        },
         onDeleteFolder = { viewModel.onEvent(FolderDetailUiAction.DeleteFolder) },
         onNavigateToUserDetail = {
             navigator.navigate(
