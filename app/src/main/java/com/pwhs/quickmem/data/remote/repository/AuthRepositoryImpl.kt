@@ -16,12 +16,14 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.presentation.app.settings.user_info.email.UpdateEmailRequestModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
@@ -129,6 +131,20 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun updateEmail(token: String, request: UpdateEmailRequestModel): Flow<Resources<Unit>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val response = apiService.updateEmail(token, request.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
 
     override suspend fun sendResetPassword(
         sendResetPasswordRequestModel: SendResetPasswordRequestModel
