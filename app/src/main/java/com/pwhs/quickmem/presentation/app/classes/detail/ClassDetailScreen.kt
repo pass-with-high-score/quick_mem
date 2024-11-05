@@ -98,9 +98,7 @@ fun ClassDetailScreen(
 
                 ClassDetailUiEvent.onNavigateToAddFolder -> {
                     navigator.navigate(
-                        AddFolderToClassScreenDestination(
-                            classId = uiState.id
-                        )
+                        AddFolderToClassScreenDestination()
                     )
                 }
 
