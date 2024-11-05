@@ -47,6 +47,7 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -88,7 +89,12 @@ fun SettingsScreen(
                 }
 
                 SettingUiEvent.NavigateToChangeEmail -> {
-                    // TODO()
+                    navigator.navigate(
+                        UpdateEmailSettingScreenDestination(
+                            userId = uiState.userId,
+                            email = uiState.email
+                        )
+                    )
                 }
 
                 SettingUiEvent.NavigateToChangeFullName -> {
@@ -392,7 +398,6 @@ fun Setting(
                 },
                 password = password,
                 onSubmitClick = {
-                    showVerifyPasswordBottomSheet = false
                     onSubmitClick()
                 },
                 onChangePassword = onChangePassword,

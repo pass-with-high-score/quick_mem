@@ -8,6 +8,8 @@ import com.pwhs.quickmem.data.dto.auth.ResetPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.SendResetPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
+import com.pwhs.quickmem.data.dto.auth.UpdateEmailRequestDto
+import com.pwhs.quickmem.data.dto.auth.UpdateEmailResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
@@ -70,6 +72,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body updateFullNameRequestDto: UpdateFullNameRequestDto
     ): UpdateFullNameResponseDto
+
+    @PATCH("auth/user/email")
+    suspend fun updateEmail(
+        @Header("Authorization") token: String,
+        @Body updateEmailRequestDto: UpdateEmailRequestDto
+    ): UpdateEmailResponseDto
 
     @POST("auth/send-reset-password")
     suspend fun sendResetPassword(
