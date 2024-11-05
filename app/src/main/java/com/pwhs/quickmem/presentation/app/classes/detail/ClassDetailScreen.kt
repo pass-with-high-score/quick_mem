@@ -42,7 +42,9 @@ import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AddMemberToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetsToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -95,15 +97,19 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.onNavigateToAddFolder -> {
-                    navigator.navigate(AddFolderToClassScreenDestination)
+                    navigator.navigate(
+                        AddFolderToClassScreenDestination(
+                            classId = uiState.id
+                        )
+                    )
                 }
 
                 ClassDetailUiEvent.onNavigateToAddMember -> {
-
+                    navigator.navigate(AddMemberToClassScreenDestination)
                 }
 
                 ClassDetailUiEvent.onNavigateToAddStudySets -> {
-                    navigator.navigate(AddStudySetScreenDestination)
+                    navigator.navigate(AddStudySetsToClassScreenDestination)
                 }
             }
         }

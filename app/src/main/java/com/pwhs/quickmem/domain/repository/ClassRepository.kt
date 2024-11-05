@@ -1,6 +1,8 @@
 package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.classes.AddFoldersToClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.AddFoldersToClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
@@ -35,4 +37,9 @@ interface ClassRepository {
         token: String,
         classId: String
     ): Flow<Resources<Unit>>
+
+    suspend fun addFoldersToClass(
+        token: String,
+        addFoldersToClassRequestModel: AddFoldersToClassRequestModel
+    ):Flow<Resources<AddFoldersToClassResponseModel>>
 }

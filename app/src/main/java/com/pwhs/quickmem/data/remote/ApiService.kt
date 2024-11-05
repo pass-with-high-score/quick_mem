@@ -13,6 +13,8 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
+import com.pwhs.quickmem.data.dto.classes.AddFoldersToClassRequestDto
+import com.pwhs.quickmem.data.dto.classes.AddFoldersToClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.AddMemberToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
@@ -261,15 +263,17 @@ interface ApiService {
         @Body addMemberToClassRequestDto: AddMemberToClassRequestDto
     )
 
-    @POST("class/folders")
-    suspend fun addFolderToClass()
-
     @POST("class/study-sets")
     suspend fun addStudySetsToClass()
 
     @DELETE("class/folders")
-    suspend fun removeFolderToClass()
+    suspend fun addFolderToClass(
+        @Header("Authorization") token: String,
+        @Body addFoldersToClassRequestDto: AddFoldersToClassRequestDto
+    ): AddFoldersToClassResponseDto
 
     @DELETE("class/study-sets")
-    suspend fun removeStudySetToClass()
+    suspend fun removeMemberToClass(
+
+    )
 }

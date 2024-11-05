@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -22,13 +23,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
+import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
 
 @Composable
 fun FoldersTabScreen(
     modifier: Modifier = Modifier,
     folder: List<GetFolderResponseModel> = emptyList(),
     onAddFoldersClicked: () -> Unit = {},
-    onFolderItemClicked: () -> Unit = {},
+    onFolderItemClicked: (String) -> Unit = {},
 ) {
     Scaffold { innerPadding ->
         Box(
@@ -93,7 +95,15 @@ fun FoldersTabScreen(
                             .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-
+                        items(folder) { folders ->
+                            FolderItem(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                title = folders.title,
+                                onClick = { onFolderItemClicked(folders.id) },
+                                numOfStudySets = folders.studySetCount,
+                                userResponseModel = folders.user
+                            )
+                        }
                     }
                 }
             }

@@ -1,13 +1,26 @@
 package com.pwhs.quickmem.presentation.app.classes.add_folder
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
+import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
+import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
 import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
@@ -18,10 +31,18 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun AddFolderToClassScreen(
     modifier: Modifier = Modifier,
-    destination: DestinationsNavigator,
+    navigator: DestinationsNavigator,
     viewModel: AddFolderToClassViewModel = hiltViewModel(),
 ) {
-    AddFolderUI()
+    val folders by viewModel.folders.collectAsState()
+
+    AddFolderUI(
+        modifier = Modifier,
+        onNavigateBack = {
+            navigator.navigateUp()
+        },
+        folders = folders
+    )
 }
 
 @Composable
@@ -29,7 +50,9 @@ fun AddFolderUI(
     modifier: Modifier = Modifier,
     onDoneClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    isLoading:Boolean = false
+    folders: List<GetFolderResponseModel>,
+    isLoading: Boolean = false,
+    onSelectedFolder: (String) -> Unit = {}
 ) {
     Scaffold(
         containerColor = colorScheme.background,
@@ -45,7 +68,15 @@ fun AddFolderUI(
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
-
+            items(folders) { folder ->
+                FolderItem(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    title = folder.title,
+                    numOfStudySets = folder.studySetCount,
+                    onClick = { onSelectedFolder(folder.id) },
+                    userResponseModel = folder.user
+                )
+            }
         }
         LoadingOverlay(
             isLoading = isLoading
@@ -56,5 +87,5 @@ fun AddFolderUI(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AddFolderUIPreview() {
-    AddFolderUI()
+
 }

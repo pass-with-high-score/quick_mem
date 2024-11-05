@@ -4,6 +4,8 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.classes.toModel
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.model.classes.AddFoldersToClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.AddFoldersToClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
@@ -103,6 +105,25 @@ class ClassRepositoryImpl @Inject constructor(
                     token, classId
                 )
                 emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun addFoldersToClass(
+        token: String,
+        addFoldersToClassRequestModel: AddFoldersToClassRequestModel
+    ): Flow<Resources<AddFoldersToClassResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.addFolderToClass(
+                    token, addFoldersToClassRequestModel.toDto()
+                )
+
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
