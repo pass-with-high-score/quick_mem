@@ -11,6 +11,8 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
@@ -37,6 +39,11 @@ interface AuthRepository {
         token: String,
         updateFullNameRequestModel: UpdateFullNameRequestModel
     ): Flow<Resources<UpdateFullNameResponseModel>>
+
+    suspend fun updateEmail(
+        token: String,
+        updateEmailRequestModel: UpdateEmailRequestModel
+    ): Flow<Resources<UpdateEmailResponseModel>>
 
     suspend fun sendResetPassword(
         sendResetPasswordRequestModel: SendResetPasswordRequestModel
