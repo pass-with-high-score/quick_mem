@@ -47,7 +47,9 @@ import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardSc
 import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.LearnFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -69,7 +71,7 @@ fun StudySetDetailScreen(
     resultEditStudySet: ResultRecipient<EditStudySetScreenDestination, Boolean>,
     resultEditFlashCard: ResultRecipient<EditFlashCardScreenDestination, Boolean>,
     resultFlipFlashCard: ResultRecipient<FlipFlashCardScreenDestination, Boolean>,
-    resultLearnFlashCard: ResultRecipient<LearnFlashCardScreenDestination, Boolean>,
+    resultQuiz: ResultRecipient<LearnByQuizScreenDestination, Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -116,7 +118,7 @@ fun StudySetDetailScreen(
         }
     }
 
-    resultLearnFlashCard.onNavResult { result ->
+    resultQuiz.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {}
             is NavResult.Value -> {
@@ -237,9 +239,9 @@ fun StudySetDetailScreen(
         onResetProgress = {
             viewModel.onEvent(StudySetDetailUiAction.OnResetProgressClicked(uiState.id))
         },
-        onNavigateToLearnFlashCard = {
+        onNavigateToQuiz = {
             navigator.navigate(
-                LearnFlashCardScreenDestination(
+                LearnByQuizScreenDestination(
                     studySetId = uiState.id,
                     studySetTitle = uiState.title,
                     studySetDescription = uiState.description,
@@ -248,11 +250,17 @@ fun StudySetDetailScreen(
                 )
             )
         },
-        onNavigateToTestFlashCard = {
+        onNavigateToTrueFalse = {
+            navigator.navigate(
+                LearnByTrueFalseScreenDestination
+            )
         },
-        onNavigateToMatchFlashCard = {
+        onNavigateToWrite = {
+            navigator.navigate(
+                LearnByWriteScreenDestination
+            )
         },
-        onNavigateToFlipFlashCard = {
+        onNavigateToFlip = {
             navigator.navigate(
                 FlipFlashCardScreenDestination(
                     studySetId = uiState.id,
@@ -297,10 +305,10 @@ fun StudySetDetail(
     onEditStudySet: () -> Unit = {},
     onDeleteStudySet: () -> Unit = {},
     onResetProgress: () -> Unit = {},
-    onNavigateToLearnFlashCard: () -> Unit = {},
-    onNavigateToTestFlashCard: () -> Unit = {},
-    onNavigateToMatchFlashCard: () -> Unit = {},
-    onNavigateToFlipFlashCard: () -> Unit = {},
+    onNavigateToQuiz: () -> Unit = {},
+    onNavigateToTrueFalse: () -> Unit = {},
+    onNavigateToWrite: () -> Unit = {},
+    onNavigateToFlip: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onNavigateToUserDetail: () -> Unit = {}
 ) {
@@ -388,10 +396,10 @@ fun StudySetDetail(
                             onToggleStarClick = onToggleStarredFlashCard,
                             onEditFlashCardClick = onEditFlashCard,
                             onAddFlashCardClick = onAddFlashcard,
-                            onNavigateToLearnFlashCard = onNavigateToLearnFlashCard,
-                            onNavigateToTestFlashCard = onNavigateToTestFlashCard,
-                            onNavigateToMatchFlashCard = onNavigateToMatchFlashCard,
-                            onNavigateToFlipFlashCard = onNavigateToFlipFlashCard
+                            onNavigateToQuiz = onNavigateToQuiz,
+                            onNavigateToTrueFalse = onNavigateToTrueFalse,
+                            onNavigateToWrite = onNavigateToWrite,
+                            onNavigateToFlip = onNavigateToFlip
                         )
 
                         StudySetDetailEnum.PROGRESS.index -> ProgressTabScreen(

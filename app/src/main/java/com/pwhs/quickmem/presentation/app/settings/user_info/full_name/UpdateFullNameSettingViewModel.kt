@@ -46,17 +46,20 @@ class UpdateFullNameSettingViewModel @Inject constructor(
         when (event) {
             is UpdateFullNameSettingUiAction.OnFullNameChanged -> {
                 _uiState.update {
-                    it.copy(fullName = event.fullName)
+                    it.copy(
+                        fullName = event.fullName,
+                        errorMessage = ""
+                    )
                 }
             }
 
             is UpdateFullNameSettingUiAction.OnSaveClicked -> {
-                saveFullName(_uiState.value.fullName)
+                saveFullName()
             }
         }
     }
 
-    private fun saveFullName(fullName: String) {
+    private fun saveFullName() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = _uiState.value.id
@@ -90,7 +93,7 @@ class UpdateFullNameSettingViewModel @Inject constructor(
                         }
 
                         is Resources.Success -> {
-                            appManager.saveUserFullName(fullName)
+                            appManager.saveUserFullName(resource.data?.fullname ?: fullname)
                             _uiEvent.send(UpdateFullNameSettingUiEvent.OnFullNameChanged)
                         }
                     }

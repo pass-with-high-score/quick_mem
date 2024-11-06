@@ -31,6 +31,7 @@ fun SettingTextField(
             .padding(top = 8.dp)
             .padding(horizontal = 16.dp),
         value = value,
+        maxLines = 1,
         onValueChange = onValueChange,
         placeholder = {
             Text(

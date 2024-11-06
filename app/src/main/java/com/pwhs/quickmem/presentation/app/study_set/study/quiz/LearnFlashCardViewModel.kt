@@ -32,7 +32,7 @@ class LearnFlashCardViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LearnFlashCardUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<LearnFlashCardUiEvent>()
+    private val _uiEvent = Channel<LearnByQuizUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
@@ -55,10 +55,10 @@ class LearnFlashCardViewModel @Inject constructor(
         getFlashCard()
     }
 
-    fun onEvent(event: LearnFlashCardUiAction) {
+    fun onEvent(event: LearnByQuizUiAction) {
         when (event) {
-            LearnFlashCardUiAction.LoadNextFlashCard -> loadNextFlashCard()
-            is LearnFlashCardUiAction.SubmitCorrectAnswer -> submitCorrectAnswer(event.flashCardId)
+            LearnByQuizUiAction.LoadNextFlashCard -> loadNextFlashCard()
+            is LearnByQuizUiAction.SubmitCorrectAnswer -> submitCorrectAnswer(event.flashCardId)
         }
     }
 
