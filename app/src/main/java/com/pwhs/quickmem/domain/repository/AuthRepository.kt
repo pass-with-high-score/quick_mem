@@ -2,6 +2,8 @@ package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -44,6 +46,11 @@ interface AuthRepository {
         token: String,
         updateEmailRequestModel: UpdateEmailRequestModel
     ): Flow<Resources<UpdateEmailResponseModel>>
+
+    suspend fun changePassword(
+        token: String,
+        changePasswordRequestModel: ChangePasswordRequestModel
+    ): Flow<Resources<ChangePasswordResponseModel>>
 
     suspend fun sendResetPassword(
         sendResetPasswordRequestModel: SendResetPasswordRequestModel

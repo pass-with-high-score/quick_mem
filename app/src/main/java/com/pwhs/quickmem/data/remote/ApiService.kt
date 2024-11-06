@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.data.remote
 
+import com.google.android.gms.common.api.Response
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
 import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
@@ -38,6 +39,8 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
@@ -45,6 +48,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -78,6 +82,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body updateEmailRequestDto: UpdateEmailRequestDto
     ): UpdateEmailResponseDto
+
+    @PATCH("auth/user/change-password")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body changePasswordRequestModel: ChangePasswordRequestModel
+    ): ChangePasswordResponseModel
 
     @POST("auth/send-reset-password")
     suspend fun sendResetPassword(

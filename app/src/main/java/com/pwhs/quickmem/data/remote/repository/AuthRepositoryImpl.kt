@@ -7,6 +7,8 @@ import com.pwhs.quickmem.data.mapper.auth.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.data.remote.EmailService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -148,6 +150,19 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun changePassword(
+        token: String,
+        changePasswordRequestModel: ChangePasswordRequestModel
+    ): Flow<Resources<ChangePasswordResponseModel>> {
+        return flow {
+            try {
+                val response = apiService.changePassword(token, changePasswordRequestModel)
+                emit(Resources.Success(response))
+            } catch (e: Exception) {
+                emit(Resources.Error("Failed to change password: ${e.message}"))
+            }
+        }
+    }
 
     override suspend fun sendResetPassword(
         sendResetPasswordRequestModel: SendResetPasswordRequestModel
