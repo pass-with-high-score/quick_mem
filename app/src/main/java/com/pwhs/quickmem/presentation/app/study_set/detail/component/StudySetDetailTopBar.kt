@@ -86,7 +86,11 @@ fun StudySetDetailTopAppBar(
                             .size(16.dp)
                     )
                     Text(
-                        "$flashCardCount flashcards",
+                        when (flashCardCount) {
+                            0 -> "No flashcards"
+                            1 -> "1 flashcard"
+                            else -> "$flashCardCount flashcards"
+                        },
                         style = typography.bodyMedium.copy(
                             color = colorScheme.secondary
                         )

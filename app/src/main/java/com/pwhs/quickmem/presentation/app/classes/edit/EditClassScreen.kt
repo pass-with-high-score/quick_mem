@@ -1,19 +1,18 @@
 package com.pwhs.quickmem.presentation.app.classes.edit
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +23,7 @@ import com.pwhs.quickmem.presentation.component.SwitchContainer
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination<RootGraph>(
     navArgs = EditClassScreenArgs::class
@@ -33,14 +33,17 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun EditClassScreen(
     modifier: Modifier = Modifier,
     viewModel: EditClassViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    resultNavigator: ResultBackNavigator<Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-
-                else -> {}
+                EditClassUiEvent.ClassesUpdated -> TODO()
+                is EditClassUiEvent.ShowError -> {
+                    Toast.makeText(context, "Update class error", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -53,11 +56,11 @@ fun EditClassScreen(
         allowSetManagement = uiState.allowSetManagement,
         allowMemberManagement = uiState.allowMemberManagement,
         onNavigateBack = {
-            navigator.navigateUp()
+            resultNavigator.navigateBack(false)
         },
         onDoneClick = {
             viewModel.onEvent(EditClassUiAction.SaveClicked)
-            navigator.navigateUp()
+            resultNavigator.navigateBack(true)
         },
         onAllowMemberManagementChange = {
             viewModel.onEvent(EditClassUiAction.OnAllowMemberChanged(it))

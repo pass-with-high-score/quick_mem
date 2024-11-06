@@ -97,8 +97,8 @@ class EditClassViewModel @Inject constructor(
                     description = uiState.description,
                     title = uiState.title
                 )
-            ).collectLatest { resoucres ->
-                when (resoucres) {
+            ).collectLatest { resources ->
+                when (resources) {
                     is Resources.Error -> {
                         _uiState.update {
                             it.copy(isLoading = false)
@@ -116,7 +116,7 @@ class EditClassViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(isLoading = false)
                         }
-                        _uiEvent.send(EditClassUiEvent.ClassesUpdated(id))
+                        _uiEvent.send(EditClassUiEvent.ClassesUpdated)
                     }
                 }
             }

@@ -110,7 +110,7 @@ fun StudySetItem(
                 modifier = Modifier.padding(top = 8.dp)
             ) {
                 AsyncImage(
-                    model = studySet.user.avatarUrl,
+                    model = studySet.owner.avatarUrl,
                     contentDescription = "User avatar",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -118,7 +118,7 @@ fun StudySetItem(
                         .clip(CircleShape)
                 )
                 Text(
-                    studySet.user.username,
+                    studySet.owner.username,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -146,7 +146,7 @@ private fun StudySetItemPreview() {
                                 flashCardCount = 10,
                                 color = ColorModel.defaultColors[0],
                                 subject = SubjectModel.defaultSubjects[0],
-                                user = UserResponseModel(
+                                owner = UserResponseModel(
                                     id = "1",
                                     username = "User",
                                     avatarUrl = "https://www.example.com/avatar.jpg"

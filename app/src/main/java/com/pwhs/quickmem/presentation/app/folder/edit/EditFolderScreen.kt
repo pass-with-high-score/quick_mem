@@ -22,7 +22,6 @@ import com.pwhs.quickmem.presentation.component.SwitchContainer
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 
@@ -33,7 +32,6 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 fun EditFolderScreen(
     modifier: Modifier = Modifier,
     viewModel: EditFolderViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -43,8 +41,7 @@ fun EditFolderScreen(
             when (event) {
                 is EditFolderUiEvent.FolderEdited -> {
                     Toast.makeText(context, "Folder edited", Toast.LENGTH_SHORT).show()
-                    resultNavigator.setResult(true)
-                    navigator.popBackStack()
+                    resultNavigator.navigateBack(true)
                 }
 
                 is EditFolderUiEvent.ShowError -> {
@@ -66,9 +63,10 @@ fun EditFolderScreen(
         onIsPublicChange = { viewModel.onEvent(EditFolderUiAction.IsPublicChanged(it)) },
         onDoneClick = {
             viewModel.onEvent(EditFolderUiAction.SaveClicked)
-            navigator.navigateUp()
         },
-        onNavigateBack = { navigator.navigateUp() }
+        onNavigateBack = {
+            resultNavigator.navigateBack(false)
+        }
     )
 
 }

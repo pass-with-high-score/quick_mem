@@ -103,7 +103,7 @@ class StudySetDetailViewModel @Inject constructor(
                                 flashCardCount = resource.data.flashCardCount,
                                 flashCards = resource.data.flashcards,
                                 isPublic = resource.data.isPublic,
-                                user = resource.data.user,
+                                user = resource.data.owner,
                                 createdAt = resource.data.createdAt,
                                 updatedAt = resource.data.updatedAt,
                                 colorModel = resource.data.color,

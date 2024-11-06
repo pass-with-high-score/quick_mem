@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -27,27 +26,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.users.ClassMemberModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailBottomSheet
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
-import com.pwhs.quickmem.presentation.app.classes.detail.sets.SetsTabScreen
+import com.pwhs.quickmem.presentation.app.classes.detail.study_sets.StudySetsTabScreen
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddMemberToClassScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.AddStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetsToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Composable
 @Destination<RootGraph>(
@@ -56,8 +62,24 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun ClassDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: ClassDetailViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    resultBackNavigator: ResultRecipient<EditClassScreenDestination, Boolean>
 ) {
+
+    resultBackNavigator.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(key1 = true) {
@@ -124,7 +146,10 @@ fun ClassDetailScreen(
         },
         title = uiState.title,
         isLoading = uiState.isLoading,
-        description = uiState.description,
+        userResponseModel = uiState.userResponseModel,
+        studySets = uiState.studySets,
+        folders = uiState.folders,
+        members = uiState.members,
         onEditClass = {
             viewModel.onEvent(ClassDetailUiAction.EditClass)
         },
@@ -139,6 +164,9 @@ fun ClassDetailScreen(
         },
         onNavigateAddMember = {
             viewModel.onEvent(ClassDetailUiAction.onNavigateToAddMember)
+        },
+        onNavigateToUserDetail = {
+            navigator.navigate(UserDetailScreenDestination(userId = uiState.userResponseModel.id))
         }
     )
 }
@@ -149,18 +177,22 @@ fun ClassDetail(
     modifier: Modifier = Modifier,
     title: String = "",
     isLoading: Boolean = false,
-    description: String = "",
     code: String,
+    userResponseModel: UserResponseModel = UserResponseModel(),
+    studySets: List<GetStudySetResponseModel> = emptyList(),
+    folders: List<GetFolderResponseModel> = emptyList(),
+    members: List<ClassMemberModel> = emptyList(),
     onNavigateBack: () -> Unit = {},
     onNavigateAddFolder: () -> Unit = {},
     onNavigateAddMember: () -> Unit = {},
     onNavigateAddStudySets: () -> Unit = {},
+    onNavigateToUserDetail: () -> Unit = {},
     onEditClass: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabTitles = listOf("SETS", "FOLDERS", "MEMBERS")
+    val tabTitles = listOf("Study sets", "Folders", "Members")
 
     val refreshState = rememberPullToRefreshState()
     var showMoreBottomSheet by remember { mutableStateOf(false) }
@@ -174,13 +206,14 @@ fun ClassDetail(
                 onNavigateBack = onNavigateBack,
                 onMoreClicked = { showMoreBottomSheet = true },
                 modifier = modifier,
-                description = description
+                userResponse = userResponseModel,
+                onNavigateToUserDetail = onNavigateToUserDetail
             )
         }
     ) { innerPadding ->
         Box(
             modifier = Modifier
-                .background(androidx.compose.ui.graphics.Color.Transparent)
+                .background(Color.Transparent)
                 .padding(innerPadding)
         ) {
             PullToRefreshBox(
@@ -189,13 +222,6 @@ fun ClassDetail(
                 state = refreshState
             ) {
                 Column {
-                    Text(
-                        "Code: ${code}",
-                        style = typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = modifier.padding(start = 15.dp)
-                    )
                     TabRow(
                         selectedTabIndex = tabIndex,
                         indicator = { tabPositions ->
@@ -211,7 +237,7 @@ fun ClassDetail(
                                     Text(
                                         title, style = typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold,
-                                            color = if (tabIndex == index) androidx.compose.ui.graphics.Color.Black else androidx.compose.ui.graphics.Color.Gray
+                                            color = if (tabIndex == index) Color.Black else Color.Gray
                                         )
                                     )
                                 },
@@ -219,8 +245,8 @@ fun ClassDetail(
                                 onClick = { tabIndex = index },
                                 icon = {
                                     when (index) {
-                                        ClassDetailEnums.SETS.index -> {}
-                                        ClassDetailEnums.FOLDER.index -> {}
+                                        ClassDetailEnums.STUDY_SETS.index -> {}
+                                        ClassDetailEnums.FOLDERS.index -> {}
                                         ClassDetailEnums.MEMBERS.index -> {}
                                     }
                                 }
@@ -228,19 +254,24 @@ fun ClassDetail(
                         }
                     }
                     when (tabIndex) {
-                        ClassDetailEnums.SETS.index -> SetsTabScreen(
+                        ClassDetailEnums.STUDY_SETS.index -> StudySetsTabScreen(
                             onAddSetsClicked = onNavigateAddStudySets,
+                            studySets = studySets,
                             onStudyCardClicked = {
+                            }
+                        )
+
+                        ClassDetailEnums.FOLDERS.index -> FoldersTabScreen(
+                            onAddFoldersClicked = onNavigateAddFolder,
+                            folder = folders,
+                            onFolderItemClicked = {
 
                             }
                         )
 
-                        ClassDetailEnums.FOLDER.index -> FoldersTabScreen(
-                            onAddFoldersClicked = onNavigateAddFolder
-                        )
-
                         ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
-                            onAddMembersClicked = onNavigateAddMember
+                            onAddMembersClicked = onNavigateAddMember,
+                            member = members
                         )
                     }
 
@@ -286,7 +317,10 @@ fun ClassDetail(
 @Preview
 @Composable
 private fun ClassDetailScreenPreview() {
-    MaterialTheme {
-        ClassDetail(code = "123")
+    QuickMemTheme {
+        ClassDetail(
+            code = "",
+            title = "Class Title",
+        )
     }
 }

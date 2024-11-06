@@ -7,8 +7,6 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.ClassRepository
-import com.pwhs.quickmem.presentation.app.folder.detail.FolderDetailUiEvent
-import com.wajahatkarim3.easyvalidation.core.collection_ktx.allUperCaseList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -88,9 +86,11 @@ class ClassDetailViewModel @Inject constructor(
             ClassDetailUiAction.onNavigateToAddFolder -> {
                 _uiEvent.trySend(ClassDetailUiEvent.onNavigateToAddFolder)
             }
+
             ClassDetailUiAction.onNavigateToAddMember -> {
                 _uiEvent.trySend(ClassDetailUiEvent.onNavigateToAddMember)
             }
+
             ClassDetailUiAction.onNavigateToAddStudySets -> {
                 _uiEvent.trySend(ClassDetailUiEvent.onNavigateToAddStudySets)
             }
@@ -120,7 +120,11 @@ class ClassDetailViewModel @Inject constructor(
                                     id = data.id,
                                     isLoading = false,
                                     allowSet = data.allowSetManagement,
-                                    allowMember = data.allowMemberManagement
+                                    allowMember = data.allowMemberManagement,
+                                    userResponseModel = data.owner,
+                                    folders = data.folders ?: emptyList(),
+                                    studySets = data.studySets ?: emptyList(),
+                                    members = data.members ?: emptyList()
                                 )
                             }
                         } ?: run {
@@ -143,11 +147,13 @@ class ClassDetailViewModel @Inject constructor(
                             it.copy(isLoading = false)
                         }
                     }
+
                     is Resources.Loading -> {
                         _uiState.update {
                             it.copy(isLoading = true)
                         }
                     }
+
                     is Resources.Success -> {
                         resource.data?.let {
                             Timber.d("Folder deleted")
