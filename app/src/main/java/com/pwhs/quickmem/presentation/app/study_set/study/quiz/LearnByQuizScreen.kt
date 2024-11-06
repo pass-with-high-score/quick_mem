@@ -23,10 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.core.data.Rating
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
-import com.pwhs.quickmem.presentation.app.study_set.study.truefalse.LearnByTrueFalse
-import com.pwhs.quickmem.presentation.app.study_set.study.write.LearnByWrite
+import com.pwhs.quickmem.presentation.app.study_set.study.quiz.component.QuizView
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -36,10 +34,10 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 import timber.log.Timber
 
 @Destination<RootGraph>(
-    navArgs = LearnFlashCardArgs::class
+    navArgs = LearnByQuizArgs::class
 )
 @Composable
-fun LearnFlashCardScreen(
+fun LearnByQuizScreen(
     modifier: Modifier = Modifier,
     resultNavigator: ResultBackNavigator<Boolean>,
     navigator: DestinationsNavigator,
@@ -54,7 +52,7 @@ fun LearnFlashCardScreen(
 
         }
     }
-    LearnFlashCard(
+    LearnByQuiz(
         modifier = modifier,
         onNavigateBack = {
             resultNavigator.navigateBack(true)
@@ -65,14 +63,14 @@ fun LearnFlashCardScreen(
         randomAnswers = uiState.randomAnswers,
         studySetColor = uiState.studySetColor.hexValue.toColor(),
         onCorrectAnswer = { flashCardId, isCorrect ->
-            viewModel.onEvent(LearnFlashCardUiAction.SubmitCorrectAnswer(flashCardId, isCorrect))
+            viewModel.onEvent(LearnByQuizUiAction.SubmitCorrectAnswer(flashCardId, isCorrect))
         }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LearnFlashCard(
+fun LearnByQuiz(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     flashCardList: List<FlashCardResponseModel> = emptyList(),
@@ -123,29 +121,16 @@ fun LearnFlashCard(
                 }
             )
             val flashCard = flashCardLearnRound.getOrNull(flashCardLearnRoundIndex) ?: return@Column
-            Timber.d("FlashCard: $flashCardLearnRoundIndex")
-            when (flashCard.rating) {
-                Rating.NOT_STUDIED.name -> {
-                    LearnByQuiz(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        flashCard = flashCard,
-                        randomAnswer = randomAnswers,
-                        correctColor = correctColor,
-                        incorrectColor = incorrectColor
-                    ) {
-                        Timber.d("Correct Answer")
-                        onCorrectAnswer(flashCard.id, it)
-                    }
-                }
-
-                Rating.STILL_LEARNING.name -> {
-                    LearnByTrueFalse(flashCard = flashCard)
-                }
-
-                Rating.MASTERED.name -> {
-                    LearnByWrite(flashCard = flashCard)
-                }
+            QuizView(
+                modifier = Modifier
+                    .fillMaxSize(),
+                flashCard = flashCard,
+                randomAnswer = randomAnswers,
+                correctColor = correctColor,
+                incorrectColor = incorrectColor
+            ) {
+                Timber.d("Correct Answer")
+                onCorrectAnswer(flashCard.id, it)
             }
         }
     }
@@ -153,8 +138,8 @@ fun LearnFlashCard(
 
 @Preview
 @Composable
-private fun LearnFlashCardScreenPreview() {
+private fun LearnByQuizScreenPreview() {
     QuickMemTheme {
-        LearnFlashCard()
+        LearnByQuiz()
     }
 }

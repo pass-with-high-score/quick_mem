@@ -48,6 +48,7 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,10 +60,10 @@ fun MaterialTabScreen(
     onEditFlashCardClick: () -> Unit = {},
     onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
     onAddFlashCardClick: () -> Unit = {},
-    onNavigateToLearnFlashCard: () -> Unit = {},
-    onNavigateToTestFlashCard: () -> Unit = {},
-    onNavigateToMatchFlashCard: () -> Unit = {},
-    onNavigateToFlipFlashCard: () -> Unit = {},
+    onNavigateToQuiz: () -> Unit = {},
+    onNavigateToTrueFalse: () -> Unit = {},
+    onNavigateToWrite: () -> Unit = {},
+    onNavigateToFlip: () -> Unit = {},
 ) {
     val menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
@@ -157,28 +158,28 @@ fun MaterialTabScreen(
                             LearnModeCard(
                                 title = "Flip Flashcards",
                                 icon = R.drawable.ic_flipcard,
-                                onClick = onNavigateToFlipFlashCard
+                                onClick = onNavigateToFlip
                             )
                         }
                         item {
                             LearnModeCard(
-                                title = "Learn",
-                                icon = R.drawable.ic_learn,
-                                onClick = onNavigateToLearnFlashCard
+                                title = "Quiz",
+                                icon = R.drawable.ic_quiz,
+                                onClick = onNavigateToQuiz
                             )
                         }
                         item {
                             LearnModeCard(
-                                title = "Test",
-                                icon = R.drawable.ic_test,
-                                onClick = onNavigateToTestFlashCard
+                                title = "True/False",
+                                icon = R.drawable.ic_tf,
+                                onClick = onNavigateToTrueFalse
                             )
                         }
                         item {
                             LearnModeCard(
-                                title = "Match",
-                                icon = R.drawable.ic_match_card,
-                                onClick = onNavigateToMatchFlashCard
+                                title = "Write",
+                                icon = R.drawable.ic_write,
+                                onClick = onNavigateToWrite
                             )
                         }
 
@@ -287,38 +288,40 @@ fun MaterialTabScreen(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun MaterialTabScreenPreview() {
-    MaterialTabScreen(
-        flashCards = listOf(
-            StudySetFlashCardResponseModel(
-                id = "1",
-                term = "Term 1",
-                definition = "Definition 1",
-                definitionImageURL = "https://www.example.com/image1.jpg"
-            ),
-            StudySetFlashCardResponseModel(
-                id = "2",
-                term = "Term 2",
-                definition = "Definition 2",
-                definitionImageURL = "https://www.example.com/image2.jpg"
-            ),
-            StudySetFlashCardResponseModel(
-                id = "3",
-                term = "Term 3",
-                definition = "Definition 3",
-                definitionImageURL = "https://www.example.com/image3.jpg"
-            ),
-            StudySetFlashCardResponseModel(
-                id = "4",
-                term = "Term 4",
-                definition = "Definition 4",
-                definitionImageURL = "https://www.example.com/image4.jpg"
-            ),
-            StudySetFlashCardResponseModel(
-                id = "5",
-                term = "Term 5",
-                definition = "Definition 5",
-                definitionImageURL = "https://www.example.com/image5.jpg"
-            ),
+    QuickMemTheme {
+        MaterialTabScreen(
+            flashCards = listOf(
+                StudySetFlashCardResponseModel(
+                    id = "1",
+                    term = "Term 1",
+                    definition = "Definition 1",
+                    definitionImageURL = "https://www.example.com/image1.jpg"
+                ),
+                StudySetFlashCardResponseModel(
+                    id = "2",
+                    term = "Term 2",
+                    definition = "Definition 2",
+                    definitionImageURL = "https://www.example.com/image2.jpg"
+                ),
+                StudySetFlashCardResponseModel(
+                    id = "3",
+                    term = "Term 3",
+                    definition = "Definition 3",
+                    definitionImageURL = "https://www.example.com/image3.jpg"
+                ),
+                StudySetFlashCardResponseModel(
+                    id = "4",
+                    term = "Term 4",
+                    definition = "Definition 4",
+                    definitionImageURL = "https://www.example.com/image4.jpg"
+                ),
+                StudySetFlashCardResponseModel(
+                    id = "5",
+                    term = "Term 5",
+                    definition = "Definition 5",
+                    definitionImageURL = "https://www.example.com/image5.jpg"
+                ),
+            )
         )
-    )
+    }
 }

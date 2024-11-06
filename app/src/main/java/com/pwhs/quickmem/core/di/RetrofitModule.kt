@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.core.di
 
+import com.pwhs.quickmem.BuildConfig
 import com.pwhs.quickmem.core.utils.AppConstant.BASE_URL
 import com.pwhs.quickmem.core.utils.AppConstant.EMAIL_VERIFICATION_URL
 import com.pwhs.quickmem.data.remote.ApiService
@@ -31,7 +32,8 @@ object RetrofitModule {
                     .readTimeout(10, TimeUnit.SECONDS)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .addInterceptor(HttpLoggingInterceptor().apply {
-                        level = HttpLoggingInterceptor.Level.BODY
+                        level =
+                            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
                     }).build()
             )
             .build()
@@ -50,7 +52,8 @@ object RetrofitModule {
                     .readTimeout(30, TimeUnit.SECONDS)
                     .writeTimeout(30, TimeUnit.SECONDS)
                     .addInterceptor(HttpLoggingInterceptor().apply {
-                        level = HttpLoggingInterceptor.Level.BODY
+                        level =
+                            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
                     }).build()
             )
             .build()
