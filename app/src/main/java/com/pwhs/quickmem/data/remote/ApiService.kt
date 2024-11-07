@@ -251,6 +251,6 @@ interface ApiService {
     @GET("auth/me/{id}")
     suspend fun getUserDetail(
         @Header("Authorization") token: String,
-        @Path("id") id: String
+        @Path("id") userId: String
     ): UserResponseDto
 }

@@ -6,6 +6,5 @@ data class UserDetailUiState(
     val userName: String = "",
     val userEmail: String = "",
     val avatarUrl: String = "",
-    val role: String = "",
     val errorMessage: String? = null
 )
