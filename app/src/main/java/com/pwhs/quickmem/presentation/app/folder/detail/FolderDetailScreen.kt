@@ -54,12 +54,24 @@ fun FolderDetailScreen(
     viewModel: FolderDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Boolean>,
-    resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>
+    resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>,
+    resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     resultEditFolder.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(FolderDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultStudySetDetail.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {}
             is NavResult.Value -> {

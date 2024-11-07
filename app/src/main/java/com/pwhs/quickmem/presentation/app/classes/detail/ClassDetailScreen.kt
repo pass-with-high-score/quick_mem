@@ -59,6 +59,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
+import timber.log.Timber
 
 @Composable
 @Destination<RootGraph>(
@@ -70,12 +71,42 @@ fun ClassDetailScreen(
     navigator: DestinationsNavigator,
     resultBackNavigator: ResultRecipient<EditClassScreenDestination, Boolean>,
     resultNavigator: ResultBackNavigator<Boolean>,
+    resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
+    resultFolderDetail: ResultRecipient<FolderDetailScreenDestination, Boolean>
 ) {
 
     resultBackNavigator.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
                 // Do nothing
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+    resultStudySetDetail.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("StudySetDetailScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+
+    resultFolderDetail.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("FolderDetailScreen was canceled")
             }
 
             is NavResult.Value -> {

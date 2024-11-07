@@ -71,7 +71,37 @@ fun LibraryScreen(
             }
 
             is NavResult.Value -> {
-                viewModel.onEvent(LibraryUiAction.Refresh)
+               if (result.value) {
+                   viewModel.onEvent(LibraryUiAction.Refresh)
+               }
+            }
+        }
+    }
+
+    resultClassDetail.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("ClassDetailScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+              if (result.value) {
+                  viewModel.onEvent(LibraryUiAction.Refresh)
+              }
+            }
+        }
+    }
+
+    resultFolderDetail.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("FolderDetailScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(LibraryUiAction.Refresh)
+                }
             }
         }
     }
