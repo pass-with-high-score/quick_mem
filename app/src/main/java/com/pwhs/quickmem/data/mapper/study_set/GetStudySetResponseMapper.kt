@@ -21,8 +21,8 @@ fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
     createdAt = createdAt,
     updatedAt = updatedAt,
     flashCardCount = flashCardCount,
-    flashcards = flashcards.map { it.toModel() },
-    user = user.toModel(),
+    flashcards = flashcards?.map { it.toModel() } ?: emptyList(),
+    owner = owner.toModel(),
     linkShareCode = linkShareCode,
 )
 
@@ -37,6 +37,6 @@ fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
     updatedAt = updatedAt,
     flashCardCount = flashCardCount,
     flashcards = flashcards.map { it.toDto() },
-    user = user.toDto(),
+    owner = owner.toDto(),
     linkShareCode = linkShareCode,
 )

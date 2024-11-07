@@ -54,12 +54,24 @@ fun FolderDetailScreen(
     viewModel: FolderDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Boolean>,
-    resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>
+    resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>,
+    resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     resultEditFolder.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(FolderDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultStudySetDetail.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {}
             is NavResult.Value -> {
@@ -91,8 +103,7 @@ fun FolderDetailScreen(
                 }
 
                 FolderDetailUiEvent.FolderDeleted -> {
-                    resultNavigator.setResult(true)
-                    navigator.navigateUp()
+                    resultNavigator.navigateBack(true)
                 }
             }
         }
@@ -118,8 +129,7 @@ fun FolderDetailScreen(
         onEditFolder = { viewModel.onEvent(FolderDetailUiAction.EditFolder) },
         onStudyFolderClick = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         onNavigateBack = {
-            resultNavigator.setResult(true)
-            navigator.navigateUp()
+            resultNavigator.navigateBack(false)
         },
         onAddStudySet = { },
         onDeleteFolder = { viewModel.onEvent(FolderDetailUiAction.DeleteFolder) },
@@ -131,7 +141,6 @@ fun FolderDetailScreen(
             )
         }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

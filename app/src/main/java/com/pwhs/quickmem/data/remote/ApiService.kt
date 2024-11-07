@@ -15,10 +15,14 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
+import com.pwhs.quickmem.data.dto.classes.AddFoldersToClassRequestDto
+import com.pwhs.quickmem.data.dto.classes.AddMemberToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
+import com.pwhs.quickmem.data.dto.classes.UpdateClassRequestDto
+import com.pwhs.quickmem.data.dto.classes.UpdateClassResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
@@ -246,4 +250,23 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("userId") userId: String
     ): List<GetClassByOwnerResponseDto>
+
+    @DELETE("class/{id}")
+    suspend fun deleteClass(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
+    @PUT("class/{id}")
+    suspend fun updateClass(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body updateClassRequestDto: UpdateClassRequestDto
+    ): UpdateClassResponseDto
+
+    @POST("class/join")
+    suspend fun addMemberToClass(
+        @Header("Authorization") token: String,
+        @Body addMemberToClassRequestDto: AddMemberToClassRequestDto
+    )
 }
