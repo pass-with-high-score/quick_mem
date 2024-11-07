@@ -1,3 +1,5 @@
+package com.pwhs.quickmem.presentation.onboarding.component
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -40,9 +40,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
+import com.ramcosta.composedestinations.utils.isRouteOnBackStackAsState
+import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +65,7 @@ fun StandardScaffold(
     var showBottomSheetCreate by remember {
         mutableStateOf(false)
     }
+    val navigator = navController.rememberDestinationsNavigator()
 
     Scaffold(
         bottomBar = {
@@ -80,6 +84,9 @@ fun StandardScaffold(
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentDestination = navBackStackEntry?.destination
                         items.forEach { item ->
+                            val isCurrentDestOnBackStack by navController.isRouteOnBackStackAsState(
+                                item.direction
+                            )
                             val color by animateColorAsState(
                                 targetValue = if (currentDestination?.route?.contains(item.route) == true) {
                                     colorScheme.primary
@@ -146,14 +153,16 @@ fun StandardScaffold(
                                     if (item.route == "fab") {
                                         showBottomSheetCreate = true
                                     } else {
-                                        navController.navigate(item.route) {
-                                            navController.graph.startDestinationRoute?.let { screenRoute ->
-                                                popUpTo(screenRoute) {
-                                                    saveState = true
-                                                }
-                                                launchSingleTop = true
-                                                restoreState = true
+                                        if (isCurrentDestOnBackStack) {
+                                            navigator.popBackStack(item.direction, false)
+                                            return@NavigationBarItem
+                                        }
+                                        navigator.navigate(item.direction) {
+                                            popUpTo(NavGraphs.root) {
+                                                saveState = true
                                             }
+                                            launchSingleTop = true
+                                            restoreState = true
                                         }
                                     }
                                 }

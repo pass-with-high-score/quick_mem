@@ -7,8 +7,6 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.ClassRepository
-import com.pwhs.quickmem.presentation.app.folder.detail.FolderDetailUiEvent
-import com.wajahatkarim3.easyvalidation.core.collection_ktx.allUperCaseList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +16,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,36 +55,111 @@ class ClassDetailViewModel @Inject constructor(
                 }
             }
         }
-
-        getClassByOwnerID()
+        Timber.d("ClassDetailViewModel: $id")
+        _uiState.update { it.copy(id = id) }
+        getClassByID(id)
     }
 
     fun onEvent(event: ClassDetailUiAction) {
         when (event) {
-            ClassDetailUiAction.JoinClassClicked -> {
-                TODO()
+            is ClassDetailUiAction.Refresh -> {
+                getClassByID(id = _uiState.value.id)
             }
 
             ClassDetailUiAction.NavigateToWelcomeClicked -> {
                 _uiEvent.trySend(ClassDetailUiEvent.NavigateToWelcome)
             }
+
+            ClassDetailUiAction.DeleteClass -> {
+                deleteClass(id = _uiState.value.id)
+                _uiEvent.trySend(ClassDetailUiEvent.ClassDeleted)
+            }
+
+            ClassDetailUiAction.EditClass -> {
+                _uiEvent.trySend(ClassDetailUiEvent.NavigateToEditClass)
+            }
+
+            ClassDetailUiAction.OnNavigateToAddFolder -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddFolder)
+            }
+
+            ClassDetailUiAction.OnNavigateToAddMember -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddMember)
+            }
+
+            ClassDetailUiAction.OnNavigateToAddStudySets -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddStudySets)
+            }
         }
     }
 
-    private fun getClassByOwnerID() {
+    private fun getClassByID(id: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
-            classRepository.getClassByOwnerID(token, userId).collectLatest { resources ->
-                when(resources){
+            classRepository.getClassById(token, id).collectLatest { resource ->
+                when (resource) {
                     is Resources.Error -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
 
-                    }
                     is Resources.Loading -> {
-                        TODO()
+                        _uiState.update { it.copy(isLoading = true) }
                     }
+
                     is Resources.Success -> {
-                        TODO()
+                        resource.data?.let { data ->
+                            _uiState.update {
+                                Timber.d("Study set: ${data.studySets}")
+                                it.copy(
+                                    title = data.title,
+                                    description = data.description,
+                                    joinClassCode = data.joinToken,
+                                    id = data.id,
+                                    isLoading = false,
+                                    allowSet = data.allowSetManagement,
+                                    allowMember = data.allowMemberManagement,
+                                    userResponseModel = data.owner,
+                                    folders = data.folders ?: emptyList(),
+                                    studySets = data.studySets ?: emptyList(),
+                                    members = data.members ?: emptyList()
+                                )
+                            }
+                        } ?: run {
+                            _uiEvent.send(ClassDetailUiEvent.ShowError("Class not found"))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteClass(id: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            classRepository.deleteClass(token, id).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success -> {
+                        resource.data?.let {
+                            Timber.d("Folder deleted")
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(ClassDetailUiEvent.ClassDeleted)
+                        }
+
                     }
                 }
             }

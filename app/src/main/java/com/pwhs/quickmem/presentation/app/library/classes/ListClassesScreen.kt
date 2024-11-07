@@ -30,11 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
+import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +45,7 @@ fun ListClassesScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
-    onClassClicked: (String) -> Unit = {},
+    onClassClicked: (GetClassByOwnerResponseModel) -> Unit = {},
     onAddClassClick: () -> Unit = {},
     onClassRefresh: () -> Unit = {},
 ) {
@@ -120,7 +123,7 @@ fun ListClassesScreen(
                             ClassItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 classItem = classItem,
-                                onClick = { onClassClicked(classItem.id) }
+                                onClick = { onClassClicked(classItem) }
                             )
                         }
                         item {
@@ -151,5 +154,13 @@ fun ListClassesScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ListClassScreenPreview() {
+    QuickMemTheme {
+        ListClassesScreen()
     }
 }
