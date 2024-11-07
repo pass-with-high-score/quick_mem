@@ -58,6 +58,8 @@ fun LibraryScreen(
     navigator: DestinationsNavigator,
     viewModel: LibraryViewModel = hiltViewModel(),
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
+    resultClassDetail: ResultRecipient<ClassDetailScreenDestination, Boolean>,
+    resultFolderDetail: ResultRecipient<FolderDetailScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -112,10 +114,10 @@ fun LibraryScreen(
         onClassClick = {
             navigator.navigate(
                 ClassDetailScreenDestination(
-                    id = it,
-                    code = it,
-                    title = it,
-                    description = it
+                    id = it.id,
+                    code = it.joinToken ?: "",
+                    title = it.title,
+                    description = it.description
                 )
             )
         },
@@ -153,7 +155,7 @@ fun Library(
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
-    onClassClick: (String) -> Unit = {},
+    onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
     onFolderClick: (String) -> Unit = {},
     navigateToCreateStudySet: () -> Unit = {},
     navigateToCreateClass: () -> Unit = {},

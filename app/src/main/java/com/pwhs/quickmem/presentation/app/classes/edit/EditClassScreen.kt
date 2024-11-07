@@ -22,7 +22,6 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.SwitchContainer
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination<RootGraph>(

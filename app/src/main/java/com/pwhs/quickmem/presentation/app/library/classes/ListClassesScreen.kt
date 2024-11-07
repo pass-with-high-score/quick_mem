@@ -45,7 +45,7 @@ fun ListClassesScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
-    onClassClicked: (String) -> Unit = {},
+    onClassClicked: (GetClassByOwnerResponseModel) -> Unit = {},
     onAddClassClick: () -> Unit = {},
     onClassRefresh: () -> Unit = {},
 ) {
@@ -123,7 +123,7 @@ fun ListClassesScreen(
                             ClassItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 classItem = classItem,
-                                onClick = { onClassClicked(classItem.id) }
+                                onClick = { onClassClicked(classItem) }
                             )
                         }
                         item {

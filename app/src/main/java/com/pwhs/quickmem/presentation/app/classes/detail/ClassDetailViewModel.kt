@@ -66,10 +66,6 @@ class ClassDetailViewModel @Inject constructor(
                 getClassByID(id = _uiState.value.id)
             }
 
-            ClassDetailUiAction.JoinClassClicked -> {
-                TODO()
-            }
-
             ClassDetailUiAction.NavigateToWelcomeClicked -> {
                 _uiEvent.trySend(ClassDetailUiEvent.NavigateToWelcome)
             }
@@ -83,16 +79,16 @@ class ClassDetailViewModel @Inject constructor(
                 _uiEvent.trySend(ClassDetailUiEvent.NavigateToEditClass)
             }
 
-            ClassDetailUiAction.onNavigateToAddFolder -> {
-                _uiEvent.trySend(ClassDetailUiEvent.onNavigateToAddFolder)
+            ClassDetailUiAction.OnNavigateToAddFolder -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddFolder)
             }
 
-            ClassDetailUiAction.onNavigateToAddMember -> {
-                _uiEvent.trySend(ClassDetailUiEvent.onNavigateToAddMember)
+            ClassDetailUiAction.OnNavigateToAddMember -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddMember)
             }
 
-            ClassDetailUiAction.onNavigateToAddStudySets -> {
-                _uiEvent.trySend(ClassDetailUiEvent.onNavigateToAddStudySets)
+            ClassDetailUiAction.OnNavigateToAddStudySets -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddStudySets)
             }
         }
     }
@@ -100,7 +96,7 @@ class ClassDetailViewModel @Inject constructor(
     private fun getClassByID(id: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            classRepository.getClassByID(token, id).collectLatest { resource ->
+            classRepository.getClassById(token, id).collectLatest { resource ->
                 when (resource) {
                     is Resources.Error -> {
                         _uiState.update { it.copy(isLoading = false) }
@@ -113,6 +109,7 @@ class ClassDetailViewModel @Inject constructor(
                     is Resources.Success -> {
                         resource.data?.let { data ->
                             _uiState.update {
+                                Timber.d("Study set: ${data.studySets}")
                                 it.copy(
                                     title = data.title,
                                     description = data.description,

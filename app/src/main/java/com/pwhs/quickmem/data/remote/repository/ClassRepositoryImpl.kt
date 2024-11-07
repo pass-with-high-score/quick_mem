@@ -38,7 +38,7 @@ class ClassRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getClassByID(
+    override suspend fun getClassById(
         token: String,
         classId: String
     ): Flow<Resources<GetClassDetailResponseModel>> {
@@ -49,6 +49,7 @@ class ClassRepositoryImpl @Inject constructor(
                     token,
                     classId
                 )
+                Timber.d("getClassByIddddd: ${response.studySets?.firstOrNull()?.flashCardCount}")
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -58,7 +59,7 @@ class ClassRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getClassByOwnerID(
+    override suspend fun getClassByOwnerId(
         token: String,
         userId: String
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {

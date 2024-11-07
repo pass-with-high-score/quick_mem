@@ -21,7 +21,7 @@ fun FoldersTabScreen(
     modifier: Modifier = Modifier,
     folder: List<GetFolderResponseModel> = emptyList(),
     onAddFoldersClicked: () -> Unit = {},
-    onFolderItemClicked: (String) -> Unit = {},
+    onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
 ) {
     Scaffold { innerPadding ->
         Box(
@@ -49,7 +49,7 @@ fun FoldersTabScreen(
                             FolderItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 title = folders.title,
-                                onClick = { onFolderItemClicked(folders.id) },
+                                onClick = { onFolderItemClicked(folders) },
                                 numOfStudySets = folders.studySetCount,
                                 userResponseModel = folders.owner
                             )

@@ -15,12 +15,12 @@ interface ClassRepository {
         createClassRequestModel: CreateClassRequestModel
     ): Flow<Resources<CreateClassResponseModel>>
 
-    suspend fun getClassByID(
+    suspend fun getClassById(
         token: String,
         classId: String
     ): Flow<Resources<GetClassDetailResponseModel>>
 
-    suspend fun getClassByOwnerID(
+    suspend fun getClassByOwnerId(
         token: String,
         userId: String
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>>

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +19,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun MembersTabScreen(
     modifier: Modifier = Modifier,
     member: List<ClassMemberModel> = emptyList(),
+    onMembersItemClicked: (ClassMemberModel) -> Unit = {},
     onAddMembersClicked: () -> Unit = {},
 ) {
     Scaffold { innerPadding ->
@@ -45,7 +45,11 @@ fun MembersTabScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(member) { member ->
-                            Text(text = member.username)
+                            ClassMemberItem(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                classMemberModel = member,
+                                onClicked = onMembersItemClicked
+                            )
                         }
                     }
                 }

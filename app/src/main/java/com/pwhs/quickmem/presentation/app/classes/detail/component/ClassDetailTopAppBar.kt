@@ -48,7 +48,7 @@ fun ClassDetailTopAppBar(
     onNavigateBack: () -> Unit = {},
     onMoreClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {},
-    onNavigateToUserDetail: () -> Unit = {},
+    onNavigateToUserDetail: (String) -> Unit = {},
 ) {
     LargeTopAppBar(
         modifier = modifier.background(colorScheme.primary.gradientBackground()),
@@ -73,22 +73,30 @@ fun ClassDetailTopAppBar(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.clickable { onNavigateToUserDetail() }
                     ) {
-                        AsyncImage(
-                            model = userResponse.avatarUrl,
-                            contentDescription = "User Avatar",
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clip(CircleShape)
-                        )
-                        Text(
-                            userResponse.username,
-                            style = typography.bodyMedium.copy(
-                                color = colorScheme.secondary
-                            ),
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
+                        Row(
+                            modifier = Modifier.clickable {
+                                onNavigateToUserDetail(
+                                    userResponse.id
+                                )
+                            },
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            AsyncImage(
+                                model = userResponse.avatarUrl,
+                                contentDescription = "User Avatar",
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clip(CircleShape)
+                            )
+                            Text(
+                                userResponse.username,
+                                style = typography.bodyMedium.copy(
+                                    color = colorScheme.secondary
+                                ),
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
                         VerticalDivider(
                             modifier = Modifier
                                 .padding(horizontal = 8.dp)

@@ -21,7 +21,7 @@ fun StudySetsTabScreen(
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onAddSetsClicked: () -> Unit = {},
-    onStudyCardClicked: (String) -> Unit = {},
+    onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
 ) {
     Scaffold { innerPadding ->
         Box(
@@ -50,7 +50,7 @@ fun StudySetsTabScreen(
                             StudySetItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 studySet = studySet,
-                                onStudySetClick = { onStudyCardClicked(studySet.id) }
+                                onStudySetClick = { onStudySetItemClicked(studySet) }
                             )
                         }
                     }

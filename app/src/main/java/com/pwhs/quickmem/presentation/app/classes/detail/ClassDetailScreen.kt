@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.classes.detail
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.users.ClassMemberModel
@@ -49,10 +51,13 @@ import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassS
 import com.ramcosta.composedestinations.generated.destinations.AddMemberToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetsToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Composable
@@ -63,7 +68,8 @@ fun ClassDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: ClassDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    resultBackNavigator: ResultRecipient<EditClassScreenDestination, Boolean>
+    resultBackNavigator: ResultRecipient<EditClassScreenDestination, Boolean>,
+    resultNavigator: ResultBackNavigator<Boolean>,
 ) {
 
     resultBackNavigator.onNavResult { result ->
@@ -118,17 +124,17 @@ fun ClassDetailScreen(
                     )
                 }
 
-                ClassDetailUiEvent.onNavigateToAddFolder -> {
+                ClassDetailUiEvent.OnNavigateToAddFolder -> {
                     navigator.navigate(
                         AddFolderToClassScreenDestination()
                     )
                 }
 
-                ClassDetailUiEvent.onNavigateToAddMember -> {
+                ClassDetailUiEvent.OnNavigateToAddMember -> {
                     navigator.navigate(AddMemberToClassScreenDestination)
                 }
 
-                ClassDetailUiEvent.onNavigateToAddStudySets -> {
+                ClassDetailUiEvent.OnNavigateToAddStudySets -> {
                     navigator.navigate(AddStudySetsToClassScreenDestination)
                 }
             }
@@ -137,12 +143,12 @@ fun ClassDetailScreen(
 
     ClassDetail(
         modifier = modifier,
-        code = uiState.joinClassCode,
+        linkShareCode = uiState.joinClassCode,
         onRefresh = {
             viewModel.onEvent(ClassDetailUiAction.Refresh)
         },
         onNavigateBack = {
-            navigator.navigateUp()
+            resultNavigator.navigateBack(true)
         },
         title = uiState.title,
         isLoading = uiState.isLoading,
@@ -157,16 +163,32 @@ fun ClassDetailScreen(
             viewModel.onEvent(ClassDetailUiAction.DeleteClass)
         },
         onNavigateAddStudySets = {
-            viewModel.onEvent(ClassDetailUiAction.onNavigateToAddStudySets)
+            viewModel.onEvent(ClassDetailUiAction.OnNavigateToAddStudySets)
         },
         onNavigateAddFolder = {
-            viewModel.onEvent(ClassDetailUiAction.onNavigateToAddFolder)
+            viewModel.onEvent(ClassDetailUiAction.OnNavigateToAddFolder)
         },
         onNavigateAddMember = {
-            viewModel.onEvent(ClassDetailUiAction.onNavigateToAddMember)
+            viewModel.onEvent(ClassDetailUiAction.OnNavigateToAddMember)
         },
         onNavigateToUserDetail = {
-            navigator.navigate(UserDetailScreenDestination(userId = uiState.userResponseModel.id))
+            navigator.navigate(UserDetailScreenDestination(userId = it))
+        },
+        onStudySetItemClicked = {
+            navigator.navigate(
+                StudySetDetailScreenDestination(
+                    id = it.id,
+                    code = ""
+                )
+            )
+        },
+        onFolderItemClicked = {
+            navigator.navigate(
+                FolderDetailScreenDestination(
+                    id = it.id,
+                    code = ""
+                )
+            )
         }
     )
 }
@@ -177,7 +199,7 @@ fun ClassDetail(
     modifier: Modifier = Modifier,
     title: String = "",
     isLoading: Boolean = false,
-    code: String,
+    linkShareCode: String = "",
     userResponseModel: UserResponseModel = UserResponseModel(),
     studySets: List<GetStudySetResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
@@ -186,10 +208,12 @@ fun ClassDetail(
     onNavigateAddFolder: () -> Unit = {},
     onNavigateAddMember: () -> Unit = {},
     onNavigateAddStudySets: () -> Unit = {},
-    onNavigateToUserDetail: () -> Unit = {},
+    onNavigateToUserDetail: (String) -> Unit = {},
     onEditClass: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
+    onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
+    onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Study sets", "Folders", "Members")
@@ -198,6 +222,7 @@ fun ClassDetail(
     var showMoreBottomSheet by remember { mutableStateOf(false) }
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -206,8 +231,21 @@ fun ClassDetail(
                 onNavigateBack = onNavigateBack,
                 onMoreClicked = { showMoreBottomSheet = true },
                 modifier = modifier,
+                studySetCount = studySets.size,
                 userResponse = userResponseModel,
-                onNavigateToUserDetail = onNavigateToUserDetail
+                onNavigateToUserDetail = {
+                    onNavigateToUserDetail(it)
+                },
+                onShareClicked = {
+                    val link = AppConstant.BASE_URL + "class/join/" + linkShareCode
+                    val text = "Join class by link with me: $title\n$link"
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                        putExtra(Intent.EXTRA_TEXT, text)
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    context.startActivity(shareIntent)
+                }
             )
         }
     ) { innerPadding ->
@@ -257,21 +295,21 @@ fun ClassDetail(
                         ClassDetailEnums.STUDY_SETS.index -> StudySetsTabScreen(
                             onAddSetsClicked = onNavigateAddStudySets,
                             studySets = studySets,
-                            onStudyCardClicked = {
-                            }
+                            onStudySetItemClicked = onStudySetItemClicked
                         )
 
                         ClassDetailEnums.FOLDERS.index -> FoldersTabScreen(
                             onAddFoldersClicked = onNavigateAddFolder,
                             folder = folders,
-                            onFolderItemClicked = {
-
-                            }
+                            onFolderItemClicked = onFolderItemClicked
                         )
 
                         ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
                             onAddMembersClicked = onNavigateAddMember,
-                            member = members
+                            member = members,
+                            onMembersItemClicked = {
+                                onNavigateToUserDetail(it.id)
+                            }
                         )
                     }
 
@@ -319,7 +357,6 @@ fun ClassDetail(
 private fun ClassDetailScreenPreview() {
     QuickMemTheme {
         ClassDetail(
-            code = "",
             title = "Class Title",
         )
     }

@@ -79,7 +79,7 @@ fun ClassItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = when (classItem.studySetCount) {
+                    text = when (classItem.memberCount) {
                         0 -> "No members"
                         1 -> "1 member"
                         else -> "${classItem.memberCount} members"
