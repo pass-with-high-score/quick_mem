@@ -18,19 +18,17 @@ data class GetStudySetResponseDto(
     @SerializedName("flashCardCount")
     val flashCardCount: Int,
     @SerializedName("flashcards")
-    var flashcards: List<StudySetFlashCardResponseDto>,
+    var flashcards: List<StudySetFlashCardResponseDto>? = null,
     @SerializedName("subject")
     val subject: SubjectResponseDto? = null,
     @SerializedName("color")
     val color: ColorResponseDto? = null,
-    @SerializedName("user")
-    val user: UserResponseDto,
+    @SerializedName("owner")
+    val owner: UserResponseDto,
     @SerializedName("linkShareCode")
     val linkShareCode: String? = null,
-
     @SerializedName("createdAt")
     val createdAt: String,
-
     @SerializedName("updatedAt")
     val updatedAt: String,
 )

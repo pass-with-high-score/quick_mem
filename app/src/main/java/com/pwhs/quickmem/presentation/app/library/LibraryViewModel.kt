@@ -123,7 +123,7 @@ class LibraryViewModel @Inject constructor(
 
     private fun getClasses() {
         viewModelScope.launch {
-            classRepository.getClassByOwnerID(_uiState.value.token, _uiState.value.userId)
+            classRepository.getClassByOwnerId(_uiState.value.token, _uiState.value.userId)
                 .collectLatest { resource ->
                     when (resource) {
                         is Resources.Error -> {

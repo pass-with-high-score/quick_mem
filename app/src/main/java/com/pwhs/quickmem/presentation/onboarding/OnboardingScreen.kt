@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.presentation.onboarding
 
-import OnboardingPageView
+import com.pwhs.quickmem.presentation.onboarding.component.OnboardingPageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

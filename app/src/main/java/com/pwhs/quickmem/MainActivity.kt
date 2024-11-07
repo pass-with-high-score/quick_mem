@@ -44,8 +44,8 @@ class MainActivity : ComponentActivity() {
                         HomeScreenDestination.route,
                         ExploreScreenDestination.route,
                         LibraryScreenDestination.route,
-                        ProfileScreenDestination.route
-                    )
+                        ProfileScreenDestination.route,
+                    ),
                 ) {
                     DestinationsNavHost(
                         navGraph = NavGraphs.root,
