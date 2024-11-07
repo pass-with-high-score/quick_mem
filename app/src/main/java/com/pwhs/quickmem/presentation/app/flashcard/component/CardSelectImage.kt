@@ -63,7 +63,7 @@ fun CardSelectImage(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.clickable {
-                if (definitionImageUri != null || definitionImageUrl != null && definitionImageUrl.isNotEmpty()) {
+                if (definitionImageUri != null || !definitionImageUrl.isNullOrEmpty()) {
                     isImageViewerOpen = true // Open image viewer when clicked
                 } else {
                     imagePicker.pick(mimetype = "image/*")
@@ -76,7 +76,7 @@ fun CardSelectImage(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (definitionImageUri == null && definitionImageUrl != null && definitionImageUrl.isNotEmpty()) {
+                if (definitionImageUri == null && !definitionImageUrl.isNullOrEmpty()) {
                     Timber.d("Image Url: $definitionImageUrl")
                     AsyncImage(
                         model = definitionImageUrl,

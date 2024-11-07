@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTextField
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTopAppBar
@@ -91,6 +92,9 @@ fun UpdateFullNameSetting(
                     .fillMaxSize()
             ) {
                 SettingTextField(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .padding(horizontal = 16.dp),
                     value = fullName,
                     onValueChange = onFullNameChanged,
                     placeholder = "Full Name",
