@@ -1,7 +1,5 @@
 package com.pwhs.quickmem.presentation.app.classes.create
 
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
@@ -9,9 +7,6 @@ import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
-import com.pwhs.quickmem.presentation.app.folder.create.CreateFolderUiEvent
-import com.pwhs.quickmem.presentation.auth.forgot_password.send_email.SendVerifyEmailUiEvent
-import com.pwhs.quickmem.presentation.auth.login.Login
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +16,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +23,6 @@ class CreateClassViewModel @Inject constructor(
     private val classRepository: ClassRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
-    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateClassUiState())
     val uiState = _uiState.asStateFlow()

@@ -15,8 +15,8 @@ data class GetFolderDetailResponseDto(
     val isPublic: Boolean,
     @SerializedName("studySetCount")
     val studySetCount: Int,
-    @SerializedName("user")
-    val user: UserResponseDto,
+    @SerializedName("owner")
+    val owner: UserResponseDto,
     @SerializedName("studySets")
     val studySets: List<GetStudySetResponseDto>? = null,
     @SerializedName("createdAt")

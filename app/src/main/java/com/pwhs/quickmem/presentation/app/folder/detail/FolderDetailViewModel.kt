@@ -80,7 +80,7 @@ class FolderDetailViewModel @Inject constructor(
                                     description = data.description,
                                     isPublic = data.isPublic,
                                     studySetCount = data.studySetCount,
-                                    user = data.user,
+                                    user = data.owner,
                                     studySets = data.studySets ?: emptyList(),
                                     createdAt = data.createdAt,
                                     updatedAt = data.updatedAt,

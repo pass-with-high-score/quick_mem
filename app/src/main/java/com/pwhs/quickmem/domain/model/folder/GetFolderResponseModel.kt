@@ -9,7 +9,7 @@ data class GetFolderResponseModel(
     val description: String,
     val isPublic: Boolean,
     val studySetCount: Int,
-    val user: UserResponseModel,
+    val owner: UserResponseModel,
     val studySets: List<GetStudySetResponseModel>? = null,
     val createdAt: String,
     val updatedAt: String,

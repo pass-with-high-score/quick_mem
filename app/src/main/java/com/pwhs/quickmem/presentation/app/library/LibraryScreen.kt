@@ -40,6 +40,7 @@ import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
@@ -57,6 +58,8 @@ fun LibraryScreen(
     navigator: DestinationsNavigator,
     viewModel: LibraryViewModel = hiltViewModel(),
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
+    resultClassDetail: ResultRecipient<ClassDetailScreenDestination, Boolean>,
+    resultFolderDetail: ResultRecipient<FolderDetailScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -68,7 +71,37 @@ fun LibraryScreen(
             }
 
             is NavResult.Value -> {
-                viewModel.onEvent(LibraryUiAction.Refresh)
+               if (result.value) {
+                   viewModel.onEvent(LibraryUiAction.Refresh)
+               }
+            }
+        }
+    }
+
+    resultClassDetail.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("ClassDetailScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+              if (result.value) {
+                  viewModel.onEvent(LibraryUiAction.Refresh)
+              }
+            }
+        }
+    }
+
+    resultFolderDetail.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("FolderDetailScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(LibraryUiAction.Refresh)
+                }
             }
         }
     }
@@ -109,7 +142,14 @@ fun LibraryScreen(
             )
         },
         onClassClick = {
-            navigator.navigate(CreateClassScreenDestination)
+            navigator.navigate(
+                ClassDetailScreenDestination(
+                    id = it.id,
+                    code = it.joinToken ?: "",
+                    title = it.title,
+                    description = it.description
+                )
+            )
         },
         onFolderClick = {
             navigator.navigate(
@@ -145,7 +185,7 @@ fun Library(
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
-    onClassClick: (String) -> Unit = {},
+    onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
     onFolderClick: (String) -> Unit = {},
     navigateToCreateStudySet: () -> Unit = {},
     navigateToCreateClass: () -> Unit = {},

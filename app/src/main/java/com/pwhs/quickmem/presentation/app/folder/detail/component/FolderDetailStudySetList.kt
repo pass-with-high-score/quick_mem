@@ -112,7 +112,7 @@ private fun ListStudySetInnerFolderPreview() {
                         flashCardCount = 10,
                         color = ColorModel.defaultColors[0],
                         subject = SubjectModel.defaultSubjects[0],
-                        user = UserResponseModel(
+                        owner = UserResponseModel(
                             id = "1",
 
                             ),
