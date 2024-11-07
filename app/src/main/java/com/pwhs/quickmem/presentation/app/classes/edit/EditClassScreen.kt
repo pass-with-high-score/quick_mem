@@ -39,7 +39,9 @@ fun EditClassScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                EditClassUiEvent.ClassesUpdated -> TODO()
+                EditClassUiEvent.ClassesUpdated -> {
+                    resultNavigator.navigateBack(true)
+                }
                 is EditClassUiEvent.ShowError -> {
                     Toast.makeText(context, "Update class error", Toast.LENGTH_SHORT).show()
                 }
@@ -59,7 +61,6 @@ fun EditClassScreen(
         },
         onDoneClick = {
             viewModel.onEvent(EditClassUiAction.SaveClicked)
-            resultNavigator.navigateBack(true)
         },
         onAllowMemberManagementChange = {
             viewModel.onEvent(EditClassUiAction.OnAllowMemberChanged(it))

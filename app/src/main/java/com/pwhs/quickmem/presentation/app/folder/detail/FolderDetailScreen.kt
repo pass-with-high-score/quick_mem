@@ -103,8 +103,7 @@ fun FolderDetailScreen(
                 }
 
                 FolderDetailUiEvent.FolderDeleted -> {
-                    resultNavigator.setResult(true)
-                    navigator.navigateUp()
+                    resultNavigator.navigateBack(true)
                 }
             }
         }
@@ -130,8 +129,7 @@ fun FolderDetailScreen(
         onEditFolder = { viewModel.onEvent(FolderDetailUiAction.EditFolder) },
         onStudyFolderClick = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         onNavigateBack = {
-            resultNavigator.setResult(true)
-            navigator.navigateUp()
+            resultNavigator.navigateBack(false)
         },
         onAddStudySet = { },
         onDeleteFolder = { viewModel.onEvent(FolderDetailUiAction.DeleteFolder) },
