@@ -129,7 +129,7 @@ class EditStudySetViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(isLoading = false)
                         }
-                        _uiEvent.send(EditStudySetUiEvent.StudySetEdited(resource.data!!.id))
+                        _uiEvent.send(EditStudySetUiEvent.StudySetEdited)
                     }
 
                     is Resources.Error -> {

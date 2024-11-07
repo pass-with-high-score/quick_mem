@@ -12,7 +12,7 @@ data class GetStudySetResponseModel(
     val isPublic: Boolean,
     val subject: SubjectModel? = null,
     val color: ColorModel? = null,
-    val user: UserResponseModel,
+    val owner: UserResponseModel,
     val flashCardCount: Int,
     val linkShareCode: String? = null,
     val flashcards: List<StudySetFlashCardResponseModel>,

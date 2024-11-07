@@ -1,14 +1,15 @@
 package com.pwhs.quickmem.domain.model.classes
 
-import com.pwhs.quickmem.data.dto.user.UserResponseDto
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.users.ClassMemberModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
 
 data class GetClassDetailResponseModel(
     val id: String,
     val title: String,
     val description: String,
-    val owner: UserResponseDto,
+    val owner: UserResponseModel,
     val joinToken: String,
     val createdAt: String,
     val updatedAt: String,
@@ -17,7 +18,7 @@ data class GetClassDetailResponseModel(
     val folderCount: Int,
     val folders: List<GetFolderResponseModel>? = emptyList(),
     val memberCount: Int,
-    val members: List<Unit>,
+    val members: List<ClassMemberModel>? = emptyList(),
     val studySetCount: Int,
     val studySets: List<GetStudySetResponseModel>? = emptyList()
 )

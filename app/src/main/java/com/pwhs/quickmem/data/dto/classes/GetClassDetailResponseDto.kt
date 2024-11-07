@@ -1,9 +1,10 @@
 package com.pwhs.quickmem.data.dto.classes
 
 import com.google.gson.annotations.SerializedName
+import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
+import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
+import com.pwhs.quickmem.data.dto.user.ClassMemberDto
 import com.pwhs.quickmem.data.dto.user.UserResponseDto
-import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
-import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 
 data class GetClassDetailResponseDto(
     @SerializedName("id")
@@ -23,15 +24,15 @@ data class GetClassDetailResponseDto(
     @SerializedName("folderCount")
     val folderCount: Int,
     @SerializedName("folders")
-    val folders: List<GetFolderResponseModel>? = emptyList(),
+    val folders: List<GetFolderDetailResponseDto>? = emptyList(),
     @SerializedName("memberCount")
     val memberCount: Int,
     @SerializedName("members")
-    val members: List<Unit>,
+    val members: List<ClassMemberDto>? = emptyList(),
     @SerializedName("studySetCount")
     val studySetCount: Int,
     @SerializedName("studySets")
-    val studySets: List<GetStudySetResponseModel>? = emptyList(),
+    val studySets: List<GetStudySetResponseDto>? = emptyList(),
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

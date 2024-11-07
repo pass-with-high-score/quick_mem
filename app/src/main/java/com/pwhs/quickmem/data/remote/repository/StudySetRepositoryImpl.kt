@@ -42,7 +42,7 @@ class StudySetRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.getStudySetById(token, studySetId)
                 // order flashcard by createdAt from newest to oldest
-                response.flashcards = response.flashcards.sortedByDescending { it.createdAt }
+                response.flashcards = response.flashcards?.sortedByDescending { it.createdAt }
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
