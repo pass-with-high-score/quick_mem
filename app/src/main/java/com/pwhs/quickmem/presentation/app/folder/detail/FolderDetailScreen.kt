@@ -36,7 +36,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.AddStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -57,7 +57,7 @@ fun FolderDetailScreen(
     resultNavigator: ResultBackNavigator<Boolean>,
     resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>,
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
-    resultAddStudySet: ResultRecipient<AddStudySetScreenDestination, Boolean>
+    resultAddStudySet: ResultRecipient<AddStudySetToFolderScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -146,7 +146,7 @@ fun FolderDetailScreen(
         },
         onAddStudySet = {
             navigator.navigate(
-                AddStudySetScreenDestination(
+                AddStudySetToFolderScreenDestination(
                     folderId = uiState.id
                 )
             )

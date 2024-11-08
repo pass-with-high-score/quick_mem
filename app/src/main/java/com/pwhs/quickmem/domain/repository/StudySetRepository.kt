@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
@@ -46,5 +47,10 @@ interface StudySetRepository {
     suspend fun addStudySetToFolder(
         token: String,
         addStudySetToFolderRequestModel: AddStudySetToFolderRequestModel
+    ): Flow<Resources<Unit>>
+
+    suspend fun addStudySetToClass(
+        token: String,
+        addStudySetToClassRequestModel: AddStudySetToClassRequestModel
     ): Flow<Resources<Unit>>
 }

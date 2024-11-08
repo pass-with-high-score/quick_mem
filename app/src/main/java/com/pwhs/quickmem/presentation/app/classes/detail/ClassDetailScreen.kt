@@ -49,7 +49,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddMemberToClassScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.AddStudySetsToClassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
@@ -72,8 +72,23 @@ fun ClassDetailScreen(
     resultBackNavigator: ResultRecipient<EditClassScreenDestination, Boolean>,
     resultNavigator: ResultBackNavigator<Boolean>,
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
-    resultFolderDetail: ResultRecipient<FolderDetailScreenDestination, Boolean>
+    resultFolderDetail: ResultRecipient<FolderDetailScreenDestination, Boolean>,
+    resultAddStudySetToClass: ResultRecipient<AddStudySetToClassScreenDestination, Boolean>,
 ) {
+
+    resultAddStudySetToClass.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("AddStudySetToClassScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
 
     resultBackNavigator.onNavResult { result ->
         when (result) {
@@ -166,7 +181,7 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.OnNavigateToAddStudySets -> {
-                    navigator.navigate(AddStudySetsToClassScreenDestination)
+                    navigator.navigate(AddStudySetToClassScreenDestination(classId = uiState.id))
                 }
             }
         }

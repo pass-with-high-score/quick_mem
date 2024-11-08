@@ -2,7 +2,7 @@ package com.pwhs.quickmem.presentation.app.folder.add_study_set
 
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 
-data class AddStudySetUiState (
+data class AddStudySetToFolderUiState (
     val folderId: String = "",
     val isImported: Boolean = false,
     val isLoading : Boolean = false,

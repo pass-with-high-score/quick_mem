@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.folder.add_study_set.component
+package com.pwhs.quickmem.presentation.app.classes.add_study_set.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -42,11 +42,11 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 
 @Composable
-fun AddStudySetItem(
+fun AddStudySetToClassItem(
     modifier: Modifier = Modifier,
     studySet: GetStudySetResponseModel,
     isAdded: Boolean = false,
-    onAddStudySet: (String) -> Unit = {},
+    onAddStudySetToClass: (String) -> Unit = {},
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -140,7 +140,7 @@ fun AddStudySetItem(
                     .size(36.dp)
                     .clip(CircleShape)
                     .clickable {
-                        onAddStudySet(studySet.id)
+                        onAddStudySetToClass(studySet.id)
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -167,7 +167,7 @@ private fun StudySetItemPreview() {
             ) {
                 item {
                     repeat(10) {
-                        AddStudySetItem(
+                        AddStudySetToClassItem(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             studySet = GetStudySetResponseModel(

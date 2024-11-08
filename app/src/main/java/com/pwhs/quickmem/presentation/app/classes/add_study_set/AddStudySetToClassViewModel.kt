@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.folder.add_study_set
+package com.pwhs.quickmem.presentation.app.classes.add_study_set
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
+import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,22 +21,22 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class AddStudySetViewModel @Inject constructor(
+class AddStudySetToClassViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     private val studySetRepository: StudySetRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(AddStudySetUiState())
+    private val _uiState = MutableStateFlow(AddStudySetToClassUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<AddStudySetUiEvent>()
+    private val _uiEvent = Channel<AddStudySetToClassUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val folderId: String = savedStateHandle["folderId"] ?: ""
-        Timber.d("AddStudySetViewModel: $folderId")
-        _uiState.update { it.copy(folderId = folderId) }
+        val classId: String = savedStateHandle["classId"] ?: ""
+        Timber.d("AddStudySetViewModel: $classId")
+        _uiState.update { it.copy(classId = classId) }
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
             val ownerId = appManager.userId.firstOrNull() ?: return@launch
@@ -54,13 +54,13 @@ class AddStudySetViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: AddStudySetUiAction) {
+    fun onEvent(event: AddStudySetToClassUiAction) {
         when (event) {
-            AddStudySetUiAction.AddStudySet -> {
+            AddStudySetToClassUiAction.AddStudySetToClass -> {
                 doneClick()
             }
 
-            is AddStudySetUiAction.ToggleStudySetImport -> {
+            is AddStudySetToClassUiAction.ToggleStudySetImport -> {
                 Timber.d("Toggle Study Set Import: ${event.studySetId}")
                 toggleStudySetImport(event.studySetId)
             }
@@ -72,7 +72,7 @@ class AddStudySetViewModel @Inject constructor(
             studySetRepository.getStudySetsByOwnerId(
                 _uiState.value.token,
                 _uiState.value.userId,
-                _uiState.value.folderId
+                _uiState.value.classId
             )
                 .collectLatest { resources ->
                     when (resources) {
@@ -92,7 +92,7 @@ class AddStudySetViewModel @Inject constructor(
                                 it.copy(isLoading = false)
                             }
                             _uiEvent.send(
-                                AddStudySetUiEvent.Error(
+                                AddStudySetToClassUiEvent.Error(
                                     resources.message ?: "An error occurred"
                                 )
                             )
@@ -110,22 +110,23 @@ class AddStudySetViewModel @Inject constructor(
 
     private fun doneClick() {
         viewModelScope.launch {
-            val addStudySetToFolderRequestModel = AddStudySetToFolderRequestModel(
-                folderId = _uiState.value.folderId,
+            val addStudySetToClassRequestModel = AddStudySetToClassRequestModel(
+                userId = _uiState.value.userId,
+                classId = _uiState.value.classId,
                 studySetIds = _uiState.value.studySetImportedIds
             )
-            studySetRepository.addStudySetToFolder(
+            studySetRepository.addStudySetToClass(
                 token = tokenManager.accessToken.firstOrNull() ?: "",
-                addStudySetToFolderRequestModel
+                addStudySetToClassRequestModel
             ).collectLatest { resources ->
                 when (resources) {
                     is Resources.Success -> {
-                        _uiEvent.send(AddStudySetUiEvent.StudySetAdded)
+                        _uiEvent.send(AddStudySetToClassUiEvent.StudySetAddedToClass)
                     }
 
                     is Resources.Error -> {
                         _uiEvent.send(
-                            AddStudySetUiEvent.Error(
+                            AddStudySetToClassUiEvent.Error(
                                 resources.message ?: "An error occurred"
                             )
                         )

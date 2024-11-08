@@ -1,5 +1,5 @@
 package com.pwhs.quickmem.presentation.app.folder.add_study_set
 
-data class AddStudySetArgs (
+data class AddStudySetToFolderArgs (
     val folderId: String,
 )
