@@ -63,6 +63,7 @@ class AddFolderToClassViewModel @Inject constructor(
             AddFolderToClassUIAction.AddStudySetToClass -> {
 
             }
+
             is AddFolderToClassUIAction.ToggleStudySetImport -> {
 
             }
@@ -86,6 +87,7 @@ class AddFolderToClassViewModel @Inject constructor(
                                     ?.map { it.id } ?: emptyList()
                             )
                         }
+                        Timber.d("Folders: ${resources.data}")
                     }
 
                     is Resources.Error -> {

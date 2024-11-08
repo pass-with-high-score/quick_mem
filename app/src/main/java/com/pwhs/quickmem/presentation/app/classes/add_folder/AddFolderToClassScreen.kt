@@ -62,6 +62,21 @@ fun AddFolderToClassScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         folders = uiState.folders,
+        listFolderIds = uiState.folderImportedIds,
+        userAvatar = uiState.userAvatar,
+        username = uiState.username,
+        onDoneClick = {
+//            viewModel.addFoldersToClass()
+        },
+        onNavigateCancel = {
+            navigator.navigateUp()
+        },
+        onCreateFolderToClassClick = {
+//            navigator.navigate("createFolder")
+        },
+        onAddFolderToClass = { folderId ->
+//            viewModel.addFolderToClass(folderId)
+        }
     )
 }
 
@@ -71,11 +86,13 @@ fun AddFolderToClass(
     onDoneClick: () -> Unit = {},
     onNavigateCancel: () -> Unit = {},
     onCreateFolderToClassClick: () -> Unit = {},
-    folders: List<GetFolderResponseModel>,
+    folders: List<GetFolderResponseModel> = emptyList(),
+    listFolderIds: List<String> = emptyList(),
+    userAvatar: String = "",
+    username: String = "",
+    onAddFolderToClass: (String) -> Unit = {},
     isLoading: Boolean = false,
-    onFolderClick: (GetFolderResponseModel) -> Unit = {},
-    onFolderRefresh: () -> Unit = {},
-    navigateToCreateFolder: () -> Unit = {},
+
 ) {
     Scaffold(
         containerColor = colorScheme.background,
@@ -108,11 +125,11 @@ fun AddFolderToClass(
             ) {
                 AddFolderToClassList(
                     modifier = modifier,
-                    isLoading = isLoading,
                     folders = folders,
-                    onFolderClick = onFolderClick,
-                    onAddFolderClick = navigateToCreateFolder,
-                    onFolderRefresh = onFolderRefresh
+                    listFolderIds = listFolderIds,
+                    onAddFolderToClass = onAddFolderToClass,
+                    avatarUrl = userAvatar,
+                    username = username,
                 )
             }
         }

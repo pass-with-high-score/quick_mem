@@ -1,7 +1,10 @@
 package com.pwhs.quickmem.presentation.app.classes.add_folder.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,26 +29,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun AddFolderToClassItem(
     modifier: Modifier = Modifier,
-    title: String = "",
-    numOfStudySets: Int = 0,
-    userResponseModel: UserResponseModel = UserResponseModel(),
-    onClick: () -> Unit = {}
+    folder : GetFolderResponseModel,
+    isAdded: Boolean = false,
+    onAddFolderToClass: (String) -> Unit = {},
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        onClick = onClick,
         border = BorderStroke(
             width = 1.dp,
             color = colorScheme.onSurface.copy(alpha = 0.12f)
@@ -54,65 +58,88 @@ fun AddFolderToClassItem(
             containerColor = Color.White,
         )
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(8.dp)
+                    .background(Color.Transparent)
             ) {
-                Icon(
-                    imageVector = Outlined.Folder,
-                    contentDescription = "Folder Icon"
-                )
-                Text(
-                    text = title,
-                    style = typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = when (numOfStudySets) {
-                        0 -> "No study sets"
-                        1 -> "1 study set"
-                        else -> "$numOfStudySets study sets"
-                    },
-                    style = typography.bodyMedium
-                )
-                VerticalDivider(
-                    modifier = Modifier
-                        .height(16.dp)
-                        .padding(horizontal = 8.dp),
-                    thickness = 1.dp,
-                    color = colorScheme.onSurface.copy(alpha = 0.12f)
-                )
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AsyncImage(
-                        model = userResponseModel.avatarUrl,
-                        contentDescription = "User Avatar",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
+                    Icon(
+                        imageVector = Outlined.Folder,
+                        contentDescription = "Folder Icon"
                     )
                     Text(
-                        text = userResponseModel.username,
-                        style = typography.bodyMedium.copy(
+                        text = folder.title,
+                        style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
                 }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = when (folder.studySetCount) {
+                            0 -> "No study sets"
+                            1 -> "1 study set"
+                            else -> "${folder.studySetCount} study sets"
+                        },
+                        style = typography.bodyMedium
+                    )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(16.dp)
+                            .padding(horizontal = 8.dp),
+                        thickness = 1.dp,
+                        color = colorScheme.onSurface.copy(alpha = 0.12f)
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        AsyncImage(
+                            model = folder.owner.avatarUrl,
+                            contentDescription = "User Avatar",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                        Text(
+                            text = folder.owner.username,
+                            style = typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        onAddFolderToClass(folder.id)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(if (isAdded) R.drawable.ic_check_circle else R.drawable.ic_add_circle),
+                    contentDescription = if (isAdded) "Check Icon" else "Add Icon",
+                    modifier = Modifier.size(26.dp),
+                    tint = colorScheme.onSurface
+                )
             }
         }
     }
@@ -124,19 +151,28 @@ private fun FolderItemPreview() {
     QuickMemTheme {
         Scaffold {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
+                    .padding(horizontal = 16.dp)
             ) {
                 item {
                     repeat(10) {
                         AddFolderToClassItem(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            title = "Folder 1",
-                            numOfStudySets = 3,
-                            userResponseModel = UserResponseModel(
-                                username = "User 1",
-                                avatarUrl = "https://avatars.githubusercontent.com/u/1"
+                                .fillMaxWidth(),
+                            folder = GetFolderResponseModel(
+                                id = "1",
+                                title = "Study Set Title",
+                                studySetCount = 10,
+                                owner = UserResponseModel(
+                                    id = "1",
+                                    username = "User",
+                                    avatarUrl = "https://www.example.com/avatar.jpg"
+                                ),
+                                description = "Study Set Description",
+                                isPublic = true,
+                                createdAt = "2021-01-01T00:00:00Z",
+                                updatedAt = "2021-01-01T00:00:00Z",
                             )
                         )
                     }
