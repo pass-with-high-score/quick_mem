@@ -36,6 +36,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -55,10 +56,22 @@ fun FolderDetailScreen(
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Boolean>,
     resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>,
-    resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>
+    resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
+    resultAddStudySet: ResultRecipient<AddStudySetToFolderScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultAddStudySet.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(FolderDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
 
     resultEditFolder.onNavResult { result ->
         when (result) {
@@ -131,12 +144,19 @@ fun FolderDetailScreen(
         onNavigateBack = {
             resultNavigator.navigateBack(false)
         },
-        onAddStudySet = { },
+        onAddStudySet = {
+            navigator.navigate(
+                AddStudySetToFolderScreenDestination(
+                    folderId = uiState.id
+                )
+            )
+        },
         onDeleteFolder = { viewModel.onEvent(FolderDetailUiAction.DeleteFolder) },
         onNavigateToUserDetail = {
             navigator.navigate(
                 UserDetailScreenDestination(
-                    userId = uiState.user.id
+                    userId = uiState.user.id,
+                    isOwner = uiState.isOwner
                 )
             )
         }

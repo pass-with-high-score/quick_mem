@@ -52,6 +52,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.OpenSourceScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WebViewAppDestination
@@ -163,6 +164,9 @@ fun SettingsScreen(
         },
         onLogout = {
             viewModel.onEvent(SettingUiAction.Logout)
+        },
+        onNavigateToChangePassword = {
+            navigator.navigate(ChangePasswordSettingScreenDestination(email = uiState.email))
         }
     )
 }

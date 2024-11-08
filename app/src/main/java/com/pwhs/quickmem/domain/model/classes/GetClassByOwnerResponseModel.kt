@@ -9,7 +9,7 @@ data class GetClassByOwnerResponseModel(
     val description: String,
     val folderCount: Int,
     val id: String,
-    val joinToken: String,
+    val joinToken: String?,
     val memberCount: Int,
     val owner: UserResponseModel,
     val studySetCount: Int,

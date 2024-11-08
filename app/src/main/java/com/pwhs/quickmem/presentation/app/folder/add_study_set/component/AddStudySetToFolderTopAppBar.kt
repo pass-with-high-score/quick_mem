@@ -15,13 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddStudySetTopAppBar(
+fun AddStudySetToFolderTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
     onNavigateCancel: () -> Unit,
@@ -54,7 +54,7 @@ fun AddStudySetTopAppBar(
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 )
             }
@@ -71,7 +71,7 @@ fun AddStudySetTopAppBar(
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 )
             }
@@ -81,13 +81,13 @@ fun AddStudySetTopAppBar(
 
 
 
-@PreviewLightDark
+@Preview
 @Composable
 fun AddStudySetTopAppBarPreview() {
     QuickMemTheme {
         Scaffold(
             topBar = {
-                AddStudySetTopAppBar(
+                AddStudySetToFolderTopAppBar(
                     title = "Add to folder",
                     onNavigateCancel = {},
                     onDoneClick = {}

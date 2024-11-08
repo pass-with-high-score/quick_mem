@@ -12,7 +12,7 @@ data class GetStudySetResponseDto(
     @SerializedName("title")
     val title: String,
     @SerializedName("description")
-    val description: String,
+    val description: String?,
     @SerializedName("isPublic")
     val isPublic: Boolean,
     @SerializedName("flashCardCount")
@@ -27,6 +27,8 @@ data class GetStudySetResponseDto(
     val owner: UserResponseDto,
     @SerializedName("linkShareCode")
     val linkShareCode: String? = null,
+    @SerializedName("isImported")
+    val isImported: Boolean? = null,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

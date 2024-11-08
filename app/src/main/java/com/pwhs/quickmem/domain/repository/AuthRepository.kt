@@ -2,6 +2,8 @@ package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -18,6 +20,7 @@ import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
+import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -45,6 +48,11 @@ interface AuthRepository {
         updateEmailRequestModel: UpdateEmailRequestModel
     ): Flow<Resources<UpdateEmailResponseModel>>
 
+    suspend fun changePassword(
+        token: String,
+        changePasswordRequestModel: ChangePasswordRequestModel
+    ): Flow<Resources<ChangePasswordResponseModel>>
+
     suspend fun sendResetPassword(
         sendResetPasswordRequestModel: SendResetPasswordRequestModel
     ): Flow<Resources<SendResetPasswordResponseModel>>
@@ -57,4 +65,10 @@ interface AuthRepository {
         token: String,
         verifyPasswordRequestModel: VerifyPasswordRequestModel
     ): Flow<Resources<VerifyPasswordResponseModel>>
+
+    suspend fun getUserDetail(
+        userId: String,
+        token: String,
+        isOwner: Boolean
+    ): Flow<Resources<UserDetailResponseModel>>
 }

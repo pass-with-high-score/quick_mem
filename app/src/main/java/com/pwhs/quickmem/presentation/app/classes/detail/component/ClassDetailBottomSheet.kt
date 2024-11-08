@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +22,8 @@ import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBot
 @Composable
 fun ClassDetailBottomSheet(
     modifier: Modifier = Modifier,
-    onInviteMembers: () -> Unit = {},
+    onAddStudySetToClass: () -> Unit = {},
+    onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onShareClass: () -> Unit = {},
@@ -40,6 +42,16 @@ fun ClassDetailBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                ItemMenuBottomSheet(
+                    onClick = onAddStudySetToClass,
+                    icon = Outlined.Add,
+                    title = "Add study set to class"
+                )
+                ItemMenuBottomSheet(
+                    onClick = onAddFolderToClass,
+                    icon = Outlined.Add,
+                    title = "Add folder to class"
+                )
                 ItemMenuBottomSheet(
                     onClick = onEditClass,
                     icon = Outlined.Edit,

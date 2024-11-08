@@ -8,7 +8,7 @@ import com.pwhs.quickmem.domain.model.users.UserResponseModel
 data class GetStudySetResponseModel(
     val id: String,
     val title: String,
-    val description: String,
+    val description: String?,
     val isPublic: Boolean,
     val subject: SubjectModel? = null,
     val color: ColorModel? = null,
@@ -16,6 +16,7 @@ data class GetStudySetResponseModel(
     val flashCardCount: Int,
     val linkShareCode: String? = null,
     val flashcards: List<StudySetFlashCardResponseModel>,
+    val isImported: Boolean? = null,
     val createdAt: String,
     val updatedAt: String,
 )

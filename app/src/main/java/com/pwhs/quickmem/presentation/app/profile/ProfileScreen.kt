@@ -136,7 +136,7 @@ fun Profile(
                     .padding(vertical = 10.dp),
                 shape = MaterialTheme.shapes.large,
                 border = BorderStroke(
-                    width = 0.5.dp,
+                    width = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface
                 ),
                 colors = ButtonDefaults.outlinedButtonColors(

@@ -1,6 +1,8 @@
 package com.pwhs.quickmem.data.remote
 
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
+import com.pwhs.quickmem.data.dto.auth.ChangePasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.ChangePasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
@@ -15,7 +17,6 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
-import com.pwhs.quickmem.data.dto.classes.AddFoldersToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.AddMemberToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
@@ -35,6 +36,12 @@ import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
+import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
+import com.pwhs.quickmem.data.dto.streak.GetStreakDto
+import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
+import com.pwhs.quickmem.data.dto.streak.StreakDto
+import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
+import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -42,9 +49,11 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -83,6 +92,12 @@ interface ApiService {
         @Body updateEmailRequestDto: UpdateEmailRequestDto
     ): UpdateEmailResponseDto
 
+    @PATCH("/auth/user/password")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body changePasswordRequestDto: ChangePasswordRequestDto
+    ): ChangePasswordResponseDto
+
     @POST("auth/send-reset-password")
     suspend fun sendResetPassword(
         @Body sendResetPasswordRequestDto: SendResetPasswordRequestDto
@@ -98,6 +113,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body verifyPasswordRequestDto: VerifyPasswordRequestDto
     ): VerifyPasswordResponseDto
+
+    @GET("auth/me/{id}")
+    suspend fun getUserDetail(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String,
+        @Query("isOwner") isOwner: Boolean
+    ): UserDetailResponseDto
 
     // Upload
     @Multipart
@@ -129,7 +151,8 @@ interface ApiService {
     @GET("study-set/owner/{ownerId}")
     suspend fun getStudySetsByOwnerId(
         @Header("Authorization") token: String,
-        @Path("ownerId") ownerId: String
+        @Path("ownerId") ownerId: String,
+        @Query("folderId") folderId: String? = null
     ): List<GetStudySetResponseDto>
 
     @PATCH("study-set/{id}")
@@ -232,6 +255,12 @@ interface ApiService {
         @Path("id") id: String
     )
 
+    @POST("folder/study-sets")
+    suspend fun addStudySetToFolder(
+        @Header("Authorization") token: String,
+        @Body addStudySetToFolderRequestDto: AddStudySetToFolderRequestDto
+    )
+
     // Class
     @POST("class")
     suspend fun createClass(
@@ -269,4 +298,30 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addMemberToClassRequestDto: AddMemberToClassRequestDto
     )
+
+    @POST("/class/study-sets")
+    suspend fun addStudySetToClass(
+        @Header("Authorization") token: String,
+        @Body addStudySetToClassRequestDto: AddStudySetToClassRequestDto
+    )
+
+    // Streak
+    @GET("streak/{userId}")
+    suspend fun getStreaksByUserId(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): GetStreakDto
+
+    @POST("streak")
+    suspend fun updateStreak(
+        @Header("Authorization") token: String,
+        @Body increaseStreakDto: IncreaseStreakDto
+    ): StreakDto
+
+    // Notification
+    @POST("notifications/register")
+    suspend fun sendDeviceToken(
+        @Header("Authorization") authorization: String,
+        @Body tokenRequest: TokenRequestDto
+    ): Response<Unit>
 }
