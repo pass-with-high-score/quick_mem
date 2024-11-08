@@ -36,6 +36,9 @@ import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
+import com.pwhs.quickmem.data.dto.streak.GetStreakDto
+import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
+import com.pwhs.quickmem.data.dto.streak.StreakDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -43,6 +46,7 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
@@ -105,6 +109,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body verifyPasswordRequestDto: VerifyPasswordRequestDto
     ): VerifyPasswordResponseDto
+
+    @GET("auth/me/{id}")
+    suspend fun getUserDetail(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String,
+        @Query("isOwner") isOwner: Boolean
+    ): UserDetailResponseDto
 
     // Upload
     @Multipart
@@ -276,4 +287,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addMemberToClassRequestDto: AddMemberToClassRequestDto
     )
+
+    // Streak
+    @GET("streak/{userId}")
+    suspend fun getStreaksByUserId(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): GetStreakDto
+
+    @POST("streak")
+    suspend fun updateStreak(
+        @Header("Authorization") token: String,
+        @Body increaseStreakDto: IncreaseStreakDto
+    ): StreakDto
 }
