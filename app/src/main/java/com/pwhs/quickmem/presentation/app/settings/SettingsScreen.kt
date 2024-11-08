@@ -1,5 +1,10 @@
 package com.pwhs.quickmem.presentation.app.settings
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,11 +38,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.settings.component.SettingCard
 import com.pwhs.quickmem.presentation.app.settings.component.SettingItem
@@ -44,6 +54,7 @@ import com.pwhs.quickmem.presentation.app.settings.component.SettingSwitch
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTitleSection
 import com.pwhs.quickmem.presentation.app.settings.component.SettingValidatePasswordBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -55,6 +66,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
 @Composable
 fun SettingsScreen(
@@ -123,6 +135,8 @@ fun SettingsScreen(
         password = uiState.password,
         isLoading = uiState.isLoading,
         errorMessage = uiState.errorMessage,
+        isPushNotificationsEnabled = uiState.isPushNotificationsEnabled,
+        isAppPushNotificationsEnabled = uiState.isAppPushNotificationsEnabled,
         onChangePassword = {
             viewModel.onEvent(SettingUiAction.OnChangePassword(it))
         },
@@ -140,11 +154,18 @@ fun SettingsScreen(
         },
         onNavigateToChangePassword = {
             navigator.navigate(ChangePasswordSettingScreenDestination(email = uiState.email))
-        }
+        },
+        onEnablePushNotifications = {
+            viewModel.onEvent(SettingUiAction.OnChangePushNotifications(!uiState.isPushNotificationsEnabled))
+        },
+        onNotificationEnabled = {
+            viewModel.onEvent(SettingUiAction.OnChangeAppPushNotifications(it))
+        },
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun Setting(
     modifier: Modifier = Modifier,
@@ -154,13 +175,16 @@ fun Setting(
     password: String = "",
     errorMessage: String = "",
     isLoading: Boolean = false,
+    isPushNotificationsEnabled: Boolean = false,
+    isAppPushNotificationsEnabled: Boolean = false,
     onChangePassword: (String) -> Unit = {},
     onChangeType: (SettingChangeValueEnum) -> Unit = {},
     onSubmitClick: () -> Unit = {},
     onNavigationBack: () -> Unit = {},
     onNavigateToChangePassword: () -> Unit = {},
     onNavigateToManageStorage: () -> Unit = {},
-    onEnablePushNotifications: () -> Unit = {},
+    onEnablePushNotifications: (Boolean) -> Unit = {},
+    onNotificationEnabled: (Boolean) -> Unit = {},
     onEnableSoundEffects: () -> Unit = {},
     onNavigateToPrivacyPolicy: () -> Unit = {},
     onNavigateToChangeLanguage: () -> Unit = {},
@@ -174,6 +198,20 @@ fun Setting(
     var showVerifyPasswordBottomSheet by remember {
         mutableStateOf(false)
     }
+    val notificationPermission =
+        rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+    LaunchedEffect(notificationPermission) {
+        if (!notificationPermission.status.isGranted) {
+            notificationPermission.launchPermissionRequest()
+            onNotificationEnabled(false)
+        } else {
+            onNotificationEnabled(true)
+        }
+    }
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    val context = LocalContext.current
 
     Scaffold(
         modifier = modifier,
@@ -260,7 +298,7 @@ fun Setting(
                                 subtitle = "Your 8 most recently studied sets will be saved for offline studying",
                                 value = true,
                                 onChangeValue = {
-                                    onEnablePushNotifications()
+                                    // TODO(): Implement this feature
                                 }
                             )
                             HorizontalDivider()
@@ -290,9 +328,14 @@ fun Setting(
                             SettingSwitch(
                                 title = "Push notifications",
                                 onChangeValue = {
-                                    onEnablePushNotifications()
+                                    if (!isAppPushNotificationsEnabled && !notificationPermission.status.isGranted) {
+                                        showDialog = true
+                                    } else {
+                                        onEnablePushNotifications(it)
+                                        onNotificationEnabled(it)
+                                    }
                                 },
-                                value = true
+                                value = isPushNotificationsEnabled && isAppPushNotificationsEnabled
                             )
                             HorizontalDivider()
                             SettingSwitch(
@@ -410,10 +453,40 @@ fun Setting(
             LoadingOverlay(
                 isLoading = isLoading
             )
+            if (showDialog) {
+                QuickMemAlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    onConfirm = {
+                        showDialog = false
+                        val intent =
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                                    putExtra(
+                                        Settings.EXTRA_APP_PACKAGE,
+                                        context.packageName
+                                    )
+                                }
+                            } else {
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data =
+                                        Uri.parse("package:${context.packageName}")
+                                }
+                            }
+
+                        context.startActivity(intent)
+                    },
+                    title = "Push notifications",
+                    text = "You need to enable push notifications in the app settings",
+                    confirmButtonTitle = "Open settings",
+                    dismissButtonTitle = "Cancel",
+                    buttonColor = colorScheme.primary
+                )
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @PreviewLightDark
 @Composable
 fun SettingScreenPreview(modifier: Modifier = Modifier) {

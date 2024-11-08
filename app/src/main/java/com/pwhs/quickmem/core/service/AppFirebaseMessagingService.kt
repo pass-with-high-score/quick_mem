@@ -23,11 +23,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AppFirebaseMessagingService : FirebaseMessagingService() {
-    @Inject
-    lateinit var tokenManager: TokenManager
+    private val tokenManager = TokenManager(this)
 
-    @Inject
-    lateinit var appManager: AppManager
+    private val appManager = AppManager(this)
 
     @Inject
     lateinit var apiService: ApiService
@@ -40,9 +38,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
     private fun sendTokenToServer(token: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val isLogged = appManager.isLoggedIn.firstOrNull() ?: false
-            if (!isLogged) {
-                return@launch
-            } else {
+            if (isLogged) {
                 val accessToken = tokenManager.accessToken.firstOrNull() ?: ""
                 val userId = appManager.userId.firstOrNull() ?: ""
                 try {
@@ -58,7 +54,14 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Timber.d("From: ${remoteMessage.from}")
-        showNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
+        CoroutineScope(Dispatchers.IO).launch {
+            val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
+            if (isPushNotificationsEnabled) {
+                remoteMessage.notification?.let {
+                    showNotification(it.title, it.body)
+                }
+            }
+        }
     }
 
     private fun showNotification(title: String?, body: String?) {
