@@ -385,6 +385,8 @@ fun ClassDetail(
         )
     }
     ClassDetailBottomSheet(
+        onAddStudySetToClass = onNavigateAddStudySets,
+        onAddFolderToClass = onNavigateAddFolder,
         onEditClass = onEditClass,
         onDeleteClass = {
             showDeleteConfirmationDialog = true
