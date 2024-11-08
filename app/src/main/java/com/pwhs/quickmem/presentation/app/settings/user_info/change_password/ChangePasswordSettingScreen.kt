@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.settings.user_info.changepassword
+package com.pwhs.quickmem.presentation.app.settings.user_info.change_password
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -36,8 +36,10 @@ fun ChangePasswordSettingScreen(
                 is ChangePasswordSettingUiEvent.OnError -> {
                     Toast.makeText(context, event.errorMessage, Toast.LENGTH_SHORT).show()
                 }
+
                 ChangePasswordSettingUiEvent.OnPasswordChanged -> {
-                    Toast.makeText(context, "Password changed successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Password changed successfully", Toast.LENGTH_SHORT)
+                        .show()
                     resultNavigator.navigateBack(true)
                 }
             }
@@ -49,7 +51,9 @@ fun ChangePasswordSettingScreen(
         currentPassword = uiState.currentPassword,
         newPassword = uiState.newPassword,
         confirmPassword = uiState.confirmPassword,
-        errorMessage = uiState.errorMessage,
+        errorCurrentPassword = uiState.errorCurrentPassword,
+        errorNewPassword = uiState.errorNewPassword,
+        errorConfirmPassword = uiState.errorConfirmPassword,
         isLoading = uiState.isLoading,
         onCurrentPasswordChanged = { password ->
             viewModel.onEvent(ChangePasswordSettingUiAction.OnCurrentPasswordChanged(password))
@@ -75,7 +79,9 @@ fun ChangePasswordSetting(
     currentPassword: String = "",
     newPassword: String = "",
     confirmPassword: String = "",
-    errorMessage: String = "",
+    errorCurrentPassword: String = "",
+    errorNewPassword: String = "",
+    errorConfirmPassword: String = "",
     isLoading: Boolean = false,
     onCurrentPasswordChanged: (String) -> Unit = {},
     onNewPasswordChanged: (String) -> Unit = {},
@@ -107,7 +113,8 @@ fun ChangePasswordSetting(
                     value = currentPassword,
                     onValueChange = onCurrentPasswordChanged,
                     placeholder = "Current Password",
-                    errorMessage = if (errorMessage.isNotEmpty()) errorMessage else ""
+                    errorMessage = errorCurrentPassword,
+                    isSecure = true
                 )
                 SettingTextField(
                     modifier = Modifier
@@ -115,7 +122,8 @@ fun ChangePasswordSetting(
                     value = newPassword,
                     onValueChange = onNewPasswordChanged,
                     placeholder = "New Password",
-                    errorMessage = if (errorMessage.isNotEmpty()) errorMessage else ""
+                    errorMessage = errorNewPassword,
+                    isSecure = true
                 )
                 SettingTextField(
                     modifier = Modifier
@@ -123,7 +131,8 @@ fun ChangePasswordSetting(
                     value = confirmPassword,
                     onValueChange = onConfirmPasswordChanged,
                     placeholder = "Confirm New Password",
-                    errorMessage = if (errorMessage.isNotEmpty()) errorMessage else ""
+                    errorMessage = errorConfirmPassword,
+                    isSecure = true
                 )
             }
             LoadingOverlay(
