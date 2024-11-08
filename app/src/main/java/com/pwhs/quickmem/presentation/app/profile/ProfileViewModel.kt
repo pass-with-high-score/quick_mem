@@ -45,11 +45,5 @@ class ProfileViewModel @Inject constructor(
             )
         }
     }
-
-    fun getUserData(): Pair<String, String> {
-        return Pair(_uiState.value.username, _uiState.value.userAvatar)
-    }
-
-
     // TODO: Load data from server
 }

@@ -4,6 +4,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
+import com.pwhs.quickmem.data.mapper.user.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.data.remote.EmailService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
@@ -25,6 +26,7 @@ import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
+import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -135,7 +137,10 @@ class AuthRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.updateEmail(token, updateEmailRequestModel.toDto())
+                val response = apiService.updateEmail(
+                    token,
+                    updateEmailRequestModel.toDto()
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -151,7 +156,10 @@ class AuthRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.changePassword(token, changePasswordRequestModel.toDto())
+                val response = apiService.changePassword(
+                    token,
+                    changePasswordRequestModel.toDto()
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -197,7 +205,31 @@ class AuthRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.verifyPassword(token, verifyPasswordRequestModel.toDto())
+                val response = apiService.verifyPassword(
+                    token,
+                    verifyPasswordRequestModel.toDto()
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getUserDetail(
+        userId: String,
+        token: String,
+        isOwner: Boolean
+    ): Flow<Resources<UserDetailResponseModel>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val response = apiService.getUserDetail(
+                    token,
+                    userId,
+                    isOwner
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)

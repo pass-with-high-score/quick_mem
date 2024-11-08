@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.data.ResetType
+import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
@@ -25,7 +26,8 @@ class StudySetDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val studySetRepository: StudySetRepository,
     private val flashCardRepository: FlashCardRepository,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val appManager: AppManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(StudySetDetailUiState())
     val uiState = _uiState.asStateFlow()
@@ -35,69 +37,62 @@ class StudySetDetailViewModel @Inject constructor(
 
     init {
         val id: String = savedStateHandle["id"] ?: ""
-        Timber.d("StudySetDetailViewModel: $id")
         _uiState.update { it.copy(id = id) }
-        getStudySetById(id)
+        getStudySetById()
     }
 
     fun onEvent(event: StudySetDetailUiAction) {
         when (event) {
             is StudySetDetailUiAction.Refresh -> {
-                getStudySetById(_uiState.value.id)
+                getStudySetById()
             }
 
             is StudySetDetailUiAction.OnIdOfFlashCardSelectedChanged -> {
-                Timber.d("OnIdOfFlashCardSelectedChanged: ${event.id}")
                 _uiState.update { it.copy(idOfFlashCardSelected = event.id) }
             }
 
             StudySetDetailUiAction.OnDeleteFlashCardClicked -> {
-                Timber.d("OnDeleteFlashCardClicked")
                 deleteFlashCard()
             }
 
             is StudySetDetailUiAction.OnStarFlashCardClicked -> {
-                Timber.d("OnStarFlashCardClicked: ${event.isStarred}")
                 toggleStarredFlashCard(event.id, event.isStarred)
             }
 
             StudySetDetailUiAction.OnEditStudySetClicked -> {
-                Timber.d("OnNavigateToEditFlashCardClicked")
                 _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditStudySet)
             }
 
             StudySetDetailUiAction.OnEditFlashCardClicked -> {
-                Timber.d("OnNavigateToEditFlashCardClicked")
                 _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditFlashCard)
             }
 
             StudySetDetailUiAction.OnDeleteStudySetClicked -> {
-                Timber.d("OnDeleteStudySetClicked")
                 deleteStudySet()
             }
 
             is StudySetDetailUiAction.OnResetProgressClicked -> {
-                Timber.d("OnResetProgressClicked: ${event.id}")
                 resetProgress(event.id)
             }
         }
     }
 
-    private fun getStudySetById(id: String) {
+    private fun getStudySetById() {
+        val id = _uiState.value.id
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             studySetRepository.getStudySetById(token, id).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
-                        Timber.d("Loading")
                         _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
+                        val isOwner = appManager.userId.firstOrNull() == resource.data!!.owner.id
                         _uiState.update {
                             it.copy(
-                                title = resource.data!!.title,
-                                description = resource.data.description,
+                                title = resource.data.title,
+                                description = resource.data.description ?: "",
                                 color = resource.data.color!!.hexValue.toColor(),
                                 subject = resource.data.subject!!,
                                 flashCardCount = resource.data.flashCardCount,
@@ -109,6 +104,7 @@ class StudySetDetailViewModel @Inject constructor(
                                 colorModel = resource.data.color,
                                 linkShareCode = resource.data.linkShareCode ?: "",
                                 isLoading = false,
+                                isOwner = isOwner
                             )
                         }
                     }
@@ -138,7 +134,7 @@ class StudySetDetailViewModel @Inject constructor(
                         }
 
                         is Resources.Error -> {
-                            Timber.d("Error")
+                            Timber.d(resource.message)
                         }
                     }
                 }
@@ -179,7 +175,7 @@ class StudySetDetailViewModel @Inject constructor(
                 .collect { resource ->
                     when (resource) {
                         is Resources.Loading -> {
-                            Timber.d("Loading")
+                            _uiState.update { it.copy(isLoading = true) }
                         }
 
                         is Resources.Success -> {
@@ -187,7 +183,8 @@ class StudySetDetailViewModel @Inject constructor(
                         }
 
                         is Resources.Error -> {
-                            Timber.d("Error")
+                            Timber.d(resource.message)
+                            _uiState.update { it.copy(isLoading = false) }
                         }
                     }
                 }
@@ -201,7 +198,6 @@ class StudySetDetailViewModel @Inject constructor(
                 .collect { resource ->
                     when (resource) {
                         is Resources.Loading -> {
-                            Timber.d("Loading")
                             _uiState.update { it.copy(isLoading = true) }
                         }
 

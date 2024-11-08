@@ -203,7 +203,12 @@ fun ClassDetailScreen(
             viewModel.onEvent(ClassDetailUiAction.OnNavigateToAddMember)
         },
         onNavigateToUserDetail = {
-            navigator.navigate(UserDetailScreenDestination(userId = it))
+            navigator.navigate(
+                UserDetailScreenDestination(
+                    userId = it,
+                    isOwner = uiState.userResponseModel.id == it
+                )
+            )
         },
         onStudySetItemClicked = {
             navigator.navigate(
@@ -312,13 +317,6 @@ fun ClassDetail(
                                 },
                                 selected = tabIndex == index,
                                 onClick = { tabIndex = index },
-                                icon = {
-                                    when (index) {
-                                        ClassDetailEnums.STUDY_SETS.index -> {}
-                                        ClassDetailEnums.FOLDERS.index -> {}
-                                        ClassDetailEnums.MEMBERS.index -> {}
-                                    }
-                                }
                             )
                         }
                     }

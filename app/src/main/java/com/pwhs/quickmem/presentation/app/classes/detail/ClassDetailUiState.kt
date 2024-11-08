@@ -8,6 +8,7 @@ import com.pwhs.quickmem.domain.model.users.UserResponseModel
 data class ClassDetailUiState(
     val joinClassCode: String = "",
     val isLogin: Boolean = false,
+    val isOwner: Boolean = false,
     val id: String = "",
     val title: String = "",
     val description: String = "",

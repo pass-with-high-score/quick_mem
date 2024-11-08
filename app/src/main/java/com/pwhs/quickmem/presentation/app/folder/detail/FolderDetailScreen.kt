@@ -136,7 +136,8 @@ fun FolderDetailScreen(
         onNavigateToUserDetail = {
             navigator.navigate(
                 UserDetailScreenDestination(
-                    userId = uiState.user.id
+                    userId = uiState.user.id,
+                    isOwner = uiState.isOwner
                 )
             )
         }

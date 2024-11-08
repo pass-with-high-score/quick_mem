@@ -20,6 +20,7 @@ import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
+import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -64,4 +65,10 @@ interface AuthRepository {
         token: String,
         verifyPasswordRequestModel: VerifyPasswordRequestModel
     ): Flow<Resources<VerifyPasswordResponseModel>>
+
+    suspend fun getUserDetail(
+        userId: String,
+        token: String,
+        isOwner: Boolean
+    ): Flow<Resources<UserDetailResponseModel>>
 }
