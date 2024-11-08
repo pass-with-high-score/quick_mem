@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.folder.add_study_set.component
+package com.pwhs.quickmem.presentation.app.classes.add_study_set.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,10 +39,10 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import timber.log.Timber
 
 @Composable
-fun AddStudySetList(
+fun AddStudySetToClassList(
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
-    onAddStudySet: (String) -> Unit = {},
+    onAddStudySetToClass: (String) -> Unit = {},
     listStudySetIds: List<String> = emptyList(),
     avatarUrl: String = "",
     username: String = "",
@@ -129,11 +129,11 @@ fun AddStudySetList(
                     }
                     items(filterStudySets) { studySet ->
                         Timber.d("Check isAdd: ${listStudySetIds.contains(studySet.id)}")
-                        AddStudySetItem(
+                        AddStudySetToClassItem(
                             studySet = studySet,
-                            onAddStudySet = {
+                            onAddStudySetToClass = {
                                 Timber.d("Study set added: $it")
-                                onAddStudySet(it)
+                                onAddStudySetToClass(it)
                             },
                             isAdded = listStudySetIds.contains(studySet.id)
                         )
@@ -149,7 +149,7 @@ fun AddStudySetList(
 private fun ListStudySetInnerFolderPreview() {
     QuickMemTheme {
         Scaffold {
-            AddStudySetList(
+            AddStudySetToClassList(
                 modifier = Modifier
                     .padding(it),
                 studySets = listOf(
@@ -182,7 +182,7 @@ private fun ListStudySetInnerFolderPreview() {
 private fun ListStudySetInnerFolderPreviewEmpty() {
     QuickMemTheme {
         Scaffold {
-            AddStudySetList(
+            AddStudySetToClassList(
                 modifier = Modifier
                     .padding(it),
                 studySets = emptyList()

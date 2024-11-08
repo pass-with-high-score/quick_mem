@@ -21,7 +21,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddStudySetTopAppBar(
+fun AddStudySetToFolderTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
     onNavigateCancel: () -> Unit,
@@ -87,7 +87,7 @@ fun AddStudySetTopAppBarPreview() {
     QuickMemTheme {
         Scaffold(
             topBar = {
-                AddStudySetTopAppBar(
+                AddStudySetToFolderTopAppBar(
                     title = "Add to folder",
                     onNavigateCancel = {},
                     onDoneClick = {}

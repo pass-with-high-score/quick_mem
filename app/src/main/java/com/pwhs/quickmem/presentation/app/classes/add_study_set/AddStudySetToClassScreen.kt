@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.folder.add_study_set
+package com.pwhs.quickmem.presentation.app.classes.add_study_set
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -20,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
-import com.pwhs.quickmem.presentation.app.folder.add_study_set.component.AddStudySetList
-import com.pwhs.quickmem.presentation.app.folder.add_study_set.component.AddStudySetTopAppBar
+import com.pwhs.quickmem.presentation.app.classes.add_study_set.component.AddStudySetToClassList
+import com.pwhs.quickmem.presentation.app.classes.add_study_set.component.AddStudySetToClassTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -30,13 +30,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination<RootGraph>(
-    navArgs = AddStudySetArgs::class
+    navArgs = AddStudySetToClassArgs::class
 )
 @Composable
-fun AddStudySetScreen(
+fun AddStudySetToClassScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: AddStudySetViewModel = hiltViewModel(),
+    viewModel: AddStudySetToClassViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
 
     ) {
@@ -46,11 +46,11 @@ fun AddStudySetScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is AddStudySetUiEvent.Error -> {
+                is AddStudySetToClassUiEvent.Error -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
 
-                is AddStudySetUiEvent.StudySetAdded -> {
+                is AddStudySetToClassUiEvent.StudySetAddedToClass -> {
                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
@@ -58,7 +58,7 @@ fun AddStudySetScreen(
             }
         }
     }
-    AddStudySet(
+    AddStudySetToClass(
         modifier = modifier,
         isLoading = uiState.isLoading,
         studySets = uiState.studySets,
@@ -66,25 +66,25 @@ fun AddStudySetScreen(
         username = uiState.username,
         listStudySetIds = uiState.studySetImportedIds,
         onDoneClick = {
-            viewModel.onEvent(AddStudySetUiAction.AddStudySet)
+            viewModel.onEvent(AddStudySetToClassUiAction.AddStudySetToClass)
         },
         onNavigateCancel = {
             resultNavigator.setResult(true)
             navigator.navigateUp()
         },
-        onCreateStudySetClick = {
+        onCreateStudySetToClassClick = {
             navigator.navigate(
                 CreateStudySetScreenDestination()
             )
         },
-        onAddStudySet = {
-            viewModel.onEvent(AddStudySetUiAction.ToggleStudySetImport(it))
+        onAddStudySetToClass = {
+            viewModel.onEvent(AddStudySetToClassUiAction.ToggleStudySetImport(it))
         }
     )
 }
 
 @Composable
-fun AddStudySet(
+fun AddStudySetToClass(
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     isLoading: Boolean = false,
@@ -93,14 +93,14 @@ fun AddStudySet(
     listStudySetIds: List<String> = emptyList(),
     onDoneClick: () -> Unit = {},
     onNavigateCancel: () -> Unit = {},
-    onCreateStudySetClick: () -> Unit = {},
-    onAddStudySet: (String) -> Unit = {},
+    onCreateStudySetToClassClick: () -> Unit = {},
+    onAddStudySetToClass: (String) -> Unit = {},
 ) {
     Scaffold(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
-            AddStudySetTopAppBar(
+            AddStudySetToClassTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
                 title = "Add Study Set"
@@ -108,7 +108,7 @@ fun AddStudySet(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onCreateStudySetClick,
+                onClick = onCreateStudySetToClassClick,
                 containerColor = colorScheme.secondary,
                 contentColor = colorScheme.onSecondary
             ) {
@@ -125,11 +125,11 @@ fun AddStudySet(
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
             ) {
-                AddStudySetList(
+                AddStudySetToClassList(
                     modifier = modifier,
                     studySets = studySets,
                     listStudySetIds = listStudySetIds,
-                    onAddStudySet = onAddStudySet,
+                    onAddStudySetToClass = onAddStudySetToClass,
                     avatarUrl = userAvatar,
                     username = username,
                 )
@@ -145,5 +145,5 @@ fun AddStudySet(
 )
 @Composable
 private fun AddStudySetPreview() {
-    AddStudySet()
+    AddStudySetToClass()
 }
