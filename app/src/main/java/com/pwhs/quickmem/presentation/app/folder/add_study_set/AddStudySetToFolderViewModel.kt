@@ -120,10 +120,16 @@ class AddStudySetToFolderViewModel @Inject constructor(
             ).collectLatest { resources ->
                 when (resources) {
                     is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
                         _uiEvent.send(AddStudySetToFolderUiEvent.StudySetAddedToFolder)
                     }
 
                     is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
                         _uiEvent.send(
                             AddStudySetToFolderUiEvent.Error(
                                 resources.message ?: "An error occurred"
