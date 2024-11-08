@@ -19,6 +19,8 @@ data class GetFolderDetailResponseDto(
     val owner: UserResponseDto,
     @SerializedName("studySets")
     val studySets: List<GetStudySetResponseDto>? = null,
+    @SerializedName("isImported")
+    val isImported: Boolean? = null,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

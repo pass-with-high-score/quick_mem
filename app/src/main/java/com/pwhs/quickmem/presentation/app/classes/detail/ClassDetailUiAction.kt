@@ -7,5 +7,4 @@ sealed class ClassDetailUiAction {
     data object DeleteClass : ClassDetailUiAction()
     data object OnNavigateToAddFolder:ClassDetailUiAction()
     data object OnNavigateToAddStudySets:ClassDetailUiAction()
-    data object OnNavigateToAddMember:ClassDetailUiAction()
 }

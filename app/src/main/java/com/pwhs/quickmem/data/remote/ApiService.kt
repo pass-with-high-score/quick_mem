@@ -246,7 +246,8 @@ interface ApiService {
     @GET("folder/owner/{ownerId}")
     suspend fun getFoldersByOwnerId(
         @Header("Authorization") token: String,
-        @Path("ownerId") ownerId: String
+        @Path("ownerId") ownerId: String,
+        @Query("folderId") folderId: String? = null
     ): List<GetFolderDetailResponseDto>
 
     @DELETE("folder/{id}")
@@ -277,7 +278,7 @@ interface ApiService {
     @GET("class/user/{userId}")
     suspend fun getClassByOwnerID(
         @Header("Authorization") token: String,
-        @Path("userId") userId: String
+        @Path("userId") userId: String,
     ): List<GetClassByOwnerResponseDto>
 
     @DELETE("class/{id}")

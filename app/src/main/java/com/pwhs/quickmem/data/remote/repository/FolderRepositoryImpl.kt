@@ -69,7 +69,8 @@ class FolderRepositoryImpl @Inject constructor(
 
     override suspend fun getFoldersByUserId(
         token: String,
-        userId: String
+        userId: String,
+        folderId: String?
     ): Flow<Resources<List<GetFolderResponseModel>>> {
         return flow {
             emit(Resources.Loading())

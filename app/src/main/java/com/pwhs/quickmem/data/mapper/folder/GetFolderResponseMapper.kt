@@ -15,6 +15,7 @@ fun GetFolderDetailResponseDto.toModel() = GetFolderResponseModel(
     studySetCount = studySetCount,
     owner = owner.toModel(),
     studySets = studySets?.map { it.toModel() },
+    isImported = isImported,
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
@@ -27,6 +28,7 @@ fun GetFolderResponseModel.toDto() = GetFolderDetailResponseDto(
     studySetCount = studySetCount,
     owner = owner.toDto(),
     studySets = studySets?.map { it.toDto() },
+    isImported = isImported,
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
