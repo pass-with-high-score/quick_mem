@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.folder.add_study_set
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -21,21 +22,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.add_study_set.component.AddStudySetList
 import com.pwhs.quickmem.presentation.app.folder.add_study_set.component.AddStudySetTopAppBar
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
-@Destination<RootGraph>
+@Destination<RootGraph>(
+    navArgs = AddStudySetArgs::class
+)
 @Composable
 fun AddStudySetScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
     viewModel: AddStudySetViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
-) {
+
+    ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
@@ -45,15 +49,24 @@ fun AddStudySetScreen(
                 is AddStudySetUiEvent.Error -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
+
+                is AddStudySetUiEvent.StudySetAdded -> {
+                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    resultNavigator.setResult(true)
+                    navigator.navigateUp()
+                }
             }
         }
     }
     AddStudySet(
         modifier = modifier,
+        isLoading = uiState.isLoading,
         studySets = uiState.studySets,
         userAvatar = uiState.userAvatar,
         username = uiState.username,
+        listStudySetIds = uiState.studySetImportedIds,
         onDoneClick = {
+            viewModel.onEvent(AddStudySetUiAction.AddStudySet)
         },
         onNavigateCancel = {
             resultNavigator.setResult(true)
@@ -64,13 +77,8 @@ fun AddStudySetScreen(
                 CreateStudySetScreenDestination()
             )
         },
-        onStudySetClick = {
-            navigator.navigate(
-                StudySetDetailScreenDestination(
-                    id = it,
-                    code = ""
-                )
-            )
+        onAddStudySet = {
+            viewModel.onEvent(AddStudySetUiAction.ToggleStudySetImport(it))
         }
     )
 }
@@ -79,12 +87,14 @@ fun AddStudySetScreen(
 fun AddStudySet(
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
+    isLoading: Boolean = false,
     userAvatar: String = "",
     username: String = "",
+    listStudySetIds: List<String> = emptyList(),
     onDoneClick: () -> Unit = {},
     onNavigateCancel: () -> Unit = {},
     onCreateStudySetClick: () -> Unit = {},
-    onStudySetClick: (String) -> Unit = {}
+    onAddStudySet: (String) -> Unit = {},
 ) {
     Scaffold(
         containerColor = colorScheme.background,
@@ -109,19 +119,23 @@ fun AddStudySet(
             }
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-        ) {
-            AddStudySetList(
-                modifier = modifier,
-                studySets = studySets,
-                onStudySetClick = onStudySetClick,
-                avatarUrl = userAvatar,
-                username = username
-            )
+        Box {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp)
+            ) {
+                AddStudySetList(
+                    modifier = modifier,
+                    studySets = studySets,
+                    listStudySetIds = listStudySetIds,
+                    onAddStudySet = onAddStudySet,
+                    avatarUrl = userAvatar,
+                    username = username,
+                )
+            }
         }
+        LoadingOverlay(isLoading = isLoading)
     }
 }
 

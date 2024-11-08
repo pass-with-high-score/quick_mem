@@ -134,7 +134,6 @@ fun ListStudySetScreen(
                 studySets.isNotEmpty() -> {
                     LazyColumn {
                         item {
-
                             SearchTextField(
                                 searchQuery = searchQuery,
                                 onSearchQueryChange = { searchQuery = it },

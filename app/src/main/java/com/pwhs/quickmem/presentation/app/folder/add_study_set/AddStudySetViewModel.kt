@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -33,6 +34,9 @@ class AddStudySetViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        val folderId: String = savedStateHandle["folderId"] ?: ""
+        Timber.d("AddStudySetViewModel: $folderId")
+        _uiState.update { it.copy(folderId = folderId) }
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
             val ownerId = appManager.userId.firstOrNull() ?: return@launch
@@ -48,19 +52,28 @@ class AddStudySetViewModel @Inject constructor(
             }
             getStudySets()
         }
-
     }
 
     fun onEvent(event: AddStudySetUiAction) {
         when (event) {
-            else -> {
+            AddStudySetUiAction.AddStudySet -> {
+                doneClick()
+            }
+
+            is AddStudySetUiAction.ToggleStudySetImport -> {
+                Timber.d("Toggle Study Set Import: ${event.studySetId}")
+                toggleStudySetImport(event.studySetId)
             }
         }
     }
 
     private fun getStudySets() {
         viewModelScope.launch {
-            studySetRepository.getStudySetsByOwnerId(_uiState.value.token, _uiState.value.userId)
+            studySetRepository.getStudySetsByOwnerId(
+                _uiState.value.token,
+                _uiState.value.userId,
+                _uiState.value.folderId
+            )
                 .collectLatest { resources ->
                     when (resources) {
                         is Resources.Success -> {
@@ -68,9 +81,10 @@ class AddStudySetViewModel @Inject constructor(
                                 it.copy(
                                     isLoading = false,
                                     studySets = resources.data ?: emptyList(),
+                                    studySetImportedIds = resources.data?.filter { it.isImported == true }
+                                        ?.map { it.id } ?: emptyList()
                                 )
                             }
-                            Timber.d("Study sets: ${resources.data}")
                         }
 
                         is Resources.Error -> {
@@ -91,6 +105,51 @@ class AddStudySetViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun doneClick() {
+        viewModelScope.launch {
+            val addStudySetToFolderRequestModel = AddStudySetToFolderRequestModel(
+                folderId = _uiState.value.folderId,
+                studySetIds = _uiState.value.studySetImportedIds
+            )
+            studySetRepository.addStudySetToFolder(
+                token = tokenManager.accessToken.firstOrNull() ?: "",
+                addStudySetToFolderRequestModel
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiEvent.send(AddStudySetUiEvent.StudySetAdded)
+                    }
+
+                    is Resources.Error -> {
+                        _uiEvent.send(
+                            AddStudySetUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun toggleStudySetImport(studySetId: String) {
+        val studySetImportedIds = _uiState.value.studySetImportedIds.toMutableList()
+        if (studySetImportedIds.contains(studySetId)) {
+            studySetImportedIds.remove(studySetId)
+        } else {
+            studySetImportedIds.add(studySetId)
+        }
+        _uiState.update {
+            it.copy(studySetImportedIds = studySetImportedIds)
         }
     }
 }

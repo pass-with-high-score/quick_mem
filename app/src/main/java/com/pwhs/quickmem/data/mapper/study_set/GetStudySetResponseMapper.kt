@@ -24,6 +24,7 @@ fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
     flashcards = flashcards?.map { it.toModel() } ?: emptyList(),
     owner = owner.toModel(),
     linkShareCode = linkShareCode,
+    isImported = isImported,
 )
 
 fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
@@ -39,4 +40,5 @@ fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
     flashcards = flashcards.map { it.toDto() },
     owner = owner.toDto(),
     linkShareCode = linkShareCode,
+    isImported = isImported,
 )

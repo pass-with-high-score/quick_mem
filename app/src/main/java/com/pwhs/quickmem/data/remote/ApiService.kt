@@ -36,6 +36,7 @@ import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
+import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -144,7 +145,8 @@ interface ApiService {
     @GET("study-set/owner/{ownerId}")
     suspend fun getStudySetsByOwnerId(
         @Header("Authorization") token: String,
-        @Path("ownerId") ownerId: String
+        @Path("ownerId") ownerId: String,
+        @Query("folderId") folderId: String? = null
     ): List<GetStudySetResponseDto>
 
     @PATCH("study-set/{id}")
@@ -245,6 +247,12 @@ interface ApiService {
     suspend fun deleteFolder(
         @Header("Authorization") token: String,
         @Path("id") id: String
+    )
+
+    @POST("folder/study-sets")
+    suspend fun addStudySetToFolder(
+        @Header("Authorization") token: String,
+        @Body addStudySetToFolderRequestDto: AddStudySetToFolderRequestDto
     )
 
     // Class

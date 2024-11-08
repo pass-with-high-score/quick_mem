@@ -56,10 +56,22 @@ fun FolderDetailScreen(
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Boolean>,
     resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>,
-    resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>
+    resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
+    resultAddStudySet: ResultRecipient<AddStudySetScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultAddStudySet.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(FolderDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
 
     resultEditFolder.onNavResult { result ->
         when (result) {
@@ -134,7 +146,9 @@ fun FolderDetailScreen(
         },
         onAddStudySet = {
             navigator.navigate(
-                AddStudySetScreenDestination()
+                AddStudySetScreenDestination(
+                    folderId = uiState.id
+                )
             )
         },
         onDeleteFolder = { viewModel.onEvent(FolderDetailUiAction.DeleteFolder) },

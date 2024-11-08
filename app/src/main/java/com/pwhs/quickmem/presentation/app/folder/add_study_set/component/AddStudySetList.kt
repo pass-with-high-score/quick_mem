@@ -14,7 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,16 +32,28 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import timber.log.Timber
 
 @Composable
 fun AddStudySetList(
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
-    onStudySetClick: (String) -> Unit = {},
+    onAddStudySet: (String) -> Unit = {},
+    listStudySetIds: List<String> = emptyList(),
     avatarUrl: String = "",
     username: String = "",
 ) {
+
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filterStudySets = studySets.filter {
+        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
+            it.title.contains(query, ignoreCase = true)
+        } ?: true
+    }
+
     Box(modifier = modifier) {
         when {
             studySets.isEmpty() -> {
@@ -86,10 +101,23 @@ fun AddStudySetList(
                 LazyColumn(
                     horizontalAlignment = CenterHorizontally,
                 ) {
-                    items(studySets) { studySet ->
+                    item {
+                        SearchTextField(
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { searchQuery = it },
+                            placeholder = "Search study sets"
+                        )
+
+                    }
+                    items(filterStudySets) { studySet ->
+                        Timber.d("Check isAdd: ${listStudySetIds.contains(studySet.id)}")
                         AddStudySetItem(
                             studySet = studySet,
-                            onStudySetClick = { onStudySetClick(studySet.id) }
+                            onAddStudySet = {
+                                Timber.d("Study set added: $it")
+                                onAddStudySet(it)
+                            },
+                            isAdded = listStudySetIds.contains(studySet.id)
                         )
                     }
                 }
@@ -113,7 +141,7 @@ private fun ListStudySetInnerFolderPreview() {
                         flashCardCount = 10,
                         color = ColorModel.defaultColors[0],
                         subject = SubjectModel.defaultSubjects[0],
-                        user = UserResponseModel(
+                        owner = UserResponseModel(
                             id = "1",
 
                             ),

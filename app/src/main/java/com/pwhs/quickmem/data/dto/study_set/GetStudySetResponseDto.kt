@@ -27,6 +27,8 @@ data class GetStudySetResponseDto(
     val owner: UserResponseDto,
     @SerializedName("linkShareCode")
     val linkShareCode: String? = null,
+    @SerializedName("isImported")
+    val isImported: Boolean? = null,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

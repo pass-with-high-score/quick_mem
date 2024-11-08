@@ -19,9 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,13 +45,10 @@ import com.pwhs.quickmem.util.toColor
 fun AddStudySetItem(
     modifier: Modifier = Modifier,
     studySet: GetStudySetResponseModel,
-    onStudySetClick: (String) -> Unit = {},
-    onAddStudySetIcon: () -> Unit = {},
+    isAdded: Boolean = false,
+    onAddStudySet: (String) -> Unit = {},
 ) {
-    var isAdded by remember { mutableStateOf(false) }
-
     Card(
-        onClick = { onStudySetClick(studySet.id) },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
@@ -126,7 +121,7 @@ fun AddStudySetItem(
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
                     AsyncImage(
-                        model = studySet.user.avatarUrl,
+                        model = studySet.owner.avatarUrl,
                         contentDescription = "User avatar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -134,7 +129,7 @@ fun AddStudySetItem(
                             .clip(CircleShape)
                     )
                     Text(
-                        studySet.user.username,
+                        studySet.owner.username,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -145,8 +140,7 @@ fun AddStudySetItem(
                     .size(36.dp)
                     .clip(CircleShape)
                     .clickable {
-                        isAdded = !isAdded
-                        onAddStudySetIcon()
+                        onAddStudySet(studySet.id)
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -167,7 +161,8 @@ private fun StudySetItemPreview() {
     QuickMemTheme {
         Scaffold {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
                     .padding(horizontal = 16.dp)
             ) {
                 item {
@@ -181,7 +176,7 @@ private fun StudySetItemPreview() {
                                 flashCardCount = 10,
                                 color = ColorModel.defaultColors[0],
                                 subject = SubjectModel.defaultSubjects[0],
-                                user = UserResponseModel(
+                                owner = UserResponseModel(
                                     id = "1",
                                     username = "User",
                                     avatarUrl = "https://www.example.com/avatar.jpg"
