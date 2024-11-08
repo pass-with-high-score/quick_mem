@@ -16,6 +16,7 @@ data class GetStudySetResponseModel(
     val flashCardCount: Int,
     val linkShareCode: String? = null,
     val flashcards: List<StudySetFlashCardResponseModel>,
+    val isImported: Boolean? = null,
     val createdAt: String,
     val updatedAt: String,
 )

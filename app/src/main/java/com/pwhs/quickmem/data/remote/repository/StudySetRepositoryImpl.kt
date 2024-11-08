@@ -4,6 +4,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -53,12 +54,13 @@ class StudySetRepositoryImpl @Inject constructor(
 
     override suspend fun getStudySetsByOwnerId(
         token: String,
-        ownerId: String
+        ownerId: String,
+        folderId: String?
     ): Flow<Resources<List<GetStudySetResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getStudySetsByOwnerId(token, ownerId)
+                val response = apiService.getStudySetsByOwnerId(token, ownerId, folderId)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -106,6 +108,22 @@ class StudySetRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 apiService.resetProgress(token, studySetId, resetType)
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun addStudySetToFolder(
+        token: String,
+        addStudySetToFolderRequestModel: AddStudySetToFolderRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.addStudySetToFolder(token, addStudySetToFolderRequestModel.toDto())
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
