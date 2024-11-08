@@ -87,7 +87,7 @@ fun ListStudySetScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        if (!isOwner) {
+                        if (isOwner) {
                             AsyncImage(
                                 model = avatarUrl,
                                 contentDescription = "User avatar",

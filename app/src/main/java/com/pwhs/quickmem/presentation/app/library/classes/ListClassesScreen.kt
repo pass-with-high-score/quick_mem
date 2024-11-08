@@ -83,7 +83,7 @@ fun ListClassesScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        if (!isOwner) {
+                        if (isOwner) {
                             Icon(
                                 imageVector = Icons.Outlined.GroupAdd,
                                 contentDescription = "Folder",

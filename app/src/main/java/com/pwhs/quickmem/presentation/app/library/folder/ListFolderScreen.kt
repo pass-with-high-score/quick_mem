@@ -83,7 +83,7 @@ fun ListFolderScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        if (!isOwner) {
+                        if (isOwner) {
                             Icon(
                                 imageVector = Icons.Outlined.Folder,
                                 contentDescription = "Folder",

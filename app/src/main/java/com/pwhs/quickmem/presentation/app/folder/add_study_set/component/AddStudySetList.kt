@@ -4,13 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,20 +77,20 @@ fun AddStudySetList(
                     )
                     Text(
                         text = "Hello, $username",
-                        style = MaterialTheme.typography.titleLarge.copy(
+                        style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp
                         )
                     )
                     HorizontalDivider(
                         thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                        color = colorScheme.onSurface.copy(alpha = 0.1f),
                     )
                     Text(
                         text = "There are no owned study sets, create one to get started!",
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        style = typography.bodyMedium.copy(
+                            color = colorScheme.onSurface.copy(alpha = 0.6f),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp
                         ),
@@ -108,6 +110,22 @@ fun AddStudySetList(
                             placeholder = "Search study sets"
                         )
 
+                    }
+                    item {
+                        if (filterStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "No study set fold found",
+                                    style = typography.bodyLarge,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
                     }
                     items(filterStudySets) { studySet ->
                         Timber.d("Check isAdd: ${listStudySetIds.contains(studySet.id)}")

@@ -203,6 +203,8 @@ fun ClassDetailScreen(
             viewModel.onEvent(ClassDetailUiAction.OnNavigateToAddMember)
         },
         onNavigateToUserDetail = {
+            Timber.d("Navigate to user detail with id: $it")
+            Timber.d("User id: ${uiState.userResponseModel.id}")
             navigator.navigate(
                 UserDetailScreenDestination(
                     userId = it,
