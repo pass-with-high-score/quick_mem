@@ -36,6 +36,9 @@ import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
+import com.pwhs.quickmem.data.dto.streak.GetStreakDto
+import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
+import com.pwhs.quickmem.data.dto.streak.StreakDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
@@ -292,4 +295,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addMemberToClassRequestDto: AddMemberToClassRequestDto
     )
+
+    // Streak
+    @GET("streak/{userId}")
+    suspend fun getStreaksByUserId(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): GetStreakDto
+
+    @POST("streak")
+    suspend fun updateStreak(
+        @Header("Authorization") token: String,
+        @Body increaseStreakDto: IncreaseStreakDto
+    ): StreakDto
 }
