@@ -36,6 +36,7 @@ import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
+import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
@@ -52,6 +53,7 @@ import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -315,4 +317,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body increaseStreakDto: IncreaseStreakDto
     ): StreakDto
+
+    // Notification
+    @POST("notifications/register")
+    suspend fun sendDeviceToken(
+        @Header("Authorization") authorization: String,
+        @Body tokenRequest: TokenRequestDto
+    ): Response<Unit>
 }

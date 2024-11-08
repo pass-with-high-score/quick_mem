@@ -4,16 +4,33 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.pwhs.quickmem.MainActivity
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.core.datastore.TokenManager
+import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
+import com.pwhs.quickmem.data.remote.ApiService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 class AppFirebaseMessagingService : FirebaseMessagingService() {
+    @Inject
+    lateinit var tokenManager: TokenManager
+
+    @Inject
+    lateinit var appManager: AppManager
+
+    @Inject
+    lateinit var apiService: ApiService
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Timber.d("Refreshed token: $token")
@@ -21,20 +38,33 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendTokenToServer(token: String) {
-        // Implement logic to send token to your server
+        CoroutineScope(Dispatchers.IO).launch {
+            val isLogged = appManager.isLoggedIn.firstOrNull() ?: false
+            if (!isLogged) {
+                return@launch
+            } else {
+                val accessToken = tokenManager.accessToken.firstOrNull() ?: ""
+                val userId = appManager.userId.firstOrNull() ?: ""
+                try {
+                    apiService.sendDeviceToken(accessToken, TokenRequestDto(userId, token))
+                    Timber.d("Token sent to server successfully.")
+                } catch (e: Exception) {
+                    Timber.e(e, "Error sending token to server")
+                }
+            }
+        }
     }
 
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // Xử lý thông báo nhận được
         Timber.d("From: ${remoteMessage.from}")
         showNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
     }
 
     private fun showNotification(title: String?, body: String?) {
         val channelId = "QuickMem Channel"
-        val notificationId = 0 // Có thể thay đổi để quản lý nhiều thông báo
+        val notificationId = 0
 
-        // Tạo Intent cho Notification
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
@@ -45,7 +75,6 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Tạo NotificationCompat.Builder
         val builder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_bear)
             .setContentTitle(title)
@@ -53,7 +82,6 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
 
-        // Tạo NotificationChannel cho Android Oreo trở lên
         if (SDK_INT >= VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -66,7 +94,6 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Hiển thị thông báo
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.notify(notificationId, builder.build())
     }
