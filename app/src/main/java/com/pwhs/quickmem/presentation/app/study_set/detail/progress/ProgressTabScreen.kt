@@ -49,29 +49,42 @@ fun ProgressTabScreen(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    StudySetDonutChart(
-                        color = color,
-                        studySetsNotLearn = studySetsNotLearnCount,
-                        studySetsStillLearn = studySetsStillLearningCount,
-                        studySetsMastered = studySetsKnowCount
-                    )
-                    ProgressRow(
-                        label = "Not learned",
-                        percentage = studySetsNotLearnCount * 100 / totalStudySet,
-                        color = color.copy(alpha = 0.3f)
-                    )
+                    when {
+                        totalStudySet == 0 -> {
+                            Text(
+                                text = "You have not started any study set yet",
+                                style = typography.bodyMedium.copy(
+                                    fontSize = 16.sp
+                                )
+                            )
+                        }
 
-                    ProgressRow(
-                        label = "Still learning",
-                        percentage = studySetsStillLearningCount * 100 / totalStudySet,
-                        color = color.copy(alpha = 0.6f)
-                    )
+                        else -> {
+                            StudySetDonutChart(
+                                color = color,
+                                studySetsNotLearn = studySetsNotLearnCount,
+                                studySetsStillLearn = studySetsStillLearningCount,
+                                studySetsMastered = studySetsKnowCount
+                            )
+                            ProgressRow(
+                                label = "Not learned",
+                                percentage = studySetsNotLearnCount * 100 / totalStudySet,
+                                color = color.copy(alpha = 0.3f)
+                            )
 
-                    ProgressRow(
-                        label = "Learn",
-                        percentage = studySetsKnowCount * 100 / totalStudySet,
-                        color = color
-                    )
+                            ProgressRow(
+                                label = "Still learning",
+                                percentage = studySetsStillLearningCount * 100 / totalStudySet,
+                                color = color.copy(alpha = 0.6f)
+                            )
+
+                            ProgressRow(
+                                label = "Learn",
+                                percentage = studySetsKnowCount * 100 / totalStudySet,
+                                color = color
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -90,5 +103,5 @@ private fun PressTabScreen() {
             studySetsKnowCount = 3
         )
     }
-    
+
 }

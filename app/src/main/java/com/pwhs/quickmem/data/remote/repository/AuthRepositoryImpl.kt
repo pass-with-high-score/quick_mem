@@ -4,9 +4,12 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
+import com.pwhs.quickmem.data.mapper.user.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.data.remote.EmailService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
+import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -23,6 +26,7 @@ import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
+import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -35,8 +39,8 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
     override suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
                 val emailDto = EmailRequestDto(email)
                 val response = emailService.checkEmail(emailDto)
                 if (response.isReachable == "safe" || response.isReachable == "risky") {
@@ -46,18 +50,16 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             } catch (e: Exception) {
                 Timber.e(e.toString())
-                emit(Resources.Error(e.localizedMessage ?: "Error"))
+                emit(Resources.Error(e.toString()))
             }
         }
     }
 
     override suspend fun login(loginRequestModel: LoginRequestModel): Flow<Resources<AuthResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
-                val params = loginRequestModel.toDto()
-                val response = apiService.login(params)
-                Timber.d(response.toString())
+                val response = apiService.login(loginRequestModel.toDto())
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e.toString())
@@ -68,10 +70,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signup(signUpRequestModel: SignupRequestModel): Flow<Resources<SignupResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
-                val params = signUpRequestModel.toDto()
-                val response = apiService.signUp(params)
+                val response = apiService.signUp(signUpRequestModel.toDto())
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -85,10 +86,9 @@ class AuthRepositoryImpl @Inject constructor(
         verifyEmailResponseModel: VerifyEmailResponseModel
     ): Flow<Resources<AuthResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
-                val params = verifyEmailResponseModel.toDto()
-                val response = apiService.verifyEmail(params)
+                val response = apiService.verifyEmail(verifyEmailResponseModel.toDto())
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 emit(Resources.Error(e.toString()))
@@ -100,10 +100,9 @@ class AuthRepositoryImpl @Inject constructor(
         resendEmailRequestModel: ResendEmailRequestModel
     ): Flow<Resources<OtpResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
-                val params = resendEmailRequestModel.toDto()
-                val response = apiService.resendVerificationEmail(params)
+                val response = apiService.resendVerificationEmail(resendEmailRequestModel.toDto())
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -118,7 +117,6 @@ class AuthRepositoryImpl @Inject constructor(
     ): Flow<Resources<UpdateFullNameResponseModel>> {
         return flow {
             emit(Resources.Loading(true))
-            Timber.d("updateFullName: $updateFullNameRequestModel")
             try {
                 val response = apiService.updateFullName(
                     token,
@@ -137,26 +135,46 @@ class AuthRepositoryImpl @Inject constructor(
         updateEmailRequestModel: UpdateEmailRequestModel
     ): Flow<Resources<UpdateEmailResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
-                val response = apiService.updateEmail(token, updateEmailRequestModel.toDto())
+                val response = apiService.updateEmail(
+                    token,
+                    updateEmailRequestModel.toDto()
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
-                emit(Resources.Error(e.localizedMessage ?: "Error"))
+                emit(Resources.Error(e.toString()))
             }
         }
     }
 
+    override suspend fun changePassword(
+        token: String,
+        changePasswordRequestModel: ChangePasswordRequestModel
+    ): Flow<Resources<ChangePasswordResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.changePassword(
+                    token,
+                    changePasswordRequestModel.toDto()
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 
     override suspend fun sendResetPassword(
         sendResetPasswordRequestModel: SendResetPasswordRequestModel
     ): Flow<Resources<SendResetPasswordResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
-                val params = sendResetPasswordRequestModel.toDto()
-                val response = apiService.sendResetPassword(params)
+                val response = apiService.sendResetPassword(sendResetPasswordRequestModel.toDto())
                 emit(Resources.Success(response))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -169,10 +187,9 @@ class AuthRepositoryImpl @Inject constructor(
         resetPasswordRequestModel: ResetPasswordRequestModel
     ): Flow<Resources<ResetPasswordResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
-                val params = resetPasswordRequestModel.toDto()
-                val response = apiService.resetPassword(params)
+                val response = apiService.resetPassword(resetPasswordRequestModel.toDto())
                 emit(Resources.Success(response))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -186,10 +203,33 @@ class AuthRepositoryImpl @Inject constructor(
         verifyPasswordRequestModel: VerifyPasswordRequestModel
     ): Flow<Resources<VerifyPasswordResponseModel>> {
         return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.verifyPassword(
+                    token,
+                    verifyPasswordRequestModel.toDto()
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getUserDetail(
+        userId: String,
+        token: String,
+        isOwner: Boolean
+    ): Flow<Resources<UserDetailResponseModel>> {
+        return flow {
             try {
                 emit(Resources.Loading())
-                val params = verifyPasswordRequestModel.toDto()
-                val response = apiService.verifyPassword(token, params)
+                val response = apiService.getUserDetail(
+                    token,
+                    userId,
+                    isOwner
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)

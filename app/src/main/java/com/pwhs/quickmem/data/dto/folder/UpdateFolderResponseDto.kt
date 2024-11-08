@@ -7,7 +7,6 @@ data class UpdateFolderResponseDto (
     val title: String,
     val description: String,
     val isPublic: Boolean,
-    val ownerId: String,
     val studySetCount: Int,
     val studySets: List<GetStudySetResponseDto>,
     val updatedAt: String,

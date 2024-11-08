@@ -15,4 +15,5 @@ data class FolderDetailUiState(
     val createdAt: String = "",
     val updatedAt: String = "",
     val isLoading: Boolean = false,
+    val isOwner: Boolean = false,
 )
