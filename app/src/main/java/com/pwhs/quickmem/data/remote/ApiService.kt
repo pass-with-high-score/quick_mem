@@ -1,6 +1,8 @@
 package com.pwhs.quickmem.data.remote
 
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
+import com.pwhs.quickmem.data.dto.auth.ChangePasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.ChangePasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
@@ -15,7 +17,6 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
-import com.pwhs.quickmem.data.dto.classes.AddFoldersToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.AddMemberToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
@@ -83,6 +84,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body updateEmailRequestDto: UpdateEmailRequestDto
     ): UpdateEmailResponseDto
+
+    @PATCH("/auth/user/password")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body changePasswordRequestDto: ChangePasswordRequestDto
+    ): ChangePasswordResponseDto
 
     @POST("auth/send-reset-password")
     suspend fun sendResetPassword(
