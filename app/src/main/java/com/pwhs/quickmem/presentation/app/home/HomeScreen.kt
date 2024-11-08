@@ -1,14 +1,17 @@
 package com.pwhs.quickmem.presentation.app.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
@@ -19,24 +22,41 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -52,6 +72,7 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -62,6 +83,7 @@ fun HomeScreen(
     }
     Home(
         modifier = modifier,
+        streakCount = uiState.streakCount,
         onNavigateToSearch = {
             navigator.navigate(SearchScreenDestination)
         }
@@ -72,21 +94,31 @@ fun HomeScreen(
 @Composable
 fun Home(
     modifier: Modifier = Modifier,
+    streakCount: Int = 0,
     onNavigateToSearch: () -> Unit = {}
 ) {
+    val streakBottomSheet = rememberModalBottomSheetState()
+    var showStreakBottomSheet by remember {
+        mutableStateOf(false)
+    }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fire_streak))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+    )
     Scaffold(
         modifier = modifier,
         topBar = {
             LargeTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    containerColor = colorScheme.primary.copy(alpha = 0.5f),
                 ),
                 navigationIcon = {
                     Text(
                         "QuickMem",
                         style = typography.titleLarge.copy(
                             fontFamily = firasansExtraboldFont,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = colorScheme.onPrimary
                         ),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
@@ -116,13 +148,13 @@ fun Home(
                             Icon(
                                 imageVector = Icons.Outlined.Search,
                                 contentDescription = "Search",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.size(30.dp)
+                                tint = colorScheme.secondary,
+                                modifier = Modifier.size(15.dp)
                             )
                             Text(
                                 "Study sets, folders, class,...",
                                 style = typography.bodyMedium.copy(
-                                    color = MaterialTheme.colorScheme.secondary,
+                                    color = colorScheme.secondary,
                                     fontWeight = FontWeight.Bold
                                 )
                             )
@@ -152,7 +184,7 @@ fun Home(
                             Icon(
                                 imageVector = Icons.Outlined.Notifications,
                                 contentDescription = "Notifications",
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                                tint = colorScheme.onPrimary,
                                 modifier = Modifier.size(30.dp)
                             )
                             Badge(
@@ -177,10 +209,78 @@ fun Home(
                     }
                 }
             )
+        },
+        floatingActionButtonPosition = FabPosition.Start,
+        bottomBar = {
+            Spacer(modifier = Modifier.height(100.dp))
+        },
+        floatingActionButton = {
+            Card(
+                onClick = {
+                    showStreakBottomSheet = true
+                },
+                shape = CircleShape
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .padding(horizontal = 8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_fire),
+                        contentDescription = "Streak",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(30.dp)
+                    )
+                    Text(
+                        "$streakCount",
+                        style = typography.titleLarge.copy(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Text("Home Screen")
+        }
+    }
+    if (showStreakBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showStreakBottomSheet = false
+            },
+            sheetState = streakBottomSheet,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    LottieAnimation(
+                        composition = composition,
+                        progress = { progress },
+                        modifier = Modifier
+                            .width(150.dp)
+                            .height(150.dp)
+                    )
+                    Text(
+                        "Streak $streakCount",
+                        style = typography.titleLarge.copy(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+            }
         }
     }
 }
