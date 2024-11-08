@@ -277,7 +277,8 @@ fun StudySetDetailScreen(
         onNavigateToUserDetail = {
             navigator.navigate(
                 UserDetailScreenDestination(
-                    userId = uiState.user.id
+                    userId = uiState.user.id,
+                    isOwner = uiState.isOwner
                 )
             )
         }
@@ -379,12 +380,6 @@ fun StudySetDetail(
                                 },
                                 selected = tabIndex == index,
                                 onClick = { tabIndex = index },
-                                icon = {
-                                    when (index) {
-                                        StudySetDetailEnum.MATERIAL.index -> {}
-                                        StudySetDetailEnum.PROGRESS.index -> {}
-                                    }
-                                }
                             )
                         }
                     }

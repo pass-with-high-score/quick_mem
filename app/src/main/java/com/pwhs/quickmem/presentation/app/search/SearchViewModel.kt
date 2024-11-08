@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchScreenViewModel @Inject constructor() : ViewModel() {
+class SearchViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -20,9 +20,7 @@ class SearchScreenViewModel @Inject constructor() : ViewModel() {
     fun onEvent(event: SearchUiAction) {
         when (event) {
             is SearchUiAction.Search -> {
-                if (event.query.isNotBlank()) {
-                    _uiEvent.trySend(SearchUiEvent.NavigateToResult(event.query))
-                }
+                search()
             }
 
             is SearchUiAction.OnQueryChanged -> {
@@ -30,6 +28,18 @@ class SearchScreenViewModel @Inject constructor() : ViewModel() {
                     it.copy(query = event.query)
                 }
             }
+        }
+    }
+
+    private fun search() {
+        val query = uiState.value.query
+        if (query.isNotBlank()) {
+            _uiEvent.trySend(SearchUiEvent.NavigateToResult(query))
+        } else {
+            _uiState.update {
+                it.copy(error = "Query cannot be empty")
+            }
+            _uiEvent.trySend(SearchUiEvent.ShowError("Query cannot be empty"))
         }
     }
 }

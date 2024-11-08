@@ -136,7 +136,7 @@ fun LibraryScreen(
         onStudySetClick = {
             navigator.navigate(
                 StudySetDetailScreenDestination(
-                    id = it,
+                    id = it.id,
                     code = ""
                 )
             )
@@ -154,7 +154,7 @@ fun LibraryScreen(
         onFolderClick = {
             navigator.navigate(
                 FolderDetailScreenDestination(
-                    id = it,
+                    id = it.id,
                     code = ""
                 )
             )
@@ -184,9 +184,9 @@ fun Library(
     studySets: List<GetStudySetResponseModel> = emptyList(),
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
-    onStudySetClick: (String) -> Unit = {},
+    onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
-    onFolderClick: (String) -> Unit = {},
+    onFolderClick: (GetFolderResponseModel) -> Unit = {},
     navigateToCreateStudySet: () -> Unit = {},
     navigateToCreateClass: () -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
@@ -261,13 +261,6 @@ fun Library(
                         },
                         selected = tabIndex == index,
                         onClick = { tabIndex = index },
-                        icon = {
-                            when (index) {
-                                LibraryTabEnum.STUDY_SET.index -> {}
-                                LibraryTabEnum.CLASS.index -> {}
-                                LibraryTabEnum.FOLDER.index -> {}
-                            }
-                        }
                     )
                 }
             }

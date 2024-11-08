@@ -43,6 +43,7 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
@@ -105,6 +106,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body verifyPasswordRequestDto: VerifyPasswordRequestDto
     ): VerifyPasswordResponseDto
+
+    @GET("auth/me/{id}")
+    suspend fun getUserDetail(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String,
+        @Query("isOwner") isOwner: Boolean
+    ): UserDetailResponseDto
 
     // Upload
     @Multipart

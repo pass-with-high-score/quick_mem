@@ -23,7 +23,7 @@ data class GetClassByOwnerResponseDto(
     @SerializedName("studySetCount")
     val studySetCount: Int,
     @SerializedName("joinToken")
-    val joinToken: String,
+    val joinToken: String?,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

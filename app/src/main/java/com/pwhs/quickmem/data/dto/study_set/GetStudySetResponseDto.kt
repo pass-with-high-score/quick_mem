@@ -12,7 +12,7 @@ data class GetStudySetResponseDto(
     @SerializedName("title")
     val title: String,
     @SerializedName("description")
-    val description: String,
+    val description: String?,
     @SerializedName("isPublic")
     val isPublic: Boolean,
     @SerializedName("flashCardCount")
