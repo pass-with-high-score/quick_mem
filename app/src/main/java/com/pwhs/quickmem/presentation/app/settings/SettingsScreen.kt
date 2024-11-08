@@ -1,5 +1,7 @@
 package com.pwhs.quickmem.presentation.app.settings
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,10 +34,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.settings.component.SettingCard
@@ -47,8 +51,10 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.OpenSourceScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WebViewAppDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -62,6 +68,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
     resultUpdateFullName: ResultRecipient<UpdateFullNameSettingScreenDestination, Boolean>
 ) {
+    val context = LocalContext.current
 
     resultUpdateFullName.onNavResult { result ->
         when (result) {
@@ -130,6 +137,26 @@ fun SettingsScreen(
         },
         onNavigationBack = {
             navigator.navigateUp()
+        },
+        onNavigateToTermsOfService = {
+            navigator.navigate(
+                WebViewAppDestination()
+            )
+        },
+        onNavigateToPrivacyPolicy = {
+            navigator.navigate(
+                WebViewAppDestination()
+            )
+        },
+        onNavigateToOpenSourceLicenses = {
+            navigator.navigate(OpenSourceScreenDestination)
+        },
+        onNavigateToHelpCenter = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/pass-with-high-score/quick_mem/issues")
+            )
+            context.startActivity(intent)
         },
         onSubmitClick = {
             viewModel.onEvent(SettingUiAction.OnSubmitClick)
