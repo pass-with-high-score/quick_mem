@@ -23,4 +23,5 @@ data class StudySetDetailUiState(
     val updatedAt: String = "",
     val isLoading: Boolean = false,
     val shouldLoad: Boolean = false,
+    val isOwner: Boolean = false,
 )

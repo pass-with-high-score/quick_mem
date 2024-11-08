@@ -55,15 +55,14 @@ class ClassDetailViewModel @Inject constructor(
                 }
             }
         }
-        Timber.d("ClassDetailViewModel: $id")
         _uiState.update { it.copy(id = id) }
-        getClassByID(id)
+        getClassByID()
     }
 
     fun onEvent(event: ClassDetailUiAction) {
         when (event) {
             is ClassDetailUiAction.Refresh -> {
-                getClassByID(id = _uiState.value.id)
+                getClassByID()
             }
 
             ClassDetailUiAction.NavigateToWelcomeClicked -> {
@@ -93,7 +92,8 @@ class ClassDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getClassByID(id: String) {
+    private fun getClassByID() {
+        val id = _uiState.value.id
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             classRepository.getClassById(token, id).collectLatest { resource ->
@@ -108,14 +108,15 @@ class ClassDetailViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         resource.data?.let { data ->
+                            val isOwner = data.owner.id == appManager.userId.firstOrNull()
                             _uiState.update {
-                                Timber.d("Study set: ${data.studySets}")
                                 it.copy(
                                     title = data.title,
                                     description = data.description,
                                     joinClassCode = data.joinToken,
                                     id = data.id,
                                     isLoading = false,
+                                    isOwner = isOwner,
                                     allowSet = data.allowSetManagement,
                                     allowMember = data.allowMemberManagement,
                                     userResponseModel = data.owner,

@@ -45,6 +45,5 @@ class ProfileViewModel @Inject constructor(
             )
         }
     }
-
     // TODO: Load data from server
 }

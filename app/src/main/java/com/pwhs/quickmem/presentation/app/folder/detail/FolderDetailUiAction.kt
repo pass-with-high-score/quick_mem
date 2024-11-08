@@ -4,5 +4,4 @@ sealed class FolderDetailUiAction {
     data object Refresh : FolderDetailUiAction()
     data object DeleteFolder : FolderDetailUiAction()
     data object EditFolder : FolderDetailUiAction()
-    data class ResetProgress(val studySetId: String) : FolderDetailUiAction()
 }

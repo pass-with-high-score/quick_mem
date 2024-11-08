@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.folder.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.FolderRepository
@@ -20,8 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FolderDetailViewModel @Inject constructor(
-    private val tokenManager: TokenManager,
     savedStateHandle: SavedStateHandle,
+    private val tokenManager: TokenManager,
+    private val appManager: AppManager,
     private val folderRepository: FolderRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FolderDetailUiState())
@@ -32,7 +34,6 @@ class FolderDetailViewModel @Inject constructor(
 
     init {
         val id: String = savedStateHandle["id"] ?: ""
-        Timber.d("FolderDetailViewModel: $id")
         _uiState.update { it.copy(id = id) }
         getFolderSetById(id)
     }
@@ -44,36 +45,27 @@ class FolderDetailViewModel @Inject constructor(
             }
 
             FolderDetailUiAction.DeleteFolder -> {
-                Timber.d("OnDeleteFolderClicked")
                 deleteFolder()
             }
 
             FolderDetailUiAction.EditFolder -> {
-                Timber.d("OnEditFolderClicked")
                 _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
-            }
-
-            is FolderDetailUiAction.ResetProgress -> {
-                Timber.d("OnResetProgressClicked: ${event.studySetId}")
             }
         }
     }
 
     private fun getFolderSetById(id: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: run {
-                _uiEvent.send(FolderDetailUiEvent.ShowError("Please login again!"))
-                return@launch
-            }
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
             folderRepository.getFolderById(token, id).collectLatest { resource ->
                 when (resource) {
                     is Resources.Loading -> {
-                        Timber.d("Loading")
                         _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
                         resource.data?.let { data ->
+                            val isOwner = appManager.userId.firstOrNull() == data.owner.id
                             _uiState.update {
                                 it.copy(
                                     title = data.title,
@@ -84,7 +76,8 @@ class FolderDetailViewModel @Inject constructor(
                                     studySets = data.studySets ?: emptyList(),
                                     createdAt = data.createdAt,
                                     updatedAt = data.updatedAt,
-                                    isLoading = false
+                                    isLoading = false,
+                                    isOwner = isOwner
                                 )
                             }
                         } ?: run {
