@@ -157,7 +157,11 @@ fun SettingsScreen(
                 Intent.ACTION_VIEW,
                 Uri.parse("https://github.com/pass-with-high-score/quick_mem/issues")
             )
-            context.startActivity(intent)
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
         },
         onSubmitClick = {
             viewModel.onEvent(SettingUiAction.OnSubmitClick)
