@@ -26,6 +26,7 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
@@ -66,16 +67,18 @@ fun AddFolderToClassScreen(
         userAvatar = uiState.userAvatar,
         username = uiState.username,
         onDoneClick = {
-//            viewModel.addFoldersToClass()
+            viewModel.onEvent(AddFolderToClassUIAction.AddFolderToClass)
         },
         onNavigateCancel = {
             navigator.navigateUp()
         },
         onCreateFolderToClassClick = {
-//            navigator.navigate("createFolder")
+            navigator.navigate(
+                CreateFolderScreenDestination()
+            )
         },
-        onAddFolderToClass = { folderId ->
-//            viewModel.addFolderToClass(folderId)
+        onAddFolderToClass = {
+            viewModel.onEvent(AddFolderToClassUIAction.ToggleFolderImport(it))
         }
     )
 }
@@ -92,7 +95,6 @@ fun AddFolderToClass(
     username: String = "",
     onAddFolderToClass: (String) -> Unit = {},
     isLoading: Boolean = false,
-
 ) {
     Scaffold(
         containerColor = colorScheme.background,

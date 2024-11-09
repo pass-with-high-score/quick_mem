@@ -110,10 +110,10 @@ fun AddFolderToClassList(
                         }
                     }
                     items(filterFolders) { folder ->
+                        Timber.d("List folder ID: $listFolderIds")
                         AddFolderToClassItem(
                             folder = folder,
                             onAddFolderToClass = {
-                                Timber.d("Add folder to class: $it")
                                 onAddFolderToClass(it)
                             },
                             isAdded = listFolderIds.contains(folder.id)

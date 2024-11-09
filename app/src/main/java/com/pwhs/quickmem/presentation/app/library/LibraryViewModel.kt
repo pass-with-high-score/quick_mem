@@ -158,7 +158,7 @@ class LibraryViewModel @Inject constructor(
 
     private fun getFolders() {
         viewModelScope.launch {
-            folderRepository.getFoldersByUserId(_uiState.value.token, _uiState.value.userId, null)
+            folderRepository.getFoldersByUserId(_uiState.value.token, _uiState.value.userId, null, null)
                 .collectLatest { resources ->
                     when (resources) {
                         is Resources.Success -> {

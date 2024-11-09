@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.folder.AddFolderToClassRequestModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,13 +61,52 @@ class AddFolderToClassViewModel @Inject constructor(
 
     fun onEvent(event: AddFolderToClassUIAction) {
         when (event) {
-            AddFolderToClassUIAction.AddStudySetToClass -> {
-
+            AddFolderToClassUIAction.AddFolderToClass -> {
+                doneClick()
             }
 
-            is AddFolderToClassUIAction.ToggleStudySetImport -> {
-
+            is AddFolderToClassUIAction.ToggleFolderImport -> {
+                Timber.d("Toggle Study Set Import: ${event.folderId}")
+                toggleStudySetImport(event.folderId)
             }
+        }
+    }
+
+    private fun doneClick() {
+        viewModelScope.launch {
+            val addFolderToClassRequestModel = AddFolderToClassRequestModel(
+                userId = _uiState.value.userId,
+                classId = _uiState.value.classId,
+                folderIds = _uiState.value.folderImportedIds
+            )
+            folderRepository.addFolderToClass(_uiState.value.token, addFolderToClassRequestModel)
+                .collectLatest { resources ->
+                    when (resources) {
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(AddFolderToClassUIEvent.StudySetAddedToClass)
+                        }
+
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(
+                                AddFolderToClassUIEvent.ShowError(
+                                    resources.message ?: "An error occurred"
+                                )
+                            )
+                        }
+
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+                    }
+                }
         }
     }
 
@@ -75,7 +115,8 @@ class AddFolderToClassViewModel @Inject constructor(
             folderRepository.getFoldersByUserId(
                 _uiState.value.token,
                 _uiState.value.userId,
-                _uiState.value.classId
+                _uiState.value.classId,
+                null
             ).collectLatest { resources ->
                 when (resources) {
                     is Resources.Success -> {
@@ -87,7 +128,6 @@ class AddFolderToClassViewModel @Inject constructor(
                                     ?.map { it.id } ?: emptyList()
                             )
                         }
-                        Timber.d("Folders: ${resources.data}")
                     }
 
                     is Resources.Error -> {
@@ -108,6 +148,18 @@ class AddFolderToClassViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun toggleStudySetImport(folderId: String) {
+        val folderImportedIds = _uiState.value.folderImportedIds.toMutableList()
+        if (folderImportedIds.contains(folderId)) {
+            folderImportedIds.remove(folderId)
+        } else {
+            folderImportedIds.add(folderId)
+        }
+        _uiState.update {
+            it.copy(folderImportedIds = folderImportedIds)
         }
     }
 }

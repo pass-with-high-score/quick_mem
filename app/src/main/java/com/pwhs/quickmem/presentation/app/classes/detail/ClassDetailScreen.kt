@@ -73,7 +73,22 @@ fun ClassDetailScreen(
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
     resultFolderDetail: ResultRecipient<FolderDetailScreenDestination, Boolean>,
     resultAddStudySetToClass: ResultRecipient<AddStudySetToClassScreenDestination, Boolean>,
+    resultAddFolderToClass: ResultRecipient<AddFolderToClassScreenDestination, Boolean>,
 ) {
+
+    resultAddFolderToClass.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("AddFolderToClassScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
 
     resultAddStudySetToClass.onNavResult { result ->
         when (result) {

@@ -4,6 +4,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.folder.toDto
 import com.pwhs.quickmem.data.mapper.folder.toModel
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.model.folder.AddFolderToClassRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
@@ -70,12 +71,13 @@ class FolderRepositoryImpl @Inject constructor(
     override suspend fun getFoldersByUserId(
         token: String,
         userId: String,
-        folderId: String?
+        classId: String?,
+        studySetId: String?
     ): Flow<Resources<List<GetFolderResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getFoldersByOwnerId(token, userId)
+                val response = apiService.getFoldersByOwnerId(token, userId, classId, studySetId)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -89,6 +91,22 @@ class FolderRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 apiService.deleteFolder(token, folderId)
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun addFolderToClass(
+        token: String,
+        addFolderToClassRequestModel: AddFolderToClassRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.addFolderToClass(token, addFolderToClassRequestModel.toDto())
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
