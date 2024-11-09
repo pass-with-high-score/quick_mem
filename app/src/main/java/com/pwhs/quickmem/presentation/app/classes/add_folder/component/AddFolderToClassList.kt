@@ -86,7 +86,7 @@ fun AddFolderToClassList(
                         color = colorScheme.onSurface.copy(alpha = 0.1f),
                     )
                     Text(
-                        text = "There are no owned study sets, create one to get started!",
+                        text = "There are no folders yet, create one to get started!",
                         textAlign = TextAlign.Center,
                         style = typography.bodyMedium.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f),
