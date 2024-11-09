@@ -1,5 +1,7 @@
 package com.pwhs.quickmem.presentation.app.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,6 +58,9 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -65,6 +70,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
 @Composable
 fun HomeScreen(
@@ -86,16 +92,21 @@ fun HomeScreen(
         streakCount = uiState.streakCount,
         onNavigateToSearch = {
             navigator.navigate(SearchScreenDestination)
+        },
+        onNotificationEnabled = { isEnabled ->
+            viewModel.onEvent(HomeUIAction.OnChangeAppPushNotifications(isEnabled))
         }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun Home(
     modifier: Modifier = Modifier,
     streakCount: Int = 0,
-    onNavigateToSearch: () -> Unit = {}
+    onNavigateToSearch: () -> Unit = {},
+    onNotificationEnabled: (Boolean) -> Unit = {}
 ) {
     val streakBottomSheet = rememberModalBottomSheetState()
     var showStreakBottomSheet by remember {
@@ -106,6 +117,16 @@ fun Home(
         composition = composition,
         iterations = LottieConstants.IterateForever,
     )
+    val notificationPermission =
+        rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+    LaunchedEffect(notificationPermission) {
+        if (!notificationPermission.status.isGranted) {
+            notificationPermission.launchPermissionRequest()
+            onNotificationEnabled(false)
+        } else {
+            onNotificationEnabled(true)
+        }
+    }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -285,6 +306,7 @@ fun Home(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
 private fun HomeScreenPreview() {

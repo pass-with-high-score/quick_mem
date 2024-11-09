@@ -19,6 +19,8 @@ class AppManager(private val context: Context) {
         val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
+        val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
+        val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -48,6 +50,14 @@ class AppManager(private val context: Context) {
     val userName: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_NAME] ?: ""
+        }
+    val pushNotifications: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[PUSH_NOTIFICATIONS] ?: false
+        }
+    val appPushNotifications: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[APP_PUSH_NOTIFICATIONS] ?: false
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -103,6 +113,20 @@ class AppManager(private val context: Context) {
         require(Patterns.EMAIL_ADDRESS.matcher(email).matches()) { "Invalid email address" }
         context.dataStore.edit { preferences ->
             preferences[USER_EMAIL] = email
+        }
+    }
+
+    suspend fun savePushNotifications(pushNotifications: Boolean) {
+        Timber.d("Saving push notifications: $pushNotifications")
+        context.dataStore.edit { preferences ->
+            preferences[PUSH_NOTIFICATIONS] = pushNotifications
+        }
+    }
+
+    suspend fun saveAppPushNotifications(appPushNotifications: Boolean) {
+        Timber.d("Saving app push notifications: $appPushNotifications")
+        context.dataStore.edit { preferences ->
+            preferences[APP_PUSH_NOTIFICATIONS] = appPushNotifications
         }
     }
 }

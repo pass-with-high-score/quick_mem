@@ -37,10 +37,13 @@ class HomeViewModel @Inject constructor(
         updateStreak()
     }
 
-    fun onEvent(event: HomeUIEvent) {
+    fun onEvent(event: HomeUIAction) {
         when (event) {
-
-            else -> {}
+            is HomeUIAction.OnChangeAppPushNotifications -> {
+                viewModelScope.launch {
+                    appManager.saveAppPushNotifications(event.isAppPushNotificationsEnabled)
+                }
+            }
         }
     }
 

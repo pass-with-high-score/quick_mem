@@ -62,6 +62,24 @@ class SettingsViewModel @Inject constructor(
                     it.copy(changeType = event.changeType)
                 }
             }
+
+            is SettingUiAction.OnChangePushNotifications -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isPushNotificationsEnabled = event.isPushNotificationsEnabled)
+                    }
+                    appManager.savePushNotifications(event.isPushNotificationsEnabled)
+                }
+            }
+
+            is SettingUiAction.OnChangeAppPushNotifications -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isAppPushNotificationsEnabled = event.isAppPushNotificationsEnabled)
+                    }
+                    appManager.saveAppPushNotifications(event.isAppPushNotificationsEnabled)
+                }
+            }
         }
     }
 
@@ -72,12 +90,17 @@ class SettingsViewModel @Inject constructor(
                 val fullName = appManager.userFullName.firstOrNull() ?: ""
                 val username = appManager.userName.firstOrNull() ?: ""
                 val email = appManager.userEmail.firstOrNull() ?: ""
+                val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
+                val isAppPushNotificationsEnabled =
+                    appManager.appPushNotifications.firstOrNull() ?: false
                 _uiState.update {
                     it.copy(
                         userId = userId,
                         fullName = fullName,
                         username = username,
-                        email = email
+                        email = email,
+                        isPushNotificationsEnabled = isPushNotificationsEnabled,
+                        isAppPushNotificationsEnabled = isAppPushNotificationsEnabled
                     )
                 }
             } catch (e: Exception) {
