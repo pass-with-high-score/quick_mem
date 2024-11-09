@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -60,7 +61,7 @@ fun SetNewPasswordScreen(
                 SetNewPasswordUiEvent.ResetFailure -> {
                     Toast.makeText(
                         context,
-                        "Password reset failed",
+                        context.getString(R.string.txt_password_reset_failed),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -68,7 +69,7 @@ fun SetNewPasswordScreen(
                 SetNewPasswordUiEvent.ResetSuccess -> {
                     Toast.makeText(
                         context,
-                        "Password reset successful",
+                        context.getString(R.string.txt_password_reset_successful),
                         Toast.LENGTH_SHORT
                     ).show()
                     navigator.popBackStack()
@@ -143,7 +144,7 @@ private fun SetNewPassword(
                 )
 
                 Text(
-                    text = "Please enter your new password",
+                    text = stringResource(R.string.txt_please_enter_your_new_password),
                     style = typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp
@@ -157,9 +158,9 @@ private fun SetNewPassword(
                 AuthTextField(
                     value = password,
                     onValueChange = onPasswordChanged,
-                    label = "New Password",
+                    label = stringResource(R.string.txt_new_password),
                     iconId = R.drawable.ic_lock,
-                    contentDescription = "New Password",
+                    contentDescription = stringResource(R.string.txt_new_password),
                     type = TextFieldType.PASSWORD,
                     error = passwordError
                 )
@@ -167,9 +168,9 @@ private fun SetNewPassword(
                 AuthTextField(
                     value = confirmPassword,
                     onValueChange = onConfirmPasswordChanged,
-                    label = "Confirm Password",
+                    label = stringResource(R.string.txt_confirm_password),
                     iconId = R.drawable.ic_lock,
-                    contentDescription = "Confirm Password",
+                    contentDescription = stringResource(R.string.txt_confirm_password),
                     type = TextFieldType.PASSWORD,
                     error = confirmPasswordError
                 )

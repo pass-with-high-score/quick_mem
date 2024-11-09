@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Switch
@@ -32,7 +32,7 @@ fun SwitchContainer(
             .fillMaxWidth()
             .padding(top = 10.dp),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
+        colors = cardColors(
             containerColor = colorScheme.surfaceContainerLow
         )
     ) {

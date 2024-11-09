@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -61,7 +62,7 @@ fun LoginScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 LoginUiEvent.LoginWithGoogle -> {
-                    // open webview
+                    // open web view
                     navigator.navigate(
                         WebViewAppDestination(
                             oAuthLink = "https://api.quickmem.app/auth/google",
@@ -70,7 +71,7 @@ fun LoginScreen(
                 }
 
                 LoginUiEvent.LoginWithFacebook -> {
-                    // open webview
+                    // open web view
                     navigator.navigate(
                         WebViewAppDestination(
                             oAuthLink = "https://api.quickmem.app/auth/facebook",
@@ -155,7 +156,7 @@ fun Login(
             )
 
             Text(
-                text = "Log in",
+                text = stringResource(R.string.tx_log_in),
                 style = typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.primary
@@ -165,7 +166,7 @@ fun Login(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = onLoginWithEmail,
-                text = "Log in with email",
+                text = stringResource(R.string.txt_log_in_with_email),
                 colors = colorScheme.primary,
                 textColor = Color.White,
                 icon = R.drawable.ic_email
@@ -184,7 +185,7 @@ fun Login(
                         .background(colorScheme.onSurface)
                 )
                 Text(
-                    text = "OR",
+                    text = stringResource(R.string.txt_or),
                     style = typography.bodyMedium.copy(color = colorScheme.onSurface)
                 )
                 Spacer(
@@ -199,7 +200,7 @@ fun Login(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = onLoginWithGoogle,
-                text = "Continue with Google",
+                text = stringResource(R.string.tx_continue_with_google),
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
                 icon = R.drawable.ic_google,
@@ -207,7 +208,7 @@ fun Login(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = onLoginWithFacebook,
-                text = "Continue with Facebook",
+                text = stringResource(R.string.txt_continue_with_facebook),
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
                 icon = R.drawable.ic_facebook
@@ -221,14 +222,14 @@ fun Login(
                             fontSize = 16.sp,
                         )
                     ) {
-                        append("Don't have an account?")
+                        append(stringResource(R.string.txt_don_t_have_an_account))
                         withStyle(
                             style = SpanStyle(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         ) {
-                            append(" Sign up")
+                            append(stringResource(R.string.txt_sign_up))
                         }
                     }
                 },

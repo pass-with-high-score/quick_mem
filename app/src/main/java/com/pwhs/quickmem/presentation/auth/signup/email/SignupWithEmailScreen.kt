@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,8 +48,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import timber.log.Timber
-
 
 @Composable
 @Destination<RootGraph>
@@ -65,7 +64,7 @@ fun SignupWithEmailScreen(
                 SignUpWithEmailUiEvent.SignUpFailure -> {
                     Toast.makeText(
                         context,
-                        "Sign up failure",
+                        context.getString(R.string.txt_sign_up_failure),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -160,7 +159,7 @@ private fun SignupWithEmail(
                 )
 
                 Text(
-                    text = "Signup with email",
+                    text = stringResource(R.string.txt_signup_with_email),
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.primary
@@ -170,7 +169,7 @@ private fun SignupWithEmail(
                 AuthTextField(
                     value = birthday,
                     onValueChange = onBirthdayChanged,
-                    label = "Select your birthday",
+                    label = stringResource(R.string.txt_select_your_birthday),
                     iconId = R.drawable.ic_calendar,
                     contentDescription = "Birthday",
                     readOnly = true,
@@ -182,7 +181,7 @@ private fun SignupWithEmail(
                 AuthTextField(
                     value = email,
                     onValueChange = onEmailChanged,
-                    label = "example@email.com",
+                    label = stringResource(R.string.txt_example_email_com),
                     iconId = R.drawable.ic_email,
                     contentDescription = "Email",
                     type = TextFieldType.EMAIL,
@@ -191,9 +190,9 @@ private fun SignupWithEmail(
                 AuthTextField(
                     value = password,
                     onValueChange = onPasswordChanged,
-                    label = "Create your password",
+                    label = stringResource(R.string.txt_create_your_password),
                     iconId = R.drawable.ic_lock,
-                    contentDescription = "Password",
+                    contentDescription = stringResource(R.string.txt_password),
                     type = TextFieldType.PASSWORD,
                     error = passwordError
                 )
@@ -206,7 +205,7 @@ private fun SignupWithEmail(
                 }
 
                 AuthButton(
-                    text = "Sign up",
+                    text = stringResource(R.string.txt_sign_up),
                     onClick = onSignUpClick,
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -214,7 +213,7 @@ private fun SignupWithEmail(
             }
             LoadingOverlay(
                 isLoading = isLoading,
-                text = "Signing up..."
+                text = stringResource(R.string.txt_signing_up)
             )
         }
     }
@@ -224,9 +223,7 @@ private fun SignupWithEmail(
             onDateSelected = {
                 if (it != null) {
                     onBirthdayChanged(it.toFormattedString())
-                    Timber.d("Less than 18: ${it.isDateSmallerThan()}")
                     isRoleVisible = !it.isDateSmallerThan()
-                    Timber.d("isRoleVisible: $isRoleVisible")
                 }
                 isDatePickerVisible = false
             },

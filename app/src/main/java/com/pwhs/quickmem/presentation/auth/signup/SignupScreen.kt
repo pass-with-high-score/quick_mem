@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -53,7 +54,7 @@ fun SignupScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 SignupUiEvent.SignupWithGoogle -> {
-                    // open webview
+                    // open web view
                     navigator.navigate(
                         WebViewAppDestination(
                             oAuthLink = "https://api.quickmem.app/auth/google",
@@ -62,7 +63,7 @@ fun SignupScreen(
                 }
 
                 SignupUiEvent.SignupWithFacebook -> {
-                    // open webview
+                    // open web view
                     navigator.navigate(
                         WebViewAppDestination(
                             oAuthLink = "https://api.quickmem.app/auth/facebook",
@@ -74,6 +75,7 @@ fun SignupScreen(
     }
 
     Signup(
+        modifier = modifier,
         onNavigateToLogin = {
             navigator.navigate(LoginScreenDestination) {
                 popUpTo(LoginScreenDestination) {
@@ -129,7 +131,7 @@ fun Signup(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.log_in),
-                contentDescription = "Login",
+                contentDescription = stringResource(R.string.txt_login),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .padding(16.dp)
@@ -137,8 +139,8 @@ fun Signup(
             )
 
             Text(
-                text = "Sign up",
-                style = MaterialTheme.typography.headlineMedium.copy(
+                text = stringResource(R.string.txt_sign_up),
+                style = typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.primary
                 )
@@ -147,7 +149,7 @@ fun Signup(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = onSignupWithEmail,
-                text = "Sign up with email",
+                text = stringResource(R.string.txt_sign_up_with_email),
                 colors = colorScheme.primary,
                 textColor = Color.White,
                 icon = R.drawable.ic_email
@@ -167,7 +169,7 @@ fun Signup(
                 )
                 Text(
                     text = "OR",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface)
+                    style = typography.bodyMedium.copy(color = colorScheme.onSurface)
                 )
                 Spacer(
                     modifier = Modifier
@@ -181,7 +183,7 @@ fun Signup(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = onSignupWithGoogle,
-                text = "Continue with Google",
+                text = stringResource(R.string.txt_continue_with_google),
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
                 icon = R.drawable.ic_google
@@ -189,7 +191,7 @@ fun Signup(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = onSignupWithFacebook,
-                text = "Continue with Facebook",
+                text = stringResource(R.string.txt_continue_with_facebook),
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
                 icon = R.drawable.ic_facebook
@@ -203,25 +205,25 @@ fun Signup(
                             fontSize = 16.sp,
                         )
                     ) {
-                        append("By signing up, you agree to the")
+                        append(stringResource(R.string.txt_by_signing_up_you_agree_to_the))
                         withStyle(
                             style = SpanStyle(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         ) {
-                            append(" Terms and Conditions")
+                            append(stringResource(R.string.txt_terms_and_conditions))
                         }
-                        append(" and the ")
+                        append(stringResource(R.string.txt_and_the))
                         withStyle(
                             style = SpanStyle(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         ) {
-                            append(" Privacy Policy")
+                            append(stringResource(R.string.txt_privacy_policy))
                         }
-                        append(" of QuickMem")
+                        append(stringResource(R.string.txt_of_quickmem))
                     }
                 },
                 modifier = Modifier
@@ -238,14 +240,14 @@ fun Signup(
                             fontSize = 16.sp,
                         )
                     ) {
-                        append("Already have an account?")
+                        append(stringResource(R.string.txt_already_have_an_account))
                         withStyle(
                             style = SpanStyle(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         ) {
-                            append(" Log in")
+                            append(" " + stringResource(R.string.txt_log_in))
                         }
                     }
                 },

@@ -22,9 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,14 +55,10 @@ fun SendVerifyEmailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SendVerifyEmailUiEvent.None -> {
-                    //
-                }
-
                 SendVerifyEmailUiEvent.SendEmailFailure -> {
                     Toast.makeText(
                         context,
-                        "Email verification failed",
+                        context.getString(R.string.txt_email_verification_failed),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -133,7 +130,7 @@ private fun SendVerifyEmail(
                 )
                 Spacer(modifier = Modifier.height(26.dp))
                 Text(
-                    text = "Forgot Your Password?",
+                    text = stringResource(id = R.string.txt_forgot_your_password),
                     style = typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp
@@ -145,7 +142,7 @@ private fun SendVerifyEmail(
                 AuthTextField(
                     value = email,
                     onValueChange = onEmailChanged,
-                    label = "Email Address",
+                    label = stringResource(id = R.string.txt_email_address),
                     iconId = R.drawable.ic_email,
                     contentDescription = "Email",
                     type = TextFieldType.EMAIL,
@@ -153,7 +150,7 @@ private fun SendVerifyEmail(
                 )
 
                 AuthButton(
-                    text = "Reset Password",
+                    text = stringResource(id = R.string.txt_reset_password),
                     onClick = onResetClick,
                     modifier = Modifier.padding(top = 16.dp),
                     textColor = Color.White,
@@ -166,7 +163,7 @@ private fun SendVerifyEmail(
     }
 }
 
-@PreviewLightDark
+@Preview
 @Composable
 fun PreviewForgotPasswordVerifyEmailScreen() {
     QuickMemTheme {

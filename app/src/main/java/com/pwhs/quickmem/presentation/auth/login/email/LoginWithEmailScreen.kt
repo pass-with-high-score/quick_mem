@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,11 +57,17 @@ fun LoginWithEmailScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 LoginWithEmailUiEvent.LoginFailure -> {
-                    Toast.makeText(context, "Login failure", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_login_failure), Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 LoginWithEmailUiEvent.LoginSuccess -> {
-                    Toast.makeText(context, "Login success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_login_success), Toast.LENGTH_SHORT
+                    ).show()
                     navigator.popBackStack()
                     navigator.navigate(HomeScreenDestination) {
                         popUpTo(HomeScreenDestination) {
@@ -146,7 +153,7 @@ private fun LoginWithEmail(
                 )
 
                 Text(
-                    text = "Login with email",
+                    text = stringResource(R.string.txt_login_with_email),
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -157,9 +164,9 @@ private fun LoginWithEmail(
                 AuthTextField(
                     value = email,
                     onValueChange = onEmailChanged,
-                    label = "Email",
+                    label = stringResource(R.string.txt_email),
                     iconId = R.drawable.ic_email,
-                    contentDescription = "Email",
+                    contentDescription = stringResource(R.string.txt_email),
                     type = TextFieldType.EMAIL,
                     error = emailError
                 )
@@ -167,9 +174,9 @@ private fun LoginWithEmail(
                 AuthTextField(
                     value = password,
                     onValueChange = onPasswordChanged,
-                    label = "Password",
+                    label = stringResource(R.string.txt_password),
                     iconId = R.drawable.ic_lock,
-                    contentDescription = "Password",
+                    contentDescription = stringResource(R.string.txt_password),
                     type = TextFieldType.PASSWORD,
                     error = passwordError
                 )
@@ -184,7 +191,7 @@ private fun LoginWithEmail(
                         onClick = onForgotPasswordClick
                     ) {
                         Text(
-                            text = "Forgot password?",
+                            text = stringResource(R.string.txt_forgot_password),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = Color(0xFF2d333d),
                                 fontWeight = FontWeight.Bold
@@ -195,7 +202,7 @@ private fun LoginWithEmail(
                 }
 
                 AuthButton(
-                    text = "Log in",
+                    text = stringResource(R.string.txt_log_in),
                     modifier = Modifier
                         .align(Alignment.Start)
                         .padding(top = 18.dp),
@@ -208,7 +215,7 @@ private fun LoginWithEmail(
             LoadingOverlay(
                 isLoading = isLoading,
                 modifier = Modifier.fillMaxSize(),
-                text = "Logging in..."
+                text = stringResource(R.string.txt_logging_in)
             )
         }
     }

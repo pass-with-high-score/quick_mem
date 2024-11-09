@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,12 +41,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.verify_email.components.OtpInputField
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -86,24 +89,40 @@ fun VerifyEmailScreen(
                 }
 
                 VerifyEmailUiEvent.ResendFailure -> {
-                    Toast.makeText(context, "Failed to resend email", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_failed_to_resend_email), Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 VerifyEmailUiEvent.ResendSuccess -> {
-                    Toast.makeText(context, "Please check your email again", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_please_check_your_email_again),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
 
                 VerifyEmailUiEvent.WrongOtp -> {
-                    Toast.makeText(context, "OTP must be numbers", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_otp_must_be_numbers), Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 VerifyEmailUiEvent.EmptyOtp -> {
-                    Toast.makeText(context, "OTP must not be empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_otp_must_not_be_empty), Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 VerifyEmailUiEvent.ErrorLengthOtp -> {
-                    Toast.makeText(context, "OTP must be 6 digits", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_otp_must_be_6_digits), Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 VerifyEmailUiEvent.NavigateToSetNewPassword -> {
@@ -162,7 +181,7 @@ private fun VerifyEmail(
         topBar = {
             TopAppBar(
                 title = {},
-                colors = TopAppBarDefaults.topAppBarColors(
+                colors = topAppBarColors(
                     containerColor = Color.Transparent,
                 ),
                 navigationIcon = {
@@ -170,7 +189,7 @@ private fun VerifyEmail(
                         onClick = onNavigationBack
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -194,7 +213,7 @@ private fun VerifyEmail(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "Check your email",
+                        text = stringResource(R.string.txt_check_your_email),
                         style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp,
@@ -202,7 +221,10 @@ private fun VerifyEmail(
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Text(
-                        text = "Please enter the code we sent to your email $email.",
+                        text = stringResource(
+                            R.string.txt_please_enter_the_code_we_sent_to_your_email,
+                            email
+                        ),
                         style = typography.bodyMedium.copy(
                             fontSize = 16.sp,
                         ),
@@ -235,7 +257,7 @@ private fun VerifyEmail(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Didn't receive the code?",
+                        text = stringResource(R.string.txt_didn_t_receive_the_code),
                     )
                     TextButton(
                         onClick = onNavigationBack,
@@ -243,7 +265,7 @@ private fun VerifyEmail(
                         modifier = Modifier.padding(start = 5.dp)
                     ) {
                         Text(
-                            text = "Update email",
+                            text = stringResource(R.string.txt_update_email),
                             style = typography.bodyMedium.copy(
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 16.sp,
@@ -281,13 +303,13 @@ private fun VerifyEmail(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
-                                contentDescription = "Resend",
+                                contentDescription = stringResource(R.string.txt_resend),
                             )
                             TextButton(
                                 onClick = onResendClick,
                             ) {
                                 Text(
-                                    text = "Resend",
+                                    text = stringResource(R.string.txt_resend),
                                     style = typography.bodyMedium.copy(
                                         color = MaterialTheme.colorScheme.onSurface,
                                         fontSize = 16.sp,
@@ -302,7 +324,7 @@ private fun VerifyEmail(
             }
             LoadingOverlay(
                 isLoading = isLoading,
-                text = "Verifying..."
+                text = stringResource(R.string.txt_verifying)
             )
         }
     }

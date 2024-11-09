@@ -13,7 +13,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.UserRole
 import com.pwhs.quickmem.util.upperCaseFirstLetter
 
@@ -28,7 +30,7 @@ fun RadioGroup(
         modifier = modifier.padding(vertical = 16.dp),
     ) {
         Text(
-            text = "Are you a teacher or a student?",
+            text = stringResource(R.string.txt_are_you_a_teacher_or_a_student),
             style = MaterialTheme.typography.bodyLarge,
         )
         Row(

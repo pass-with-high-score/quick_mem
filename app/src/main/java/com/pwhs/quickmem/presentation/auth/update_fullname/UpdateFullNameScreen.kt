@@ -30,11 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -118,7 +120,7 @@ fun UpdateFullName(
                 ),
                 title = {
                     Text(
-                        text = "What should we call you?",
+                        text = stringResource(R.string.txt_what_should_we_call_you),
                         style = typography.titleMedium.copy(
                             fontSize = 18.sp
                         )
@@ -132,7 +134,7 @@ fun UpdateFullName(
                             Icon(
                                 Icons.Filled.Close,
                                 tint = colorScheme.primary,
-                                contentDescription = "Close",
+                                contentDescription = stringResource(R.string.txt_close),
                             )
                         }
                     }
@@ -150,7 +152,7 @@ fun UpdateFullName(
                 TextField(
                     value = fullName,
                     onValueChange = onNameChanged,
-                    label = { Text("Full Name") },
+                    label = { Text(stringResource(R.string.txt_full_name)) },
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .padding(top = 140.dp)
@@ -180,7 +182,7 @@ fun UpdateFullName(
                     ),
                 )
                 AuthButton(
-                    text = "Submit",
+                    text = stringResource(R.string.txt_submit),
                     onClick = onSubmitClick,
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
@@ -191,7 +193,7 @@ fun UpdateFullName(
             LoadingOverlay(
                 isLoading = isLoading,
                 modifier = Modifier.fillMaxSize(),
-                text = "Updating...",
+                text = stringResource(R.string.txt_updating),
             )
         }
     }
@@ -200,9 +202,7 @@ fun UpdateFullName(
 @PreviewLightDark
 @Composable
 fun PreviewSetName() {
-    QuickMemTheme(
-        darkTheme = false
-    ) {
+    QuickMemTheme{
         UpdateFullName()
     }
 }

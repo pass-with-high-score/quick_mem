@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.util
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -12,6 +13,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Locale
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth")
 
@@ -39,4 +41,13 @@ fun Context.uriToBitmap(uri: Uri): Bitmap {
         e.printStackTrace()
         Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888)
     }
+}
+
+fun Context.updateLocale(languageCode: String) {
+    val locale = Locale(languageCode)
+    Locale.setDefault(locale)
+
+    val config = Configuration(resources.configuration)
+    config.setLocale(locale)
+    resources.updateConfiguration(config, resources.displayMetrics)
 }

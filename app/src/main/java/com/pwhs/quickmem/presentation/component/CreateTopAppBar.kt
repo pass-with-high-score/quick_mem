@@ -2,18 +2,18 @@ package com.pwhs.quickmem.presentation.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButtonDefaults.iconButtonColors
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +34,7 @@ fun CreateTopAppBar(
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors = topAppBarColors(
             containerColor = Color.Transparent,
         ),
         title = {
@@ -50,7 +50,7 @@ fun CreateTopAppBar(
         actions = {
             IconButton(
                 onClick = onDoneClick,
-                colors = IconButtonDefaults.iconButtonColors(
+                colors = iconButtonColors(
                     contentColor = colorScheme.onSurface
                 )
             ) {
@@ -64,12 +64,12 @@ fun CreateTopAppBar(
         navigationIcon = {
             IconButton(
                 onClick = onNavigateBack,
-                colors = IconButtonDefaults.iconButtonColors(
+                colors = iconButtonColors(
                     contentColor = colorScheme.onSurface
                 )
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                 )
             }
