@@ -6,6 +6,9 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.remote.ApiService
+import com.revenuecat.purchases.LogLevel
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesConfiguration
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +37,13 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
+        Purchases.logLevel = LogLevel.DEBUG
+        Purchases.configure(
+            PurchasesConfiguration.Builder(
+                context = this,
+                apiKey = "goog_TBgLrymHTtfZJQzfyRseRIYlPER",
+            ).build()
+        )
         // Get FCM token
         getFCMToken()
     }

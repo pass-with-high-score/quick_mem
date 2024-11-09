@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.home
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -69,6 +70,13 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Package
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.models.StoreTransaction
+import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
+import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
+import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -127,6 +135,9 @@ fun Home(
             onNotificationEnabled(true)
         }
     }
+    var isPaywallVisible by remember {
+        mutableStateOf(false)
+    }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -184,7 +195,9 @@ fun Home(
                 },
                 actions = {
                     Button(
-                        onClick = {},
+                        onClick = {
+                            isPaywallVisible = true
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = premiumColor
                         ),
@@ -304,6 +317,64 @@ fun Home(
             }
         }
     }
+    if (isPaywallVisible) {
+        PaywallDialog(
+            paywallDialogOptions = PaywallDialogOptions.Builder()
+                .setListener(
+                    object : PaywallListener {
+
+                        override fun onPurchaseError(error: PurchasesError) {
+                            super.onPurchaseError(error)
+                            Log.e("PaywallListener", "purchase error: ${error.message}")
+                        }
+
+                        override fun onPurchaseCancelled() {
+                            super.onPurchaseCancelled()
+                            Log.d("PaywallListener", "Purchased Cancelled")
+                        }
+
+                        override fun onPurchaseStarted(rcPackage: Package) {
+                            super.onPurchaseStarted(rcPackage)
+                            Log.d(
+                                "PaywallListener",
+                                "Purchased Started - package: ${rcPackage.identifier}"
+                            )
+                        }
+
+                        override fun onPurchaseCompleted(
+                            customerInfo: CustomerInfo,
+                            storeTransaction: StoreTransaction
+                        ) {
+                            super.onPurchaseCompleted(customerInfo, storeTransaction)
+                            Log.d(
+                                "PaywallListener",
+                                "Purchased Completed - customerInfo: $customerInfo, storeTransaction: $storeTransaction"
+                            )
+                        }
+
+                        override fun onRestoreCompleted(customerInfo: CustomerInfo) {
+                            super.onRestoreCompleted(customerInfo)
+                            Log.d(
+                                "PaywallListener",
+                                "Restore Completed - customerInfo: $customerInfo"
+                            )
+                        }
+
+                        override fun onRestoreError(error: PurchasesError) {
+                            super.onRestoreError(error)
+                            Log.e("PaywallListener", "restore error: ${error.message}")
+                        }
+
+                        override fun onRestoreStarted() {
+                            super.onRestoreStarted()
+                            Log.d("PaywallListener", "Restore Started")
+                        }
+                    }
+                )
+                .build()
+        )
+    }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

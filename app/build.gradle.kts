@@ -59,6 +59,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -75,6 +76,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.purchases)
+    implementation(libs.purchases.ui)
     implementation(libs.easycrop)
     implementation(libs.drawbox)
     implementation(libs.rang.vikalp)
