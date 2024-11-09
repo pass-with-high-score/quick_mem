@@ -66,8 +66,8 @@ class AddFolderToClassViewModel @Inject constructor(
             }
 
             is AddFolderToClassUIAction.ToggleFolderImport -> {
-                Timber.d("Toggle Study Set Import: ${event.folderId}")
-                toggleStudySetImport(event.folderId)
+                Timber.d("Toggle folder Import: ${event.folderId}")
+                toggleFolderImport(event.folderId)
             }
         }
     }
@@ -151,7 +151,7 @@ class AddFolderToClassViewModel @Inject constructor(
         }
     }
 
-    private fun toggleStudySetImport(folderId: String) {
+    private fun toggleFolderImport(folderId: String) {
         val folderImportedIds = _uiState.value.folderImportedIds.toMutableList()
         if (folderImportedIds.contains(folderId)) {
             folderImportedIds.remove(folderId)

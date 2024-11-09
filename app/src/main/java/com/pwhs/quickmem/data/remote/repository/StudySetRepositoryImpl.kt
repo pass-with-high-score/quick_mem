@@ -56,12 +56,13 @@ class StudySetRepositoryImpl @Inject constructor(
     override suspend fun getStudySetsByOwnerId(
         token: String,
         ownerId: String,
+        classId: String?,
         folderId: String?
     ): Flow<Resources<List<GetStudySetResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getStudySetsByOwnerId(token, ownerId, folderId)
+                val response = apiService.getStudySetsByOwnerId(token, ownerId, classId, folderId)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)

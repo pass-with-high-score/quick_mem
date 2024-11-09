@@ -152,6 +152,7 @@ interface ApiService {
     suspend fun getStudySetsByOwnerId(
         @Header("Authorization") token: String,
         @Path("ownerId") ownerId: String,
+        @Query("classId") classId: String? = null,
         @Query("folderId") folderId: String? = null
     ): List<GetStudySetResponseDto>
 

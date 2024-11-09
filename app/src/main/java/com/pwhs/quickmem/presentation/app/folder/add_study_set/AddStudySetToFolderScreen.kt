@@ -64,7 +64,7 @@ fun AddStudySetToFolderScreen(
         studySets = uiState.studySets,
         userAvatar = uiState.userAvatar,
         username = uiState.username,
-        listStudySetIds = uiState.studySetImportedIds,
+        studySetImportedIds = uiState.studySetImportedIds,
         onDoneClick = {
             viewModel.onEvent(AddStudySetToFolderUiAction.AddStudySetToFolder)
         },
@@ -90,7 +90,7 @@ fun AddStudySetToFolder(
     isLoading: Boolean = false,
     userAvatar: String = "",
     username: String = "",
-    listStudySetIds: List<String> = emptyList(),
+    studySetImportedIds: List<String> = emptyList(),
     onDoneClick: () -> Unit = {},
     onNavigateCancel: () -> Unit = {},
     onCreateStudySetClick: () -> Unit = {},
@@ -128,7 +128,7 @@ fun AddStudySetToFolder(
                 AddStudySetToFolderList(
                     modifier = modifier,
                     studySets = studySets,
-                    listStudySetIds = listStudySetIds,
+                    studySetImportedIds = studySetImportedIds,
                     onAddStudySetToFolder = onAddStudySetToFolder,
                     avatarUrl = userAvatar,
                     username = username,
@@ -144,6 +144,6 @@ fun AddStudySetToFolder(
     showSystemUi = true
 )
 @Composable
-private fun AddStudySetPreview() {
+private fun AddStudySetToFolderPreview() {
     AddStudySetToFolder()
 }

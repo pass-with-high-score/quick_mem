@@ -63,7 +63,7 @@ fun AddFolderToClassScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         folders = uiState.folders,
-        listFolderIds = uiState.folderImportedIds,
+        folderImportedIds = uiState.folderImportedIds,
         userAvatar = uiState.userAvatar,
         username = uiState.username,
         onDoneClick = {
@@ -90,7 +90,7 @@ fun AddFolderToClass(
     onNavigateCancel: () -> Unit = {},
     onCreateFolderToClassClick: () -> Unit = {},
     folders: List<GetFolderResponseModel> = emptyList(),
-    listFolderIds: List<String> = emptyList(),
+    folderImportedIds: List<String> = emptyList(),
     userAvatar: String = "",
     username: String = "",
     onAddFolderToClass: (String) -> Unit = {},
@@ -128,7 +128,7 @@ fun AddFolderToClass(
                 AddFolderToClassList(
                     modifier = modifier,
                     folders = folders,
-                    listFolderIds = listFolderIds,
+                    folderImportedIds = folderImportedIds,
                     onAddFolderToClass = onAddFolderToClass,
                     avatarUrl = userAvatar,
                     username = username,

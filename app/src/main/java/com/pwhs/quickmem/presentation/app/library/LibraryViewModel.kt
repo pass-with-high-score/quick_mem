@@ -88,7 +88,7 @@ class LibraryViewModel @Inject constructor(
 
     private fun getStudySets() {
         viewModelScope.launch {
-            studySetRepository.getStudySetsByOwnerId(_uiState.value.token, _uiState.value.userId, null)
+            studySetRepository.getStudySetsByOwnerId(_uiState.value.token, _uiState.value.userId, null, null)
                 .collectLatest { resources ->
                     when (resources) {
                         is Resources.Success -> {

@@ -83,7 +83,7 @@ fun AddStudySetToFolderTopAppBar(
 
 @Preview
 @Composable
-fun AddStudySetTopAppBarPreview() {
+fun AddStudySetToFolderTopAppBarPreview() {
     QuickMemTheme {
         Scaffold(
             topBar = {

@@ -43,7 +43,7 @@ fun AddFolderToClassList(
     modifier: Modifier = Modifier,
     folders: List<GetFolderResponseModel> = emptyList(),
     onAddFolderToClass: (String) -> Unit = {},
-    listFolderIds: List<String> = emptyList(),
+    folderImportedIds: List<String> = emptyList(),
     avatarUrl: String = "",
     username: String = "",
 ) {
@@ -110,13 +110,13 @@ fun AddFolderToClassList(
                         }
                     }
                     items(filterFolders) { folder ->
-                        Timber.d("List folder ID: $listFolderIds")
+                        Timber.d("List folder ID: $folderImportedIds")
                         AddFolderToClassItem(
                             folder = folder,
                             onAddFolderToClass = {
                                 onAddFolderToClass(it)
                             },
-                            isAdded = listFolderIds.contains(folder.id)
+                            isAdded = folderImportedIds.contains(folder.id)
                         )
                     }
                     item {
@@ -151,7 +151,7 @@ fun AddFolderToClassList(
 
 @Preview
 @Composable
-private fun ListFolderScreenPreview() {
+private fun AddFolderToClassListPreview() {
     QuickMemTheme {
         AddFolderToClassList()
     }

@@ -43,7 +43,7 @@ fun AddStudySetToFolderList(
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onAddStudySetToFolder: (String) -> Unit = {},
-    listStudySetIds: List<String> = emptyList(),
+    studySetImportedIds: List<String> = emptyList(),
     avatarUrl: String = "",
     username: String = "",
 ) {
@@ -128,14 +128,14 @@ fun AddStudySetToFolderList(
                         }
                     }
                     items(filterStudySets) { studySet ->
-                        Timber.d("Check isAdd: ${listStudySetIds.contains(studySet.id)}")
+                        Timber.d("Check isAdd: ${studySetImportedIds.contains(studySet.id)}")
                         AddStudySetToFolderItem(
                             studySet = studySet,
                             onAddStudySetToFolder = {
                                 Timber.d("Study set added: $it")
                                 onAddStudySetToFolder(it)
                             },
-                            isAdded = listStudySetIds.contains(studySet.id)
+                            isAdded = studySetImportedIds.contains(studySet.id)
                         )
                     }
                 }
@@ -146,7 +146,7 @@ fun AddStudySetToFolderList(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun ListStudySetInnerFolderPreview() {
+private fun AddStudySetToFolderListPreview() {
     QuickMemTheme {
         Scaffold {
             AddStudySetToFolderList(
@@ -179,7 +179,7 @@ private fun ListStudySetInnerFolderPreview() {
 
 @Preview
 @Composable
-private fun ListStudySetInnerFolderPreviewEmpty() {
+private fun AddStudySetToFolderListPreviewEmpty() {
     QuickMemTheme {
         Scaffold {
             AddStudySetToFolderList(
