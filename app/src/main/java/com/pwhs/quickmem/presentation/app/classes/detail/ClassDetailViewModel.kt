@@ -82,10 +82,6 @@ class ClassDetailViewModel @Inject constructor(
                 _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddFolder)
             }
 
-            ClassDetailUiAction.OnNavigateToAddMember -> {
-                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddMember)
-            }
-
             ClassDetailUiAction.OnNavigateToAddStudySets -> {
                 _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddStudySets)
             }

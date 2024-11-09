@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.classes.detail.members
+package com.pwhs.quickmem.presentation.app.classes.detail.members.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -82,7 +82,7 @@ fun ClassMemberItem(
                 if (classMemberModel.isOwner) {
                     Text(
                         "Owner", style = MaterialTheme.typography.bodySmall.copy(
-                            color = MaterialTheme.colorScheme.primary
+                            color = colorScheme.primary
                         )
                     )
                 }

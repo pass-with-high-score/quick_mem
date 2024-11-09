@@ -17,7 +17,6 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
-import com.pwhs.quickmem.data.dto.classes.AddMemberToClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
@@ -31,6 +30,7 @@ import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
+import com.pwhs.quickmem.data.dto.folder.AddFolderToClassRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
@@ -152,6 +152,7 @@ interface ApiService {
     suspend fun getStudySetsByOwnerId(
         @Header("Authorization") token: String,
         @Path("ownerId") ownerId: String,
+        @Query("classId") classId: String? = null,
         @Query("folderId") folderId: String? = null
     ): List<GetStudySetResponseDto>
 
@@ -246,7 +247,9 @@ interface ApiService {
     @GET("folder/owner/{ownerId}")
     suspend fun getFoldersByOwnerId(
         @Header("Authorization") token: String,
-        @Path("ownerId") ownerId: String
+        @Path("ownerId") ownerId: String,
+        @Query("classId") classId: String? = null,
+        @Query("studySetId") studySetId: String? = null
     ): List<GetFolderDetailResponseDto>
 
     @DELETE("folder/{id}")
@@ -277,7 +280,7 @@ interface ApiService {
     @GET("class/user/{userId}")
     suspend fun getClassByOwnerID(
         @Header("Authorization") token: String,
-        @Path("userId") userId: String
+        @Path("userId") userId: String,
     ): List<GetClassByOwnerResponseDto>
 
     @DELETE("class/{id}")
@@ -293,16 +296,16 @@ interface ApiService {
         @Body updateClassRequestDto: UpdateClassRequestDto
     ): UpdateClassResponseDto
 
-    @POST("class/join")
-    suspend fun addMemberToClass(
-        @Header("Authorization") token: String,
-        @Body addMemberToClassRequestDto: AddMemberToClassRequestDto
-    )
-
     @POST("/class/study-sets")
     suspend fun addStudySetToClass(
         @Header("Authorization") token: String,
         @Body addStudySetToClassRequestDto: AddStudySetToClassRequestDto
+    )
+
+    @POST("/class/folders")
+    suspend fun addFolderToClass(
+        @Header("Authorization") token: String,
+        @Body addFolderToClassRequestDto: AddFolderToClassRequestDto
     )
 
     // Streak

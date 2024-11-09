@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.domain.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.folder.AddFolderToClassRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
@@ -27,11 +28,19 @@ interface FolderRepository {
 
     suspend fun getFoldersByUserId(
         token: String,
-        userId: String
+        userId: String,
+        studySetId: String?,
+        classId: String?
     ): Flow<Resources<List<GetFolderResponseModel>>>
 
     suspend fun deleteFolder(
         token: String,
         folderId: String
     ): Flow<Resources<Unit>>
+
+    suspend fun addFolderToClass(
+        token: String,
+        addFolderToClassRequestModel: AddFolderToClassRequestModel
+    ): Flow<Resources<Unit>>
+
 }

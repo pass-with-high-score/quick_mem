@@ -1,8 +1,9 @@
-package com.pwhs.quickmem.presentation.app.folder.add_study_set.component
+package com.pwhs.quickmem.presentation.app.classes.add_folder.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,10 +11,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,27 +31,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.pwhs.quickmem.domain.model.color.ColorModel
-import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
-import com.pwhs.quickmem.domain.model.subject.SubjectModel
-import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
+import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import timber.log.Timber
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddStudySetToFolderList(
+fun AddFolderToClassList(
     modifier: Modifier = Modifier,
-    studySets: List<GetStudySetResponseModel> = emptyList(),
-    onAddStudySetToFolder: (String) -> Unit = {},
-    studySetImportedIds: List<String> = emptyList(),
+    folders: List<GetFolderResponseModel> = emptyList(),
+    onAddFolderToClass: (String) -> Unit = {},
+    folderImportedIds: List<String> = emptyList(),
     avatarUrl: String = "",
     username: String = "",
 ) {
-
     var searchQuery by remember { mutableStateOf("") }
 
-    val filterStudySets = studySets.filter {
+    val filterFolders = folders.filter {
         searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
             it.title.contains(query, ignoreCase = true)
         } ?: true
@@ -58,7 +57,7 @@ fun AddStudySetToFolderList(
 
     Box(modifier = modifier) {
         when {
-            studySets.isEmpty() -> {
+            folders.isEmpty() -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -87,7 +86,7 @@ fun AddStudySetToFolderList(
                         color = colorScheme.onSurface.copy(alpha = 0.1f),
                     )
                     Text(
-                        text = "There are no owned study sets, create one to get started!",
+                        text = "There are no folders yet, create one to get started!",
                         textAlign = TextAlign.Center,
                         style = typography.bodyMedium.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f),
@@ -100,19 +99,28 @@ fun AddStudySetToFolderList(
             }
 
             else -> {
-                LazyColumn(
-                    horizontalAlignment = CenterHorizontally,
-                ) {
+                LazyColumn {
                     item {
-                        SearchTextField(
-                            searchQuery = searchQuery,
-                            onSearchQueryChange = { searchQuery = it },
-                            placeholder = "Search study sets"
+                        if (folders.isNotEmpty()) {
+                            SearchTextField(
+                                searchQuery = searchQuery,
+                                onSearchQueryChange = { searchQuery = it },
+                                placeholder = "Search folders",
+                            )
+                        }
+                    }
+                    items(filterFolders) { folder ->
+                        Timber.d("List folder ID: $folderImportedIds")
+                        AddFolderToClassItem(
+                            folder = folder,
+                            onAddFolderToClass = {
+                                onAddFolderToClass(it)
+                            },
+                            isAdded = folderImportedIds.contains(folder.id)
                         )
-
                     }
                     item {
-                        if (filterStudySets.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                        if (filterFolders.isEmpty() && searchQuery.trim().isNotEmpty()) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -120,23 +128,20 @@ fun AddStudySetToFolderList(
                                 horizontalAlignment = CenterHorizontally
                             ) {
                                 Text(
-                                    text = "No study set fold found",
+                                    text = "No folders found",
                                     style = typography.bodyLarge,
                                     textAlign = TextAlign.Center
                                 )
                             }
                         }
                     }
-                    items(filterStudySets) { studySet ->
-                        Timber.d("Check isAdd: ${studySetImportedIds.contains(studySet.id)}")
-                        AddStudySetToFolderItem(
-                            studySet = studySet,
-                            onAddStudySetToFolder = {
-                                Timber.d("Study set added: $it")
-                                onAddStudySetToFolder(it)
-                            },
-                            isAdded = studySetImportedIds.contains(studySet.id)
+                    item {
+                        BannerAds(
+                            modifier = Modifier.padding(8.dp)
                         )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.padding(60.dp))
                     }
                 }
             }
@@ -144,49 +149,11 @@ fun AddStudySetToFolderList(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun AddStudySetToFolderListPreview() {
-    QuickMemTheme {
-        Scaffold {
-            AddStudySetToFolderList(
-                modifier = Modifier
-                    .padding(it),
-                studySets = listOf(
-                    GetStudySetResponseModel(
-                        id = "1",
-                        title = "Study Set 1",
-                        flashCardCount = 10,
-                        color = ColorModel.defaultColors[0],
-                        subject = SubjectModel.defaultSubjects[0],
-                        owner = UserResponseModel(
-                            id = "1",
-
-                            ),
-                        description = "Description",
-                        isPublic = true,
-                        linkShareCode = "123",
-                        flashcards = emptyList(),
-                        createdAt = "2021-01-01",
-                        updatedAt = "2021-01-01"
-                    )
-                )
-            )
-        }
-    }
-}
-
-
 @Preview
 @Composable
-private fun AddStudySetToFolderListPreviewEmpty() {
+private fun AddFolderToClassListPreview() {
     QuickMemTheme {
-        Scaffold {
-            AddStudySetToFolderList(
-                modifier = Modifier
-                    .padding(it),
-                studySets = emptyList()
-            )
-        }
+        AddFolderToClassList()
     }
+
 }

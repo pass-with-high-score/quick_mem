@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
-import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailEmpty
+import com.pwhs.quickmem.presentation.app.classes.detail.study_sets.component.ClassDetailEmptyStudySet
 import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -20,7 +20,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun StudySetsTabScreen(
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
-    onAddSetsClicked: () -> Unit = {},
+    onAddStudySetClicked: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
 ) {
     Scaffold { innerPadding ->
@@ -31,12 +31,12 @@ fun StudySetsTabScreen(
         ) {
             when {
                 studySets.isEmpty() -> {
-                    ClassDetailEmpty(
+                    ClassDetailEmptyStudySet(
                         modifier = Modifier.padding(innerPadding),
                         title = "This class has no sets",
                         subtitle = "Add flashcard sets to share them with your class.",
                         buttonTitle = "Add study sets",
-                        onAddMembersClicked = onAddSetsClicked
+                        onAddStudySetClicked = onAddStudySetClicked
                     )
                 }
 
