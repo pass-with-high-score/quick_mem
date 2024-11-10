@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_EXPRESSION")
+
 package com.pwhs.quickmem.presentation.app.home
 
 import android.os.Build
@@ -63,6 +65,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.app.notification.NotificationBottomSheet
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -116,6 +119,9 @@ fun Home(
     onNavigateToSearch: () -> Unit = {},
     onNotificationEnabled: (Boolean) -> Unit = {}
 ) {
+    val notificationBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showNotificationBottomSheet by remember { mutableStateOf(false) }
+
     val streakBottomSheet = rememberModalBottomSheetState()
     var showStreakBottomSheet by remember {
         mutableStateOf(false)
@@ -212,7 +218,7 @@ fun Home(
                         )
                     }
                     IconButton(
-                        onClick = {},
+                        onClick = {showNotificationBottomSheet = true},
                     ) {
                         Box {
                             Icon(
@@ -317,6 +323,22 @@ fun Home(
             }
         }
     }
+
+    if (showNotificationBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showNotificationBottomSheet = false
+            },
+            sheetState = notificationBottomSheetState,
+        ) {
+            NotificationBottomSheet(
+                viewModel = hiltViewModel(),
+                onDismissRequest = { showNotificationBottomSheet = false }
+            )
+        }
+    }
+
+
     if (isPaywallVisible) {
         PaywallDialog(
             paywallDialogOptions = PaywallDialogOptions.Builder()
