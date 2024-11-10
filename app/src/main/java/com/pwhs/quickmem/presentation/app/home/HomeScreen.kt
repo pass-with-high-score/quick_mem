@@ -1,7 +1,7 @@
 package com.pwhs.quickmem.presentation.app.home
 
+import android.Manifest
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -63,6 +63,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -71,12 +72,10 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Package
+import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.models.StoreTransaction
-import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
-import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
-import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
+import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
+import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -126,7 +125,7 @@ fun Home(
         iterations = LottieConstants.IterateForever,
     )
     val notificationPermission =
-        rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+        rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
     LaunchedEffect(notificationPermission) {
         if (!notificationPermission.status.isGranted) {
             notificationPermission.launchPermissionRequest()
@@ -137,6 +136,23 @@ fun Home(
     }
     var isPaywallVisible by remember {
         mutableStateOf(false)
+    }
+    var customer by remember {
+        mutableStateOf<CustomerInfo?>(null)
+    }
+
+    LaunchedEffect(key1 = true) {
+        Purchases.sharedInstance.getCustomerInfo(
+            callback = object : ReceiveCustomerInfoCallback {
+                override fun onError(error: PurchasesError) {
+                    Timber.e("CustomerInfo", "error: ${error.message}")
+                }
+
+                override fun onReceived(customerInfo: CustomerInfo) {
+                    customer = customerInfo
+                }
+            }
+        )
     }
     Scaffold(
         modifier = modifier,
@@ -281,8 +297,21 @@ fun Home(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Text("Home Screen")
+            Text(
+                text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
+            )
         }
     }
+    Paywall(
+        isPaywallVisible = isPaywallVisible,
+        onCustomerInfoChanged = { customerInfo ->
+            customer = customerInfo
+        },
+        modifier = Modifier,
+        onPaywallDismissed = {
+            isPaywallVisible = false
+        },
+    )
     if (showStreakBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -317,64 +346,6 @@ fun Home(
             }
         }
     }
-    if (isPaywallVisible) {
-        PaywallDialog(
-            paywallDialogOptions = PaywallDialogOptions.Builder()
-                .setListener(
-                    object : PaywallListener {
-
-                        override fun onPurchaseError(error: PurchasesError) {
-                            super.onPurchaseError(error)
-                            Log.e("PaywallListener", "purchase error: ${error.message}")
-                        }
-
-                        override fun onPurchaseCancelled() {
-                            super.onPurchaseCancelled()
-                            Log.d("PaywallListener", "Purchased Cancelled")
-                        }
-
-                        override fun onPurchaseStarted(rcPackage: Package) {
-                            super.onPurchaseStarted(rcPackage)
-                            Log.d(
-                                "PaywallListener",
-                                "Purchased Started - package: ${rcPackage.identifier}"
-                            )
-                        }
-
-                        override fun onPurchaseCompleted(
-                            customerInfo: CustomerInfo,
-                            storeTransaction: StoreTransaction
-                        ) {
-                            super.onPurchaseCompleted(customerInfo, storeTransaction)
-                            Log.d(
-                                "PaywallListener",
-                                "Purchased Completed - customerInfo: $customerInfo, storeTransaction: $storeTransaction"
-                            )
-                        }
-
-                        override fun onRestoreCompleted(customerInfo: CustomerInfo) {
-                            super.onRestoreCompleted(customerInfo)
-                            Log.d(
-                                "PaywallListener",
-                                "Restore Completed - customerInfo: $customerInfo"
-                            )
-                        }
-
-                        override fun onRestoreError(error: PurchasesError) {
-                            super.onRestoreError(error)
-                            Log.e("PaywallListener", "restore error: ${error.message}")
-                        }
-
-                        override fun onRestoreStarted() {
-                            super.onRestoreStarted()
-                            Log.d("PaywallListener", "Restore Started")
-                        }
-                    }
-                )
-                .build()
-        )
-    }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

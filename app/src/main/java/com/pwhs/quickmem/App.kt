@@ -63,6 +63,7 @@ class App : Application() {
             // Get new FCM registration token
             val token = task.result
             Timber.d("FCM Token: $token")
+            Purchases.sharedInstance.setPushToken(token)
 
             // Send token to your server
             sendTokenToServer(token)

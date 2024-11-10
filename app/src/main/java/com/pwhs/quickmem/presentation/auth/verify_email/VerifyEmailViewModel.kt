@@ -11,6 +11,10 @@ import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.LogInCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -127,6 +131,26 @@ class VerifyEmailViewModel @Inject constructor(
                             appManager.saveIsLoggedIn(true)
                             _uiState.update { it.copy(isLoading = false) }
                             Timber.d("Navigate to verify success")
+                            Purchases.sharedInstance.apply {
+                                setEmail(resource.data?.email)
+                                setDisplayName(resource.data?.fullName)
+                                logIn(
+                                    newAppUserID = resource.data?.id ?: "",
+                                    callback = object : LogInCallback {
+                                        override fun onError(error: PurchasesError) {
+                                            Timber.e(error.message)
+                                        }
+
+                                        override fun onReceived(
+                                            customerInfo: CustomerInfo,
+                                            created: Boolean
+                                        ) {
+                                            Timber.d("Customer info: $customerInfo")
+                                        }
+
+                                    }
+                                )
+                            }
                             _uiEvent.send(VerifyEmailUiEvent.VerifySuccess)
                         }
 

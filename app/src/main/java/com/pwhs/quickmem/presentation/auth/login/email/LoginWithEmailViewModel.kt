@@ -13,6 +13,10 @@ import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.LogInCallback
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -134,6 +138,28 @@ class LoginWithEmailViewModel @Inject constructor(
                                             appManager.saveUserEmail(login.data?.email ?: "")
                                             appManager.saveUserName(login.data?.username ?: "")
                                             _uiState.update { it.copy(isLoading = false) }
+                                            Purchases.sharedInstance.apply {
+                                                setEmail(login.data?.email)
+                                                setDisplayName(login.data?.fullName)
+                                                logIn(
+                                                    newAppUserID = login.data?.id ?: "",
+                                                    callback = object : LogInCallback {
+                                                        override fun onError(error: PurchasesError) {
+                                                            Timber.e(error.message)
+                                                        }
+
+                                                        override fun onReceived(
+                                                            customerInfo: CustomerInfo,
+                                                            created: Boolean
+                                                        ) {
+                                                            Timber.d("Customer info: $customerInfo")
+                                                        }
+
+                                                    }
+                                                )
+                                            }
+
+
                                             _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
                                         }
                                     }
