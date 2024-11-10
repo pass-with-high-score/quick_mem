@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.c
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,14 +27,14 @@ fun LicenseItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .defaultMinSize(minHeight = 80.dp)
             .padding(vertical = 8.dp),
         border = BorderStroke(
             width = 1.dp,
             color = colorScheme.onSurface.copy(alpha = 0.12f)
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = colorScheme.surface,
         ),
         onClick = {
             onClickItem(license.id)

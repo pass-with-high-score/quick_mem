@@ -20,7 +20,7 @@ val SourceLicensesList = listOf(
     OpenSourceLicensesData(
         id = "3",
         title = "Rang Vikalp",
-        linkSource = "https://github.com/akshay2211/RangVikalp/blob/master/LICENSE"
+        linkSource = "https://www.apache.org/licenses/LICENSE-2.0.txt"
     ),
     OpenSourceLicensesData(
         id = "4",
@@ -28,7 +28,7 @@ val SourceLicensesList = listOf(
         linkSource = "https://github.com/google/accompanist/blob/main/LICENSE"
     ),
     OpenSourceLicensesData(
-        id = "5", // Change to String
+        id = "5",
         title = "Firebase BOM",
         linkSource = "https://firebase.google.com/terms"
     ),
@@ -45,12 +45,12 @@ val SourceLicensesList = listOf(
     OpenSourceLicensesData(
         id = "8",
         title = "Google Play Services Ads",
-        linkSource = "https://developers.google.com/admob/terms"
+        linkSource = "https://www.google.com/adsense/new/localized-terms"
     ),
     OpenSourceLicensesData(
         id = "9",
         title = "Compose CardStack",
-        linkSource = ""
+        linkSource = "https://github.com/conduktor/kafka-stack-docker-compose/blob/master/LICENSE"
     ),
     OpenSourceLicensesData(
         id = "10",
@@ -60,12 +60,12 @@ val SourceLicensesList = listOf(
     OpenSourceLicensesData(
         id = "11",
         title = "Compose Bundle",
-        linkSource = "https://github.com/androidx/compose/blob/main/LICENSE"
+        linkSource = "https://github.com/SmartToolFactory/Compose-Color-Picker-Bundle/blob/master/LICENSE.md"
     ),
     OpenSourceLicensesData(
         id = "12",
         title = "Jetpack Compose BOM",
-        linkSource = "https://github.com/androidx/compose/blob/main/LICENSE"
+        linkSource = "https://www.apache.org/licenses/LICENSE-2.0.txt"
     ),
     OpenSourceLicensesData(
         id = "13",
@@ -90,7 +90,7 @@ val SourceLicensesList = listOf(
     OpenSourceLicensesData(
         id = "17",
         title = "Hilt Compiler",
-        linkSource = "https://github.com/google/dagger/blob/main/LICENSE.txt"
+        linkSource = "https://github.com/google/dagger/blob/master/LICENSE.txt"
     ),
     OpenSourceLicensesData(
         id = "18",
@@ -105,7 +105,7 @@ val SourceLicensesList = listOf(
     OpenSourceLicensesData(
         id = "20",
         title = "Compose Destination",
-        linkSource = "https://github.com/raamcosta/compose-destinations/blob/main/LICENSE"
+        linkSource = "https://github.com/raamcosta/compose-destinations/blob/main/LICENSE.txt"
     ),
     OpenSourceLicensesData(
         id = "21",

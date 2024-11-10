@@ -2,7 +2,6 @@ package com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.OpenSourceLicensesData
 import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.SourceLicensesList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

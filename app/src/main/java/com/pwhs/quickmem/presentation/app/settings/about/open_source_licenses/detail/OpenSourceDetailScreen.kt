@@ -1,7 +1,9 @@
 package com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.detail
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
@@ -14,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.component.OpenSourceTopAppBar
 import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.OpenSourceLicensesData
 import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.SourceLicensesList
@@ -28,6 +31,11 @@ fun OpenSourceDetail(
     licenseId: String,
     navigator: DestinationsNavigator
 ) {
+
+    if (licenseId.isEmpty()) {
+        navigator.navigateUp()
+        return
+    }
     val license = SourceLicensesList.find { it.id == licenseId }
 
     if (license != null) {
@@ -36,6 +44,8 @@ fun OpenSourceDetail(
             license = license,
             onNavigateBack = { navigator.navigateUp() }
         )
+    } else {
+        navigator.navigateUp()
     }
 }
 
@@ -69,7 +79,15 @@ fun OpenSourceDetailUI(
                 },
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(license.linkSource))
-                    context.startActivity(intent)
+                    try {
+                        context.startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(
+                            context,
+                            "Không tìm thấy ứng dụng để mở link",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             )
         }
