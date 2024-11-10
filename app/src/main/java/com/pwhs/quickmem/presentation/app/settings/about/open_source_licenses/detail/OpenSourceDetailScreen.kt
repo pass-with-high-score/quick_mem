@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.component.OpenSourceTopAppBar
 import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.OpenSourceLicensesData
 import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.SourceLicensesList
