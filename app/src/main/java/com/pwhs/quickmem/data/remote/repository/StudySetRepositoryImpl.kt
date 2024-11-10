@@ -151,7 +151,7 @@ class StudySetRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun AddStudySetToFolders(
+    override suspend fun addStudySetToFolders(
         token: String,
         addStudySetToFoldersRequestModel: AddStudySetToFoldersRequestModel
     ): Flow<Resources<Unit>> {

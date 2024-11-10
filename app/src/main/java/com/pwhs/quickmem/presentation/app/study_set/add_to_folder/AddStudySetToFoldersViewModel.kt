@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +36,6 @@ class AddStudySetToFoldersViewModel @Inject constructor(
 
     init {
         val studySetId: String = savedStateHandle["studySetId"] ?: ""
-        Timber.d("AddStudySetViewModel: $studySetId")
         _uiState.update { it.copy(studySetId = studySetId) }
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
@@ -63,7 +61,6 @@ class AddStudySetToFoldersViewModel @Inject constructor(
             }
 
             is AddStudySetToFoldersUiAction.ToggleStudySetImport -> {
-                Timber.d("Toggle Study Set Import: ${event.folderId}")
                 toggleFolderImport(event.folderId)
             }
         }
@@ -79,8 +76,8 @@ class AddStudySetToFoldersViewModel @Inject constructor(
             ).collectLatest { resources ->
                 when (resources) {
                     is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
+                        _uiState.update { foldersUiState ->
+                            foldersUiState.copy(
                                 isLoading = false,
                                 folders = resources.data ?: emptyList(),
                                 folderImportedIds = resources.data?.filter { it.isImported == true }
@@ -112,13 +109,13 @@ class AddStudySetToFoldersViewModel @Inject constructor(
 
     private fun doneClick() {
         viewModelScope.launch {
-            Timber.d("Id study set: ${_uiState.value.studySetId}")
             val addStudySetToFoldersRequestModel = AddStudySetToFoldersRequestModel(
                 studySetId = _uiState.value.studySetId,
                 folderIds = _uiState.value.folderImportedIds,
             )
-            studySetRepository.AddStudySetToFolders(
-                token = tokenManager.accessToken.firstOrNull() ?: "",
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            studySetRepository.addStudySetToFolders(
+                token = token,
                 addStudySetToFoldersRequestModel
             ).collectLatest { resources ->
                 when (resources) {

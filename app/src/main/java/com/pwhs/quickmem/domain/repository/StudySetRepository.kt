@@ -56,7 +56,7 @@ interface StudySetRepository {
         addStudySetToClassRequestModel: AddStudySetToClassRequestModel
     ): Flow<Resources<Unit>>
 
-    suspend fun AddStudySetToFolders(
+    suspend fun addStudySetToFolders(
         token: String,
         addStudySetToFoldersRequestModel: AddStudySetToFoldersRequestModel
     ): Flow<Resources<Unit>>
