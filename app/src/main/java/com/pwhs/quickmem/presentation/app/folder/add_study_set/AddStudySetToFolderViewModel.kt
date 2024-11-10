@@ -61,7 +61,6 @@ class AddStudySetToFolderViewModel @Inject constructor(
             }
 
             is AddStudySetToFolderUiAction.ToggleStudySetImport -> {
-                Timber.d("Toggle Study Set Import: ${event.studySetId}")
                 toggleStudySetImport(event.studySetId)
             }
         }
@@ -82,8 +81,9 @@ class AddStudySetToFolderViewModel @Inject constructor(
                                 it.copy(
                                     isLoading = false,
                                     studySets = resources.data ?: emptyList(),
-                                    studySetImportedIds = resources.data?.filter { it.isImported == true }
-                                        ?.map { it.id } ?: emptyList()
+                                    studySetImportedIds = resources.data?.filter { studySetResponseModel -> studySetResponseModel.isImported == true }
+                                        ?.map { setResponseModel -> setResponseModel.id }
+                                        ?: emptyList()
                                 )
                             }
                         }

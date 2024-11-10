@@ -61,7 +61,6 @@ class AddStudySetToClassViewModel @Inject constructor(
             }
 
             is AddStudySetToClassUiAction.ToggleStudySetImport -> {
-                Timber.d("Toggle Study Set Import: ${event.studySetId}")
                 toggleStudySetImport(event.studySetId)
             }
         }
