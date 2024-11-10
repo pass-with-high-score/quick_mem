@@ -33,7 +33,7 @@ android {
         val emailVerificationUrl: String = localProperties.getProperty("EMAIL_VERIFICATION_URL")
             ?: "https://checkemail.quickmem.app/"
         val bannerAdsId: String =
-            localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-3940256099942544/9214589741"
+            localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-5725743620724195/1415385680"
         val interstitialAdsId: String = localProperties.getProperty("INTERSTITIAL_ADS_ID")
             ?: "ca-app-pub-3940256099942544/1033173712"
         val rewardAdsId: String =
