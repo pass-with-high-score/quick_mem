@@ -7,15 +7,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun LoadingOverlay(
@@ -40,16 +44,16 @@ fun LoadingOverlay(
                         verticalArrangement = Arrangement.Center
                     ) {
                         CircularProgressIndicator(
-                            color = color ?: MaterialTheme.colorScheme.background,
+                            color = color ?: colorScheme.background,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         Text(
                             text = text ?: "Loading...",
-                            style = MaterialTheme.typography.bodyMedium.copy(
+                            style = typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
                             ),
-                            color = color ?: MaterialTheme.colorScheme.background,
+                            color = color ?: colorScheme.background,
                         )
                     }
                 }
@@ -58,5 +62,17 @@ fun LoadingOverlay(
             dismissButton = { },
             modifier = modifier
         )
+    }
+}
+
+@Preview
+@Composable
+private fun LoadingOverlayPreview() {
+    QuickMemTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            LoadingOverlay(isLoading = true)
+        }
     }
 }

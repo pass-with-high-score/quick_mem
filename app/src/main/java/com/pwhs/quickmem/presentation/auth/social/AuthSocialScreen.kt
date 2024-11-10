@@ -21,10 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,42 +70,12 @@ fun AuthSocialScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(email, token, fullName, picture, provider) {
-        Timber.d("Run here")
-        Timber.d("Email: $email")
-        Timber.d("Token: $token")
-        Timber.d("Full name: $fullName")
-        Timber.d("Provider: $provider")
-        Timber.d("Picture: $picture")
         viewModel.initDataDeeplink(email, fullName, picture, token, provider)
     }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is AuthSocialUiEvent.OnAvatarUrlChanged -> {
-                    Timber.d("Avatar url: ${event.avatarUrl}")
-                    uiState.copy(avatarUrl = event.avatarUrl)
-                }
-                is AuthSocialUiEvent.OnBirthDayChanged -> {
-                    Timber.d("Birthday: ${event.birthDay}")
-                }
-                is AuthSocialUiEvent.OnEmailChanged -> {
-                    Timber.d("Email: ${event.email}")
-                    uiState.copy(email = event.email)
-                }
-                is AuthSocialUiEvent.OnNameChanged -> {
-                    Timber.d("Name: ${event.name}")
-                    uiState.copy(fullName = event.name)
-                }
-                is AuthSocialUiEvent.OnRoleChanged -> {
-                    Timber.d("Role: ${event.role}")
-                }
-                AuthSocialUiEvent.Register -> {
-                    Timber.d("Register")
-                }
-                AuthSocialUiEvent.None -> {
-                    // Do nothing
-                }
                 AuthSocialUiEvent.SignUpFailure -> {
                     Toast.makeText(
                         context,
@@ -113,6 +83,7 @@ fun AuthSocialScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
                 AuthSocialUiEvent.SignUpSuccess -> {
                     Timber.d("Sign up success")
                     navigator.popBackStack()
@@ -176,7 +147,7 @@ fun AuthSocial(
             verticalArrangement = Arrangement.Top,
         ) {
             Text(
-                text = "Almost done!",
+                text = stringResource(R.string.txt_almost_done),
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.primary
@@ -184,7 +155,7 @@ fun AuthSocial(
             )
 
             Text(
-                text = "Enter your birthday. This won't be visible to others.",
+                text = stringResource(R.string.txt_enter_your_birthday_this_won_t_be_visible_to_others),
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontSize = 16.sp,
                     color = colorScheme.primary
@@ -195,7 +166,7 @@ fun AuthSocial(
             AuthTextField(
                 value = birthday,
                 onValueChange = onBirthdayChanged,
-                label = "Select your birthday",
+                label = stringResource(R.string.txt_select_your_birthday),
                 iconId = R.drawable.ic_calendar,
                 contentDescription = "Birthday",
                 readOnly = true,
@@ -220,25 +191,25 @@ fun AuthSocial(
                             fontSize = 16.sp,
                         )
                     ) {
-                        append("By signing up, you agree to the")
+                        append(stringResource(R.string.txt_by_signing_up_you_agree_to_the))
                         withStyle(
                             style = SpanStyle(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         ) {
-                            append(" Terms and Conditions")
+                            append(stringResource(R.string.txt_terms_and_conditions))
                         }
-                        append(" and the ")
+                        append(stringResource(R.string.txt_and_the))
                         withStyle(
                             style = SpanStyle(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         ) {
-                            append("Privacy Policy")
+                            append(stringResource(R.string.txt_privacy_policy))
                         }
-                        append(" of QuickMem")
+                        append(stringResource(R.string.txt_of_quickmem))
                     }
                 },
                 modifier = Modifier
@@ -251,9 +222,7 @@ fun AuthSocial(
                     onDateSelected = {
                         if (it != null) {
                             onBirthdayChanged(it.toFormattedString())
-                            Timber.d("Less than 18: ${it.isDateSmallerThan()}")
                             isRoleVisible = !it.isDateSmallerThan()
-                            Timber.d("isRoleVisible: $isRoleVisible")
                         }
                         isDatePickerVisible = false
                     },

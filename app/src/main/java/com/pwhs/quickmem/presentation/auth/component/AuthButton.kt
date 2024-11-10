@@ -4,15 +4,17 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.ButtonDefaults.buttonElevation
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,8 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun AuthButton(
@@ -40,14 +45,14 @@ fun AuthButton(
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp),
-        colors = ButtonDefaults.buttonColors(
+        colors = buttonColors(
             containerColor = colors
         ),
         border = BorderStroke(
             width = 1.dp,
             color = borderColor
         ),
-        elevation = ButtonDefaults.buttonElevation(
+        elevation = buttonElevation(
             defaultElevation = 5.dp,
             pressedElevation = 5.dp,
             focusedElevation = 5.dp,
@@ -66,13 +71,38 @@ fun AuthButton(
                 )
             }
             Text(
-                text, style = MaterialTheme.typography.bodyLarge.copy(
+                text, style = typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = textColor
                 )
             )
 
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AuthButtonPreview() {
+    QuickMemTheme {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize()
+        ) {
+            AuthButton(
+                onClick = {},
+                text = "Sign in",
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            AuthButton(
+                onClick = {},
+                text = "Google",
+                textColor = Color.Black,
+                icon = R.drawable.ic_google,
+                colors = Color.White
+            )
         }
     }
 }

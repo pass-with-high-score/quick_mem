@@ -43,6 +43,7 @@ import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
+import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFoldersRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -175,6 +176,12 @@ interface ApiService {
     suspend fun deleteStudySet(
         @Header("Authorization") token: String,
         @Path("id") id: String
+    )
+
+    @POST("study-set/folders")
+    suspend fun addStudySetToFolders(
+        @Header("Authorization") token: String,
+        @Body addStudySetToFoldersRequestDto: AddStudySetToFoldersRequestDto
     )
 
     // Flash Card

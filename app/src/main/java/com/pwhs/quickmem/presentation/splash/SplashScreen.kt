@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.OnboardingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
@@ -52,7 +54,7 @@ fun SplashScreen(
             when (event) {
                 is SplashUiEvent.IsLoggedIn -> {
                     navigator.navigate(HomeScreenDestination) {
-                        popUpTo(HomeScreenDestination) {
+                        popUpTo(SplashScreenDestination) {
                             inclusive = true
                         }
                     }
@@ -60,7 +62,7 @@ fun SplashScreen(
 
                 is SplashUiEvent.FirstRun -> {
                     navigator.navigate(OnboardingScreenDestination) {
-                        popUpTo(WelcomeScreenDestination) {
+                        popUpTo(SplashScreenDestination) {
                             inclusive = true
                         }
                     }
@@ -68,7 +70,7 @@ fun SplashScreen(
 
                 is SplashUiEvent.NotFirstRun -> {
                     navigator.navigate(WelcomeScreenDestination) {
-                        popUpTo(WelcomeScreenDestination) {
+                        popUpTo(SplashScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }
@@ -77,15 +79,11 @@ fun SplashScreen(
 
                 is SplashUiEvent.NotLoggedIn -> {
                     navigator.navigate(WelcomeScreenDestination) {
-                        popUpTo(WelcomeScreenDestination) {
+                        popUpTo(SplashScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }
                     }
-                }
-
-                else -> {
-                    // Do nothing
                 }
             }
         }
@@ -133,7 +131,7 @@ fun AnimatedText(modifier: Modifier = Modifier) {
                     .padding(end = 8.dp)
             )
             Text(
-                text = "QUICK MEM",
+                text = stringResource(id = R.string.app_name).uppercase(),
                 fontSize = 32.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,

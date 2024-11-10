@@ -27,11 +27,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.TextFieldType
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.upperCaseFirstLetter
-import timber.log.Timber
 
 @Composable
 fun AuthTextField(
@@ -48,7 +49,6 @@ fun AuthTextField(
     error: String? = null
 ) {
     var showPassword by rememberSaveable { mutableStateOf(false) }
-    Timber.d("Is Error: ${error.isNullOrEmpty().not()}")
     Column {
         TextField(
             value = value,
@@ -137,6 +137,21 @@ fun AuthTextField(
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(top = 4.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AuthTextFieldPreview() {
+    QuickMemTheme {
+        AuthTextField(
+            value = "",
+            onValueChange = {},
+            label = "Email",
+            iconId = R.drawable.ic_email,
+            contentDescription = "Email",
+            type = TextFieldType.EMAIL
         )
     }
 }

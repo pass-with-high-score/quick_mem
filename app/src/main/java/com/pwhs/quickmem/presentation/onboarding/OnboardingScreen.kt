@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
@@ -33,6 +34,7 @@ import com.pwhs.quickmem.presentation.onboarding.data.onboardingPagesList
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.OnboardingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -44,7 +46,6 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-
 
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -75,7 +76,7 @@ fun OnboardingScreen(
                 )
 
                 OnboardingButton(
-                    text = "Skip",
+                    text = stringResource(R.string.txt_skip),
                     onClick = {
                         viewModel.saveIsFirstRun(false)
                         navigator.popBackStack()
@@ -115,7 +116,7 @@ fun OnboardingScreen(
             ) {
                 if (pagerState.currentPage != onboardingPagesList.size - 1) {
                     OnboardingButton(
-                        text = "Next",
+                        text = stringResource(R.string.txt_next),
                         onClick = {
                             coroutineScope.launch {
                                 pagerState.scrollToPage(pagerState.currentPage + 1)
@@ -125,11 +126,14 @@ fun OnboardingScreen(
                     )
                 } else {
                     OnboardingButton(
-                        text = "Get Started",
+                        text = stringResource(R.string.txt_get_started),
                         onClick = {
                             viewModel.saveIsFirstRun(false)
-                            navigator.popBackStack()
-                            navigator.navigate(WelcomeScreenDestination)
+                            navigator.navigate(WelcomeScreenDestination) {
+                                popUpTo(OnboardingScreenDestination) {
+                                    inclusive = true
+                                }
+                            }
                         }
                     )
                 }

@@ -2,8 +2,8 @@
 
 package com.pwhs.quickmem.presentation.app.home
 
+import android.Manifest
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -66,6 +67,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.notification.NotificationBottomSheet
+import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -74,12 +76,6 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Package
-import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.models.StoreTransaction
-import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
-import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
-import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -106,7 +102,11 @@ fun HomeScreen(
         },
         onNotificationEnabled = { isEnabled ->
             viewModel.onEvent(HomeUIAction.OnChangeAppPushNotifications(isEnabled))
-        }
+        },
+        customer = uiState.customerInfo,
+        onCustomerInfoChanged = { customerInfo ->
+            viewModel.onEvent(HomeUIAction.OnChangeCustomerInfo(customerInfo))
+        },
     )
 }
 
@@ -117,7 +117,9 @@ fun Home(
     modifier: Modifier = Modifier,
     streakCount: Int = 0,
     onNavigateToSearch: () -> Unit = {},
-    onNotificationEnabled: (Boolean) -> Unit = {}
+    onNotificationEnabled: (Boolean) -> Unit = {},
+    customer: CustomerInfo? = null,
+    onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
 ) {
     val notificationBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showNotificationBottomSheet by remember { mutableStateOf(false) }
@@ -132,7 +134,7 @@ fun Home(
         iterations = LottieConstants.IterateForever,
     )
     val notificationPermission =
-        rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+        rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
     LaunchedEffect(notificationPermission) {
         if (!notificationPermission.status.isGranted) {
             notificationPermission.launchPermissionRequest()
@@ -153,10 +155,18 @@ fun Home(
                 ),
                 navigationIcon = {
                     Text(
-                        "QuickMem",
+                        when (customer?.activeSubscriptions?.isNotEmpty()) {
+                            true -> stringResource(R.string.txt_quickmem_plus)
+                            false -> stringResource(R.string.txt_quickmem)
+                            null -> stringResource(R.string.txt_quickmem)
+                        },
                         style = typography.titleLarge.copy(
                             fontFamily = firasansExtraboldFont,
-                            color = colorScheme.onPrimary
+                            color = when (customer?.activeSubscriptions?.isNotEmpty()) {
+                                true -> premiumColor
+                                false -> colorScheme.primary
+                                null -> colorScheme.secondary
+                            }
                         ),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
@@ -200,22 +210,24 @@ fun Home(
                     }
                 },
                 actions = {
-                    Button(
-                        onClick = {
-                            isPaywallVisible = true
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = premiumColor
-                        ),
-                        modifier = Modifier.padding(end = 8.dp),
-                        shape = MaterialTheme.shapes.extraLarge,
-                    ) {
-                        Text(
-                            "Upgrade",
-                            style = typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
+                    if (customer?.activeSubscriptions?.isEmpty() == true) {
+                        Button(
+                            onClick = {
+                                isPaywallVisible = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = premiumColor
+                            ),
+                            modifier = Modifier.padding(end = 8.dp),
+                            shape = MaterialTheme.shapes.extraLarge,
+                        ) {
+                            Text(
+                                "Upgrade",
+                                style = typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
+                        }
                     }
                     IconButton(
                         onClick = {showNotificationBottomSheet = true},
@@ -287,8 +299,21 @@ fun Home(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Text("Home Screen")
+            Text(
+                text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
+            )
         }
     }
+    Paywall(
+        isPaywallVisible = isPaywallVisible,
+        onCustomerInfoChanged = { customerInfo ->
+            onCustomerInfoChanged(customerInfo)
+        },
+        modifier = Modifier,
+        onPaywallDismissed = {
+            isPaywallVisible = false
+        },
+    )
     if (showStreakBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -396,7 +421,6 @@ fun Home(
                 .build()
         )
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

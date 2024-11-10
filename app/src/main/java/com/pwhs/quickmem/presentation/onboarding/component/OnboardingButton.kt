@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.ButtonDefaults.buttonElevation
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,14 +32,14 @@ fun OnboardingButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     showIcon: Boolean = false,
-    backgroundColor: Color = MaterialTheme.colorScheme.primary,
-    buttonShape: CornerBasedShape = MaterialTheme.shapes.large,
+    backgroundColor: Color = colorScheme.primary,
+    buttonShape: CornerBasedShape = shapes.large,
     borderColor: Color = Color.White,
     textColor: Color = Color.White
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
+        colors = buttonColors(
             containerColor = backgroundColor,
         ),
         modifier = modifier
@@ -45,7 +47,7 @@ fun OnboardingButton(
             .height(50.dp),
         shape = buttonShape,
         border = BorderStroke(1.dp, borderColor),
-        elevation = ButtonDefaults.buttonElevation(
+        elevation = buttonElevation(
             defaultElevation = 10.dp,
             pressedElevation = 10.dp,
             focusedElevation = 10.dp,
@@ -69,7 +71,7 @@ fun OnboardingButton(
             )
             if (showIcon) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                    imageVector = AutoMirrored.Filled.ArrowForwardIos,
                     contentDescription = null
                 )
             }

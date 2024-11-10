@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -48,6 +49,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.LanguageCode
 import com.pwhs.quickmem.presentation.app.settings.component.SettingCard
 import com.pwhs.quickmem.presentation.app.settings.component.SettingItem
 import com.pwhs.quickmem.presentation.app.settings.component.SettingSwitch
@@ -58,7 +60,10 @@ import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ChangeLanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -73,10 +78,46 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
     viewModel: SettingsViewModel = hiltViewModel(),
-    resultUpdateFullName: ResultRecipient<UpdateFullNameSettingScreenDestination, Boolean>
+    resultUpdateFullName: ResultRecipient<UpdateFullNameSettingScreenDestination, Boolean>,
+    resultUpdateEmail: ResultRecipient<UpdateEmailSettingScreenDestination, Boolean>,
+    resultChangePassword: ResultRecipient<ChangePasswordSettingScreenDestination, Boolean>,
+    resultChangeLanguage: ResultRecipient<ChangeLanguageScreenDestination, Boolean>,
 ) {
 
     resultUpdateFullName.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.initData()
+                }
+            }
+        }
+    }
+
+    resultUpdateEmail.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.initData()
+                }
+            }
+        }
+    }
+
+    resultChangePassword.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.initData()
+                }
+            }
+        }
+    }
+
+    resultChangeLanguage.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {}
             is NavResult.Value -> {
@@ -94,9 +135,8 @@ fun SettingsScreen(
             when (event) {
                 is SettingUiEvent.NavigateToLogin -> {
                     navigator.navigate(WelcomeScreenDestination) {
-                        popUpTo(WelcomeScreenDestination) {
+                        popUpTo(ProfileScreenDestination) {
                             inclusive = true
-                            launchSingleTop = true
                         }
                     }
                 }
@@ -137,6 +177,7 @@ fun SettingsScreen(
         errorMessage = uiState.errorMessage,
         isPushNotificationsEnabled = uiState.isPushNotificationsEnabled,
         isAppPushNotificationsEnabled = uiState.isAppPushNotificationsEnabled,
+        languageCode = uiState.languageCode,
         onChangePassword = {
             viewModel.onEvent(SettingUiAction.OnChangePassword(it))
         },
@@ -161,6 +202,9 @@ fun SettingsScreen(
         onNotificationEnabled = {
             viewModel.onEvent(SettingUiAction.OnChangeAppPushNotifications(it))
         },
+        onNavigateToChangeLanguage = {
+            navigator.navigate(ChangeLanguageScreenDestination())
+        }
     )
 }
 
@@ -177,6 +221,7 @@ fun Setting(
     isLoading: Boolean = false,
     isPushNotificationsEnabled: Boolean = false,
     isAppPushNotificationsEnabled: Boolean = false,
+    languageCode: LanguageCode = LanguageCode.EN,
     onChangePassword: (String) -> Unit = {},
     onChangeType: (SettingChangeValueEnum) -> Unit = {},
     onSubmitClick: () -> Unit = {},
@@ -219,7 +264,7 @@ fun Setting(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Settings", style = typography.titleMedium.copy(
+                        stringResource(R.string.txt_settings), style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -230,7 +275,7 @@ fun Setting(
                     ) {
                         Icon(
                             imageVector = AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.txt_back),
                         )
                     }
                 },
@@ -246,13 +291,13 @@ fun Setting(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item {
-                    SettingTitleSection(title = "Personal info")
+                    SettingTitleSection(title = stringResource(R.string.txt_personal_info))
                     SettingCard {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingItem(
-                                title = "Full name",
+                                title = stringResource(R.string.txt_full_name),
                                 subtitle = fullName,
                                 onClick = {
                                     showVerifyPasswordBottomSheet = true
@@ -261,7 +306,7 @@ fun Setting(
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = "Username",
+                                title = stringResource(R.string.txt_username),
                                 subtitle = username,
                                 onClick = {
                                     showVerifyPasswordBottomSheet = true
@@ -279,7 +324,7 @@ fun Setting(
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = "Change password",
+                                title = stringResource(R.string.txt_change_password),
                                 onClick = {
                                     onNavigateToChangePassword()
                                 }
@@ -288,14 +333,14 @@ fun Setting(
                     }
                 }
                 item {
-                    SettingTitleSection(title = "Offline studying")
+                    SettingTitleSection(title = stringResource(R.string.txt_offline_studying))
                     SettingCard {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingSwitch(
-                                title = "Save study sets for offline studying",
-                                subtitle = "Your 8 most recently studied sets will be saved for offline studying",
+                                title = stringResource(R.string.txt_save_study_sets_for_offline_studying),
+                                subtitle = stringResource(R.string.txt_your_8_most_recently_studied_sets_will_be_saved_for_offline_studying),
                                 value = true,
                                 onChangeValue = {
                                     // TODO(): Implement this feature
@@ -303,7 +348,7 @@ fun Setting(
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = "Manage storage",
+                                title = stringResource(R.string.txt_manage_storage),
                                 onClick = {
                                     onNavigateToManageStorage()
                                 }
@@ -312,21 +357,24 @@ fun Setting(
                     }
                 }
                 item {
-                    SettingTitleSection(title = "Preferences")
+                    SettingTitleSection(title = stringResource(R.string.txt_preferences))
                     SettingCard {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingItem(
-                                title = "Language",
-                                subtitle = "English",
+                                title = stringResource(R.string.txt_language),
+                                subtitle = when (languageCode) {
+                                    LanguageCode.EN -> stringResource(id = R.string.txt_english_us)
+                                    LanguageCode.VI -> stringResource(id = R.string.txt_vietnamese)
+                                },
                                 onClick = {
                                     onNavigateToChangeLanguage()
                                 }
                             )
                             HorizontalDivider()
                             SettingSwitch(
-                                title = "Push notifications",
+                                title = stringResource(R.string.txt_push_notifications),
                                 onChangeValue = {
                                     if (!isAppPushNotificationsEnabled && !notificationPermission.status.isGranted) {
                                         showDialog = true
@@ -339,7 +387,7 @@ fun Setting(
                             )
                             HorizontalDivider()
                             SettingSwitch(
-                                title = "Sound effects",
+                                title = stringResource(R.string.txt_sound_effects),
                                 onChangeValue = {
                                     onEnableSoundEffects()
                                 },
@@ -350,34 +398,34 @@ fun Setting(
                     }
                 }
                 item {
-                    SettingTitleSection(title = "About")
+                    SettingTitleSection(title = stringResource(R.string.txt_about))
                     SettingCard {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingItem(
-                                title = "Privacy policy",
+                                title = stringResource(R.string.txt_settings_privacy_policy),
                                 onClick = {
                                     onNavigateToPrivacyPolicy()
                                 }
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = "Terms of service",
+                                title = stringResource(R.string.txt_settings_terms_of_service),
                                 onClick = {
                                     onNavigateToTermsOfService()
                                 }
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = "Open source licenses",
+                                title = stringResource(R.string.txt_settings_open_source_licenses),
                                 onClick = {
                                     onNavigateToOpenSourceLicenses()
                                 }
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = "Help center",
+                                title = stringResource(R.string.txt_settings_help_center),
                                 onClick = {
                                     onNavigateToHelpCenter()
                                 }
@@ -403,11 +451,12 @@ fun Setting(
                             ) {
                                 Icon(
                                     imageVector = AutoMirrored.Outlined.Logout,
-                                    contentDescription = "Log out",
+                                    contentDescription = stringResource(R.string.txt_settings_log_out),
                                     modifier = Modifier.size(30.dp)
                                 )
                                 Text(
-                                    "Log out", style = typography.bodyLarge.copy(
+                                    text = stringResource(R.string.txt_settings_log_out),
+                                    style = typography.bodyLarge.copy(
                                         fontWeight = FontWeight.Bold
                                     )
                                 )
@@ -430,7 +479,8 @@ fun Setting(
 
                     )
                     Text(
-                        text = "QuickMem", style = typography.titleSmall.copy(
+                        text = stringResource(R.string.app_name),
+                        style = typography.titleSmall.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
