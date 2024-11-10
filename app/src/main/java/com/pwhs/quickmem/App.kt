@@ -2,12 +2,14 @@ package com.pwhs.quickmem
 
 import android.app.Application
 import com.google.firebase.messaging.FirebaseMessaging
+import com.onesignal.OneSignal
+import com.onesignal.debug.LogLevel as OneSignalLogLevel
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.util.updateLocale
-import com.revenuecat.purchases.LogLevel
+import com.revenuecat.purchases.LogLevel as RevenueCatLogLevel
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
 import dagger.hilt.android.HiltAndroidApp
@@ -38,13 +40,16 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
-        Purchases.logLevel = LogLevel.DEBUG
+        Purchases.logLevel = RevenueCatLogLevel.DEBUG
+        OneSignal.Debug.logLevel = OneSignalLogLevel.VERBOSE
+        OneSignal.initWithContext(this, BuildConfig.ONESIGNAL_APP_ID)
         Purchases.configure(
             PurchasesConfiguration.Builder(
                 context = this,
-                apiKey = "goog_TBgLrymHTtfZJQzfyRseRIYlPER",
+                apiKey = BuildConfig.REVENUECAT_API_KEY,
             ).build()
         )
+        Purchases.sharedInstance.setOnesignalID(OneSignal.User.onesignalId)
         // Get FCM token
         getFCMToken()
         CoroutineScope(Dispatchers.IO).launch {

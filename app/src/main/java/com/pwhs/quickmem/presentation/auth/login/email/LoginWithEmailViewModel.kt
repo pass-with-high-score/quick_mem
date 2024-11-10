@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.onesignal.OneSignal
 import com.pwhs.quickmem.core.data.AuthProvider
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -137,7 +138,6 @@ class LoginWithEmailViewModel @Inject constructor(
                                             appManager.saveUserFullName(login.data?.fullName ?: "")
                                             appManager.saveUserEmail(login.data?.email ?: "")
                                             appManager.saveUserName(login.data?.username ?: "")
-                                            _uiState.update { it.copy(isLoading = false) }
                                             Purchases.sharedInstance.apply {
                                                 setEmail(login.data?.email)
                                                 setDisplayName(login.data?.fullName)
@@ -158,9 +158,11 @@ class LoginWithEmailViewModel @Inject constructor(
                                                     }
                                                 )
                                             }
-
-
-                                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                                            OneSignal.login(login.data?.id ?: "")
+                                            OneSignal.User.addEmail(login.data?.email ?: "")
+                                            Purchases.sharedInstance.setOnesignalUserID(OneSignal.User.externalId)
+                                            _uiState.update { it.copy(isLoading = false) }
+                                            _uiEvent.trySend(LoginWithEmailUiEvent.LoginSuccess)
                                         }
                                     }
                                 }

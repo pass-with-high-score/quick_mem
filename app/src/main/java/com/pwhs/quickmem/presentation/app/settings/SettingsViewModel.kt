@@ -8,10 +8,6 @@ import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
-import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -186,18 +182,6 @@ class SettingsViewModel @Inject constructor(
             try {
                 tokenManager.clearTokens()
                 appManager.clearAllData()
-                Purchases.sharedInstance.logOut(
-                    callback = object : ReceiveCustomerInfoCallback {
-                        override fun onError(error: PurchasesError) {
-                            Timber.e(error.message)
-                        }
-
-                        override fun onReceived(customerInfo: CustomerInfo) {
-                            Timber.d("Customer info: $customerInfo")
-                        }
-
-                    }
-                )
                 _uiEvent.send(SettingUiEvent.NavigateToLogin)
             } catch (e: Exception) {
                 Timber.e(e)

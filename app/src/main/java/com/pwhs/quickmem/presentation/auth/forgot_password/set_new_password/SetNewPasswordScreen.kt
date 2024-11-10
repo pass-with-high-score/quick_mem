@@ -41,6 +41,7 @@ import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SetNewPasswordScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -74,9 +75,8 @@ fun SetNewPasswordScreen(
                     ).show()
                     navigator.popBackStack()
                     navigator.navigate(LoginWithEmailScreenDestination) {
-                        popUpTo(LoginWithEmailScreenDestination) {
+                        popUpTo(SetNewPasswordScreenDestination) {
                             inclusive = true
-                            launchSingleTop = true
                         }
                     }
                 }

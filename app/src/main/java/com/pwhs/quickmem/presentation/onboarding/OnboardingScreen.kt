@@ -34,6 +34,7 @@ import com.pwhs.quickmem.presentation.onboarding.data.onboardingPagesList
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.OnboardingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -45,7 +46,6 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-
 
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -129,8 +129,11 @@ fun OnboardingScreen(
                         text = stringResource(R.string.txt_get_started),
                         onClick = {
                             viewModel.saveIsFirstRun(false)
-                            navigator.popBackStack()
-                            navigator.navigate(WelcomeScreenDestination)
+                            navigator.navigate(WelcomeScreenDestination) {
+                                popUpTo(OnboardingScreenDestination) {
+                                    inclusive = true
+                                }
+                            }
                         }
                     )
                 }

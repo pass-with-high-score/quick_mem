@@ -98,5 +98,7 @@
     <string name="txt_settings_log_out">Đăng xuất</string>
     <string name="txt_manage_storage">Quản lý dung lượng</string>
     <string name="txt_language">Ngôn ngữ</string>
+    <string name="txt_quickmem_plus">QuickMem Plus</string>
+    <string name="txt_quickmem">QuickMem</string>
 
 </resources>

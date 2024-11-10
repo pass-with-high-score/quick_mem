@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.onesignal.OneSignal
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -151,6 +152,9 @@ class VerifyEmailViewModel @Inject constructor(
                                     }
                                 )
                             }
+                            OneSignal.login(resource.data?.id ?: "")
+                            OneSignal.User.addEmail(resource.data?.email ?: "")
+                            Purchases.sharedInstance.setOnesignalUserID(OneSignal.User.externalId)
                             _uiEvent.send(VerifyEmailUiEvent.VerifySuccess)
                         }
 

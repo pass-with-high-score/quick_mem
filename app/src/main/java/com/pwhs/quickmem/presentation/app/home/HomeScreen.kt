@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -72,10 +73,6 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
-import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -102,7 +99,11 @@ fun HomeScreen(
         },
         onNotificationEnabled = { isEnabled ->
             viewModel.onEvent(HomeUIAction.OnChangeAppPushNotifications(isEnabled))
-        }
+        },
+        customer = uiState.customerInfo,
+        onCustomerInfoChanged = { customerInfo ->
+            viewModel.onEvent(HomeUIAction.OnChangeCustomerInfo(customerInfo))
+        },
     )
 }
 
@@ -113,7 +114,9 @@ fun Home(
     modifier: Modifier = Modifier,
     streakCount: Int = 0,
     onNavigateToSearch: () -> Unit = {},
-    onNotificationEnabled: (Boolean) -> Unit = {}
+    onNotificationEnabled: (Boolean) -> Unit = {},
+    customer: CustomerInfo? = null,
+    onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
 ) {
     val streakBottomSheet = rememberModalBottomSheetState()
     var showStreakBottomSheet by remember {
@@ -137,23 +140,6 @@ fun Home(
     var isPaywallVisible by remember {
         mutableStateOf(false)
     }
-    var customer by remember {
-        mutableStateOf<CustomerInfo?>(null)
-    }
-
-    LaunchedEffect(key1 = true) {
-        Purchases.sharedInstance.getCustomerInfo(
-            callback = object : ReceiveCustomerInfoCallback {
-                override fun onError(error: PurchasesError) {
-                    Timber.e("CustomerInfo", "error: ${error.message}")
-                }
-
-                override fun onReceived(customerInfo: CustomerInfo) {
-                    customer = customerInfo
-                }
-            }
-        )
-    }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -163,10 +149,18 @@ fun Home(
                 ),
                 navigationIcon = {
                     Text(
-                        "QuickMem",
+                        when (customer?.activeSubscriptions?.isNotEmpty()) {
+                            true -> stringResource(R.string.txt_quickmem_plus)
+                            false -> stringResource(R.string.txt_quickmem)
+                            null -> stringResource(R.string.txt_quickmem)
+                        },
                         style = typography.titleLarge.copy(
                             fontFamily = firasansExtraboldFont,
-                            color = colorScheme.onPrimary
+                            color = when (customer?.activeSubscriptions?.isNotEmpty()) {
+                                true -> premiumColor
+                                false -> colorScheme.primary
+                                null -> colorScheme.secondary
+                            }
                         ),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
@@ -210,22 +204,24 @@ fun Home(
                     }
                 },
                 actions = {
-                    Button(
-                        onClick = {
-                            isPaywallVisible = true
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = premiumColor
-                        ),
-                        modifier = Modifier.padding(end = 8.dp),
-                        shape = MaterialTheme.shapes.extraLarge,
-                    ) {
-                        Text(
-                            "Upgrade",
-                            style = typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
+                    if (customer?.activeSubscriptions?.isEmpty() == true) {
+                        Button(
+                            onClick = {
+                                isPaywallVisible = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = premiumColor
+                            ),
+                            modifier = Modifier.padding(end = 8.dp),
+                            shape = MaterialTheme.shapes.extraLarge,
+                        ) {
+                            Text(
+                                "Upgrade",
+                                style = typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
+                        }
                     }
                     IconButton(
                         onClick = {},
@@ -305,7 +301,7 @@ fun Home(
     Paywall(
         isPaywallVisible = isPaywallVisible,
         onCustomerInfoChanged = { customerInfo ->
-            customer = customerInfo
+            onCustomerInfoChanged(customerInfo)
         },
         modifier = Modifier,
         onPaywallDismissed = {

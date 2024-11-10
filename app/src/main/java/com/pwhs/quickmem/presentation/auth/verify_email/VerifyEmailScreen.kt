@@ -57,6 +57,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SetNewPasswordScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber
 
@@ -81,7 +82,7 @@ fun VerifyEmailScreen(
                 VerifyEmailUiEvent.VerifySuccess -> {
                     navigator.popBackStack()
                     navigator.navigate(UpdateFullNameScreenDestination) {
-                        popUpTo(UpdateFullNameScreenDestination) {
+                        popUpTo(VerifyEmailScreenDestination) {
                             inclusive = true
                             launchSingleTop = true
                         }

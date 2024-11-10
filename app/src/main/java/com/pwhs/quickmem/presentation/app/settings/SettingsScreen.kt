@@ -62,6 +62,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ChangeLanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -133,9 +135,8 @@ fun SettingsScreen(
             when (event) {
                 is SettingUiEvent.NavigateToLogin -> {
                     navigator.navigate(WelcomeScreenDestination) {
-                        popUpTo(WelcomeScreenDestination) {
+                        popUpTo(ProfileScreenDestination) {
                             inclusive = true
-                            launchSingleTop = true
                         }
                     }
                 }

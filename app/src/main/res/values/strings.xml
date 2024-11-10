@@ -98,4 +98,6 @@
     <string name="txt_settings_log_out">Log out</string>
     <string name="txt_manage_storage">Manage storage</string>
     <string name="txt_language">Language</string>
+    <string name="txt_quickmem_plus">QuickMem Plus</string>
+    <string name="txt_quickmem">QuickMem</string>
 </resources>
