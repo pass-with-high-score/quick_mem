@@ -97,7 +97,7 @@ fun OpenSourceLicenses(
                 title = {
                     Text(
                         text = stringResource(R.string.txt_opensource_license),
-                        style = typography.titleLarge.copy(
+                        style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = colorScheme.onSurface
                         ),

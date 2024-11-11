@@ -16,9 +16,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.add_to_class.component.AddStudySetToClassesList
 import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.component.AddStudySetToFoldersTopAppBar
@@ -52,7 +54,8 @@ fun AddStudySetToClassesScreen(
                 }
 
                 is AddStudySetToClassesUiEvent.StudySetAddedToClasses -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_add_to_class_success), Toast.LENGTH_SHORT).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
@@ -99,7 +102,7 @@ fun AddStudySetToFolders(
             AddStudySetToFoldersTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
-                title = "Add to classes"
+                title = stringResource(R.string.txt_add_to_classes)
             )
         },
         floatingActionButton = {
@@ -128,8 +131,8 @@ fun AddStudySetToFolders(
                     onAddStudySetToClasses = onAddStudySetToClasses,
                 )
             }
+            LoadingOverlay(isLoading = isLoading)
         }
-        LoadingOverlay(isLoading = isLoading)
     }
 }
 

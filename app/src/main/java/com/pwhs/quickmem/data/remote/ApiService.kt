@@ -7,7 +7,9 @@ import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.ResetPasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.ResetPasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.SendResetPasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.SendResetPasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateEmailRequestDto
@@ -17,6 +19,7 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
+import com.pwhs.quickmem.data.dto.classes.AddStudySetToClassesRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
@@ -51,9 +54,6 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
-import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
-import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
-import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -103,12 +103,12 @@ interface ApiService {
     @POST("auth/send-reset-password")
     suspend fun sendResetPassword(
         @Body sendResetPasswordRequestDto: SendResetPasswordRequestDto
-    ): SendResetPasswordResponseModel
+    ): SendResetPasswordResponseDto
 
     @POST("auth/reset-password")
     suspend fun resetPassword(
         @Body resetPasswordRequestDto: ResetPasswordRequestDto
-    ): ResetPasswordResponseModel
+    ): ResetPasswordResponseDto
 
     @POST("auth/verify-password")
     suspend fun verifyPassword(
@@ -187,7 +187,7 @@ interface ApiService {
     @POST("study-set/classes")
     suspend fun addStudySetToClasses(
         @Header("Authorization") token: String,
-        @Body addStudySetToClassesRequestDto: AddStudySetToClassesRequestModel
+        @Body addStudySetToClassesRequestDto: AddStudySetToClassesRequestDto
     )
 
     // Flash Card

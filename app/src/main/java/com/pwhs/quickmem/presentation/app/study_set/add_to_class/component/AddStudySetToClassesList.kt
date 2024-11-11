@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,7 +92,7 @@ fun AddStudySetToClassesList(
                                 tint = colorScheme.primary
                             )
                             Text(
-                                text = "Group study materials to save time and share with others QuickMem members",
+                                text = stringResource(R.string.txt_group_study_materials_to_save_time_and_share_with_other_quickmem_members),
                                 style = typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Medium,
                                     textAlign = TextAlign.Center
@@ -104,7 +105,7 @@ fun AddStudySetToClassesList(
                                     .width(150.dp)
                             ) {
                                 Text(
-                                    "Create a class",
+                                    text = stringResource(R.string.txt_create_a_class),
                                     style = typography.bodyMedium.copy(
                                         fontWeight = FontWeight.Medium
                                     )
@@ -116,7 +117,7 @@ fun AddStudySetToClassesList(
                                 contentDescription = "Empty class",
                             )
                             Text(
-                                text = "No classes found",
+                                text = stringResource(R.string.txt_no_classes_found),
                                 style = typography.titleLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -131,7 +132,7 @@ fun AddStudySetToClassesList(
                                 SearchTextField(
                                     searchQuery = searchQuery,
                                     onSearchQueryChange = { searchQuery = it },
-                                    placeholder = "Search classes",
+                                    placeholder = stringResource(R.string.txt_search_classes),
                                 )
                             }
                         }
@@ -153,7 +154,7 @@ fun AddStudySetToClassesList(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "No classes found",
+                                        text = stringResource(R.string.txt_no_classes_found),
                                         style = typography.bodyLarge,
                                         textAlign = TextAlign.Center
                                     )

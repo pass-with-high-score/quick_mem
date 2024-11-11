@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +36,6 @@ class AddStudySetToClassesViewModel @Inject constructor(
 
     init {
         val studySetId: String = savedStateHandle["studySetId"] ?: ""
-        Timber.d("AddStudySetViewModel: $studySetId")
         _uiState.update { it.copy(studySetId = studySetId) }
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
@@ -63,7 +61,6 @@ class AddStudySetToClassesViewModel @Inject constructor(
             }
 
             is AddStudySetToClassesUiAction.ToggleStudySetImport -> {
-                Timber.d("Toggle Study Set Import: ${event.classId}")
                 toggleClassesImport(event.classId)
             }
         }
