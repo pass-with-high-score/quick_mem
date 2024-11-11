@@ -2,7 +2,7 @@ package com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.SourceLicensesList
+import com.pwhs.quickmem.presentation.app.settings.about.open_source_licenses.data.sourceLicensesList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +34,7 @@ class OpenSourceViewModel @Inject constructor() : ViewModel() {
     private fun loadLicenses() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
-                licenses = SourceLicensesList,
+                licenses = sourceLicensesList,
                 isLoading = false
             )
         }
@@ -50,5 +50,4 @@ class OpenSourceViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
-
 }
