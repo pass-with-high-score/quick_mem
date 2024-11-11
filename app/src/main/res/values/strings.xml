@@ -153,4 +153,14 @@
     <string name="txt_study_sets_library">%1$s study sets</string>
     <string name="txt_search">Search</string>
     <string name="txt_class_icon">Class Icon</string>
+    <string name="txt_report">Report</string>
+    <string name="txt_study_set">Study set</string>
+    <string name="txt_home">Home</string>
+    <string name="txt_explore">Explore</string>
+    <string name="txt_center">Center fab</string>
+    <string name="txt_profile">Profile</string>
+    <string name="txt_upgrade">Upgrade</string>
+    <string name="txt_your_setting">Your setting</string>
+    <string name="txt_term">Term</string>
+    <string name="txt_definition">Definition</string>
 </resources>

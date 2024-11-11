@@ -153,5 +153,15 @@
     <string name="txt_study_sets_library">%1$s bộ học</string>
     <string name="txt_search">Tìm kiếm</string>
     <string name="txt_class_icon">Biểu tượng lớp học</string>
+    <string name="txt_report">Báo cáo</string>
+    <string name="txt_study_set">Bộ học</string>
+    <string name="txt_home">Trang chủ</string>
+    <string name="txt_explore">Khám phá</string>
+    <string name="txt_center">Trung tâm fab</string>
+    <string name="txt_profile">Hồ sơ</string>
+    <string name="txt_upgrade">Nâng cấp</string>
+    <string name="txt_your_setting">Cài đặt của bạn</string>
+    <string name="txt_term">Thuật ngữ</string>
+    <string name="txt_definition">Định nghĩa</string>
 
 </resources>
