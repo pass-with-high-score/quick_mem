@@ -24,12 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -76,7 +78,8 @@ fun StudySetInfo(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Study Set Info", style = typography.titleMedium.copy(
+                        text = stringResource(R.string.txt_study_set_info),
+                        style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -87,7 +90,7 @@ fun StudySetInfo(
                     ) {
                         Icon(
                             imageVector = Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.txt_back)
                         )
                     }
                 }
@@ -102,7 +105,7 @@ fun StudySetInfo(
         ) {
             Column {
                 Text(
-                    text = "Created by",
+                    text = stringResource(R.string.txt_created_by),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -121,7 +124,7 @@ fun StudySetInfo(
                     ) {
                         AsyncImage(
                             model = authorAvatarUrl,
-                            contentDescription = "Author avatar",
+                            contentDescription = stringResource(R.string.txt_user_avatar),
                             modifier = Modifier.size(30.dp),
                             contentScale = ContentScale.Crop
                         )
@@ -140,7 +143,7 @@ fun StudySetInfo(
 
             Column {
                 Text(
-                    text = "Created on",
+                    text = stringResource(R.string.txt_created_on),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -165,7 +168,7 @@ fun StudySetInfo(
             if (description.isNotEmpty()) {
                 Column {
                     Text(
-                        text = "Description",
+                        text = stringResource(R.string.txt_description),
                         style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -190,7 +193,7 @@ fun StudySetInfo(
 
             Column {
                 Text(
-                    text = "Visibility",
+                    text = stringResource(R.string.txt_visibility),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -203,9 +206,9 @@ fun StudySetInfo(
                     ),
                 ) {
                     Text(
-                        text = if (isPublic) "Public" else "Private",
-                        style = typography.bodyLarge,
-                        modifier = Modifier.padding(10.dp)
+                        text = if (isPublic) stringResource(R.string.txt_public) else stringResource(
+                            R.string.txt_private
+                        ), style = typography.bodyLarge, modifier = Modifier.padding(10.dp)
                     )
                 }
             }

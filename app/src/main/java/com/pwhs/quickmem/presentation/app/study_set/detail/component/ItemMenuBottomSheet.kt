@@ -42,7 +42,7 @@ fun ItemMenuBottomSheet(
             tint = color ?: Color.Unspecified
         )
         Text(
-            title,
+            text = title,
             style = typography.titleMedium.copy(
                 fontSize = 18.sp,
                 color = color ?: Color.Unspecified
