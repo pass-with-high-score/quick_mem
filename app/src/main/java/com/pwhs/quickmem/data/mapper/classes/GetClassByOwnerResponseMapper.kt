@@ -17,6 +17,7 @@ fun GetClassByOwnerResponseModel.toDto() = GetClassByOwnerResponseDto(
     owner = owner.toDto(),
     studySetCount = studySetCount,
     title = title,
+    isImported = isImported,
     updatedAt = updatedAt
 )
 
@@ -32,5 +33,6 @@ fun GetClassByOwnerResponseDto.toModel() = GetClassByOwnerResponseModel(
     owner = owner.toModel(),
     studySetCount = studySetCount,
     title = title,
+    isImported = isImported,
     updatedAt = updatedAt
 )

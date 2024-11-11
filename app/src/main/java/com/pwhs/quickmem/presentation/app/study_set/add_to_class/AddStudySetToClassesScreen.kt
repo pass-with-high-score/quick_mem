@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.add_to_folder
+package com.pwhs.quickmem.presentation.app.study_set.add_to_class
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -10,17 +10,19 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
-import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.component.AddStudySetToFoldersList
+import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.add_to_class.component.AddStudySetToClassesList
 import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.component.AddStudySetToFoldersTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
@@ -31,13 +33,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination<RootGraph>(
-    navArgs = AddStudySetToFoldersArgs::class
+    navArgs = AddStudySetToClassesArgs::class
 )
 @Composable
-fun AddStudySetToFoldersScreen(
+fun AddStudySetToClassesScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: AddStudySetToFoldersViewModel = hiltViewModel(),
+    viewModel: AddStudySetToClassesViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
 
     ) {
@@ -47,12 +49,13 @@ fun AddStudySetToFoldersScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is AddStudySetToFoldersUiEvent.Error -> {
+                is AddStudySetToClassesUiEvent.Error -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
 
-                is AddStudySetToFoldersUiEvent.StudySetAddedToFolders -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                is AddStudySetToClassesUiEvent.StudySetAddedToClasses -> {
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_add_to_class_success), Toast.LENGTH_SHORT).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
@@ -62,12 +65,10 @@ fun AddStudySetToFoldersScreen(
     AddStudySetToFolders(
         modifier = modifier,
         isLoading = uiState.isLoading,
-        folders = uiState.folders,
-        folderImportedIds = uiState.folderImportedIds,
-        userAvatar = uiState.userAvatar,
-        username = uiState.username,
+        classes = uiState.classes,
+        classImportedIds = uiState.classImportedIds,
         onDoneClick = {
-            viewModel.onEvent(AddStudySetToFoldersUiAction.AddStudySetToFolders)
+            viewModel.onEvent(AddStudySetToClassesUiAction.AddStudySetToClasses)
         },
         onNavigateCancel = {
             navigator.navigateUp()
@@ -77,8 +78,8 @@ fun AddStudySetToFoldersScreen(
                 CreateFolderScreenDestination()
             )
         },
-        onAddStudySetToFolders = {
-            viewModel.onEvent(AddStudySetToFoldersUiAction.ToggleStudySetImport(it))
+        onAddStudySetToClasses = {
+            viewModel.onEvent(AddStudySetToClassesUiAction.ToggleStudySetImport(it))
         }
     )
 }
@@ -89,11 +90,9 @@ fun AddStudySetToFolders(
     onDoneClick: () -> Unit = {},
     onNavigateCancel: () -> Unit = {},
     onCreateFolderClick: () -> Unit = {},
-    folders: List<GetFolderResponseModel> = emptyList(),
-    folderImportedIds: List<String> = emptyList(),
-    userAvatar: String = "",
-    username: String = "",
-    onAddStudySetToFolders: (String) -> Unit = {},
+    classes: List<GetClassByOwnerResponseModel> = emptyList(),
+    classImportedIds: List<String> = emptyList(),
+    onAddStudySetToClasses: (String) -> Unit = {},
     isLoading: Boolean = false,
 ) {
     Scaffold(
@@ -103,7 +102,7 @@ fun AddStudySetToFolders(
             AddStudySetToFoldersTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
-                title = "Add to folder"
+                title = stringResource(R.string.txt_add_to_classes)
             )
         },
         floatingActionButton = {
@@ -114,7 +113,7 @@ fun AddStudySetToFolders(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Create folder"
+                    contentDescription = "Create class"
                 )
             }
         }
@@ -125,17 +124,15 @@ fun AddStudySetToFolders(
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
             ) {
-                AddStudySetToFoldersList(
+                AddStudySetToClassesList(
                     modifier = modifier,
-                    folders = folders,
-                    folderImportedIds = folderImportedIds,
-                    onAddStudySetToFolders = onAddStudySetToFolders,
-                    avatarUrl = userAvatar,
-                    username = username,
+                    classes = classes,
+                    classImportedIds = classImportedIds,
+                    onAddStudySetToClasses = onAddStudySetToClasses,
                 )
             }
+            LoadingOverlay(isLoading = isLoading)
         }
-        LoadingOverlay(isLoading = isLoading)
     }
 }
 

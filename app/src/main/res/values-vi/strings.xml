@@ -100,6 +100,25 @@
     <string name="txt_language">Ngôn ngữ</string>
     <string name="txt_quickmem_plus">QuickMem Plus</string>
     <string name="txt_quickmem">QuickMem</string>
-    <string name="txt_opensource_license">Opensource license</string>
+    <string name="txt_opensource_license">Giấy phép mã nguồn mở</string>
+    <string name="txt_no_members">Không có thành viên</string>
+    <string name="txt_one_member">1 thành viên</string>
+    <string name="txt_nums_members">%1$s thành viên</string>
+    <string name="txt_group_study_materials_to_save_time_and_share_with_other_quickmem_members">Nhóm tài liệu học để tiết kiệm thời gian và chia sẻ với các thành viên QuickMem khác</string>
+    <string name="txt_create_a_class">Tạo lớp học</string>
+    <string name="txt_no_classes_found">Không tìm thấy lớp học</string>
+    <string name="txt_search_classes">Tìm lớp học</string>
+    <string name="txt_done">Xong</string>
+    <string name="txt_add_to_classes">Thêm vào các lớp học</string>
+    <string name="txt_add_to_class_success">Thêm vào lớp học thành công</string>
+    <string name="txt_expiration_date">Ngày hết hạn</string>
+    <string name="txt_no_subscription">Không có gói đăng ký</string>
+    <string name="txt_subscription">Gói đăng ký</string>
+    <string name="txt_quickmem_plus_yearly">QuickMem Plus (Hàng năm)</string>
+    <string name="txt_quickmem_plus_monthly">QuickMem Plus (Hàng tháng)</string>
+    <string name="txt_manage_subscription">Quản lý gói đăng ký</string>
+    <string name="txt_click_here">Nhấn vào đây</string>
+    <string name="txt_you_need_to_enable_push_notifications_in_the_app_settings">Bạn cần bật thông báo đẩy trong cài đặt ứng dụng</string>
+    <string name="txt_open_settings">Mở cài đặt</string>
 
 </resources>

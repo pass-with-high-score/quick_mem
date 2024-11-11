@@ -67,7 +67,6 @@ import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSet
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.WebPageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -191,20 +190,6 @@ fun SettingsScreen(
         onNavigationBack = {
             navigator.navigateUp()
         },
-        onNavigateToTermsOfService = {
-            navigator.navigate(
-                WebPageScreenDestination(
-                    url = "https://pass-with-high-score.github.io/QuickMem-Services/"
-                )
-            )
-        },
-        onNavigateToPrivacyPolicy = {
-            navigator.navigate(
-                WebPageScreenDestination(
-                    url = "https://pass-with-high-score.github.io/QuickMem-Services/"
-                )
-            )
-        },
         onNavigateToOpenSourceLicenses = {
             navigator.navigate(OpenSourceScreenDestination)
         },
@@ -298,7 +283,8 @@ fun Setting(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        stringResource(R.string.txt_settings), style = typography.titleMedium.copy(
+                        text = stringResource(R.string.txt_settings),
+                        style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -325,32 +311,32 @@ fun Setting(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item {
-                    SettingTitleSection(title = "Subscription")
+                    SettingTitleSection(title = stringResource(R.string.txt_subscription))
                     SettingCard {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingItem(
-                                title = "Expiration date",
+                                title = stringResource(R.string.txt_expiration_date),
                                 subtitle = customerInfo?.latestExpirationDate?.toFormattedString()
-                                    ?: "No subscription",
+                                    ?: stringResource(R.string.txt_no_subscription),
                             )
                             SettingItem(
                                 title = "Plan",
                                 subtitle = when (customerInfo?.activeSubscriptions?.firstOrNull()
                                     .toString()) {
-                                    "quickmem_plus:yearly-plan" -> "QuickMem Plus (Yearly)"
-                                    "quickmem_plus:monthly-plan" -> "QuickMem Plus (Monthly)"
+                                    "quickmem_plus:yearly-plan" -> stringResource(R.string.txt_quickmem_plus_yearly)
+                                    "quickmem_plus:monthly-plan" -> stringResource(R.string.txt_quickmem_plus_monthly)
 
                                     else -> {
-                                        "No subscription"
+                                        stringResource(R.string.txt_no_subscription)
                                     }
                                 }
                             )
                             customerInfo?.managementURL?.let {
                                 SettingItem(
-                                    title = "Manage subscription",
-                                    subtitle = "Click here",
+                                    title = stringResource(R.string.txt_manage_subscription),
+                                    subtitle = stringResource(R.string.txt_click_here),
                                     onClick = {
                                         val browserIntent =
                                             Intent(Intent.ACTION_VIEW, it)
@@ -596,10 +582,10 @@ fun Setting(
 
                         context.startActivity(intent)
                     },
-                    title = "Push notifications",
-                    text = "You need to enable push notifications in the app settings",
-                    confirmButtonTitle = "Open settings",
-                    dismissButtonTitle = "Cancel",
+                    title = stringResource(R.string.txt_push_notifications),
+                    text = stringResource(R.string.txt_you_need_to_enable_push_notifications_in_the_app_settings),
+                    confirmButtonTitle = stringResource(R.string.txt_open_settings),
+                    dismissButtonTitle = stringResource(R.string.txt_cancel),
                     buttonColor = colorScheme.primary
                 )
             }

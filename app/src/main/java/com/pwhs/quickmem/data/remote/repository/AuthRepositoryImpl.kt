@@ -175,7 +175,7 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 val response = apiService.sendResetPassword(sendResetPasswordRequestModel.toDto())
-                emit(Resources.Success(response))
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
@@ -190,7 +190,7 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 val response = apiService.resetPassword(resetPasswordRequestModel.toDto())
-                emit(Resources.Success(response))
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
