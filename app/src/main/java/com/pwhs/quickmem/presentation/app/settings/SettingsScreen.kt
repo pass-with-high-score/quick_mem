@@ -224,10 +224,26 @@ fun SettingsScreen(
             navigator.navigate(ChangeLanguageScreenDestination())
         },
         onNavigateToPrivacyPolicy = {
-            navigator.navigate(WebPageScreenDestination(url = "https://pass-with-high-score.github.io/QuickMem-Services/"))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
         },
         onNavigateToTermsOfService = {
-            navigator.navigate(WebPageScreenDestination(url = "https://pass-with-high-score.github.io/QuickMem-Services/"))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
         },
         customerInfo = uiState.customerInfo
     )
