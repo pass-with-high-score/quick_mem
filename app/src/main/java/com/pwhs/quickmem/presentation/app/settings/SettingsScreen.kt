@@ -68,6 +68,7 @@ import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSet
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WebPageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WebViewAppDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -194,12 +195,16 @@ fun SettingsScreen(
         },
         onNavigateToTermsOfService = {
             navigator.navigate(
-                WebViewAppDestination()
+                WebPageScreenDestination(
+                    url = "https://pass-with-high-score.github.io/QuickMem-Services/"
+                )
             )
         },
         onNavigateToPrivacyPolicy = {
             navigator.navigate(
-                WebViewAppDestination()
+                WebPageScreenDestination(
+                    url = "https://pass-with-high-score.github.io/QuickMem-Services/"
+                )
             )
         },
         onNavigateToOpenSourceLicenses = {
