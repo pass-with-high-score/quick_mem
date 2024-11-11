@@ -8,15 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>
 @RootGraph
 @Composable
 fun WebPageScreen(
     modifier: Modifier = Modifier,
-    url: String = "",
-    navigator: DestinationsNavigator
+    url: String = ""
 ) {
     AndroidView(
         factory = { context ->
