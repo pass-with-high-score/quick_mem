@@ -55,7 +55,7 @@ fun ClassDetailBottomSheet(
                 ItemMenuBottomSheet(
                     onClick = onEditClass,
                     icon = Outlined.Edit,
-                    title = "Edit"
+                    title = "Save and edit"
                 )
                 ItemMenuBottomSheet(
                     onClick = onShareClass,

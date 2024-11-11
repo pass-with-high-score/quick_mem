@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.onboarding.data.OnboardingPage
+
 @Composable
 fun OnboardingPageView(page: OnboardingPage) {
     var isVisible by remember { mutableStateOf(false) }
@@ -56,7 +58,7 @@ fun OnboardingPageView(page: OnboardingPage) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = page.title,
+            text = stringResource(page.title),
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
@@ -66,7 +68,7 @@ fun OnboardingPageView(page: OnboardingPage) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = '"' + page.description + '"',
+            text = '"' + stringResource(page.description) + '"',
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 fontSize = 16.sp
@@ -82,8 +84,8 @@ fun OnboardingPageViewPreview() {
     OnboardingPageView(
         page = OnboardingPage(
             imageRes = R.drawable.ic_logo,
-            title = "QuickMem",
-            description = "QuickMem is a simple and easy to use note taking app."
+            title = R.string.txt_onboarding_title1,
+            description = R.string.txt_onboarding_description1
         )
     )
 }

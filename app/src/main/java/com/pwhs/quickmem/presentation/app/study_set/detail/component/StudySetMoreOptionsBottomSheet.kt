@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun StudySetMoreOptionsBottomSheet(
     modifier: Modifier = Modifier,
+    onAddToFolder: () -> Unit,
+    onAddToClass: () -> Unit,
     onEditStudySet: () -> Unit,
     onDeleteStudySet: () -> Unit,
     onInfoStudySet: () -> Unit,
@@ -47,12 +49,12 @@ fun StudySetMoreOptionsBottomSheet(
                     title = "Edit"
                 )
                 ItemMenuBottomSheet(
-                    onClick = { },
+                    onClick = onAddToFolder,
                     icon = Outlined.Folder,
                     title = "Add to folder"
                 )
                 ItemMenuBottomSheet(
-                    onClick = { },
+                    onClick = onAddToClass,
                     icon = Outlined.Group,
                     title = "Add to class"
                 )

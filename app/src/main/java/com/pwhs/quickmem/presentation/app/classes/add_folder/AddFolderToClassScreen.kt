@@ -1,84 +1,150 @@
 package com.pwhs.quickmem.presentation.app.classes.add_folder
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
-import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
-import com.pwhs.quickmem.presentation.component.CreateTopAppBar
+import com.pwhs.quickmem.presentation.app.classes.add_folder.component.AddFolderToClassList
+import com.pwhs.quickmem.presentation.app.classes.add_folder.component.AddFolderToClassTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
-@Destination<RootGraph>
+@Destination<RootGraph>(
+    navArgs = AddFolderToClassArgs::class
+)
 @Composable
 fun AddFolderToClassScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
     viewModel: AddFolderToClassViewModel = hiltViewModel(),
+    resultNavigator: ResultBackNavigator<Boolean>,
 ) {
-    val folders by viewModel.folders.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
-    AddFolderUI(
-        modifier = Modifier,
-        onNavigateBack = {
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is AddFolderToClassUIEvent.ShowError -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                AddFolderToClassUIEvent.StudySetAddedToClass -> {
+                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    resultNavigator.setResult(true)
+                    navigator.navigateUp()
+                }
+            }
+        }
+    }
+
+    AddFolderToClass(
+        modifier = modifier,
+        isLoading = uiState.isLoading,
+        folders = uiState.folders,
+        folderImportedIds = uiState.folderImportedIds,
+        userAvatar = uiState.userAvatar,
+        username = uiState.username,
+        onDoneClick = {
+            viewModel.onEvent(AddFolderToClassUIAction.AddFolderToClass)
+        },
+        onNavigateCancel = {
             navigator.navigateUp()
         },
-        folders = folders
+        onCreateFolderToClassClick = {
+            navigator.navigate(
+                CreateFolderScreenDestination()
+            )
+        },
+        onAddFolderToClass = {
+            viewModel.onEvent(AddFolderToClassUIAction.ToggleFolderImport(it))
+        }
     )
 }
 
 @Composable
-fun AddFolderUI(
+fun AddFolderToClass(
     modifier: Modifier = Modifier,
     onDoneClick: () -> Unit = {},
-    onNavigateBack: () -> Unit = {},
-    folders: List<GetFolderResponseModel>,
+    onNavigateCancel: () -> Unit = {},
+    onCreateFolderToClassClick: () -> Unit = {},
+    folders: List<GetFolderResponseModel> = emptyList(),
+    folderImportedIds: List<String> = emptyList(),
+    userAvatar: String = "",
+    username: String = "",
+    onAddFolderToClass: (String) -> Unit = {},
     isLoading: Boolean = false,
-    onSelectedFolder: (String) -> Unit = {}
 ) {
     Scaffold(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
-            CreateTopAppBar(
+            AddFolderToClassTopAppBar(
                 onDoneClick = onDoneClick,
-                onNavigateBack = onNavigateBack,
-                title = "Add folder"
+                onNavigateCancel = onNavigateCancel,
+                title = "Add Folder"
             )
-        }
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            items(folders) { folder ->
-                FolderItem(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    title = folder.title,
-                    numOfStudySets = folder.studySetCount,
-                    onClick = { onSelectedFolder(folder.id) },
-                    userResponseModel = folder.owner
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onCreateFolderToClassClick,
+                containerColor = colorScheme.secondary,
+                contentColor = colorScheme.onSecondary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Create Folder"
                 )
             }
         }
-        LoadingOverlay(
-            isLoading = isLoading
-        )
+    ) { innerPadding ->
+        Box {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp)
+            ) {
+                AddFolderToClassList(
+                    modifier = modifier,
+                    folders = folders,
+                    folderImportedIds = folderImportedIds,
+                    onAddFolderToClass = onAddFolderToClass,
+                    avatarUrl = userAvatar,
+                    username = username,
+                )
+            }
+        }
+        LoadingOverlay(isLoading = isLoading)
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview
 @Composable
-fun AddFolderUIPreview() {
-
+fun AddFolderToClassPreview() {
+    QuickMemTheme {
+        AddFolderToClass(
+            folders = emptyList()
+        )
+    }
 }

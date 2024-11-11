@@ -48,7 +48,6 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.AddMemberToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
@@ -74,7 +73,22 @@ fun ClassDetailScreen(
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
     resultFolderDetail: ResultRecipient<FolderDetailScreenDestination, Boolean>,
     resultAddStudySetToClass: ResultRecipient<AddStudySetToClassScreenDestination, Boolean>,
+    resultAddFolderToClass: ResultRecipient<AddFolderToClassScreenDestination, Boolean>,
 ) {
+
+    resultAddFolderToClass.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("AddFolderToClassScreen was canceled")
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
 
     resultAddStudySetToClass.onNavResult { result ->
         when (result) {
@@ -171,13 +185,7 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.OnNavigateToAddFolder -> {
-                    navigator.navigate(
-                        AddFolderToClassScreenDestination()
-                    )
-                }
-
-                ClassDetailUiEvent.OnNavigateToAddMember -> {
-                    navigator.navigate(AddMemberToClassScreenDestination)
+                    navigator.navigate(AddFolderToClassScreenDestination(classId = uiState.id))
                 }
 
                 ClassDetailUiEvent.OnNavigateToAddStudySets -> {
@@ -213,9 +221,6 @@ fun ClassDetailScreen(
         },
         onNavigateAddFolder = {
             viewModel.onEvent(ClassDetailUiAction.OnNavigateToAddFolder)
-        },
-        onNavigateAddMember = {
-            viewModel.onEvent(ClassDetailUiAction.OnNavigateToAddMember)
         },
         onNavigateToUserDetail = {
             Timber.d("Navigate to user detail with id: $it")
@@ -259,7 +264,6 @@ fun ClassDetail(
     members: List<ClassMemberModel> = emptyList(),
     onNavigateBack: () -> Unit = {},
     onNavigateAddFolder: () -> Unit = {},
-    onNavigateAddMember: () -> Unit = {},
     onNavigateAddStudySets: () -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
     onEditClass: () -> Unit = {},
@@ -339,7 +343,7 @@ fun ClassDetail(
                     }
                     when (tabIndex) {
                         ClassDetailEnums.STUDY_SETS.index -> StudySetsTabScreen(
-                            onAddSetsClicked = onNavigateAddStudySets,
+                            onAddStudySetClicked = onNavigateAddStudySets,
                             studySets = studySets,
                             onStudySetItemClicked = onStudySetItemClicked
                         )
@@ -351,7 +355,6 @@ fun ClassDetail(
                         )
 
                         ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
-                            onAddMembersClicked = onNavigateAddMember,
                             member = members,
                             onMembersItemClicked = {
                                 onNavigateToUserDetail(it.id)

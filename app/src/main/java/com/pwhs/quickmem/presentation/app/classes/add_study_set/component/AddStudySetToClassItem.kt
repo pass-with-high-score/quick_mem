@@ -157,7 +157,7 @@ fun AddStudySetToClassItem(
 
 @Preview
 @Composable
-private fun StudySetItemPreview() {
+private fun AddStudySetToClassItemPreview() {
     QuickMemTheme {
         Scaffold {
             LazyColumn(

@@ -2,11 +2,16 @@ package com.pwhs.quickmem.presentation.app.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.LanguageCode
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,6 +67,24 @@ class SettingsViewModel @Inject constructor(
                     it.copy(changeType = event.changeType)
                 }
             }
+
+            is SettingUiAction.OnChangePushNotifications -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isPushNotificationsEnabled = event.isPushNotificationsEnabled)
+                    }
+                    appManager.savePushNotifications(event.isPushNotificationsEnabled)
+                }
+            }
+
+            is SettingUiAction.OnChangeAppPushNotifications -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isAppPushNotificationsEnabled = event.isAppPushNotificationsEnabled)
+                    }
+                    appManager.saveAppPushNotifications(event.isAppPushNotificationsEnabled)
+                }
+            }
         }
     }
 
@@ -72,14 +95,26 @@ class SettingsViewModel @Inject constructor(
                 val fullName = appManager.userFullName.firstOrNull() ?: ""
                 val username = appManager.userName.firstOrNull() ?: ""
                 val email = appManager.userEmail.firstOrNull() ?: ""
+                val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
+                val isAppPushNotificationsEnabled =
+                    appManager.appPushNotifications.firstOrNull() ?: false
+                val languageCode = appManager.languageCode.firstOrNull() ?: "en"
                 _uiState.update {
                     it.copy(
                         userId = userId,
                         fullName = fullName,
                         username = username,
-                        email = email
+                        email = email,
+                        isPushNotificationsEnabled = isPushNotificationsEnabled,
+                        isAppPushNotificationsEnabled = isAppPushNotificationsEnabled,
+                        languageCode = when (languageCode) {
+                            "en" -> LanguageCode.EN
+                            "vi" -> LanguageCode.VI
+                            else -> LanguageCode.EN
+                        }
                     )
                 }
+                getCustomerInfo()
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -147,11 +182,29 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    private fun getCustomerInfo() {
+        Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
+            override fun onReceived(customerInfo: CustomerInfo) {
+                _uiState.update {
+                    it.copy(
+                        customerInfo = customerInfo
+                    )
+                }
+            }
+
+            override fun onError(error: PurchasesError) {
+                // handle error
+                Timber.e(error.message)
+            }
+        })
+    }
+
     private fun logout() {
         viewModelScope.launch {
             try {
                 tokenManager.clearTokens()
                 appManager.clearAllData()
+                Purchases.sharedInstance.logOut()
                 _uiEvent.send(SettingUiEvent.NavigateToLogin)
             } catch (e: Exception) {
                 Timber.e(e)

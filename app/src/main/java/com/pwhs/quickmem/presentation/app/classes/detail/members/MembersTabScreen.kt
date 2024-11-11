@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.domain.model.users.ClassMemberModel
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailEmpty
+import com.pwhs.quickmem.presentation.app.classes.detail.members.component.ClassMemberItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable

@@ -1,5 +1,8 @@
 package com.pwhs.quickmem.presentation.app.home
 
+import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,7 +60,11 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -64,7 +72,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.revenuecat.purchases.CustomerInfo
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
 @Composable
 fun HomeScreen(
@@ -86,16 +96,27 @@ fun HomeScreen(
         streakCount = uiState.streakCount,
         onNavigateToSearch = {
             navigator.navigate(SearchScreenDestination)
-        }
+        },
+        onNotificationEnabled = { isEnabled ->
+            viewModel.onEvent(HomeUIAction.OnChangeAppPushNotifications(isEnabled))
+        },
+        customer = uiState.customerInfo,
+        onCustomerInfoChanged = { customerInfo ->
+            viewModel.onEvent(HomeUIAction.OnChangeCustomerInfo(customerInfo))
+        },
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun Home(
     modifier: Modifier = Modifier,
     streakCount: Int = 0,
-    onNavigateToSearch: () -> Unit = {}
+    onNavigateToSearch: () -> Unit = {},
+    onNotificationEnabled: (Boolean) -> Unit = {},
+    customer: CustomerInfo? = null,
+    onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
 ) {
     val streakBottomSheet = rememberModalBottomSheetState()
     var showStreakBottomSheet by remember {
@@ -106,6 +127,19 @@ fun Home(
         composition = composition,
         iterations = LottieConstants.IterateForever,
     )
+    val notificationPermission =
+        rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+    LaunchedEffect(notificationPermission) {
+        if (!notificationPermission.status.isGranted) {
+            notificationPermission.launchPermissionRequest()
+            onNotificationEnabled(false)
+        } else {
+            onNotificationEnabled(true)
+        }
+    }
+    var isPaywallVisible by remember {
+        mutableStateOf(false)
+    }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -115,10 +149,18 @@ fun Home(
                 ),
                 navigationIcon = {
                     Text(
-                        "QuickMem",
+                        when (customer?.activeSubscriptions?.isNotEmpty()) {
+                            true -> stringResource(R.string.txt_quickmem_plus)
+                            false -> stringResource(R.string.txt_quickmem)
+                            null -> stringResource(R.string.txt_quickmem)
+                        },
                         style = typography.titleLarge.copy(
                             fontFamily = firasansExtraboldFont,
-                            color = colorScheme.onPrimary
+                            color = when (customer?.activeSubscriptions?.isNotEmpty()) {
+                                true -> premiumColor
+                                false -> colorScheme.primary
+                                null -> colorScheme.secondary
+                            }
                         ),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
@@ -162,20 +204,24 @@ fun Home(
                     }
                 },
                 actions = {
-                    Button(
-                        onClick = {},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = premiumColor
-                        ),
-                        modifier = Modifier.padding(end = 8.dp),
-                        shape = MaterialTheme.shapes.extraLarge,
-                    ) {
-                        Text(
-                            "Upgrade",
-                            style = typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
+                    if (customer?.activeSubscriptions?.isEmpty() == true) {
+                        Button(
+                            onClick = {
+                                isPaywallVisible = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = premiumColor
+                            ),
+                            modifier = Modifier.padding(end = 8.dp),
+                            shape = MaterialTheme.shapes.extraLarge,
+                        ) {
+                            Text(
+                                "Upgrade",
+                                style = typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
+                        }
                     }
                     IconButton(
                         onClick = {},
@@ -247,8 +293,21 @@ fun Home(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Text("Home Screen")
+            Text(
+                text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
+            )
         }
     }
+    Paywall(
+        isPaywallVisible = isPaywallVisible,
+        onCustomerInfoChanged = { customerInfo ->
+            onCustomerInfoChanged(customerInfo)
+        },
+        modifier = Modifier,
+        onPaywallDismissed = {
+            isPaywallVisible = false
+        },
+    )
     if (showStreakBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -285,6 +344,7 @@ fun Home(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
 private fun HomeScreenPreview() {

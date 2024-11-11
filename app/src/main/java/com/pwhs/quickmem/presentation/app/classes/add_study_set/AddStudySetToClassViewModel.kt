@@ -61,7 +61,6 @@ class AddStudySetToClassViewModel @Inject constructor(
             }
 
             is AddStudySetToClassUiAction.ToggleStudySetImport -> {
-                Timber.d("Toggle Study Set Import: ${event.studySetId}")
                 toggleStudySetImport(event.studySetId)
             }
         }
@@ -72,7 +71,8 @@ class AddStudySetToClassViewModel @Inject constructor(
             studySetRepository.getStudySetsByOwnerId(
                 _uiState.value.token,
                 _uiState.value.userId,
-                _uiState.value.classId
+                _uiState.value.classId,
+                null
             )
                 .collectLatest { resources ->
                     when (resources) {

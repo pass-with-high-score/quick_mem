@@ -64,7 +64,7 @@ fun AddStudySetToClassScreen(
         studySets = uiState.studySets,
         userAvatar = uiState.userAvatar,
         username = uiState.username,
-        listStudySetIds = uiState.studySetImportedIds,
+        studySetImportedIds = uiState.studySetImportedIds,
         onDoneClick = {
             viewModel.onEvent(AddStudySetToClassUiAction.AddStudySetToClass)
         },
@@ -90,7 +90,7 @@ fun AddStudySetToClass(
     isLoading: Boolean = false,
     userAvatar: String = "",
     username: String = "",
-    listStudySetIds: List<String> = emptyList(),
+    studySetImportedIds: List<String> = emptyList(),
     onDoneClick: () -> Unit = {},
     onNavigateCancel: () -> Unit = {},
     onCreateStudySetToClassClick: () -> Unit = {},
@@ -128,7 +128,7 @@ fun AddStudySetToClass(
                 AddStudySetToClassList(
                     modifier = modifier,
                     studySets = studySets,
-                    listStudySetIds = listStudySetIds,
+                    studySetImportedIds = studySetImportedIds,
                     onAddStudySetToClass = onAddStudySetToClass,
                     avatarUrl = userAvatar,
                     username = username,

@@ -33,7 +33,7 @@ android {
         val emailVerificationUrl: String = localProperties.getProperty("EMAIL_VERIFICATION_URL")
             ?: "https://checkemail.quickmem.app/"
         val bannerAdsId: String =
-            localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-3940256099942544/9214589741"
+            localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-5725743620724195/1415385680"
         val interstitialAdsId: String = localProperties.getProperty("INTERSTITIAL_ADS_ID")
             ?: "ca-app-pub-3940256099942544/1033173712"
         val rewardAdsId: String =
@@ -41,6 +41,10 @@ android {
         val rewardedInterstitialAdsId: String =
             localProperties.getProperty("REWARDED_INTERSTITIAL_ADS_ID")
                 ?: "ca-app-pub-3940256099942544/5354046379"
+        val oneSignalAppId: String = localProperties.getProperty("ONESIGNAL_APP_ID")
+            ?: "b2f7f966-d8cc-11e4-bed1-df8f05be55ba"
+        val revenueCatApiKey: String = localProperties.getProperty("REVENUECAT_API_KEY")
+            ?: "goog_TBgLrymHTtfZJQzfyRseRIYlPER"
 
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         buildConfigField("String", "EMAIL_VERIFICATION_URL", "\"$emailVerificationUrl\"")
@@ -48,6 +52,8 @@ android {
         buildConfigField("String", "INTERSTITIAL_ADS_ID", "\"$interstitialAdsId\"")
         buildConfigField("String", "REWARD_ADS_ID", "\"$rewardAdsId\"")
         buildConfigField("String", "REWARDED_INTERSTITIAL_ADS_ID", "\"$rewardedInterstitialAdsId\"")
+        buildConfigField("String", "ONESIGNAL_APP_ID", "\"$oneSignalAppId\"")
+        buildConfigField("String", "REVENUECAT_API_KEY", "\"$revenueCatApiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -59,6 +65,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -75,6 +82,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.purchases)
+    implementation(libs.purchases.ui)
     implementation(libs.easycrop)
     implementation(libs.drawbox)
     implementation(libs.rang.vikalp)
@@ -82,6 +91,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging.ktx)
+    implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
 
     implementation(libs.play.services.ads)
 

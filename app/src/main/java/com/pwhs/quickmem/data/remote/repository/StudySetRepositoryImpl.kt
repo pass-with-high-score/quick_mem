@@ -6,6 +6,7 @@ import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
+import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -56,12 +57,13 @@ class StudySetRepositoryImpl @Inject constructor(
     override suspend fun getStudySetsByOwnerId(
         token: String,
         ownerId: String,
+        classId: String?,
         folderId: String?
     ): Flow<Resources<List<GetStudySetResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getStudySetsByOwnerId(token, ownerId, folderId)
+                val response = apiService.getStudySetsByOwnerId(token, ownerId, classId, folderId)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -141,6 +143,22 @@ class StudySetRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 apiService.addStudySetToClass(token, addStudySetToClassRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun addStudySetToFolders(
+        token: String,
+        addStudySetToFoldersRequestModel: AddStudySetToFoldersRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.addStudySetToFolders(token, addStudySetToFoldersRequestModel.toDto())
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
