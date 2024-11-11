@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.onesignal.OneSignal
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -11,6 +12,10 @@ import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.LogInCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -127,6 +132,29 @@ class VerifyEmailViewModel @Inject constructor(
                             appManager.saveIsLoggedIn(true)
                             _uiState.update { it.copy(isLoading = false) }
                             Timber.d("Navigate to verify success")
+                            Purchases.sharedInstance.apply {
+                                setEmail(resource.data?.email)
+                                setDisplayName(resource.data?.fullName)
+                                logIn(
+                                    newAppUserID = resource.data?.id ?: "",
+                                    callback = object : LogInCallback {
+                                        override fun onError(error: PurchasesError) {
+                                            Timber.e(error.message)
+                                        }
+
+                                        override fun onReceived(
+                                            customerInfo: CustomerInfo,
+                                            created: Boolean
+                                        ) {
+                                            Timber.d("Customer info: $customerInfo")
+                                        }
+
+                                    }
+                                )
+                            }
+                            OneSignal.login(resource.data?.id ?: "")
+                            OneSignal.User.addEmail(resource.data?.email ?: "")
+                            Purchases.sharedInstance.setOnesignalUserID(OneSignal.User.externalId)
                             _uiEvent.send(VerifyEmailUiEvent.VerifySuccess)
                         }
 

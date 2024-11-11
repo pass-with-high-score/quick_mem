@@ -40,6 +40,7 @@ import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -70,9 +71,8 @@ fun LoginWithEmailScreen(
                     ).show()
                     navigator.popBackStack()
                     navigator.navigate(HomeScreenDestination) {
-                        popUpTo(HomeScreenDestination) {
+                        popUpTo(LoginWithEmailScreenDestination) {
                             inclusive = true
-                            launchSingleTop = true
                         }
                     }
                 }
@@ -85,8 +85,6 @@ fun LoginWithEmailScreen(
             }
         }
     }
-
-
 
     LoginWithEmail(
         modifier = modifier,
@@ -103,9 +101,8 @@ fun LoginWithEmailScreen(
         onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) },
         onForgotPasswordClick = {
             navigator.navigate(SendVerifyEmailScreenDestination) {
-                popUpTo(SendVerifyEmailScreenDestination) {
+                popUpTo(LoginWithEmailScreenDestination) {
                     inclusive = true
-                    launchSingleTop = true
                 }
             }
         }

@@ -38,6 +38,7 @@ import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SignupScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SignupWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WebViewAppDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -78,9 +79,8 @@ fun SignupScreen(
         modifier = modifier,
         onNavigateToLogin = {
             navigator.navigate(LoginScreenDestination) {
-                popUpTo(LoginScreenDestination) {
+                popUpTo(SignupScreenDestination) {
                     inclusive = true
-                    launchSingleTop = true
                 }
             }
         },
@@ -89,9 +89,8 @@ fun SignupScreen(
         },
         onNavigationIconClick = {
             navigator.navigate(WelcomeScreenDestination) {
-                popUpTo(LoginScreenDestination) {
+                popUpTo(SignupScreenDestination) {
                     inclusive = true
-                    launchSingleTop = true
                 }
             }
         },

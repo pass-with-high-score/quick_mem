@@ -108,4 +108,26 @@
     <string name="txt_hint">Hint</string>
     <string name="txt_edit_flashcard">Edit Flashcard</string>
     <string name="txt_create_flashcard">Create Flashcard</string>
+    <string name="txt_quickmem_plus">QuickMem Plus</string>
+    <string name="txt_quickmem">QuickMem</string>
+    <string name="txt_opensource_license">Opensource license</string>
+    <string name="txt_no_members">No members</string>
+    <string name="txt_one_member">1 member</string>
+    <string name="txt_nums_members">%1$s members</string>
+    <string name="txt_group_study_materials_to_save_time_and_share_with_other_quickmem_members">Group study materials to save time and share with other QuickMem members</string>
+    <string name="txt_create_a_class">Create a class</string>
+    <string name="txt_no_classes_found">No classes found</string>
+    <string name="txt_search_classes">Search classes</string>
+    <string name="txt_done">Done</string>
+    <string name="txt_add_to_classes">Add to classes</string>
+    <string name="txt_add_to_class_success">Add to classes successfully</string>
+    <string name="txt_expiration_date">Expiration date</string>
+    <string name="txt_no_subscription">No subscription</string>
+    <string name="txt_subscription">Subscription</string>
+    <string name="txt_quickmem_plus_yearly">QuickMem Plus (Yearly)</string>
+    <string name="txt_quickmem_plus_monthly">QuickMem Plus (Monthly)</string>
+    <string name="txt_manage_subscription">Manage subscription</string>
+    <string name="txt_click_here">Click here</string>
+    <string name="txt_you_need_to_enable_push_notifications_in_the_app_settings">You need to enable push notifications in the app settings</string>
+    <string name="txt_open_settings">Open settings</string>
 </resources>

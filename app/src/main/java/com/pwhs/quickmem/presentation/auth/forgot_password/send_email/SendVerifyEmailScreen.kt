@@ -39,6 +39,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -64,14 +65,17 @@ fun SendVerifyEmailScreen(
                 }
 
                 SendVerifyEmailUiEvent.SendEmailSuccess -> {
-                    navigator.popBackStack()
                     navigator.navigate(
                         VerifyEmailScreenDestination(
                             email = uiState.value.email,
                             isFromSignup = false,
                             resetPasswordToken = uiState.value.resetPasswordToken
                         )
-                    )
+                    ) {
+                        popUpTo(SendVerifyEmailScreenDestination) {
+                            inclusive = true
+                        }
+                    }
                 }
             }
         }

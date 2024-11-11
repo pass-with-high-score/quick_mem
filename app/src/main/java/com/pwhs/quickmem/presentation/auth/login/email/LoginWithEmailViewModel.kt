@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.onesignal.OneSignal
 import com.pwhs.quickmem.core.data.AuthProvider
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -13,6 +14,10 @@ import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.util.emailIsValid
 import com.pwhs.quickmem.util.strongPassword
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.LogInCallback
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -133,8 +138,31 @@ class LoginWithEmailViewModel @Inject constructor(
                                             appManager.saveUserFullName(login.data?.fullName ?: "")
                                             appManager.saveUserEmail(login.data?.email ?: "")
                                             appManager.saveUserName(login.data?.username ?: "")
+                                            Purchases.sharedInstance.apply {
+                                                setEmail(login.data?.email)
+                                                setDisplayName(login.data?.fullName)
+                                                logIn(
+                                                    newAppUserID = login.data?.id ?: "",
+                                                    callback = object : LogInCallback {
+                                                        override fun onError(error: PurchasesError) {
+                                                            Timber.e(error.message)
+                                                        }
+
+                                                        override fun onReceived(
+                                                            customerInfo: CustomerInfo,
+                                                            created: Boolean
+                                                        ) {
+                                                            Timber.d("Customer info: $customerInfo")
+                                                        }
+
+                                                    }
+                                                )
+                                            }
+                                            OneSignal.login(login.data?.id ?: "")
+                                            OneSignal.User.addEmail(login.data?.email ?: "")
+                                            Purchases.sharedInstance.setOnesignalUserID(OneSignal.User.externalId)
                                             _uiState.update { it.copy(isLoading = false) }
-                                            _uiEvent.send(LoginWithEmailUiEvent.LoginSuccess)
+                                            _uiEvent.trySend(LoginWithEmailUiEvent.LoginSuccess)
                                         }
                                     }
                                 }

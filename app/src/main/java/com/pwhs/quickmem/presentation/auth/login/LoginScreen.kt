@@ -42,7 +42,6 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SignupScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SignupWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WebViewAppDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -85,9 +84,8 @@ fun LoginScreen(
 
                 LoginUiEvent.NavigateToSignUp -> {
                     navigator.navigate(SignupScreenDestination) {
-                        popUpTo(SignupWithEmailScreenDestination) {
+                        popUpTo(LoginScreenDestination) {
                             inclusive = true
-                            launchSingleTop = true
                         }
                     }
                 }
@@ -101,7 +99,6 @@ fun LoginScreen(
             navigator.navigate(WelcomeScreenDestination) {
                 popUpTo(LoginScreenDestination) {
                     inclusive = true
-                    launchSingleTop = true
                 }
             }
         },

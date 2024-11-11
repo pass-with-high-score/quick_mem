@@ -7,7 +7,9 @@ import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.ResetPasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.ResetPasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.SendResetPasswordRequestDto
+import com.pwhs.quickmem.data.dto.auth.SendResetPasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateEmailRequestDto
@@ -17,6 +19,7 @@ import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
+import com.pwhs.quickmem.data.dto.classes.AddStudySetToClassesRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
@@ -42,6 +45,7 @@ import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
+import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFoldersRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -50,8 +54,6 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
-import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
-import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -101,12 +103,12 @@ interface ApiService {
     @POST("auth/send-reset-password")
     suspend fun sendResetPassword(
         @Body sendResetPasswordRequestDto: SendResetPasswordRequestDto
-    ): SendResetPasswordResponseModel
+    ): SendResetPasswordResponseDto
 
     @POST("auth/reset-password")
     suspend fun resetPassword(
         @Body resetPasswordRequestDto: ResetPasswordRequestDto
-    ): ResetPasswordResponseModel
+    ): ResetPasswordResponseDto
 
     @POST("auth/verify-password")
     suspend fun verifyPassword(
@@ -174,6 +176,18 @@ interface ApiService {
     suspend fun deleteStudySet(
         @Header("Authorization") token: String,
         @Path("id") id: String
+    )
+
+    @POST("study-set/folders")
+    suspend fun addStudySetToFolders(
+        @Header("Authorization") token: String,
+        @Body addStudySetToFoldersRequestDto: AddStudySetToFoldersRequestDto
+    )
+
+    @POST("study-set/classes")
+    suspend fun addStudySetToClasses(
+        @Header("Authorization") token: String,
+        @Body addStudySetToClassesRequestDto: AddStudySetToClassesRequestDto
     )
 
     // Flash Card
@@ -281,6 +295,8 @@ interface ApiService {
     suspend fun getClassByOwnerID(
         @Header("Authorization") token: String,
         @Path("userId") userId: String,
+        @Query("folderId") folderId: String?,
+        @Query("studySetId") studySetId: String?
     ): List<GetClassByOwnerResponseDto>
 
     @DELETE("class/{id}")
@@ -296,13 +312,13 @@ interface ApiService {
         @Body updateClassRequestDto: UpdateClassRequestDto
     ): UpdateClassResponseDto
 
-    @POST("/class/study-sets")
+    @POST("class/study-sets")
     suspend fun addStudySetToClass(
         @Header("Authorization") token: String,
         @Body addStudySetToClassRequestDto: AddStudySetToClassRequestDto
     )
 
-    @POST("/class/folders")
+    @POST("class/folders")
     suspend fun addFolderToClass(
         @Header("Authorization") token: String,
         @Body addFolderToClassRequestDto: AddFolderToClassRequestDto

@@ -43,6 +43,8 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassesScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFoldersScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditStudySetScreenDestination
@@ -211,6 +213,20 @@ fun StudySetDetailScreen(
         onDeleteFlashCard = {
             viewModel.onEvent(StudySetDetailUiAction.OnDeleteFlashCardClicked)
         },
+        onAddToClass = {
+            navigator.navigate(
+                AddStudySetToClassesScreenDestination(
+                    studySetId = uiState.id
+                )
+            )
+        },
+        onAddToFolder = {
+            navigator.navigate(
+                AddStudySetToFoldersScreenDestination(
+                    studySetId = uiState.id
+                )
+            )
+        },
         onEditFlashCard = {
             viewModel.onEvent(StudySetDetailUiAction.OnEditFlashCardClicked)
         },
@@ -304,6 +320,8 @@ fun StudySetDetail(
     onNavigateToStudySetInfo: () -> Unit = {},
     onToggleStarredFlashCard: (String, Boolean) -> Unit = { _, _ -> },
     onEditStudySet: () -> Unit = {},
+    onAddToClass: () -> Unit = {},
+    onAddToFolder: () -> Unit = {},
     onDeleteStudySet: () -> Unit = {},
     onResetProgress: () -> Unit = {},
     onNavigateToQuiz: () -> Unit = {},
@@ -419,6 +437,8 @@ fun StudySetDetail(
         onDeleteStudySet = {
             showDeleteConfirmationDialog = true
         },
+        onAddToClass = onAddToClass,
+        onAddToFolder = onAddToFolder,
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false },
