@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,6 +70,7 @@ class ProfileViewModel @Inject constructor(
 
             override fun onError(error: PurchasesError) {
                 // handle error
+                Timber.e(error.message)
             }
         })
     }

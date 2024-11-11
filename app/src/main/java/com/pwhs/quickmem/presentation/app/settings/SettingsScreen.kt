@@ -58,18 +58,19 @@ import com.pwhs.quickmem.presentation.app.settings.component.SettingValidatePass
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.toFormattedString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ChangeLanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import com.revenuecat.purchases.CustomerInfo
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -204,7 +205,8 @@ fun SettingsScreen(
         },
         onNavigateToChangeLanguage = {
             navigator.navigate(ChangeLanguageScreenDestination())
-        }
+        },
+        customerInfo = uiState.customerInfo
     )
 }
 
@@ -237,6 +239,7 @@ fun Setting(
     onNavigateToOpenSourceLicenses: () -> Unit = {},
     onNavigateToHelpCenter: () -> Unit = {},
     onLogout: () -> Unit = {},
+    customerInfo: CustomerInfo? = null
 ) {
 
     val bottomSheetState = rememberModalBottomSheetState()
@@ -290,6 +293,43 @@ fun Setting(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                item {
+                    SettingTitleSection(title = "Subscription")
+                    SettingCard {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            SettingItem(
+                                title = "Expiration date",
+                                subtitle = customerInfo?.latestExpirationDate?.toFormattedString()
+                                    ?: "No subscription",
+                            )
+                            SettingItem(
+                                title = "Plan",
+                                subtitle = when (customerInfo?.activeSubscriptions?.firstOrNull()
+                                    .toString()) {
+                                    "quickmem_plus:yearly-plan" -> "QuickMem Plus (Yearly)"
+                                    "quickmem_plus:monthly-plan" -> "QuickMem Plus (Monthly)"
+
+                                    else -> {
+                                        "No subscription"
+                                    }
+                                }
+                            )
+                            customerInfo?.managementURL?.let {
+                                SettingItem(
+                                    title = "Manage subscription",
+                                    subtitle = "Click here",
+                                    onClick = {
+                                        val browserIntent =
+                                            Intent(Intent.ACTION_VIEW, it)
+                                        context.startActivity(browserIntent)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
                 item {
                     SettingTitleSection(title = stringResource(R.string.txt_personal_info))
                     SettingCard {

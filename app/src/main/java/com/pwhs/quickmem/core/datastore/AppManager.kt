@@ -23,7 +23,6 @@ class AppManager(private val context: Context) {
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
         val LANGUAGE_CODE = stringPreferencesKey("LANGUAGE_CODE")
-        val IS_SUBSCRIBED = booleanPreferencesKey("IS_SUBSCRIBED")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
