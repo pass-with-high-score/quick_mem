@@ -61,11 +61,13 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toFormattedString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.OpenSourceScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangeLanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WebPageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -84,6 +86,7 @@ fun SettingsScreen(
     resultChangePassword: ResultRecipient<ChangePasswordSettingScreenDestination, Boolean>,
     resultChangeLanguage: ResultRecipient<ChangeLanguageScreenDestination, Boolean>,
 ) {
+    val context = LocalContext.current
 
     resultUpdateFullName.onNavResult { result ->
         when (result) {
@@ -187,6 +190,34 @@ fun SettingsScreen(
         },
         onNavigationBack = {
             navigator.navigateUp()
+        },
+        onNavigateToTermsOfService = {
+            navigator.navigate(
+                WebPageScreenDestination(
+                    url = "https://pass-with-high-score.github.io/QuickMem-Services/"
+                )
+            )
+        },
+        onNavigateToPrivacyPolicy = {
+            navigator.navigate(
+                WebPageScreenDestination(
+                    url = "https://pass-with-high-score.github.io/QuickMem-Services/"
+                )
+            )
+        },
+        onNavigateToOpenSourceLicenses = {
+            navigator.navigate(OpenSourceScreenDestination)
+        },
+        onNavigateToHelpCenter = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/pass-with-high-score/quick_mem/issues")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
         },
         onSubmitClick = {
             viewModel.onEvent(SettingUiAction.OnSubmitClick)
