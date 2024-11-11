@@ -130,4 +130,27 @@
     <string name="txt_click_here">Click here</string>
     <string name="txt_you_need_to_enable_push_notifications_in_the_app_settings">You need to enable push notifications in the app settings</string>
     <string name="txt_open_settings">Open settings</string>
+    <string name="txt_library">Library</string>
+    <string name="txt_classes">Classes</string>
+    <string name="txt_folders">Folders</string>
+    <string name="txt_add_study_set">Add study set</string>
+    <string name="txt_get_started_by_searching_for_a_study_set_or_creating_your_own">Get started by searching for a study set or creating your own</string>
+    <string name="txt_empty_study_set">Empty study set</string>
+    <string name="txt_no_study_sets_found">No study sets found</string>
+    <string name="txt_search_study_sets">Search study sets</string>
+    <string name="txt_folder">Folder</string>
+    <string name="txt_group_study_materials_to_save_time_and_share_with_others_quickmem_members">Group study materials to save time and share with others QuickMem members</string>
+    <string name="txt_empty_class">Empty class</string>
+    <string name="txt_class">Class</string>
+    <string name="txt_organize_your_study_sets_in_folders_by_subject_teacher_course_or_any_other_way_you_like">Organize your study sets in folders by subject, teacher, course, or any other way you like.</string>
+    <string name="txt_create_a_folder">Create a folder</string>
+    <string name="txt_empty_folder">Empty folder</string>
+    <string name="txt_no_folders_found">No folders found</string>
+    <string name="txt_search_folders">Search folders</string>
+    <string name="txt_user_avatar">User avatar</string>
+    <string name="txt_no_study_sets">No study sets</string>
+    <string name="txt_one_study_set">1 study set</string>
+    <string name="txt_study_sets_library">%1$s study sets</string>
+    <string name="txt_search">Search</string>
+    <string name="txt_class_icon">Class Icon</string>
 </resources>

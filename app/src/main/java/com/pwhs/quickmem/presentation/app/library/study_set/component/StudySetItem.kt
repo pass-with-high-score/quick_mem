@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.CardDefaults.elevatedCardElevation
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,6 +31,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
@@ -43,13 +47,13 @@ fun StudySetItem(
 ) {
     Card(
         onClick = { onStudySetClick(studySet.id) },
-        colors = CardDefaults.cardColors(
+        colors = cardColors(
             containerColor = Color.White,
         ),
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        elevation = CardDefaults.elevatedCardElevation(
+        elevation = elevatedCardElevation(
             defaultElevation = 4.dp
         ),
         border = BorderStroke(
@@ -65,7 +69,7 @@ fun StudySetItem(
         ) {
             Text(
                 studySet.title,
-                style = MaterialTheme.typography.titleMedium.copy(
+                style = typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 maxLines = 2,
@@ -78,14 +82,14 @@ fun StudySetItem(
             Text(
                 buildAnnotatedString {
                     withStyle(
-                        style = MaterialTheme.typography.bodySmall.toSpanStyle()
+                        style = typography.bodySmall.toSpanStyle()
                             .copy(
                                 fontWeight = FontWeight.Bold
                             )
                     ) {
                         append("${studySet.flashCardCount}")
                         withStyle(
-                            style = MaterialTheme.typography.bodySmall.toSpanStyle()
+                            style = typography.bodySmall.toSpanStyle()
                                 .copy(
                                     fontWeight = FontWeight.Normal
                                 )
@@ -98,7 +102,7 @@ fun StudySetItem(
             Text(
                 studySet.subject?.name
                     ?: SubjectModel.defaultSubjects[0].name,
-                style = MaterialTheme.typography.bodySmall.copy(
+                style = typography.bodySmall.copy(
                     color = MaterialTheme.colorScheme.onSurface.copy(
                         alpha = 0.6f
                     )
@@ -111,7 +115,7 @@ fun StudySetItem(
             ) {
                 AsyncImage(
                     model = studySet.owner.avatarUrl,
-                    contentDescription = "User avatar",
+                    contentDescription = stringResource(R.string.txt_user_avatar),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(18.dp)
@@ -119,7 +123,7 @@ fun StudySetItem(
                 )
                 Text(
                     studySet.owner.username,
-                    style = MaterialTheme.typography.bodySmall
+                    style = typography.bodySmall
                 )
             }
         }
@@ -132,7 +136,8 @@ private fun StudySetItemPreview() {
     QuickMemTheme {
         Scaffold {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
                     .padding(horizontal = 16.dp)
             ) {
                 item {
