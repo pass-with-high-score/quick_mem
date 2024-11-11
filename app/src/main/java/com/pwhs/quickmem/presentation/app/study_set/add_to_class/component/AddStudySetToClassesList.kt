@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -47,7 +47,9 @@ fun AddStudySetToClassesList(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     isOwner: Boolean = false,
-    classes: List<GetClassDetailResponseModel> = emptyList(),
+    classes: List<GetClassByOwnerResponseModel> = emptyList(),
+    onAddStudySetToClasses: (String) -> Unit = {},
+    classImportedIds: List<String> = emptyList(),
     onAddClassClick: () -> Unit = {},
     onClassRefresh: () -> Unit = {},
 ) {
@@ -129,16 +131,17 @@ fun AddStudySetToClassesList(
                                 SearchTextField(
                                     searchQuery = searchQuery,
                                     onSearchQueryChange = { searchQuery = it },
-                                    placeholder = "Search folders",
+                                    placeholder = "Search classes",
                                 )
                             }
                         }
                         items(filterClass) { classItem ->
                             AddStudySetToClassesItem(
-                                classItem = classes,
+                                classItem = classItem,
                                 onAddStudySetToClasses = {
+                                    onAddStudySetToClasses(it)
                                 },
-                                isAdded = false
+                                isAdded = classImportedIds.contains(classItem.id)
                             )
                         }
                         item {

@@ -43,6 +43,7 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassesScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFoldersScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScreenDestination
@@ -212,7 +213,13 @@ fun StudySetDetailScreen(
         onDeleteFlashCard = {
             viewModel.onEvent(StudySetDetailUiAction.OnDeleteFlashCardClicked)
         },
-        onAddToClass = {},
+        onAddToClass = {
+            navigator.navigate(
+                AddStudySetToClassesScreenDestination(
+                    studySetId = uiState.id
+                )
+            )
+        },
         onAddToFolder = {
             navigator.navigate(
                 AddStudySetToFoldersScreenDestination(

@@ -53,6 +53,7 @@ import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
+import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -183,6 +184,12 @@ interface ApiService {
         @Body addStudySetToFoldersRequestDto: AddStudySetToFoldersRequestDto
     )
 
+    @POST("study-set/classes")
+    suspend fun addStudySetToClasses(
+        @Header("Authorization") token: String,
+        @Body addStudySetToClassesRequestDto: AddStudySetToClassesRequestModel
+    )
+
     // Flash Card
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
@@ -288,6 +295,8 @@ interface ApiService {
     suspend fun getClassByOwnerID(
         @Header("Authorization") token: String,
         @Path("userId") userId: String,
+        @Query("folderId") folderId: String?,
+        @Query("studySetId") studySetId: String?
     ): List<GetClassByOwnerResponseDto>
 
     @DELETE("class/{id}")
@@ -303,13 +312,13 @@ interface ApiService {
         @Body updateClassRequestDto: UpdateClassRequestDto
     ): UpdateClassResponseDto
 
-    @POST("/class/study-sets")
+    @POST("class/study-sets")
     suspend fun addStudySetToClass(
         @Header("Authorization") token: String,
         @Body addStudySetToClassRequestDto: AddStudySetToClassRequestDto
     )
 
-    @POST("/class/folders")
+    @POST("class/folders")
     suspend fun addFolderToClass(
         @Header("Authorization") token: String,
         @Body addFolderToClassRequestDto: AddFolderToClassRequestDto

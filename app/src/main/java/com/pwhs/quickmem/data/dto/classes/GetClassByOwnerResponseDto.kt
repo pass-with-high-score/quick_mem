@@ -24,6 +24,8 @@ data class GetClassByOwnerResponseDto(
     val studySetCount: Int,
     @SerializedName("joinToken")
     val joinToken: String?,
+    @SerializedName("isImported")
+    val isImported: Boolean?,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

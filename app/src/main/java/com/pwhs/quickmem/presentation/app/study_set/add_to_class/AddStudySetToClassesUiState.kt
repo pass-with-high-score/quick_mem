@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.add_to_class
 
-import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 
 data class AddStudySetToClassesUiState(
     val studySetId : String = "",
@@ -11,5 +11,5 @@ data class AddStudySetToClassesUiState(
     val token: String = "",
     val userId: String = "",
     val classImportedIds: List<String> = emptyList(),
-    val classes: List<GetClassDetailResponseModel> = emptyList(),
+    val classes: List<GetClassByOwnerResponseModel> = emptyList(),
 )

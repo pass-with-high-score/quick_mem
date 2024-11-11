@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.Groups
@@ -19,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -29,17 +31,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun AddStudySetToClassesItem(
     modifier: Modifier = Modifier,
-    classItem: List<GetClassDetailResponseModel>,
+    classItem: GetClassByOwnerResponseModel,
     isAdded: Boolean = false,
-    onAddStudySetToClasses: (String) -> Unit = {},
+    onAddStudySetToClasses: (String) -> Unit = {}
 ) {
     Card(
         modifier = modifier
@@ -65,7 +70,6 @@ fun AddStudySetToClassesItem(
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(bottom = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -75,14 +79,13 @@ fun AddStudySetToClassesItem(
                         contentDescription = "Class Icon"
                     )
                     Text(
-                        text = classItem.
+                        text = classItem.title,
                         style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -137,6 +140,44 @@ fun AddStudySetToClassesItem(
                     modifier = Modifier.size(26.dp),
                     tint = colorScheme.onSurface
                 )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AddStudySetToClassesItemPreview() {
+    QuickMemTheme {
+        Scaffold {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .padding(it)
+            ) {
+                item {
+                    repeat(3) {
+                        AddStudySetToClassesItem(
+                            classItem = GetClassByOwnerResponseModel(
+                                title = "Class Title",
+                                allowSetManagement = true,
+                                allowMemberManagement = true,
+                                studySetCount = 10,
+                                owner = UserResponseModel(
+                                    username = "User",
+                                    avatarUrl = "https://example.com/avatar.jpg"
+                                ),
+                                createdAt = "2021-01-01T00:00:00Z",
+                                updatedAt = "2021-01-01T00:00:00Z",
+                                description = "Class Description",
+                                id = "1",
+                                folderCount = 3,
+                                memberCount = 5,
+                                joinToken = "123456",
+                            )
+                        )
+                    }
+                }
             }
         }
     }

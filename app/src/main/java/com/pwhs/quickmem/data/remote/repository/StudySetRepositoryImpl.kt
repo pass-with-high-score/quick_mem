@@ -1,9 +1,11 @@
 package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
@@ -159,6 +161,22 @@ class StudySetRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 apiService.addStudySetToFolders(token, addStudySetToFoldersRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun addStudySetToClasses(
+        token: String,
+        addStudySetToClassesRequestModel: AddStudySetToClassesRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.addStudySetToClasses(token, addStudySetToClassesRequestModel.toDto())
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)

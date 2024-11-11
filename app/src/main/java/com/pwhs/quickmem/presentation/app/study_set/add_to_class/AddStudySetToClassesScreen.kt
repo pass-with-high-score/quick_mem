@@ -19,15 +19,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.add_to_class.component.AddStudySetToClassesList
 import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.component.AddStudySetToFoldersTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
+@Destination<RootGraph>(
+    navArgs = AddStudySetToClassesArgs::class
+)
 @Composable
 fun AddStudySetToClassesScreen(
     modifier: Modifier = Modifier,
@@ -57,8 +62,10 @@ fun AddStudySetToClassesScreen(
     AddStudySetToFolders(
         modifier = modifier,
         isLoading = uiState.isLoading,
+        classes = uiState.classes,
+        classImportedIds = uiState.classImportedIds,
         onDoneClick = {
-//            viewModel.onEvent(AddStudySetToFoldersUiAction.AddStudySetToFolders)
+            viewModel.onEvent(AddStudySetToClassesUiAction.AddStudySetToClasses)
         },
         onNavigateCancel = {
             navigator.navigateUp()
@@ -69,7 +76,7 @@ fun AddStudySetToClassesScreen(
             )
         },
         onAddStudySetToClasses = {
-//            viewModel.onEvent(AddStudySetToFoldersUiAction.ToggleStudySetImport(it))
+            viewModel.onEvent(AddStudySetToClassesUiAction.ToggleStudySetImport(it))
         }
     )
 }
@@ -80,7 +87,7 @@ fun AddStudySetToFolders(
     onDoneClick: () -> Unit = {},
     onNavigateCancel: () -> Unit = {},
     onCreateFolderClick: () -> Unit = {},
-    classes: List<GetClassDetailResponseModel> = emptyList(),
+    classes: List<GetClassByOwnerResponseModel> = emptyList(),
     classImportedIds: List<String> = emptyList(),
     onAddStudySetToClasses: (String) -> Unit = {},
     isLoading: Boolean = false,
@@ -92,7 +99,7 @@ fun AddStudySetToFolders(
             AddStudySetToFoldersTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
-                title = "Add to folder"
+                title = "Add to classes"
             )
         },
         floatingActionButton = {
@@ -103,7 +110,7 @@ fun AddStudySetToFolders(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Create folder"
+                    contentDescription = "Create class"
                 )
             }
         }
@@ -116,7 +123,9 @@ fun AddStudySetToFolders(
             ) {
                 AddStudySetToClassesList(
                     modifier = modifier,
-                    isLoading = isLoading,
+                    classes = classes,
+                    classImportedIds = classImportedIds,
+                    onAddStudySetToClasses = onAddStudySetToClasses,
                 )
             }
         }

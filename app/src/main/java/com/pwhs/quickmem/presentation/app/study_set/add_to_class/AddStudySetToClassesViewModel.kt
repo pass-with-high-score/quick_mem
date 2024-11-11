@@ -5,13 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
+import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
-import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.AddStudySetToFoldersUiAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -62,20 +64,94 @@ class AddStudySetToClassesViewModel @Inject constructor(
 
             is AddStudySetToClassesUiAction.ToggleStudySetImport -> {
                 Timber.d("Toggle Study Set Import: ${event.classId}")
-                toggleFolderImport(event.classId)
+                toggleClassesImport(event.classId)
             }
         }
     }
 
     private fun getClasses() {
+        viewModelScope.launch {
+            classRepository.getClassByOwnerId(
+                _uiState.value.token,
+                _uiState.value.userId,
+                null,
+                _uiState.value.studySetId
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiState.update { foldersUiState ->
+                            foldersUiState.copy(
+                                isLoading = false,
+                                classes = resources.data ?: emptyList(),
+                                classImportedIds = resources.data?.filter { it.isImported == true }
+                                    ?.map { it.id } ?: emptyList()
+                            )
+                        }
+                    }
 
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            AddStudySetToClassesUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun doneClick() {
+        viewModelScope.launch{
+            val addStudySetToClassesRequestModel = AddStudySetToClassesRequestModel(
+                studySetId = _uiState.value.studySetId,
+                classIds = _uiState.value.classImportedIds
+            )
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            studySetRepository.addStudySetToClasses(
+                token,
+                addStudySetToClassesRequestModel
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(AddStudySetToClassesUiEvent.StudySetAddedToClasses)
+                    }
 
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            AddStudySetToClassesUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
-    private fun toggleFolderImport(classId: String) {
+    private fun toggleClassesImport(classId: String) {
         val classImportedIds = _uiState.value.classImportedIds.toMutableList()
         if (classImportedIds.contains(classId)) {
             classImportedIds.remove(classId)
