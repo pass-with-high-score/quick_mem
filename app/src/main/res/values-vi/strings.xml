@@ -98,5 +98,15 @@
     <string name="txt_settings_log_out">Đăng xuất</string>
     <string name="txt_manage_storage">Quản lý dung lượng</string>
     <string name="txt_language">Ngôn ngữ</string>
+    <string name="txt_hint_to_question">Gợi ý (cho câu hỏi)</string>
+    <string name="txt_explanation_to_answer">Giải thích (cho câu trả lời)</string>
+    <string name="txt_draw_to_answer">Vẽ (cho câu trả lời)</string>
+    <string name="txt_make_your_term_and_definition_as_clear_as_possible_you_can_add_hint_and_explanation_to_help_you_remember_better">Hãy làm cho thuật ngữ và định nghĩa của bạn rõ ràng nhất có thể. Bạn có thể thêm gợi ý và giải thích để giúp bạn nhớ tốt hơn.</string>
+    <string name="txt_explanation">Giải thích</string>
+    <string name="txt_flashcard_save_error">Lỗi lưu thẻ ghi nhớ</string>
+    <string name="txt_flashcard_saved">Thẻ ghi nhớ đã được lưu</string>
+    <string name="txt_hint">Gợi ý</string>
+    <string name="txt_edit_flashcard">Chỉnh sửa thẻ ghi nhớ</string>
+    <string name="txt_create_flashcard">Tạo thẻ ghi nhớ</string>
 
 </resources>

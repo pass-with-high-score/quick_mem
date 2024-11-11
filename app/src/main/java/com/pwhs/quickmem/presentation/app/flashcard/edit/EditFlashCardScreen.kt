@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -84,14 +85,16 @@ fun EditFlashCardScreen(
             when (event) {
                 EditFlashCardUiEvent.FlashCardSaved -> {
                     Timber.d("Flashcard saved")
-                    Toast.makeText(context, "Flashcard saved", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_flashcard_saved), Toast.LENGTH_SHORT).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
 
                 EditFlashCardUiEvent.FlashCardSaveError -> {
                     Timber.d("Flashcard save error")
-                    Toast.makeText(context, "Flashcard save error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_flashcard_save_error), Toast.LENGTH_SHORT).show()
                 }
 
                 EditFlashCardUiEvent.LoadImage -> {
@@ -245,7 +248,8 @@ fun CreateFlashCard(
                 enableSaveButton = term.isNotEmpty() && definition.isNotEmpty(),
                 onSettingsClicked = {
                     showBottomSheetSetting = true
-                }
+                },
+                title = stringResource(R.string.txt_edit_flashcard)
             )
         },
         modifier = modifier
@@ -303,7 +307,7 @@ fun CreateFlashCard(
                                     FlashCardTextField(
                                         value = hint,
                                         onValueChange = onHintChanged,
-                                        hint = "Hint"
+                                        hint = stringResource(R.string.txt_hint)
                                     )
                                 }
 
@@ -347,7 +351,7 @@ fun CreateFlashCard(
                                     FlashCardTextField(
                                         value = explanation,
                                         onValueChange = onExplanationChanged,
-                                        hint = "Explanation"
+                                        hint = stringResource(R.string.txt_explanation)
                                     )
                                 }
 
@@ -370,7 +374,7 @@ fun CreateFlashCard(
 
                 item {
                     Text(
-                        "Make your term and definition as clear as possible. You can add hint and explanation to help you remember better.",
+                        text = stringResource(R.string.txt_make_your_term_and_definition_as_clear_as_possible_you_can_add_hint_and_explanation_to_help_you_remember_better),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
@@ -407,7 +411,7 @@ fun CreateFlashCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     BottomSheetItem(
-                        title = "Hint (to question)",
+                        title = stringResource(R.string.txt_hint_to_question),
                         icon = R.drawable.ic_add,
                         onClick = {
                             onShowHintClicked(true)
@@ -415,7 +419,7 @@ fun CreateFlashCard(
                         },
                     )
                     BottomSheetItem(
-                        title = "Explanation (to answer)",
+                        title = stringResource(R.string.txt_explanation_to_answer),
                         icon = R.drawable.ic_add,
                         onClick = {
                             onShowExplanationClicked(true)
@@ -423,7 +427,7 @@ fun CreateFlashCard(
                         },
                     )
                     BottomSheetItem(
-                        title = "Draw (to answer)",
+                        title = stringResource(R.string.txt_draw_to_answer),
                         icon = R.drawable.ic_art,
                         onClick = {
                             //TODO: Draw

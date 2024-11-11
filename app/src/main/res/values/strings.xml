@@ -98,4 +98,14 @@
     <string name="txt_settings_log_out">Log out</string>
     <string name="txt_manage_storage">Manage storage</string>
     <string name="txt_language">Language</string>
+    <string name="txt_hint_to_question">Hint (to question)</string>
+    <string name="txt_explanation_to_answer">Explanation (to answer)</string>
+    <string name="txt_draw_to_answer">Draw (to answer)</string>
+    <string name="txt_make_your_term_and_definition_as_clear_as_possible_you_can_add_hint_and_explanation_to_help_you_remember_better">Make your term and definition as clear as possible. You can add hint and explanation to help you remember better.</string>
+    <string name="txt_explanation">Explanation</string>
+    <string name="txt_flashcard_save_error">Flashcard save error</string>
+    <string name="txt_flashcard_saved">Flashcard saved</string>
+    <string name="txt_hint">Hint</string>
+    <string name="txt_edit_flashcard">Edit Flashcard</string>
+    <string name="txt_create_flashcard">Create Flashcard</string>
 </resources>
