@@ -100,4 +100,5 @@
     <string name="txt_language">Language</string>
     <string name="txt_quickmem_plus">QuickMem Plus</string>
     <string name="txt_quickmem">QuickMem</string>
+    <string name="txt_opensource_license">Opensource license</string>
 </resources>
