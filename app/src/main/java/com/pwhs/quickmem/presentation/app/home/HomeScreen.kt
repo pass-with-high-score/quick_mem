@@ -362,7 +362,7 @@
             ModalBottomSheet(
                 onDismissRequest = { showNotificationBottomSheet = false },
                 sheetState = notificationBottomSheetState,
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = colorScheme.primary
             ) {
                 NotificationBottomSheet(
                     userId = userId,

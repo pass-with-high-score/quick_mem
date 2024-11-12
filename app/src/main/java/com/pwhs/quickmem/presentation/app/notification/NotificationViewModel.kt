@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.notification
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -39,7 +38,7 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    fun loadNotifications() {
+    private fun loadNotifications() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
 
@@ -69,7 +68,7 @@ class NotificationViewModel @Inject constructor(
                     is Resources.Error -> {
                         Timber.e("Error loading notifications: ${result.message}")
                         _uiState.update { state ->
-                            state.copy(isLoading = false,)
+                            state.copy(isLoading = false)
                         }
                         sendErrorEvent(result.message ?: "Failed to load notifications")
                     }

@@ -114,10 +114,10 @@ fun NotificationItem(
     onDelete: () -> Unit,
     onMarkAsRead: () -> Unit
 ) {
-    val swipeState = remember { mutableStateOf(0f) }
+    val swipeState = remember { mutableFloatStateOf(0f) }
 
     val animatedOffset by animateFloatAsState(
-        targetValue = swipeState.value,
+        targetValue = swipeState.floatValue,
         animationSpec = tween(durationMillis = 300),
         label = "Delete"
     )
@@ -135,7 +135,7 @@ fun NotificationItem(
             .offset(x = animatedOffset.dp)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures { _, dragAmount ->
-                    swipeState.value = (swipeState.value + dragAmount).coerceIn(-70f, 0f)
+                    swipeState.floatValue = (swipeState.floatValue + dragAmount).coerceIn(-70f, 0f)
                 }
             }
             .height(80.dp)
@@ -167,7 +167,7 @@ fun NotificationItem(
 
         if (animatedOffset < -100f) {
             onDelete()
-        } else if (swipeState.value < -5f) {
+        } else if (swipeState.floatValue < -5f) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
