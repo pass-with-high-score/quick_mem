@@ -139,7 +139,6 @@
     <string name="txt_no_study_sets_found">No study sets found</string>
     <string name="txt_search_study_sets">Search study sets</string>
     <string name="txt_folder">Folder</string>
-    <string name="txt_group_study_materials_to_save_time_and_share_with_others_quickmem_members">Group study materials to save time and share with others QuickMem members</string>
     <string name="txt_empty_class">Empty class</string>
     <string name="txt_class">Class</string>
     <string name="txt_organize_your_study_sets_in_folders_by_subject_teacher_course_or_any_other_way_you_like">Organize your study sets in folders by subject, teacher, course, or any other way you like.</string>
@@ -157,10 +156,10 @@
     <string name="txt_study_set">Study set</string>
     <string name="txt_home">Home</string>
     <string name="txt_explore">Explore</string>
-    <string name="txt_center">Center fab</string>
+    <string name="txt_center_fab">Center fab</string>
     <string name="txt_profile">Profile</string>
     <string name="txt_upgrade">Upgrade</string>
-    <string name="txt_your_setting">Your setting</string>
+    <string name="txt_your_settings">Your setting</string>
     <string name="txt_term">Term</string>
     <string name="txt_definition">Definition</string>
     <string name="txt_plan">Plan</string>

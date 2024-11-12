@@ -200,7 +200,7 @@ fun Profile(
                             modifier = Modifier.size(30.dp)
                         )
                         Text(
-                            text = stringResource(R.string.txt_your_setting),
+                            text = stringResource(R.string.txt_your_settings),
                             style = typography.bodyLarge.copy(
                                 fontWeight = FontWeight.Bold
                             )

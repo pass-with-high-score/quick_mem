@@ -139,7 +139,6 @@
     <string name="txt_no_study_sets_found">Không tìm thấy bộ học</string>
     <string name="txt_search_study_sets">Tìm kiếm bộ học</string>
     <string name="txt_folder">Thư mục</string>
-    <string name="txt_group_study_materials_to_save_time_and_share_with_others_quickmem_members">Nhóm tài liệu học để tiết kiệm thời gian và chia sẻ với các thành viên QuickMem khác</string>
     <string name="txt_empty_class">Lớp học trống</string>
     <string name="txt_class">Lớp học</string>
     <string name="txt_organize_your_study_sets_in_folders_by_subject_teacher_course_or_any_other_way_you_like">Sắp xếp các bộ học của bạn trong thư mục theo môn học, giáo viên, khóa học hoặc bất kỳ cách nào bạn thích.</string>
@@ -157,10 +156,10 @@
     <string name="txt_study_set">Bộ học</string>
     <string name="txt_home">Trang chủ</string>
     <string name="txt_explore">Khám phá</string>
-    <string name="txt_center">Trung tâm fab</string>
+    <string name="txt_center_fab">Trung tâm fab</string>
     <string name="txt_profile">Hồ sơ</string>
     <string name="txt_upgrade">Nâng cấp</string>
-    <string name="txt_your_setting">Cài đặt của bạn</string>
+    <string name="txt_your_settings">Cài đặt của bạn</string>
     <string name="txt_term">Thuật ngữ</string>
     <string name="txt_definition">Định nghĩa</string>
     <string name="txt_plan">Gói</string>

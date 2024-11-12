@@ -30,7 +30,7 @@ sealed class BottomNavItem(
     )
 
     data object Center : BottomNavItem(
-        title = R.string.txt_center,
+        title = R.string.txt_center_fab,
         icon = R.drawable.ic_add_circle,
         route = "fab",
         direction = HomeScreenDestination
