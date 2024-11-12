@@ -5,7 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -44,7 +44,7 @@ fun NotificationBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = modalBottomSheetState,
-        containerColor = MaterialTheme.colorScheme.primary
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
             modifier = Modifier
@@ -59,7 +59,7 @@ fun NotificationBottomSheet(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -67,7 +67,7 @@ fun NotificationBottomSheet(
                     text = "Activity",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
@@ -114,10 +114,9 @@ fun NotificationItem(
     onDelete: () -> Unit,
     onMarkAsRead: () -> Unit
 ) {
-    val swipeState = remember { mutableFloatStateOf(0f) }
-
+    val swipeOffset = remember { mutableFloatStateOf(0f) }
     val animatedOffset by animateFloatAsState(
-        targetValue = swipeState.floatValue,
+        targetValue = swipeOffset.floatValue,
         animationSpec = tween(durationMillis = 300),
         label = "Delete"
     )
@@ -133,11 +132,15 @@ fun NotificationItem(
             .fillMaxWidth()
             .background(backgroundColor)
             .offset(x = animatedOffset.dp)
-            .pointerInput(Unit) {
-                detectHorizontalDragGestures { _, dragAmount ->
-                    swipeState.floatValue = (swipeState.floatValue + dragAmount).coerceIn(-70f, 0f)
+            .drag(
+                onDrag = { deltaX ->
+                    swipeOffset.floatValue = (swipeOffset.floatValue + deltaX).coerceIn(-100f, 0f)
+                },
+                onDragEnd = {
+                    if (swipeOffset.floatValue < -50f) onDelete()
+                    else swipeOffset.floatValue = 0f
                 }
-            }
+            )
             .height(80.dp)
             .clickable { onMarkAsRead() },
         verticalAlignment = Alignment.CenterVertically
@@ -158,16 +161,9 @@ fun NotificationItem(
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Text(
-                text = notification.createdAt,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
         }
 
-        if (animatedOffset < -100f) {
-            onDelete()
-        } else if (swipeState.floatValue < -5f) {
+        if (animatedOffset < -70f) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -175,6 +171,7 @@ fun NotificationItem(
                     .background(Color.Red)
                     .clickable { onDelete() },
                 contentAlignment = Alignment.Center
+
             ) {
                 Text(
                     text = "Delete",
@@ -185,4 +182,14 @@ fun NotificationItem(
             }
         }
     }
+}
+
+private fun Modifier.drag(
+    onDrag: (Float) -> Unit,
+    onDragEnd: () -> Unit
+) = pointerInput(Unit) {
+    detectDragGestures(
+        onDragEnd = { onDragEnd() },
+        onDrag = { _, dragAmount -> onDrag(dragAmount.x) }
+    )
 }
