@@ -49,6 +49,7 @@ import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ChoosePictureScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
@@ -66,7 +67,9 @@ fun ProfileScreen(
         modifier = modifier,
         name = uiState.username,
         avatarUrl = uiState.userAvatar,
-        onAvatarClick = {},
+        onAvatarClick = {
+            navigator.navigate(ChoosePictureScreenDestination)
+        },
         navigateToSettings = {
             navigator.navigate(SettingsScreenDestination)
         },

@@ -3,6 +3,7 @@ package com.pwhs.quickmem.data.remote
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordResponseDto
+import com.pwhs.quickmem.data.dto.auth.GetAvatarResponseDto
 import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
@@ -343,4 +344,10 @@ interface ApiService {
         @Header("Authorization") authorization: String,
         @Body tokenRequest: TokenRequestDto
     ): Response<Unit>
+
+    //Update_Avatar
+    @GET("public/images/avatar/{id}.jpg")
+    suspend fun getAvatar(
+        @Path("id") id: Int
+    ): GetAvatarResponseDto
 }

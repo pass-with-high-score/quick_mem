@@ -4,6 +4,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
+import com.pwhs.quickmem.domain.model.auth.GetAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -71,4 +72,8 @@ interface AuthRepository {
         token: String,
         isOwner: Boolean
     ): Flow<Resources<UserDetailResponseModel>>
+
+    suspend fun getAvatar(
+        avatarId: Int
+    ):Flow<Resources<GetAvatarResponseModel>>
 }
