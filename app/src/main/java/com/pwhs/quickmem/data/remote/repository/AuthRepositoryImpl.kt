@@ -23,6 +23,8 @@ import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateUsernameRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateUsernameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
@@ -129,6 +131,29 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun updateUsername(
+        token: String,
+        updateUsernameRequestModel: UpdateUsernameRequestModel
+    ): Flow<Resources<UpdateUsernameResponseModel>> {
+        return flow {
+            emit(Resources.Loading(true))  // Đang tải dữ liệu
+            try {
+                // Gọi API và chuyển đổi đối tượng Model sang DTO
+                val response = apiService.updateUsername(
+                    token,
+                    updateUsernameRequestModel.toDto()  // Chuyển đổi model sang DTO nếu cần
+                )
+                // Chuyển đổi DTO thành Model và trả về kết quả
+                emit(Resources.Success(response.toModel()))  // Thành công
+            } catch (e: Exception) {
+                // Xử lý lỗi nếu có
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))  // Trả về thông báo lỗi
+            }
+        }
+    }
+
 
     override suspend fun updateEmail(
         token: String,
