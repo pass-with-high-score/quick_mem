@@ -222,6 +222,28 @@ fun SettingsScreen(
         onNavigateToChangeLanguage = {
             navigator.navigate(ChangeLanguageScreenDestination())
         },
+        onNavigateToPrivacyPolicy = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        },
+        onNavigateToTermsOfService = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        },
         customerInfo = uiState.customerInfo
     )
 }
