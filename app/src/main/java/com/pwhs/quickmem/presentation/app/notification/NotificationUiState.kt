@@ -1,8 +1,10 @@
 package com.pwhs.quickmem.presentation.app.notification
 
-import com.pwhs.quickmem.data.dto.notification.NotificationDto
+import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
 
 data class NotificationUiState(
     val userId: String = "",
-    val notifications: List<NotificationDto> = emptyList()
+    val isOwner: Boolean = false,
+    val notifications: List<GetNotificationResponseModel> = emptyList(),
+    val isLoading: Boolean = false,
 )

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
@@ -29,6 +30,7 @@ class HomeViewModel @Inject constructor(
     private val studySetRepository: StudySetRepository,
     private val folderRepository: FolderRepository,
     private val classRepository: ClassRepository,
+    private val repository: AuthRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager
 ) : ViewModel() {
@@ -38,10 +40,21 @@ class HomeViewModel @Inject constructor(
     private val _uiEvent = Channel<HomeUIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+
+    init {
+        viewModelScope.launch {
+            val userId = appManager.userId.firstOrNull() ?: ""
+            _uiState.value = HomeUIState(userId = userId)
+            updateStreak()
+            getCustomerInfo()
+        }
+    }
+
     init {
         updateStreak()
         getCustomerInfo()
     }
+
 
     fun onEvent(event: HomeUIAction) {
         when (event) {

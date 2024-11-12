@@ -7,42 +7,35 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.data.dto.notification.NotificationDto
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.runtime.*
-import kotlinx.coroutines.launch
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
+import kotlinx.coroutines.launch
 
-
+@SuppressLint("UseOfNonLambdaOffsetOverload")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationBottomSheet(
-    viewModel: NotificationViewModel,
-    onDismissRequest: () -> Unit
+    userId: String,
+    onDismissRequest: () -> Unit,
+    viewModel: NotificationViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(userId) {
+        viewModel.setArgs(NotificationArgs(userId))
         coroutineScope.launch {
             modalBottomSheetState.show()
         }
@@ -80,15 +73,35 @@ fun NotificationBottomSheet(
             }
             Spacer(modifier = Modifier.height(8.dp))
 
-            uiState.notifications.forEach { notification ->
-                NotificationItem(
-                    notification = notification,
-                    onDelete = {
-                        viewModel.onEvent(NotificationUiAction.DeleteNotification(notification.id)) },
-                    onMarkAsRead = {
-                        viewModel.onEvent(NotificationUiAction.MarkAsRead(notification.id))
-                    }
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+                }
+            } else if (uiState.notifications.isEmpty()) {
+                Text(
+                    text = "Không có thông báo nào.",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
+            } else {
+                uiState.notifications.forEach { notification ->
+                    NotificationItem(
+                        notification = notification,
+                        onDelete = {
+                            viewModel.deleteNotification(notification.id)
+                        },
+                        onMarkAsRead = {
+                            viewModel.markNotificationAsRead(notification.id)
+                        }
+                    )
+                }
             }
         }
     }
@@ -97,15 +110,16 @@ fun NotificationBottomSheet(
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 fun NotificationItem(
-    notification: NotificationDto,
+    notification: GetNotificationResponseModel,
     onDelete: () -> Unit,
     onMarkAsRead: () -> Unit
 ) {
-    val swipeState = remember { mutableFloatStateOf(0f) }
+    val swipeState = remember { mutableStateOf(0f) }
 
     val animatedOffset by animateFloatAsState(
-        targetValue = swipeState.floatValue,
-        animationSpec = tween(durationMillis = 300), label = ""
+        targetValue = swipeState.value,
+        animationSpec = tween(durationMillis = 300),
+        label = "Delete"
     )
 
     val backgroundColor = if (notification.isRead) {
@@ -121,10 +135,10 @@ fun NotificationItem(
             .offset(x = animatedOffset.dp)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures { _, dragAmount ->
-                    swipeState.floatValue = (swipeState.floatValue + dragAmount).coerceIn(-15f, 0f)
+                    swipeState.value = (swipeState.value + dragAmount).coerceIn(-70f, 0f)
                 }
             }
-            .height(100.dp)
+            .height(80.dp)
             .clickable { onMarkAsRead() },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -140,22 +154,24 @@ fun NotificationItem(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = notification.body,
+                text = notification.message,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = notification.timestamp,
+                text = notification.createdAt,
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
 
-        if (swipeState.floatValue < -5f) {
+        if (animatedOffset < -100f) {
+            onDelete()
+        } else if (swipeState.value < -5f) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(80.dp)
+                    .width(100.dp)
                     .background(Color.Red)
                     .clickable { onDelete() },
                 contentAlignment = Alignment.Center
