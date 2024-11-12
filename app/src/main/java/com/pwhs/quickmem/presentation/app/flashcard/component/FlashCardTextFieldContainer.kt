@@ -8,7 +8,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 
 @Composable
 fun FlashCardTextFieldContainer(
@@ -36,13 +38,13 @@ fun FlashCardTextFieldContainer(
             FlashCardTextField(
                 value = term,
                 onValueChange = onTermChanged,
-                hint = "Term"
+                hint = stringResource(R.string.txt_term)
             )
 
             FlashCardTextField(
                 value = definition,
                 onValueChange = onDefinitionChanged,
-                hint = "Definition"
+                hint = stringResource(R.string.txt_definition)
             )
         }
     }

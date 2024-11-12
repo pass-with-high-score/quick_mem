@@ -18,6 +18,8 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.pwhs.quickmem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,42 +48,42 @@ fun StudySetMoreOptionsBottomSheet(
                 ItemMenuBottomSheet(
                     onClick = onEditStudySet,
                     icon = Outlined.Edit,
-                    title = "Edit"
+                    title = stringResource(id = R.string.txt_edit_study_set)
                 )
                 ItemMenuBottomSheet(
                     onClick = onAddToFolder,
                     icon = Outlined.Folder,
-                    title = "Add to folder"
+                    title = stringResource(R.string.txt_add_to_folder)
                 )
                 ItemMenuBottomSheet(
                     onClick = onAddToClass,
                     icon = Outlined.Group,
-                    title = "Add to class"
+                    title = stringResource(R.string.txt_add_to_classes)
                 )
                 ItemMenuBottomSheet(
                     onClick = { },
                     icon = Outlined.ContentCopy,
-                    title = "Save and edit"
+                    title = stringResource(R.string.txt_save_and_edit)
                 )
                 ItemMenuBottomSheet(
                     onClick = onResetProgress,
                     icon = Outlined.Refresh,
-                    title = "Reset progress"
+                    title = stringResource(R.string.txt_reset_progress)
                 )
                 ItemMenuBottomSheet(
                     onClick = onInfoStudySet,
                     icon = Outlined.Info,
-                    title = "Study set info"
+                    title = stringResource(R.string.txt_study_set_info)
                 )
                 ItemMenuBottomSheet(
                     onClick = {},
                     icon = Outlined.Report,
-                    title = "Report study set"
+                    title = stringResource(R.string.txt_report_study_set)
                 )
                 ItemMenuBottomSheet(
                     onClick = onDeleteStudySet,
                     icon = Default.DeleteOutline,
-                    title = "Delete study set",
+                    title = stringResource(R.string.txt_delete_study_set),
                     color = Color.Red
                 )
             }

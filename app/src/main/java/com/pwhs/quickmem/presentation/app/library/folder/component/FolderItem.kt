@@ -26,10 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -81,9 +83,9 @@ fun FolderItem(
             ) {
                 Text(
                     text = when (numOfStudySets) {
-                        0 -> "No study sets"
-                        1 -> "1 study set"
-                        else -> "$numOfStudySets study sets"
+                        0 -> stringResource(R.string.txt_no_study_sets)
+                        1 -> stringResource(R.string.txt_one_study_set)
+                        else -> stringResource(R.string.txt_study_sets_library, numOfStudySets)
                     },
                     style = typography.bodyMedium
                 )
@@ -100,7 +102,7 @@ fun FolderItem(
                 ) {
                     AsyncImage(
                         model = userResponseModel.avatarUrl,
-                        contentDescription = "User Avatar",
+                        contentDescription = stringResource(R.string.txt_user_avatar),
                         modifier = Modifier
                             .size(24.dp)
                             .clip(CircleShape),
