@@ -70,6 +70,9 @@ fun SearchResultScreen(
         folders = uiState.folders,
         avatarUrl = uiState.userAvatar,
         username = uiState.username,
+        onFilterOptionBottomSheet = {
+
+        },
         onStudySetRefresh = {
 
         },
@@ -128,10 +131,16 @@ fun SearchResult(
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
+    onFilterOptionBottomSheet: () -> Unit = {}
 ) {
     Scaffold { innerPadding ->
         var tabIndex by remember { mutableIntStateOf(0) }
-        val tabTitles = listOf("All Result", "Study Set", "Folder", "Class")
+        val tabTitles = listOf(
+            "All Result",
+            "Study Set",
+            "Folder",
+            "Class"
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -172,7 +181,8 @@ fun SearchResult(
                     avatarUrl = avatarUrl,
                     username = username,
                     onStudySetClick = onStudySetClick,
-                    onStudySetRefresh = onStudySetRefresh
+                    onStudySetRefresh = onStudySetRefresh,
+                    onFilterOptionBottomSheet = onFilterOptionBottomSheet
                 )
                 SearchResultEnum.FOLDER.index -> ListResultFolderScreen(
                     modifier = modifier,
