@@ -66,4 +66,14 @@ interface StudySetRepository {
         token: String,
         addStudySetToClassesRequestModel: AddStudySetToClassesRequestModel
     ): Flow<Resources<Unit>>
+
+    suspend fun getSearchResultStudySets(
+        token: String,
+        query: String,
+        size: String,
+        creatorType: String?,
+        page: Int,
+        colorId: String?,
+        subjectId: String?,
+    ): Flow<Resources<List<GetStudySetResponseModel>>>
 }

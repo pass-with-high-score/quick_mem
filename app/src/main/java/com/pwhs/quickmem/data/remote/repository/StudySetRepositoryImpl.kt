@@ -188,4 +188,36 @@ class StudySetRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getSearchResultStudySets(
+        token: String,
+        query: String,
+        size: String,
+        creatorType: String?,
+        page: Int,
+        colorId: String?,
+        subjectId: String?
+    ): Flow<Resources<List<GetStudySetResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response =
+                    apiService.searchStudySet(
+                        token,
+                        query,
+                        size,
+                        creatorType,
+                        page,
+                        colorId,
+                        subjectId
+                    )
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+
 }

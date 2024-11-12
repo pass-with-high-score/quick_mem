@@ -190,6 +190,17 @@ interface ApiService {
         @Body addStudySetToClassesRequestDto: AddStudySetToClassesRequestDto
     )
 
+    @GET("study-set/search")
+    suspend fun searchStudySet(
+        @Header("Authorization") token: String,
+        @Query("title") query: String,
+        @Query("size") size: String,
+        @Query("creatorType") creatorType: String?,
+        @Query("page") page: Int,
+        @Query("colorId") colorId: String?,
+        @Query("subjectId") subjectId: String?
+    ): List<GetStudySetResponseDto>
+
     // Flash Card
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
