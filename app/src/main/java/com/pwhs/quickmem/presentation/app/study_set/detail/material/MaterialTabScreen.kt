@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,7 +84,7 @@ fun MaterialTabScreen(
                         horizontalAlignment = CenterHorizontally
                     ) {
                         Text(
-                            "Add your material to get started",
+                            text = stringResource(R.string.txt_add_your_material_to_get_started),
                             style = typography.titleLarge.copy(
                                 fontWeight = Bold,
                                 color = colorScheme.onSurface
@@ -92,7 +93,7 @@ fun MaterialTabScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            "This Study Set can contain flashcards, notes, and files on certain topic",
+                            text = stringResource(R.string.txt_this_study_set_can_contain_flashcards_notes_and_files_on_certain_topic),
                             textAlign = TextAlign.Center,
                             style = typography.bodyMedium.copy(
                                 color = colorScheme.onSurface,
@@ -107,12 +108,12 @@ fun MaterialTabScreen(
                             ) {
                                 Icon(
                                     Icons.Filled.Add,
-                                    contentDescription = "Add",
+                                    contentDescription = stringResource(R.string.txt_add),
                                     tint = colorScheme.background,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
                                 Text(
-                                    "Add Material",
+                                    text = stringResource(R.string.txt_add_material),
                                     style = typography.titleMedium.copy(
                                         color = colorScheme.background
                                     )
@@ -145,7 +146,7 @@ fun MaterialTabScreen(
                         }
                         item {
                             Text(
-                                "Choose your way to study",
+                                text = stringResource(R.string.txt_choose_your_way_to_study),
                                 style = typography.titleMedium.copy(
                                     color = colorScheme.onSurface,
                                     fontWeight = Bold
@@ -156,28 +157,28 @@ fun MaterialTabScreen(
 
                         item {
                             LearnModeCard(
-                                title = "Flip Flashcards",
+                                title = stringResource(R.string.txt_flip_flashcards),
                                 icon = R.drawable.ic_flipcard,
                                 onClick = onNavigateToFlip
                             )
                         }
                         item {
                             LearnModeCard(
-                                title = "Quiz",
+                                title = stringResource(R.string.txt_quiz),
                                 icon = R.drawable.ic_quiz,
                                 onClick = onNavigateToQuiz
                             )
                         }
                         item {
                             LearnModeCard(
-                                title = "True/False",
+                                title = stringResource(R.string.txt_true_false),
                                 icon = R.drawable.ic_tf,
                                 onClick = onNavigateToTrueFalse
                             )
                         }
                         item {
                             LearnModeCard(
-                                title = "Write",
+                                title = stringResource(R.string.txt_write),
                                 icon = R.drawable.ic_write,
                                 onClick = onNavigateToWrite
                             )
@@ -192,7 +193,7 @@ fun MaterialTabScreen(
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "Terms",
+                                    text = stringResource(R.string.txt_terms),
                                     style = typography.titleMedium.copy(
                                         color = colorScheme.onSurface,
                                         fontWeight = Bold
@@ -204,11 +205,11 @@ fun MaterialTabScreen(
                                     verticalAlignment = CenterVertically
                                 ) {
                                     Text(
-                                        text = "Original"
+                                        text = stringResource(R.string.txt_original)
                                     )
                                     Icon(
                                         imageVector = Filled.Sort,
-                                        contentDescription = "Sort",
+                                        contentDescription = stringResource(R.string.txt_sort),
                                         modifier = Modifier.size(24.dp)
                                     )
                                 }
@@ -251,7 +252,7 @@ fun MaterialTabScreen(
                             showMenu = false
                         },
                         icon = Outlined.Edit,
-                        title = "Edit"
+                        title = stringResource(R.string.txt_edit)
                     )
                     ItemMenuBottomSheet(
                         onClick = {
@@ -259,7 +260,7 @@ fun MaterialTabScreen(
                             showMenu = false
                         },
                         icon = Default.DeleteOutline,
-                        title = "Delete",
+                        title = stringResource(R.string.txt_delete),
                         color = Color.Red,
                     )
                 }
@@ -275,10 +276,10 @@ fun MaterialTabScreen(
                     showAlertDialog = false
                     onDeleteFlashCardClick()
                 },
-                title = "Delete Flashcard",
-                text = "Are you sure you want to delete this flashcard?",
-                confirmButtonTitle = "Delete",
-                dismissButtonTitle = "Cancel",
+                title = stringResource(R.string.txt_delete_flashcard),
+                text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_flashcard),
+                confirmButtonTitle = stringResource(R.string.txt_delete),
+                dismissButtonTitle = stringResource(R.string.txt_cancel),
                 buttonColor = colorScheme.error,
             )
         }

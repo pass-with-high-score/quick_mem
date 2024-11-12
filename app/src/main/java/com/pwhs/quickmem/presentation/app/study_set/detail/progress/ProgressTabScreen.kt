@@ -12,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
 
 @Composable
 fun ProgressTabScreen(
@@ -37,7 +39,8 @@ fun ProgressTabScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Your Progress", style = typography.titleMedium.copy(
+                    text = stringResource(R.string.txt_your_progress),
+                    style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp
                     )
@@ -52,7 +55,7 @@ fun ProgressTabScreen(
                     when {
                         totalStudySet == 0 -> {
                             Text(
-                                text = "You have not started any study set yet",
+                                text = stringResource(R.string.txt_you_have_not_started_any_study_set_yet),
                                 style = typography.bodyMedium.copy(
                                     fontSize = 16.sp
                                 )
@@ -67,19 +70,19 @@ fun ProgressTabScreen(
                                 studySetsMastered = studySetsKnowCount
                             )
                             ProgressRow(
-                                label = "Not learned",
+                                label = stringResource(R.string.txt_not_learned),
                                 percentage = studySetsNotLearnCount * 100 / totalStudySet,
                                 color = color.copy(alpha = 0.3f)
                             )
 
                             ProgressRow(
-                                label = "Still learning",
+                                label = stringResource(R.string.txt_still_learning),
                                 percentage = studySetsStillLearningCount * 100 / totalStudySet,
                                 color = color.copy(alpha = 0.6f)
                             )
 
                             ProgressRow(
-                                label = "Learn",
+                                label = stringResource(R.string.txt_learn),
                                 percentage = studySetsKnowCount * 100 / totalStudySet,
                                 color = color
                             )
@@ -103,5 +106,4 @@ private fun PressTabScreen() {
             studySetsKnowCount = 3
         )
     }
-
 }

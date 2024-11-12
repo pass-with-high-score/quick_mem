@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 @Composable
 fun FlashCardTopAppBar(
     modifier: Modifier = Modifier,
+    title: String,
     onNavigationBack: () -> Unit,
     onSaveFlashCardClicked: () -> Unit,
     enableSaveButton: Boolean,
@@ -28,7 +29,7 @@ fun FlashCardTopAppBar(
         modifier = modifier,
         title = {
             Text(
-                text = "Create Flashcard",
+                text = title,
                 style = typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 )

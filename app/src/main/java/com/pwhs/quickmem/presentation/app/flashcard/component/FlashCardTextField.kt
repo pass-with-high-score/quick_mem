@@ -27,14 +27,14 @@ fun FlashCardTextField(
         },
         placeholder = {
             Text(
-                hint,
+                text = hint,
                 fontWeight = FontWeight.Bold,
                 color = Color.Gray.copy(alpha = 0.5f)
             )
         },
         supportingText = {
             Text(
-                "${value.length}/$maxChar",
+                text = "${value.length}/$maxChar",
                 color = Color.Gray.copy(alpha = 0.5f),
                 textAlign = TextAlign.End
             )

@@ -21,8 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 
 @Composable
 fun LearnModeCard(
@@ -54,7 +56,7 @@ fun LearnModeCard(
         ) {
             Image(
                 painter = painterResource(id = icon),
-                contentDescription = "Flip Card",
+                contentDescription = stringResource(R.string.txt_flip_card),
                 modifier = Modifier
                     .size(30.dp),
                 contentScale = ContentScale.Crop,

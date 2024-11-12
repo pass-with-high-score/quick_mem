@@ -344,7 +344,7 @@ fun Setting(
                                     ?: stringResource(R.string.txt_no_subscription),
                             )
                             SettingItem(
-                                title = "Plan",
+                                title = stringResource(R.string.txt_plan),
                                 subtitle = when (customerInfo?.activeSubscriptions?.firstOrNull()
                                     .toString()) {
                                     "quickmem_plus:yearly-plan" -> stringResource(R.string.txt_quickmem_plus_yearly)
