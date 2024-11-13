@@ -107,14 +107,10 @@ fun ChoosePictureUI(
                 )
             }
 
-            if (isLoading) {
-                CircularProgressIndicator()
-            } else {
-                ChoosePictureList(
-                    avatarUrls = avatarUrls,
-                    onImageSelected = onSelectedPicture
-                )
-            }
+            ChoosePictureList(
+                avatarUrls = avatarUrls,
+                onImageSelected = onSelectedPicture
+            )
         }
     }
 }
@@ -127,28 +123,24 @@ fun ChoosePictureList(
 ) {
     Timber.tag("ChoosePictureList").d("Avatar URLs in List: $avatarUrls")
 
-    if (avatarUrls.isNotEmpty()) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        ) {
-            items(avatarUrls) { avatarUrl ->
-                Timber.tag("AvatarItem").d("Avatar URL: $avatarUrl")
 
-                AvatarItem(
-                    avatarUrl = avatarUrl,
-                    onSelected = {
-                        Timber.tag("AvatarItem").d("Selected Avatar: $avatarUrl")
-                        onImageSelected(avatarUrl)
-                    }
-                )
-            }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+    ) {
+        items(avatarUrls) { avatarUrl ->
+            Timber.tag("AvatarItem").d("Avatar URL: $avatarUrl")
+
+            AvatarItem(
+                avatarUrl = avatarUrl,
+                onSelected = {
+                    Timber.tag("AvatarItem").d("Selected Avatar: $avatarUrl")
+                    onImageSelected(avatarUrl)
+                }
+            )
         }
-    } else {
-        Timber.tag("ChoosePictureList").d("No avatars available.")
-        Text("No avatars available.")
     }
 }
 

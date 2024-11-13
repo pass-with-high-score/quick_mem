@@ -71,4 +71,6 @@ interface AuthRepository {
         token: String,
         isOwner: Boolean
     ): Flow<Resources<UserDetailResponseModel>>
+
+    suspend fun getAvatar(): Flow<Resources<List<String>>>
 }

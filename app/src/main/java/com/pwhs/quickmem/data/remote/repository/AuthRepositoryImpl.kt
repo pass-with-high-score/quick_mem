@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import com.pwhs.quickmem.BuildConfig
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
@@ -231,6 +232,23 @@ class AuthRepositoryImpl @Inject constructor(
                     isOwner
                 )
                 emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getAvatar(): Flow<Resources<List<String>>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val avatarUrls = mutableListOf<String>()
+                for (index in 1..18) {
+                    val imageUrl = "${BuildConfig.BASE_URL}public/images/avatar/$index.jpg"
+                    avatarUrls.add(imageUrl)
+                }
+                emit(Resources.Success(avatarUrls))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

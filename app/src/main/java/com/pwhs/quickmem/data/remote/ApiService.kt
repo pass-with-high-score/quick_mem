@@ -348,6 +348,6 @@ interface ApiService {
     @PATCH("auth/user/avatar/{id}")
     suspend fun updateAvatar(
         @Header("Authorization") authorization: String,
-        @Path("id") id: String
+        @Path("userid") id: String
     )
 }
