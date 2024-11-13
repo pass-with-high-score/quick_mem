@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.settings.user_info.user_name
+package com.pwhs.quickmem.presentation.app.settings.user_info.username
 
 
 import androidx.lifecycle.SavedStateHandle

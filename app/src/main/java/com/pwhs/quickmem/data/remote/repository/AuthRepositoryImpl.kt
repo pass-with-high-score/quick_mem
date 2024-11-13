@@ -137,19 +137,16 @@ class AuthRepositoryImpl @Inject constructor(
         updateUsernameRequestModel: UpdateUsernameRequestModel
     ): Flow<Resources<UpdateUsernameResponseModel>> {
         return flow {
-            emit(Resources.Loading(true))  // Đang tải dữ liệu
+            emit(Resources.Loading())
             try {
-                // Gọi API và chuyển đổi đối tượng Model sang DTO
                 val response = apiService.updateUsername(
                     token,
-                    updateUsernameRequestModel.toDto()  // Chuyển đổi model sang DTO nếu cần
+                    updateUsernameRequestModel.toDto()
                 )
-                // Chuyển đổi DTO thành Model và trả về kết quả
-                emit(Resources.Success(response.toModel()))  // Thành công
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
-                // Xử lý lỗi nếu có
                 Timber.e(e)
-                emit(Resources.Error(e.toString()))  // Trả về thông báo lỗi
+                emit(Resources.Error(e.toString()))
             }
         }
     }

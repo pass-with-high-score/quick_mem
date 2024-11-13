@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.settings.user_info.user_name
+package com.pwhs.quickmem.presentation.app.settings.user_info.username
 
 
 import android.widget.Toast
@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTextField
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTopAppBar
-import com.pwhs.quickmem.presentation.app.settings.user_info.full_name.UpdateFullNameSetting
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
