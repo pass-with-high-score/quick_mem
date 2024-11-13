@@ -7,4 +7,5 @@ data class NotificationUiState(
     val isOwner: Boolean = false,
     val notifications: List<GetNotificationResponseModel> = emptyList(),
     val isLoading: Boolean = false,
+    val error: String? = null
 )

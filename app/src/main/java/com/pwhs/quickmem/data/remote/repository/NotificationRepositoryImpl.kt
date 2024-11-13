@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.data.remote.repository
 
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.mapper.notification.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
@@ -33,6 +34,7 @@ class NotificationRepositoryImpl @Inject constructor(
         }
     }
 
+
     override suspend fun markNotificationAsRead(
         notificationId: String,
         token: String
@@ -40,7 +42,8 @@ class NotificationRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading(true))
             try {
-                apiService.markNotificationAsRead(token, notificationId)
+                val requestDto = MarkNotificationReadRequestDto(notificationId, true)
+                apiService.markNotificationAsRead(token, notificationId, requestDto)
                 emit(Resources.Success(Unit))
             } catch (e: HttpException) {
                 emit(Resources.Error(e.localizedMessage ?: "Failed to mark notification as read"))
@@ -66,5 +69,6 @@ class NotificationRepositoryImpl @Inject constructor(
             }
         }
     }
+
 }
 

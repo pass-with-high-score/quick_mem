@@ -22,7 +22,6 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
 import kotlinx.coroutines.launch
 
-@SuppressLint("UseOfNonLambdaOffsetOverload")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationBottomSheet(
@@ -73,50 +72,78 @@ fun NotificationBottomSheet(
             }
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (uiState.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+            when {
+                uiState.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+                    }
                 }
-            } else if (uiState.notifications.isEmpty()) {
-                Text(
-                    text = "Không có thông báo nào.",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            } else {
-                uiState.notifications.forEach { notification ->
-                    NotificationItem(
-                        notification = notification,
-                        onDelete = {
-                            viewModel.deleteNotification(notification.id)
-                        },
-                        onMarkAsRead = {
-                            viewModel.markNotificationAsRead(notification.id)
-                        }
-                    )
+                uiState.error != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = uiState.error ?: "An error occurred",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+                uiState.notifications.isEmpty() -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.restriction),
+                            contentDescription = "No Notifications",
+                            modifier = Modifier.size(120.dp),
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.height(21.dp))
+                        Text(
+                            text = "There are no notifications",
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
+                else -> {
+                    uiState.notifications.forEach { notification ->
+                        NotificationItem(
+                            notification = notification,
+                            onDelete = {
+                                viewModel.handleAction(NotificationUiAction.DeleteNotification(notification.id))
+                            },
+                            onMarkAsRead = {
+                                viewModel.handleAction(NotificationUiAction.MarkAsRead(notification.id))
+                            }
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-@SuppressLint("UseOfNonLambdaOffsetOverload")
+@SuppressLint("UseOfNonLambdaOffsetOverload", "AutoboxingStateCreation")
 @Composable
 fun NotificationItem(
     notification: GetNotificationResponseModel,
     onDelete: () -> Unit,
-    onMarkAsRead: () -> Unit
+    onMarkAsRead: () -> Unit,
 ) {
-    val swipeOffset = remember { mutableFloatStateOf(0f) }
+    val swipeOffset = remember { mutableStateOf(0f) }
     val animatedOffset by animateFloatAsState(
-        targetValue = swipeOffset.floatValue,
+        targetValue = swipeOffset.value,
         animationSpec = tween(durationMillis = 300),
         label = "Delete"
     )
@@ -127,57 +154,77 @@ fun NotificationItem(
         MaterialTheme.colorScheme.background
     }
 
-    Row(
+    val textColor = if (notification.isRead) {
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(backgroundColor)
-            .offset(x = animatedOffset.dp)
-            .drag(
-                onDrag = { deltaX ->
-                    swipeOffset.floatValue = (swipeOffset.floatValue + deltaX).coerceIn(-100f, 0f)
-                },
-                onDragEnd = {
-                    if (swipeOffset.floatValue < -50f) onDelete()
-                    else swipeOffset.floatValue = 0f
-                }
-            )
             .height(80.dp)
-            .clickable { onMarkAsRead() },
-        verticalAlignment = Alignment.CenterVertically
+            .background(Color.Red)
+            .clickable {
+                onDelete()
+                swipeOffset.value = 0f
+            }
     ) {
-        Column(
+        Text(
+            text = "Delete",
+            color = MaterialTheme.colorScheme.surface,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
+                .align(Alignment.CenterEnd)
+                .padding(end = 25.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(x = animatedOffset.dp)
+                .background(backgroundColor)
+                .drag(
+                    onDrag = { deltaX ->
+                        swipeOffset.value = (swipeOffset.value + deltaX).coerceIn(-100f, 0f)
+                    },
+                    onDragEnd = {
+                        if (swipeOffset.value < -50f) {
+                            swipeOffset.value = -100f
+                        } else {
+                            swipeOffset.value = 0f
+                        }
+                    }
+                )
+                .clickable { onMarkAsRead() },
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = notification.title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = notification.message,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
+            if (!notification.isRead) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_circle),
+                    contentDescription = "Unread",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(start = 16.dp)
+                )
+            }
 
-        if (animatedOffset < -70f) {
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .width(100.dp)
-                    .background(Color.Red)
-                    .clickable { onDelete() },
-                contentAlignment = Alignment.Center
-
+                    .weight(1f)
+                    .padding(16.dp)
             ) {
                 Text(
-                    text = "Delete",
-                    color = Color.White,
+                    text = notification.title,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
+                )
+                Text(
+                    text = notification.message,
+                    fontSize = 14.sp,
+                    color = textColor
                 )
             }
         }
