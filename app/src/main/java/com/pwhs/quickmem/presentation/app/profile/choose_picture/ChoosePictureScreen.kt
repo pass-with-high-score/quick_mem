@@ -16,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -47,6 +49,9 @@ fun ChoosePictureScreen(
         },
         onDoneClick = {
             navigator.navigateUp()
+        },
+        onNavigateBack = {
+            navigator.navigateUp()
         }
     )
 }
@@ -57,6 +62,7 @@ fun ChoosePictureUI(
     isLoading: Boolean,
     avatarUrls: List<String>,
     selectedAvatarUrl: String?,
+    onNavigateBack: () -> Unit,
     onSelectedPicture: (String) -> Unit,
     title: String = "Choose a picture",
     onDoneClick: () -> Unit
@@ -66,7 +72,8 @@ fun ChoosePictureUI(
         topBar = {
             ChoosePictureTopAppBar(
                 title = title,
-                onDoneClick = onDoneClick
+                onDoneClick = onDoneClick,
+                onNavigateBack = onNavigateBack
             )
         }
     ) { paddingValues ->
@@ -151,14 +158,15 @@ fun AvatarItem(
     avatarUrl: String = "",
     onSelected: () -> Unit
 ) {
-    Text(avatarUrl)
     AsyncImage(
         model = avatarUrl,
         contentDescription = "Avatar Image",
         modifier = Modifier
             .padding(8.dp)
             .fillMaxSize()
-            .clickable { onSelected() }
+            .clickable {
+                onSelected()
+            }
     )
 }
 

@@ -26,7 +26,8 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun ChoosePictureTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
-    onDoneClick: () -> Unit
+    onDoneClick: () -> Unit,
+    onNavigateBack:() ->Unit
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -59,6 +60,23 @@ fun ChoosePictureTopAppBar(
                     )
                 )
             }
+        },
+        navigationIcon = {
+            TextButton(
+                onClick = onNavigateBack,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = colorScheme.onSurface
+                )
+            ) {
+                Text(
+                    text = "Cancel",
+                    style = typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = colorScheme.onSurface,
+                        fontSize = 16.sp
+                    )
+                )
+            }
         }
     )
 }
@@ -71,7 +89,8 @@ fun ChoosePictureTopAppBarPreview() {
             topBar = {
                 ChoosePictureTopAppBar(
                     title = "Choose a picture",
-                    onDoneClick = {}
+                    onDoneClick = {},
+                    onNavigateBack = {}
                 )
             }
         ) {
