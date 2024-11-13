@@ -10,7 +10,6 @@ import com.pwhs.quickmem.data.remote.EmailService
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
-import com.pwhs.quickmem.domain.model.auth.GetAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -239,18 +238,4 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAvatar(
-        avatarId: Int
-    ): Flow<Resources<GetAvatarResponseModel>> {
-        return flow {
-            try {
-                emit(Resources.Loading())
-                val response = apiService.getAvatar(avatarId)
-                emit(Resources.Success(response.toModel()))
-            } catch (e: Exception) {
-                Timber.e(e)
-                emit(Resources.Error(e.toString()))
-            }
-        }
-    }
 }

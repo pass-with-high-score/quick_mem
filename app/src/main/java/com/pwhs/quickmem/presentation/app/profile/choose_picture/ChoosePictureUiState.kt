@@ -1,3 +1,7 @@
 package com.pwhs.quickmem.presentation.app.profile.choose_picture
 
-sealed class ChoosePictureUiState
+data class ChoosePictureUiState(
+    val isLoading:Boolean = false,
+    val avatarUrls: List<String> = emptyList(),
+    val selectedAvatarUrl: String? = null
+)
