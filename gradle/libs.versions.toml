@@ -1,7 +1,7 @@
 [versions]
 # default versions
 compileSdk = "35"
-minSdk = "28"
+minSdk = "29"
 purchases = "8.10.1"
 purchasesUi = "8.10.1"
 targetSdk = "35"
