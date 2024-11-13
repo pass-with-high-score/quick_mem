@@ -194,7 +194,7 @@ fun Home(
                                 modifier = Modifier.size(15.dp)
                             )
                             Text(
-                                "Study sets, folders, class,...",
+                                stringResource(R.string.txt_study_sets_folders_class),
                                 style = typography.bodyMedium.copy(
                                     color = colorScheme.secondary,
                                     fontWeight = FontWeight.Bold
@@ -216,7 +216,7 @@ fun Home(
                             shape = MaterialTheme.shapes.extraLarge,
                         ) {
                             Text(
-                                "Upgrade",
+                                stringResource(R.string.txt_upgrade),
                                 style = typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 )
@@ -292,7 +292,7 @@ fun Home(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            Text("Home Screen")
+            Text(stringResource(R.string.txt_home_screen))
             Text(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
@@ -332,7 +332,7 @@ fun Home(
                             .height(150.dp)
                     )
                     Text(
-                        "Streak $streakCount",
+                        stringResource(R.string.txt_streak, streakCount),
                         style = typography.titleLarge.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold

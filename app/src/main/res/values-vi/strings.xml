@@ -307,6 +307,18 @@
     <string name="txt_are_you_sure_you_want_to_delete_this_folder">Bạn có chắc muốn xóa thư mục này không?</string>
     <string name="txt_folder_edited">Thư mục đã được chỉnh sửa</string>
     <string name="txt_edit_folder">Chỉnh sửa Thư mục</string>
+    <!-- setting -->
+        <string name="txt_study_sets_folders_class">Bộ học, thư mục, lớp học,&#8230;</string>
+        <string name="txt_home_screen">Màn hình chính</string>
+        <string name="txt_streak">Chuỗi %1$s</string>
+        <string name="txt_first_verify_your_account">Trước tiên, hãy xác minh tài khoản của bạn</string>
+        <string name="txt_to_confirm_it_s_really_you_please_enter_your_quickmem_password">Để xác nhận đây thực sự là bạn, vui lòng nhập mật khẩu QuickMem của bạn</string>
+        <string name="txt_password_2">Mật khẩu</string>
+        <string name="txt_password_changed_successfully">Đã đổi mật khẩu thành công</string>
+        <string name="txt_current_password">Mật khẩu hiện tại</string>
+        <string name="txt_confirm_new_password">Xác nhận mật khẩu mới</string>
+        <string name="txt_check_your_email_for_verification">Kiểm tra email của bạn để xác minh</string>
+
 
 
 </resources>

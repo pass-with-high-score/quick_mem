@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTextField
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -38,7 +39,8 @@ fun UpdateEmailSettingScreen(
                 }
 
                 UpdateEmailSettingUiEvent.OnEmailChanged -> {
-                    Toast.makeText(context, "Check your email for verification", Toast.LENGTH_SHORT)
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_check_your_email_for_verification), Toast.LENGTH_SHORT)
                         .show()
                     resultNavigator.navigateBack(true)
                 }
