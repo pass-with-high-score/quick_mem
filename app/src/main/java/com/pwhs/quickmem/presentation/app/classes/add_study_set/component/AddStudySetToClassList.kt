@@ -24,12 +24,14 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
@@ -69,14 +71,14 @@ fun AddStudySetToClassList(
                 ) {
                     AsyncImage(
                         model = avatarUrl,
-                        contentDescription = "User avatar",
+                        contentDescription = stringResource(R.string.txt_user_avatar_2),
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = "Hello, $username",
+                        text = stringResource(R.string.txt_hello, username),
                         style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp
@@ -87,7 +89,7 @@ fun AddStudySetToClassList(
                         color = colorScheme.onSurface.copy(alpha = 0.1f),
                     )
                     Text(
-                        text = "There are no owned study sets, create one to get started!",
+                        text = stringResource(R.string.txt_there_are_no_owned_study_sets_create_one_to_get_started),
                         textAlign = TextAlign.Center,
                         style = typography.bodyMedium.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f),
@@ -107,7 +109,7 @@ fun AddStudySetToClassList(
                         SearchTextField(
                             searchQuery = searchQuery,
                             onSearchQueryChange = { searchQuery = it },
-                            placeholder = "Search study sets"
+                            placeholder = stringResource(R.string.txt_search_study_sets_2)
                         )
 
                     }
@@ -120,7 +122,7 @@ fun AddStudySetToClassList(
                                 horizontalAlignment = CenterHorizontally
                             ) {
                                 Text(
-                                    text = "No study set fold found",
+                                    text = stringResource(R.string.txt_no_study_set_fold_found),
                                     style = typography.bodyLarge,
                                     textAlign = TextAlign.Center
                                 )

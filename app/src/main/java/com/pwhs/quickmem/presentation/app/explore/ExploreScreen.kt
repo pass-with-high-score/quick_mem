@@ -10,8 +10,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -44,7 +46,7 @@ fun Explore(modifier: Modifier = Modifier) {
         Column(
             modifier = modifier.padding(innerPadding),
         ) {
-            Text("Explore Screen")
+            Text(stringResource(R.string.txt_explore_screen))
         }
     }
 }

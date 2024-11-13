@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
@@ -80,7 +81,7 @@ fun CardSelectImage(
                     Timber.d("Image Url: $definitionImageUrl")
                     AsyncImage(
                         model = definitionImageUrl,
-                        contentDescription = "Image for definition",
+                        contentDescription = stringResource(R.string.txt_image_for_definition),
                         modifier = Modifier.size(120.dp),
                         contentScale = ContentScale.Crop
                     )
@@ -88,7 +89,7 @@ fun CardSelectImage(
                     Timber.d("Image Uri: $definitionImageUri")
                     AsyncImage(
                         model = definitionImageUri,
-                        contentDescription = "Image for definition",
+                        contentDescription = stringResource(R.string.txt_image_for_definition),
                         modifier = Modifier.size(120.dp),
                         contentScale = ContentScale.Crop,
                         onSuccess = { onUploadImage(definitionImageUri) }
@@ -97,7 +98,7 @@ fun CardSelectImage(
                     Timber.d("No Image")
                     Image(
                         painter = painterResource(id = R.drawable.ic_add_image),
-                        contentDescription = "Add Image to Definition",
+                        contentDescription = stringResource(R.string.txt_add_image_to_definition),
                         modifier = Modifier.size(120.dp),
                         colorFilter = ColorFilter.tint(
                             MaterialTheme.colorScheme.onSurface.copy(
@@ -108,7 +109,7 @@ fun CardSelectImage(
                     )
                 }
                 Text(
-                    "Image for definition",
+                    stringResource(R.string.txt_image_for_definition_2),
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -132,7 +133,7 @@ fun CardSelectImage(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         AsyncImage(
                             model = definitionImageUri ?: definitionImageUrl,
-                            contentDescription = "Full Image",
+                            contentDescription = stringResource(R.string.txt_full_image),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
@@ -146,7 +147,7 @@ fun CardSelectImage(
                             },
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
                         ) {
-                            Text("Delete Image")
+                            Text(stringResource(R.string.txt_delete_image))
                         }
                     }
                 }

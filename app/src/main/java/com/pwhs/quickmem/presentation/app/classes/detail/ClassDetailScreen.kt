@@ -29,9 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -168,7 +170,8 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.ClassDeleted -> {
-                    Toast.makeText(context, "Class Deleted", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_class_deleted), Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
                 }
 
@@ -273,7 +276,11 @@ fun ClassDetail(
     onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabTitles = listOf("Study sets", "Folders", "Members")
+    val tabTitles = listOf(stringResource(R.string.txt_study_sets), stringResource(R.string.txt_folders),
+        stringResource(
+            R.string.txt_members
+        )
+    )
 
     val refreshState = rememberPullToRefreshState()
     var showMoreBottomSheet by remember { mutableStateOf(false) }
@@ -294,11 +301,12 @@ fun ClassDetail(
                     onNavigateToUserDetail(it)
                 },
                 onShareClicked = {
-                    val link = AppConstant.BASE_URL + "class/join/" + linkShareCode
-                    val text = "Join class by link with me: $title\n$link"
+                    val link = AppConstant.BASE_URL + context.getString(R.string.txt_class_join) + linkShareCode
+                    val text =
+                        context.getString(R.string.txt_join_class_by_link_with_me, title, link)
                     val sendIntent = Intent(Intent.ACTION_SEND).apply {
                         putExtra(Intent.EXTRA_TEXT, text)
-                        type = "text/plain"
+                        type = context.getString(R.string.txt_text_plain)
                     }
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     context.startActivity(shareIntent)
@@ -381,10 +389,10 @@ fun ClassDetail(
                 onDeleteClass()
                 showDeleteConfirmationDialog = false
             },
-            title = "Delete class",
-            text = "Are you sure you want to delete this class?",
-            confirmButtonTitle = "Delete",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(R.string.txt_delete_class),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_class),
+            confirmButtonTitle = stringResource(R.string.txt_delete),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
         )
     }
     ClassDetailBottomSheet(
@@ -408,7 +416,7 @@ fun ClassDetail(
 private fun ClassDetailScreenPreview() {
     QuickMemTheme {
         ClassDetail(
-            title = "Class Title",
+            title = stringResource(R.string.txt_class_title),
         )
     }
 }

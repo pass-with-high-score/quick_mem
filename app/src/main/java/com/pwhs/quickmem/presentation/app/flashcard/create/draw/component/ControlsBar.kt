@@ -15,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import io.ak1.drawbox.DrawController
 
 @Composable
@@ -36,28 +38,28 @@ fun ControlsBar(
     ) {
         MenuItems(
             icon = Icons.AutoMirrored.Filled.Undo,
-            desc = "undo",
+            desc = stringResource(R.string.txt_undo),
             colorTint = if (undoVisibility.value) colorScheme.onSurface else colorScheme.inversePrimary
         ) {
             if (undoVisibility.value) drawController.unDo()
         }
         MenuItems(
             icon = Icons.AutoMirrored.Filled.Redo,
-            desc = "redo",
+            desc = stringResource(R.string.txt_redo),
             colorTint = if (redoVisibility.value) colorScheme.onSurface else colorScheme.inversePrimary
         ) {
             if (redoVisibility.value) drawController.reDo()
         }
         MenuItems(
             icon = Icons.Default.Refresh,
-            desc = "reset",
+            desc = stringResource(R.string.txt_reset_2),
             colorTint = if (redoVisibility.value || undoVisibility.value) colorScheme.onSurface else colorScheme.inversePrimary
         ) {
             drawController.reset()
         }
         MenuItems(
             icon = Icons.Default.FormatColorFill,
-            desc = "background color",
+            desc = stringResource(R.string.txt_background_color),
             colorTint = bgColorValue.value,
             border = bgColorValue.value == colorScheme.onPrimary,
         ) {
@@ -65,14 +67,14 @@ fun ControlsBar(
         }
         MenuItems(
             icon = Icons.Default.ColorLens,
-            desc = "stroke color",
+            desc = stringResource(R.string.txt_stroke_color),
             colorTint = colorValue.value
         ) {
             onColorClick()
         }
         MenuItems(
             icon = Icons.Default.Brush,
-            desc = "stroke size",
+            desc = stringResource(R.string.txt_stroke_size),
             colorTint = colorScheme.inversePrimary
         ) {
             onSizeClick()

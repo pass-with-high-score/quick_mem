@@ -20,10 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import com.pwhs.quickmem.R
 
 @Composable
 fun SeekbarBrushWidth(
@@ -63,8 +65,8 @@ fun SeekbarBrushWidth(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Stroke Width")
-                Text(text = "$progress pt")
+                Text(text = stringResource(R.string.txt_stroke_width))
+                Text(text = stringResource(R.string.txt_pt, progress))
             }
             AndroidView(
                 { SeekBar(context) },

@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -101,7 +102,7 @@ fun AddStudySetToClassItem(
                                         fontWeight = FontWeight.Normal
                                     )
                             ) {
-                                append(" Flashcards")
+                                append(stringResource(R.string.txt_flashcards_2))
                             }
                         }
                     }
@@ -122,7 +123,7 @@ fun AddStudySetToClassItem(
                 ) {
                     AsyncImage(
                         model = studySet.owner.avatarUrl,
-                        contentDescription = "User avatar",
+                        contentDescription = stringResource(R.string.txt_user_avatar_2),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(18.dp)
@@ -146,7 +147,7 @@ fun AddStudySetToClassItem(
             ) {
                 Icon(
                     painter = painterResource(if (isAdded) R.drawable.ic_check_circle else R.drawable.ic_add_circle),
-                    contentDescription = if (isAdded) "Check Icon" else "Add Icon",
+                    contentDescription = if (isAdded) stringResource(R.string.txt_check_icon) else stringResource(R.string.txt_add_icon),
                     modifier = Modifier.size(26.dp),
                     tint = colorScheme.onSurface
                 )

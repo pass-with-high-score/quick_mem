@@ -16,6 +16,8 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,32 +47,32 @@ fun ClassDetailBottomSheet(
                 ItemMenuBottomSheet(
                     onClick = onAddStudySetToClass,
                     icon = Outlined.Add,
-                    title = "Add study set to class"
+                    title = stringResource(R.string.txt_add_study_set_to_class)
                 )
                 ItemMenuBottomSheet(
                     onClick = onAddFolderToClass,
                     icon = Outlined.Add,
-                    title = "Add folder to class"
+                    title = stringResource(R.string.txt_add_folder_to_class)
                 )
                 ItemMenuBottomSheet(
                     onClick = onEditClass,
                     icon = Outlined.Edit,
-                    title = "Save and edit"
+                    title = stringResource(R.string.txt_save_and_edit_2)
                 )
                 ItemMenuBottomSheet(
                     onClick = onShareClass,
                     icon = Default.IosShare,
-                    title = "Share Class"
+                    title = stringResource(R.string.txt_share_class)
                 )
                 ItemMenuBottomSheet(
                     onClick = onReportClass,
                     icon = Outlined.Report,
-                    title = "Report Class"
+                    title = stringResource(R.string.txt_report_class)
                 )
                 ItemMenuBottomSheet(
                     onClick = onDeleteClass,
                     icon = Default.DeleteOutline,
-                    title = "Delete Class",
+                    title = stringResource(R.string.txt_delete_class),
                     color = Color.Red
                 )
             }
