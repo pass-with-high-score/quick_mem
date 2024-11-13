@@ -290,6 +290,24 @@
     <string name="txt_stroke_size">stroke size</string>
     <string name="txt_stroke_width">Stroke Width</string>
     <string name="txt_pt">%1$s pt</string>
+    <string name="txt_draw">Draw</string>
+    <string name="txt_cancel_and_back">Cancel and back</string>
+    <!-- folder-->
+    <string name="txt_flashcards_3">" Flashcards"</string>
+    <string name="txt_success_2">Success</string>
+    <string name="txt_folder_created">Folder Created</string>
+    <string name="txt_create_new_folder">Create new folder</string>
+    <string name="txt_folder_title_2">Folder Title</string>
+    <string name="txt_enter_folder_title_2">Enter Folder Title</string>
+    <string name="txt_when_you_make_a_folder_public_anyone_can_see_it_and_use_it">When you make a folder public, anyone can see it and use it.</string>
+    <string name="txt_the_folder_has_no_study_sets">The folder has no study sets</string>
+    <string name="txt_content">Content</string>
+    <string name="txt_share_folder">Share Folder</string>
+    <string name="txt_report_folder">Report Folder</string>
+    <string name="txt_delete_folder">Delete Folder</string>
+    <string name="txt_are_you_sure_you_want_to_delete_this_folder">Are you sure you want to delete this folder?</string>
+    <string name="txt_folder_edited">Folder edited</string>
+    <string name="txt_edit_folder">Edit folder</string>
     <!--App-->
 
 </resources>

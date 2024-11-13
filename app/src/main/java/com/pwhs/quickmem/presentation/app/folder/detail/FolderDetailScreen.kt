@@ -23,9 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailTopAppBar
@@ -255,10 +257,10 @@ fun FolderDetail(
                 onDeleteFolder()
                 showDeleteConfirmationDialog = false
             },
-            title = "Delete Folder",
-            text = "Are you sure you want to delete this folder?",
-            confirmButtonTitle = "Delete",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(R.string.txt_delete_folder),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_folder),
+            confirmButtonTitle = stringResource(R.string.txt_delete),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
         )
     }
     FolderMenuBottomSheet(
@@ -280,7 +282,7 @@ fun FolderDetail(
 private fun FolderDetailPreview() {
     QuickMemTheme {
         FolderDetail(
-            title = "Folder Title",
+            title = stringResource(R.string.txt_folder_title),
         )
     }
 }

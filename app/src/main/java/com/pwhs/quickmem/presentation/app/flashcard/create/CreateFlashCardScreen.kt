@@ -316,7 +316,7 @@ fun CreateFlashCard(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Clear,
-                                        contentDescription = "Close",
+                                        contentDescription = stringResource(R.string.txt_close),
                                     )
                                 }
                             }

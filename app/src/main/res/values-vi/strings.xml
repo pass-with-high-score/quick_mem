@@ -289,5 +289,24 @@
     <string name="txt_stroke_size">kích thước nét vẽ</string>
     <string name="txt_stroke_width">Độ rộng nét vẽ</string>
     <string name="txt_pt">%1$s pt</string>
+    <string name="txt_draw">Vẽ</string>
+    <string name="txt_cancel_and_back">Hủy và quay lại</string>
+    <!-- folder -->
+    <string name="txt_flashcards_3">"Thẻ ghi nhớ"</string>
+    <string name="txt_success_2">Thành công</string>
+    <string name="txt_folder_created">Thư mục đã được tạo</string>
+    <string name="txt_create_new_folder">Tạo thư mục mới</string>
+    <string name="txt_folder_title_2">Tiêu đề Thư mục</string>
+    <string name="txt_enter_folder_title_2">Nhập Tiêu đề Thư mục</string>
+    <string name="txt_when_you_make_a_folder_public_anyone_can_see_it_and_use_it">Khi bạn làm thư mục công khai, bất kỳ ai cũng có thể xem và sử dụng nó.</string>
+    <string name="txt_the_folder_has_no_study_sets">Thư mục không có bộ học nào</string>
+    <string name="txt_content">Nội dung</string>
+    <string name="txt_share_folder">Chia sẻ Thư mục</string>
+    <string name="txt_report_folder">Báo cáo Thư mục</string>
+    <string name="txt_delete_folder">Xóa Thư mục</string>
+    <string name="txt_are_you_sure_you_want_to_delete_this_folder">Bạn có chắc muốn xóa thư mục này không?</string>
+    <string name="txt_folder_edited">Thư mục đã được chỉnh sửa</string>
+    <string name="txt_edit_folder">Chỉnh sửa Thư mục</string>
+
 
 </resources>
