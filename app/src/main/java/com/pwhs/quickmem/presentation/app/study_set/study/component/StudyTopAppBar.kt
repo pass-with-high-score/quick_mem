@@ -11,8 +11,10 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +32,9 @@ fun StudyTopAppBar(
         modifier = modifier,
         title = {
             Text(
-                text = if (isEnOfSet) "Congratulations!" else "Card $currentCardIndex of $totalCards",
+                text = if (isEnOfSet) stringResource(R.string.txt_congratulations) else stringResource(
+                    R.string.txt_card_of, currentCardIndex, totalCards
+                ),
                 style = typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                 )

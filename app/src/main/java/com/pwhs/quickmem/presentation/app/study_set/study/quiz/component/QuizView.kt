@@ -20,9 +20,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.study.quiz.RandomAnswer
 import timber.log.Timber
@@ -39,8 +41,16 @@ fun QuizView(
     var isSelectCorrectAnswer by remember { mutableStateOf(false) }
     var selectedAnswer by remember { mutableStateOf("") }
     var feedbackMessage by remember { mutableStateOf("Select an answer") }
-    val correctMessages = listOf("Great job!", "Well done!", "Correct!", "Nice work!")
-    val incorrectMessages = listOf("Try again!", "Incorrect!", "Not quite!", "Keep trying!")
+    val correctMessages = listOf(stringResource(R.string.txt_great_job),
+        stringResource(R.string.txt_well_done), stringResource(R.string.txt_correct),
+        stringResource(
+            R.string.txt_nice_work
+        )
+    )
+    val incorrectMessages = listOf(stringResource(R.string.txt_try_again),
+        stringResource(R.string.txt_incorrect),
+        stringResource(R.string.txt_not_quite), stringResource(R.string.txt_keep_trying)
+    )
 
     Column(
         modifier = modifier
@@ -132,7 +142,7 @@ fun QuizView(
                             shape = MaterialTheme.shapes.medium
                         ) {
                             Text(
-                                "Continue",
+                                stringResource(R.string.txt_continue),
                                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(8.dp)
                             )

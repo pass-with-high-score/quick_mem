@@ -18,9 +18,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetColorInput
@@ -55,7 +57,8 @@ fun CreateStudySetScreen(
                 }
 
                 is CreateStudySetUiEvent.StudySetCreated -> {
-                    Toast.makeText(context, "Study Set Created", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_study_set_created), Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
                     navigator.navigate(
                         StudySetDetailScreenDestination(
@@ -126,7 +129,7 @@ fun CreateStudySet(
             CreateTopAppBar(
                 onNavigateBack = onNavigateBack,
                 onDoneClick = onDoneClick,
-                title = "Create new study set"
+                title = stringResource(R.string.txt_create_new_study_set)
             )
         }
     ) { innerPadding ->
@@ -138,17 +141,17 @@ fun CreateStudySet(
             ) {
                 CreateTextField(
                     value = title,
-                    title = "Study Set Title",
+                    title = stringResource(R.string.txt_study_set_title),
                     valueError = titleError,
                     onValueChange = onTitleChange,
-                    placeholder = "Enter Study Set Title"
+                    placeholder = stringResource(R.string.txt_enter_study_set_title)
                 )
                 CreateTextField(
                     value = description,
                     valueError = descriptionError,
                     onValueChange = onDescriptionChange,
-                    title = "Description (optional)",
-                    placeholder = "Enter Description"
+                    title = stringResource(R.string.txt_description_optional),
+                    placeholder = stringResource(R.string.txt_enter_description)
                 )
                 StudySetSubjectInput(
                     subjectModel = subjectModel,
@@ -163,7 +166,7 @@ fun CreateStudySet(
                 SwitchContainer(
                     checked = isPublic,
                     onCheckedChange = onIsPublicChange,
-                    text = "When you make a study set public, anyone can see it and use it."
+                    text = stringResource(R.string.txt_when_you_make_a_study_set_public_anyone_can_see_it_and_use_it)
                 )
 
             }

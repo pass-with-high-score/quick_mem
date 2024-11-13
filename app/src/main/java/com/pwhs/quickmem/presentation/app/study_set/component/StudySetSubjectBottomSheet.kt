@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -52,7 +53,7 @@ fun StudySetSubjectBottomSheet(
 
             ) {
                 Text(
-                    "Subjects",
+                    stringResource(R.string.txt_subjects),
                     style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                 )
                 OutlinedTextField(
@@ -67,7 +68,7 @@ fun StudySetSubjectBottomSheet(
                     value = searchSubjectQuery,
                     shape = RoundedCornerShape(10.dp),
                     onValueChange = onSearchQueryChange,
-                    placeholder = { Text("Try Arts") },
+                    placeholder = { Text(stringResource(R.string.txt_try_arts)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp),
@@ -120,7 +121,7 @@ fun StudySetSubjectBottomSheet(
                     item {
                         if (filteredSubjects.isEmpty()) {
                             Text(
-                                text = "No subjects found",
+                                text = stringResource(R.string.txt_no_subjects_found),
                                 style = typography.bodyMedium.copy(
                                     color = colorScheme.onSurface,
                                     fontWeight = FontWeight.Bold

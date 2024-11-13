@@ -16,9 +16,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.component.AddStudySetToFoldersList
 import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.component.AddStudySetToFoldersTopAppBar
@@ -52,7 +54,7 @@ fun AddStudySetToFoldersScreen(
                 }
 
                 is AddStudySetToFoldersUiEvent.StudySetAddedToFolders -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.txt_success), Toast.LENGTH_SHORT).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
@@ -103,7 +105,7 @@ fun AddStudySetToFolders(
             AddStudySetToFoldersTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
-                title = "Add to folder"
+                title = stringResource(R.string.txt_add_to_folder)
             )
         },
         floatingActionButton = {
@@ -114,7 +116,7 @@ fun AddStudySetToFolders(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Create folder"
+                    contentDescription = stringResource(R.string.txt_create_folder)
                 )
             }
         }

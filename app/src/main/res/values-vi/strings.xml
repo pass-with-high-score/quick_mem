@@ -319,6 +319,50 @@
         <string name="txt_confirm_new_password">Xác nhận mật khẩu mới</string>
         <string name="txt_check_your_email_for_verification">Kiểm tra email của bạn để xác minh</string>
 
+    <!-- studyset -->
+        <string name="txt_study_sets_3">%1$s bộ học</string>
+        <string name="txt_there_are_no_folders_yet_create_one_to_get_started_2">Chưa có thư mục nào, hãy tạo một thư mục để bắt đầu!</string>
+        <string name="txt_color">Màu sắc</string>
+        <string name="txt_subjects">Chủ đề</string>
+        <string name="txt_try_arts">Thử Nghệ thuật</string>
+        <string name="txt_no_subjects_found">Không tìm thấy chủ đề nào</string>
+        <string name="txt_subject">Chủ đề</string>
+        <string name="txt_study_set_created">Đã tạo Bộ học</string>
+        <string name="txt_create_new_study_set">Tạo bộ học mới</string>
+        <string name="txt_study_set_title">Tiêu đề Bộ học</string>
+        <string name="txt_enter_study_set_title">Nhập Tiêu đề Bộ học</string>
+        <string name="txt_when_you_make_a_study_set_public_anyone_can_see_it_and_use_it">Khi bạn công khai bộ học, mọi người đều có thể xem và sử dụng nó.</string>
+        <string name="txt_study_set_edited">Đã chỉnh sửa Bộ học</string>
+        <string name="txt_when_you_make_a_study_set_public_anyone_can_see_it_and_use_it_2">Khi bạn công khai bộ học, mọi người đều có thể xem và sử dụng nó.</string>
+        <string name="txt_you_re_doing_great">Bạn đang làm rất tốt!</string>
+        <string name="txt_keep_focusing_on_your_study_set_to_master_it">Tiếp tục tập trung vào bộ học của bạn để thành thạo nó!</string>
+        <string name="txt_learning_time">Thời gian học</string>
+        <string name="txt_keep_reviewing_terms">Tiếp tục ôn tập %1$s thuật ngữ</string>
+        <string name="txt_restart_flashcards">Bắt đầu lại Flashcard</string>
+        <string name="txt_still_learning_2">Vẫn đang học</string>
+        <string name="txt_known">Đã biết</string>
+        <string name="txt_congratulations">Chúc mừng!</string>
+        <string name="txt_card_of">Thẻ %1$s trên %2$s</string>
+        <string name="txt_tap_the_card_to_flip">Chạm vào thẻ để lật</string>
+        <string name="txt_swipe_left_to_mark_as_known">Vuốt sang trái để đánh dấu là đã biết</string>
+        <string name="txt_swipe_right_to_mark_as_still_learning">Vuốt sang phải để đánh dấu là vẫn đang học</string>
+        <string name="txt_show_hint">Hiển thị Gợi ý</string>
+        <string name="txt_show_explanation">Hiển thị Giải thích</string>
+        <string name="txt_hint_2">Gợi ý</string>
+        <string name="txt_great_job">Làm tốt lắm!</string>
+        <string name="txt_well_done">Hoàn thành tốt!</string>
+        <string name="txt_correct">Chính xác!</string>
+        <string name="txt_nice_work">Làm tốt!</string>
+        <string name="txt_try_again">Thử lại!</string>
+        <string name="txt_incorrect">Sai rồi!</string>
+        <string name="txt_not_quite">Chưa hẳn!</string>
+        <string name="txt_keep_trying">Tiếp tục cố gắng!</string>
+        <string name="txt_continue">Tiếp tục</string>
+        <string name="txt_round_1">Vòng 1</string>
+        <string name="txt_learnbytruefalse">Học bằng Đúng/Sai</string>
+        <string name="txt_learnbywrite">Học bằng Viết</string>
+
+
 
 
 </resources>

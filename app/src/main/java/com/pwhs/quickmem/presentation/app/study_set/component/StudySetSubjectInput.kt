@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -31,7 +32,7 @@ fun StudySetSubjectInput(
         modifier = modifier.padding(top = 10.dp)
     ) {
         Text(
-            text = "Subject",
+            text = stringResource(R.string.txt_subject),
             style = typography.bodyMedium.copy(
                 fontWeight = FontWeight.Bold
             )
@@ -40,7 +41,7 @@ fun StudySetSubjectInput(
             shape = RoundedCornerShape(10.dp),
             value = subjectModel!!.name,
             onValueChange = { },
-            placeholder = { Text("Subject") },
+            placeholder = { Text(stringResource(R.string.txt_subject)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 5.dp)

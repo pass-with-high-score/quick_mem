@@ -24,12 +24,14 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
@@ -73,7 +75,7 @@ fun AddStudySetToFoldersList(
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = "Hello, $username",
+                        text = stringResource(R.string.txt_hello, username),
                         style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp
@@ -84,7 +86,7 @@ fun AddStudySetToFoldersList(
                         color = colorScheme.onSurface.copy(alpha = 0.1f),
                     )
                     Text(
-                        text = "There are no folders yet, create one to get started!",
+                        text = stringResource(R.string.txt_there_are_no_folders_yet_create_one_to_get_started_2),
                         textAlign = TextAlign.Center,
                         style = typography.bodyMedium.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f),
@@ -103,7 +105,7 @@ fun AddStudySetToFoldersList(
                             SearchTextField(
                                 searchQuery = searchQuery,
                                 onSearchQueryChange = { searchQuery = it },
-                                placeholder = "Search folders",
+                                placeholder = stringResource(R.string.txt_search_folders),
                             )
                         }
                     }
@@ -126,7 +128,7 @@ fun AddStudySetToFoldersList(
                                 horizontalAlignment = CenterHorizontally
                             ) {
                                 Text(
-                                    text = "No folders found",
+                                    text = stringResource(R.string.txt_no_folders_found),
                                     style = typography.bodyLarge,
                                     textAlign = TextAlign.Center
                                 )

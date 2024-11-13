@@ -320,6 +320,48 @@
     <string name="txt_current_password">Current Password</string>
     <string name="txt_confirm_new_password">Confirm New Password</string>
     <string name="txt_check_your_email_for_verification">Check your email for verification</string>
+    <!-- studyset -->
+    <string name="txt_study_sets_3">%1$s study sets</string>
+    <string name="txt_there_are_no_folders_yet_create_one_to_get_started_2">There are no folders yet, create one to get started!</string>
+    <string name="txt_color">Color</string>
+    <string name="txt_subjects">Subjects</string>
+    <string name="txt_try_arts">Try Arts</string>
+    <string name="txt_no_subjects_found">No subjects found</string>
+    <string name="txt_subject">Subject</string>
+    <string name="txt_study_set_created">Study Set Created</string>
+    <string name="txt_create_new_study_set">Create new study set</string>
+    <string name="txt_study_set_title">Study Set Title</string>
+    <string name="txt_enter_study_set_title">Enter Study Set Title</string>
+    <string name="txt_when_you_make_a_study_set_public_anyone_can_see_it_and_use_it">When you make a study set public, anyone can see it and use it.</string>
+    <string name="txt_study_set_edited">Study Set Edited</string>
+    <string name="txt_when_you_make_a_study_set_public_anyone_can_see_it_and_use_it_2">When you make a study set public, anyone can see it and use it.</string>
+    <string name="txt_you_re_doing_great">You\'re doing great!</string>
+    <string name="txt_keep_focusing_on_your_study_set_to_master_it">Keep focusing on your study set to master it!</string>
+    <string name="txt_learning_time">Learning Time</string>
+    <string name="txt_keep_reviewing_terms">Keep reviewing %1$s terms</string>
+    <string name="txt_restart_flashcards">Restart Flashcards</string>
+    <string name="txt_still_learning_2">Still Learning</string>
+    <string name="txt_known">Known</string>
+    <string name="txt_congratulations">Congratulations!</string>
+    <string name="txt_card_of">Card %1$s of %2$s</string>
+    <string name="txt_tap_the_card_to_flip">Tap the card to flip</string>
+    <string name="txt_swipe_left_to_mark_as_known">Swipe left to mark as known</string>
+    <string name="txt_swipe_right_to_mark_as_still_learning">Swipe right to mark as still learning</string>
+    <string name="txt_show_hint">Show Hint</string>
+    <string name="txt_show_explanation">Show Explanation</string>
+    <string name="txt_hint_2">Hint</string>
+    <string name="txt_great_job">Great job!</string>
+    <string name="txt_well_done">Well done!</string>
+    <string name="txt_correct">Correct!</string>
+    <string name="txt_nice_work">Nice work!</string>
+    <string name="txt_try_again">Try again!</string>
+    <string name="txt_incorrect">Incorrect!</string>
+    <string name="txt_not_quite">Not quite!</string>
+    <string name="txt_keep_trying">Keep trying!</string>
+    <string name="txt_continue">Continue</string>
+    <string name="txt_round_1">Round 1</string>
+    <string name="txt_learnbytruefalse">LearnByTrueFalse</string>
+    <string name="txt_learnbywrite">LearnByWrite</string>
     <!--App-->
 
 </resources>

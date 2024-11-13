@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ import com.msusman.compose.cardstack.Duration
 import com.msusman.compose.cardstack.SwipeDirection
 import com.msusman.compose.cardstack.SwipeMethod
 import com.msusman.compose.cardstack.rememberStackState
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.component.StudyCardBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardButton
@@ -156,9 +158,9 @@ fun FlipFlashCard(
     val knownColor = Color(0xff18ae79)
     val stackState = rememberStackState()
     val suggestedText = listOf(
-        "Tap the card to flip",
-        "Swipe left to mark as known",
-        "Swipe right to mark as still learning"
+        stringResource(R.string.txt_tap_the_card_to_flip),
+        stringResource(R.string.txt_swipe_left_to_mark_as_known),
+        stringResource(R.string.txt_swipe_right_to_mark_as_still_learning)
     )
     var currentTextIndex by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
@@ -361,7 +363,7 @@ fun FlipFlashCard(
                                         showHintBottomSheet = true
                                     },
                                     studySetColor = studySetColor,
-                                    title = "Show Hint"
+                                    title = stringResource(R.string.txt_show_hint)
                                 )
                             }
 
@@ -371,7 +373,7 @@ fun FlipFlashCard(
                                         showExplanationBottomSheet = true
                                     },
                                     studySetColor = studySetColor,
-                                    title = "Show Explanation"
+                                    title = stringResource(R.string.txt_show_explanation)
                                 )
                             }
                         }
@@ -396,7 +398,7 @@ fun FlipFlashCard(
 
     StudyCardBottomSheet(
         modifier = Modifier,
-        title = "Hint",
+        title = stringResource(R.string.txt_hint_2),
         contentText = flashCards.getOrNull(currentCardIndex)?.hint ?: "",
         onDismiss = {
             showHintBottomSheet = false
@@ -407,7 +409,7 @@ fun FlipFlashCard(
 
     StudyCardBottomSheet(
         modifier = Modifier,
-        title = "Explanation",
+        title = stringResource(R.string.txt_explanation),
         contentText = flashCards.getOrNull(currentCardIndex)?.explanation ?: "",
         onDismiss = {
             showExplanationBottomSheet = false

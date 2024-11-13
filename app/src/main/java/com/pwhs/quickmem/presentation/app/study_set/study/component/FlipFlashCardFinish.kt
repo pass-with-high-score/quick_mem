@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -78,7 +79,7 @@ fun FlipFlashCardFinish(
                 .padding(16.dp)
         ) {
             Text(
-                text = "You're doing great!",
+                text = stringResource(R.string.txt_you_re_doing_great),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold
                 )
@@ -93,7 +94,7 @@ fun FlipFlashCardFinish(
             )
 
             Text(
-                text = "Keep focusing on your study set to master it!",
+                text = stringResource(R.string.txt_keep_focusing_on_your_study_set_to_master_it),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -178,7 +179,7 @@ fun FlipFlashCardFinish(
                         contentDescription = "Time",
                     )
                     Text(
-                        text = "Learning Time",
+                        text = stringResource(R.string.txt_learning_time),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 18.sp
                         ),
@@ -219,7 +220,7 @@ fun FlipFlashCardFinish(
                     border = BorderStroke(1.dp, studySetColor)
                 ) {
                     Text(
-                        text = "Keep reviewing $countStillLearning terms",
+                        text = stringResource(R.string.txt_keep_reviewing_terms, countStillLearning),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
@@ -243,7 +244,7 @@ fun FlipFlashCardFinish(
                 border = BorderStroke(1.dp, studySetColor)
             ) {
                 Text(
-                    text = "Restart Flashcards",
+                    text = stringResource(R.string.txt_restart_flashcards),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold

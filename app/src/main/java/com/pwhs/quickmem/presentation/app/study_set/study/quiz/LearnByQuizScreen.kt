@@ -21,8 +21,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.study.quiz.component.QuizView
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -86,7 +88,7 @@ fun LearnByQuiz(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text("Round 1")
+                    Text(stringResource(R.string.txt_round_1))
                 },
                 navigationIcon = {
                     IconButton(
