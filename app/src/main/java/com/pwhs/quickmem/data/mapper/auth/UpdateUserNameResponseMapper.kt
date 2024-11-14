@@ -5,10 +5,10 @@ import com.pwhs.quickmem.domain.model.auth.UpdateUsernameResponseModel
 
 fun UpdateUsernameResponseDto.toModel() = UpdateUsernameResponseModel(
     message = message,
-    username = username
+    newUsername = newUsername
 )
 
 fun UpdateUsernameResponseModel.toDto() = UpdateUsernameResponseDto(
     message = message,
-    username = username
+    newUsername = newUsername
 )

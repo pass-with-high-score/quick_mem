@@ -23,7 +23,6 @@ class AppManager(private val context: Context) {
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
         val LANGUAGE_CODE = stringPreferencesKey("LANGUAGE_CODE")
-        val USER_USERNAME = stringPreferencesKey("USER_USERNAME")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -42,6 +41,10 @@ class AppManager(private val context: Context) {
         .map { preferences ->
             preferences[USER_FULL_NAME] ?: ""
         }
+    val userName: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_NAME] ?: ""
+        }
     val userAvatar: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_AVATAR] ?: ""
@@ -49,10 +52,6 @@ class AppManager(private val context: Context) {
     val userEmail: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_EMAIL] ?: ""
-        }
-    val userName: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[USER_NAME] ?: ""
         }
     val pushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
@@ -65,10 +64,6 @@ class AppManager(private val context: Context) {
     val languageCode: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[LANGUAGE_CODE] ?: LanguageCode.EN.name.lowercase()
-        }
-    val usernameFlow: Flow<String?> = context.dataStore.data
-        .map { preferences ->
-            preferences[USER_USERNAME]
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -110,13 +105,6 @@ class AppManager(private val context: Context) {
         Timber.d("Saving user name: $userName")
         context.dataStore.edit { preferences ->
             preferences[USER_NAME] = userName
-        }
-    }
-
-    suspend fun saveUsername(username: String) {
-        Timber.d("Saving username: $username")
-        context.dataStore.edit { preferences ->
-            preferences[USER_USERNAME] = username
         }
     }
 

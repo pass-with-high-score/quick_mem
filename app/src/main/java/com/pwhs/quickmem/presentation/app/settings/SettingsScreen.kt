@@ -85,6 +85,7 @@ fun SettingsScreen(
     resultUpdateEmail: ResultRecipient<UpdateEmailSettingScreenDestination, Boolean>,
     resultChangePassword: ResultRecipient<ChangePasswordSettingScreenDestination, Boolean>,
     resultChangeLanguage: ResultRecipient<ChangeLanguageScreenDestination, Boolean>,
+    resultUpdateUsername: ResultRecipient<UpdateUsernameSettingScreenDestination, Boolean>
 ) {
     val context = LocalContext.current
 
@@ -93,7 +94,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -104,7 +105,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -115,7 +116,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -126,7 +127,18 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultUpdateUsername.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }

@@ -48,7 +48,7 @@ class UpdateUsernameSettingViewModel @Inject constructor(
             is UpdateUsernameSettingUiAction.OnUsernameChanged -> {
                 _uiState.update {
                     it.copy(
-                        username = event.username,
+                        newUsername = event.username,
                         errorMessage = ""
                     )
                 }
@@ -64,10 +64,37 @@ class UpdateUsernameSettingViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = _uiState.value.id
+            val newUsername = _uiState.value.newUsername
             val username = _uiState.value.username
+            if (newUsername.isEmpty()) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Username cannot be empty"
+                    )
+                }
+                return@launch
+            }
+            if (newUsername.length < 4) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Username must be at least 4 characters"
+                    )
+                }
+                return@launch
+            }
+
+            if (newUsername == username) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Username is the same as the current one"
+                    )
+                }
+                return@launch
+            }
+
             authRepository.updateUsername(
                 token,
-                UpdateUsernameRequestModel(userId = userId, username = username)
+                UpdateUsernameRequestModel(userId = userId, newUsername = newUsername)
             )
                 .collect { resource ->
                     when (resource) {
@@ -94,7 +121,7 @@ class UpdateUsernameSettingViewModel @Inject constructor(
                         }
 
                         is Resources.Success -> {
-                            appManager.saveUsername(resource.data?.username ?: username)
+                            appManager.saveUserName(resource.data?.newUsername ?: newUsername)
                             _uiEvent.send(UpdateUsernameSettingUiEvent.OnUsernameChanged)
                         }
                     }
