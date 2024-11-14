@@ -6,9 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -19,6 +23,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,6 +61,11 @@ class SearchResultViewModel @Inject constructor(
             getStudySets()
             getClasses()
             getFolders()
+            Timber.d("query: ${_uiState.value.query}")
+            Timber.d("subject: ${_uiState.value.subjectModel.id}")
+            Timber.d("color: ${_uiState.value.colorModel.id}")
+            Timber.d("size: ${_uiState.value.sizeModel}")
+            Timber.d("creatorType: ${_uiState.value.creatorTypeModel}")
         }
     }
 
@@ -87,6 +97,49 @@ class SearchResultViewModel @Inject constructor(
                     getFolders()
                 }
             }
+
+            is SearchResultUiAction.ColorChanged -> {
+                _uiState.update {
+                    it.copy(colorModel = event.colorModel)
+                }
+            }
+            is SearchResultUiAction.SubjectChanged -> {
+                _uiState.update {
+                    it.copy(subjectModel = event.subjectModel)
+                }
+            }
+
+            SearchResultUiAction.ApplyFilter -> {
+                getStudySets()
+            }
+
+            is SearchResultUiAction.CreatorTypeChanged -> {
+                _uiState.update {
+                    it.copy(creatorTypeModel = event.creatorType)
+                }
+            }
+            is SearchResultUiAction.SizeChanged -> {
+                _uiState.update {
+                    it.copy(sizeModel = event.sizeModel)
+                }
+            }
+
+            SearchResultUiAction.ResetFilter -> {
+                _uiState.update {
+                    it.copy(
+                        colorModel = ColorModel.defaultColors.first(),
+                        subjectModel = SubjectModel.defaultSubjects.first(),
+                        sizeModel = SearchResultSizeEnum.all,
+                        creatorTypeModel = SearchResultCreatorEnum.all
+                    )
+                }
+                Timber.d("query: ${_uiState.value.query}")
+                Timber.d("subject: ${_uiState.value.subjectModel.id}")
+                Timber.d("color: ${_uiState.value.colorModel.id}")
+                Timber.d("size: ${_uiState.value.sizeModel}")
+                Timber.d("creatorType: ${_uiState.value.creatorTypeModel}")
+                getStudySets()
+            }
         }
     }
 
@@ -95,11 +148,11 @@ class SearchResultViewModel @Inject constructor(
             studySetRepository.getSearchResultStudySets(
                 token = _uiState.value.token,
                 query = _uiState.value.query,
-                size = "all",
-                creatorType = null,
+                size = _uiState.value.sizeModel,
+                creatorType = _uiState.value.creatorTypeModel,
                 page = 1,
-                colorId = null,
-                subjectId = null
+                colorId = _uiState.value.colorModel.id,
+                subjectId = _uiState.value.subjectModel.id
             ).collectLatest { resources ->
                 when (resources) {
                     is Resources.Success -> {

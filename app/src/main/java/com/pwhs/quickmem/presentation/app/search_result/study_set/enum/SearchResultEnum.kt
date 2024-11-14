@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.search_result
+package com.pwhs.quickmem.presentation.app.search_result.study_set.enum
 
 enum class SearchResultEnum(val index: Int) {
     ALL_RESULT(0),

@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.search_result
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,21 +17,30 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
+import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.app.search_result.all_result.ListAllResultScreen
 import com.pwhs.quickmem.presentation.app.search_result.classes.ListResultClassesScreen
+import com.pwhs.quickmem.presentation.app.search_result.component.TopBarSearchResult
 import com.pwhs.quickmem.presentation.app.search_result.folder.ListResultFolderScreen
 import com.pwhs.quickmem.presentation.app.search_result.study_set.ListResultStudySetScreen
+import com.pwhs.quickmem.presentation.app.search_result.study_set.component.FilterStudySetBottomSheet
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -53,11 +63,14 @@ fun SearchResultScreen(
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-
-                else -> {}
+                is SearchResultUiEvent.Error -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -70,17 +83,33 @@ fun SearchResultScreen(
         folders = uiState.folders,
         avatarUrl = uiState.userAvatar,
         username = uiState.username,
-        onFilterOptionBottomSheet = {
-
+        colorModel = uiState.colorModel,
+        onColorChange = {
+            viewModel.onEvent(SearchResultUiAction.ColorChanged(it))
+        },
+        subjectModel = uiState.subjectModel,
+        onSubjectChange = {
+            viewModel.onEvent(SearchResultUiAction.SubjectChanged(it))
+        },
+        sizeModel = uiState.sizeModel,
+        onSizeChange = {
+            viewModel.onEvent(SearchResultUiAction.SizeChanged(it))
+        },
+        creatorTypeModel = uiState.creatorTypeModel,
+        onCreatorChange = {
+            viewModel.onEvent(SearchResultUiAction.CreatorTypeChanged(it))
+        },
+        onApplyClick = {
+            viewModel.onEvent(SearchResultUiAction.ApplyFilter)
         },
         onStudySetRefresh = {
-
+            viewModel.onEvent(SearchResultUiAction.RefreshStudySets)
         },
         onClassRefresh = {
-
+            viewModel.onEvent(SearchResultUiAction.RefreshClasses)
         },
         onFolderRefresh = {
-
+            viewModel.onEvent(SearchResultUiAction.RefreshFolders)
         },
         onStudySetClick = {
             navigator.navigate(
@@ -110,6 +139,12 @@ fun SearchResultScreen(
         },
         navigateToCreateFolder = {
             navigator.navigate(CreateFolderScreenDestination)
+        },
+        onNavigateBack = {
+            navigator.navigateUp()
+        },
+        onResetClick = {
+            viewModel.onEvent(SearchResultUiAction.ResetFilter)
         }
     )
 }
@@ -119,6 +154,15 @@ fun SearchResult(
     modifier: Modifier = Modifier,
     query: String = "",
     isLoading: Boolean = false,
+    colorModel: ColorModel? = ColorModel.defaultColors.first(),
+    onColorChange: (ColorModel) -> Unit = {},
+    subjectModel: SubjectModel? = SubjectModel.defaultSubjects.first(),
+    onSubjectChange: (SubjectModel) -> Unit = {},
+    sizeModel: SearchResultSizeEnum = SearchResultSizeEnum.all,
+    onSizeChange: (SearchResultSizeEnum) -> Unit = {},
+    creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.all,
+    onCreatorChange: (SearchResultCreatorEnum) -> Unit = {},
+    onApplyClick: () -> Unit = {},
     avatarUrl: String = "",
     username: String = "",
     onStudySetRefresh: () -> Unit = {},
@@ -131,9 +175,20 @@ fun SearchResult(
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
-    onFilterOptionBottomSheet: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onResetClick: () -> Unit = {}
 ) {
-    Scaffold { innerPadding ->
+    var showFilterBottomSheet by remember { mutableStateOf(false) }
+    Scaffold(
+        containerColor = colorScheme.background,
+        modifier = modifier,
+        topBar = {
+            TopBarSearchResult(
+                onNavigateBack = onNavigateBack,
+                title = "Result Search"
+            )
+        }
+    ) { innerPadding ->
         var tabIndex by remember { mutableIntStateOf(0) }
         val tabTitles = listOf(
             "All Result",
@@ -175,6 +230,7 @@ fun SearchResult(
                 SearchResultEnum.ALL_RESULT.index -> ListAllResultScreen(
 
                 )
+
                 SearchResultEnum.STUDY_SET.index -> ListResultStudySetScreen(
                     isLoading = isLoading,
                     studySets = studySets,
@@ -182,8 +238,12 @@ fun SearchResult(
                     username = username,
                     onStudySetClick = onStudySetClick,
                     onStudySetRefresh = onStudySetRefresh,
-                    onFilterOptionBottomSheet = onFilterOptionBottomSheet
+                    onFilterStudySetBottomSheet = {
+                        showFilterBottomSheet = true
+                    },
+                    onResetClick = onResetClick
                 )
+
                 SearchResultEnum.FOLDER.index -> ListResultFolderScreen(
                     modifier = modifier,
                     isLoading = isLoading,
@@ -192,6 +252,7 @@ fun SearchResult(
                     onAddFolderClick = navigateToCreateFolder,
                     onFolderRefresh = onFolderRefresh
                 )
+
                 SearchResultEnum.CLASS.index -> ListResultClassesScreen(
                     modifier = modifier,
                     isLoading = isLoading,
@@ -202,6 +263,26 @@ fun SearchResult(
             }
             Text(text = "Search Result: $query")
         }
+    }
+    if (showFilterBottomSheet) {
+        FilterStudySetBottomSheet(
+            colorModel = colorModel,
+            onColorChange = onColorChange,
+            onSubjectChange = onSubjectChange,
+            subjectModel = subjectModel,
+            onResetClick = onResetClick,
+            onNavigateBack = {
+                showFilterBottomSheet = false
+            },
+            sizeModel = sizeModel,
+            onSizeChange = onSizeChange,
+            creatorTypeModel = creatorTypeModel,
+            onCreatorChange = onCreatorChange,
+            onApplyClick = {
+                onApplyClick()
+                showFilterBottomSheet = false
+            }
+        )
     }
 }
 

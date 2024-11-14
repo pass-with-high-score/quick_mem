@@ -15,6 +15,8 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
@@ -192,11 +194,11 @@ class StudySetRepositoryImpl @Inject constructor(
     override suspend fun getSearchResultStudySets(
         token: String,
         query: String,
-        size: String,
-        creatorType: String?,
+        size: SearchResultSizeEnum,
+        creatorType: SearchResultCreatorEnum?,
         page: Int,
-        colorId: String?,
-        subjectId: String?
+        colorId: Int?,
+        subjectId: Int?
     ): Flow<Resources<List<GetStudySetResponseModel>>> {
         return flow {
             emit(Resources.Loading())
@@ -218,6 +220,4 @@ class StudySetRepositoryImpl @Inject constructor(
             }
         }
     }
-
-
 }

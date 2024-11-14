@@ -10,6 +10,8 @@ import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import kotlinx.coroutines.flow.Flow
 
 interface StudySetRepository {
@@ -70,10 +72,10 @@ interface StudySetRepository {
     suspend fun getSearchResultStudySets(
         token: String,
         query: String,
-        size: String,
-        creatorType: String?,
+        size: SearchResultSizeEnum,
+        creatorType: SearchResultCreatorEnum?,
         page: Int,
-        colorId: String?,
-        subjectId: String?,
+        colorId: Int?,
+        subjectId: Int?,
     ): Flow<Resources<List<GetStudySetResponseModel>>>
 }

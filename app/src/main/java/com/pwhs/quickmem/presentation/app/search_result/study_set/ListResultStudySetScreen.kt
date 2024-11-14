@@ -49,13 +49,14 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun ListResultStudySetScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    onFilterOptionBottomSheet: () -> Unit = {},
+    onFilterStudySetBottomSheet: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
     onStudySetRefresh: () -> Unit = {},
     avatarUrl: String = "",
     username: String = "",
-    isOwner: Boolean = false
+    isOwner: Boolean = false,
+    onResetClick: () -> Unit = {}
 ) {
     val refreshState = rememberPullToRefreshState()
 
@@ -121,6 +122,12 @@ fun ListResultStudySetScreen(
                                 style = typography.titleLarge,
                                 textAlign = TextAlign.Center
                             )
+                            Button(
+                                onClick = onResetClick,
+                                modifier = Modifier.padding(top = 16.dp)
+                            ) {
+                                Text(text = "Clear filters")
+                            }
                         }
                     }
                 }
@@ -139,7 +146,7 @@ fun ListResultStudySetScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Button(
-                                onClick = onFilterOptionBottomSheet,
+                                onClick = onFilterStudySetBottomSheet,
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_filter),
