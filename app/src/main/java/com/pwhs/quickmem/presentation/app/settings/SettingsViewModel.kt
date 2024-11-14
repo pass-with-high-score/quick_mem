@@ -85,15 +85,20 @@ class SettingsViewModel @Inject constructor(
                     appManager.saveAppPushNotifications(event.isAppPushNotificationsEnabled)
                 }
             }
+
+            is SettingUiAction.Refresh -> {
+                initData()
+            }
         }
     }
 
-    fun initData() {
+    private fun initData() {
         viewModelScope.launch {
             try {
                 val userId = appManager.userId.firstOrNull() ?: ""
                 val fullName = appManager.userFullName.firstOrNull() ?: ""
                 val username = appManager.userName.firstOrNull() ?: ""
+                Timber.d("Username: $username")
                 val email = appManager.userEmail.firstOrNull() ?: ""
                 val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
                 val isAppPushNotificationsEnabled =

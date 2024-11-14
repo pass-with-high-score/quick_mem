@@ -39,7 +39,6 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -71,11 +70,7 @@ fun SendVerifyEmailScreen(
                             isFromSignup = false,
                             resetPasswordToken = uiState.value.resetPasswordToken
                         )
-                    ) {
-                        popUpTo(SendVerifyEmailScreenDestination) {
-                            inclusive = true
-                        }
-                    }
+                    )
                 }
             }
         }
@@ -85,7 +80,7 @@ fun SendVerifyEmailScreen(
         modifier,
         isLoading = uiState.value.isLoading,
         onNavigationIconClick = {
-            navigator.popBackStack()
+            navigator.navigateUp()
         },
         email = uiState.value.email,
         emailError = uiState.value.emailError,
@@ -127,7 +122,7 @@ private fun SendVerifyEmail(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.forgot_password_verify_email),
-                    contentDescription = "Forgot Password Image",
+                    contentDescription = stringResource(R.string.txt_forgot_password_image),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(120.dp)
@@ -148,7 +143,7 @@ private fun SendVerifyEmail(
                     onValueChange = onEmailChanged,
                     label = stringResource(id = R.string.txt_email_address),
                     iconId = R.drawable.ic_email,
-                    contentDescription = "Email",
+                    contentDescription = stringResource(id = R.string.txt_email),
                     type = TextFieldType.EMAIL,
                     error = emailError
                 )
