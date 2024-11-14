@@ -23,10 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
@@ -89,7 +91,7 @@ private fun Search(
                     SearchTextField(
                         searchQuery = query,
                         onSearchQueryChange = onQueryChange,
-                        placeholder = "Study sets, folder, classes,..",
+                        placeholder = stringResource(R.string.txt_study_sets_folder_classes),
                         onSearch = onSearch
                     )
                 },
@@ -99,7 +101,7 @@ private fun Search(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.Default.Close,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.txt_close)
                         )
                     }
                 },
@@ -117,14 +119,14 @@ private fun Search(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    "Enter a topic or keywords",
+                    text = stringResource(R.string.txt_enter_a_topic_or_keywords),
                     style = typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 )
                 Text(
-                    "Tip: The more specific, the better!",
+                    text = stringResource(R.string.txt_tip_the_more_specific_the_better),
                     style = typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface.copy(alpha = 0.6f)

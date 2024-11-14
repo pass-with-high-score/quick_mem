@@ -222,6 +222,28 @@ fun SettingsScreen(
         onNavigateToChangeLanguage = {
             navigator.navigate(ChangeLanguageScreenDestination())
         },
+        onNavigateToPrivacyPolicy = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        },
+        onNavigateToTermsOfService = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        },
         customerInfo = uiState.customerInfo
     )
 }
@@ -322,7 +344,7 @@ fun Setting(
                                     ?: stringResource(R.string.txt_no_subscription),
                             )
                             SettingItem(
-                                title = "Plan",
+                                title = stringResource(R.string.txt_plan),
                                 subtitle = when (customerInfo?.activeSubscriptions?.firstOrNull()
                                     .toString()) {
                                     "quickmem_plus:yearly-plan" -> stringResource(R.string.txt_quickmem_plus_yearly)

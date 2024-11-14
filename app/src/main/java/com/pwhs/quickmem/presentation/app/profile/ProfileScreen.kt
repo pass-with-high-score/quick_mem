@@ -130,7 +130,7 @@ fun Profile(
                             shape = MaterialTheme.shapes.extraLarge,
                         ) {
                             Text(
-                                "Upgrade",
+                                text = stringResource(R.string.txt_upgrade),
                                 style = typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 )
@@ -155,7 +155,7 @@ fun Profile(
                     .placeholder(R.drawable.default_avatar)
                     .error(R.drawable.default_avatar)
                     .build(),
-                contentDescription = "User Avatar",
+                contentDescription = stringResource(R.string.txt_user_avatar),
                 modifier = Modifier
                     .padding(top = 40.dp)
                     .size(80.dp)
@@ -199,11 +199,12 @@ fun Profile(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
-                            contentDescription = "Settings",
+                            contentDescription = stringResource(R.string.txt_settings),
                             modifier = Modifier.size(30.dp)
                         )
                         Text(
-                            "Your setting", style = typography.bodyLarge.copy(
+                            text = stringResource(R.string.txt_your_settings),
+                            style = typography.bodyLarge.copy(
                                 fontWeight = FontWeight.Bold
                             )
                         )

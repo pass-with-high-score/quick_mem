@@ -26,10 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -65,7 +67,7 @@ fun ClassItem(
             ) {
                 Icon(
                     imageVector = Outlined.Groups,
-                    contentDescription = "Class Icon"
+                    contentDescription = stringResource(R.string.txt_class_icon)
                 )
                 Text(
                     text = classItem.title,
@@ -80,9 +82,9 @@ fun ClassItem(
             ) {
                 Text(
                     text = when (classItem.memberCount) {
-                        0 -> "No members"
-                        1 -> "1 member"
-                        else -> "${classItem.memberCount} members"
+                        0 -> stringResource(R.string.txt_no_members)
+                        1 -> stringResource(R.string.txt_one_member)
+                        else -> stringResource(R.string.txt_nums_members, classItem.memberCount)
                     },
                     style = typography.bodyMedium
                 )
@@ -99,7 +101,7 @@ fun ClassItem(
                 ) {
                     AsyncImage(
                         model = classItem.owner.avatarUrl,
-                        contentDescription = "User Avatar",
+                        contentDescription = stringResource(R.string.txt_user_avatar),
                         modifier = Modifier
                             .size(24.dp)
                             .clip(CircleShape),
