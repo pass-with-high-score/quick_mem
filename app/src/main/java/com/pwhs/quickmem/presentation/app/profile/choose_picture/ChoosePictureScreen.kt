@@ -4,7 +4,6 @@ import android.widget.Toast
 import com.pwhs.quickmem.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -22,15 +21,14 @@ import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.Choos
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import timber.log.Timber
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination<RootGraph>
 @Composable
 fun ChoosePictureScreen(
     modifier: Modifier = Modifier,
-    navigator: DestinationsNavigator,
-    viewModel: ChoosePictureViewModel = hiltViewModel()
+    viewModel: ChoosePictureViewModel = hiltViewModel(),
+    resultNavigator: ResultBackNavigator<Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -40,17 +38,16 @@ fun ChoosePictureScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is ChoosePictureUiEvent.AvatarUpdated -> {
-                    Toast.makeText(context, "Avatar Updated: ${event.avatarUrl}", Toast.LENGTH_SHORT).show()
-                    viewModel.onEvent(ChoosePictureUiAction.ImageSelected(event.avatarUrl))
+                    Toast.makeText(context, "Update Image Successfully!", Toast.LENGTH_SHORT).show()
+                    resultNavigator.navigateBack(true)
                 }
-                is ChoosePictureUiEvent.Error -> {
 
+                is ChoosePictureUiEvent.Error -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-
-    Timber.tag("ChoosePictureScreen").d("Avatar URLs: ${uiState.avatarUrls}")
 
     ChoosePicture(
         modifier = modifier,
@@ -62,10 +59,9 @@ fun ChoosePictureScreen(
         },
         onDoneClick = {
             viewModel.onEvent(ChoosePictureUiAction.SaveClicked)
-            navigator.navigateUp()
         },
         onNavigateBack = {
-            navigator.navigateUp()
+            resultNavigator.navigateBack(false)
         }
     )
 }
@@ -125,15 +121,11 @@ fun ChoosePicture(
                 )
             }
 
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-            } else {
-                ChoosePictureList(
-                    avatarUrls = avatarUrls,
-                    selectedAvatarUrl = selectedAvatarUrl,
-                    onImageSelected = onSelectedPicture
-                )
-            }
+            ChoosePictureList(
+                avatarUrls = avatarUrls,
+                selectedAvatarUrl = selectedAvatarUrl,
+                onImageSelected = onSelectedPicture
+            )
         }
     }
 }

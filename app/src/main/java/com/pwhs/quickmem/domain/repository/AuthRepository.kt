@@ -13,6 +13,7 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
@@ -79,6 +80,6 @@ interface AuthRepository {
     suspend fun updateAvatar(
         token: String,
         avatarId: String,
-        avatarData: RequestBody
+        updateAvatarRequestModel: UpdateAvatarRequestModel
     ): Flow<Resources<UpdateAvatarResponseModel>>
 }

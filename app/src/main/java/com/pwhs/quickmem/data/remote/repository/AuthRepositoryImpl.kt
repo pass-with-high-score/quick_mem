@@ -20,6 +20,7 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
@@ -261,13 +262,13 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun updateAvatar(
         token: String,
         avatarId: String,
-        avatarData: RequestBody
+        updateAvatarRequestModel: UpdateAvatarRequestModel
     ): Flow<Resources<UpdateAvatarResponseModel>> {
         return flow {
             emit(Resources.Loading())
             try {
                 val response = apiService.updateAvatar(
-                    token, avatarId, avatarData
+                    token, avatarId, updateAvatarRequestModel.toDto()
                 )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {

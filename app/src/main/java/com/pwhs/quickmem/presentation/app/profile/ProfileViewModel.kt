@@ -44,6 +44,10 @@ class ProfileViewModel @Inject constructor(
                     )
                 }
             }
+
+            ProfileUiAction.Refresh -> {
+                loadProfile()
+            }
         }
     }
 
