@@ -60,31 +60,58 @@ class SendVerifyEmailViewModel @Inject constructor(
     }
 
     private fun resetPassword() {
-
+        val email = uiState.value.email
         viewModelScope.launch {
-            authRepository.sendResetPassword(SendResetPasswordRequestModel(_uiState.value.email))
-                .collect { resource ->
-                    when (resource) {
-                        is Resources.Error -> {
-                            Timber.e(resource.message ?: "Unknown error")
-                            _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure)
-                        }
+            authRepository.checkEmailValidity(email).collect { checkEmail ->
+                when (checkEmail) {
+                    is Resources.Error -> {
+                        Timber.e(checkEmail.message ?: "Unknown error")
+                        _uiState.update { it.copy(isLoading = false) }
+                        _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure)
+                    }
 
-                        is Resources.Loading -> {
-                            _uiState.update { it.copy(isLoading = true) }
-                        }
+                    is Resources.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
 
-                        is Resources.Success -> {
+                    is Resources.Success -> {
+                        if (checkEmail.data == true) {
+                            authRepository.sendResetPassword(SendResetPasswordRequestModel(_uiState.value.email))
+                                .collect { resource ->
+                                    when (resource) {
+                                        is Resources.Error -> {
+                                            Timber.e(resource.message ?: "Unknown error")
+                                            _uiState.update { it.copy(isLoading = false) }
+                                            _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure)
+                                        }
+
+                                        is Resources.Loading -> {
+                                            // Do nothing
+                                        }
+
+                                        is Resources.Success -> {
+                                            _uiState.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    resetPasswordToken = resource.data?.resetPasswordToken
+                                                        ?: ""
+                                                )
+                                            }
+                                            _uiEvent.trySend(SendVerifyEmailUiEvent.SendEmailSuccess)
+                                        }
+                                    }
+                                }
+                        } else {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    resetPasswordToken = resource.data?.resetPasswordToken ?: ""
+                                    emailError = "Email not found"
                                 )
                             }
-                            _uiEvent.trySend(SendVerifyEmailUiEvent.SendEmailSuccess)
                         }
                     }
                 }
+            }
         }
     }
 
@@ -93,3 +120,4 @@ class SendVerifyEmailViewModel @Inject constructor(
         _uiEvent.close()
     }
 }
+

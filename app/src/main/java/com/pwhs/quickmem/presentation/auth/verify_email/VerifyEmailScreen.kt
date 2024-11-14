@@ -22,7 +22,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,8 +42,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,7 +80,10 @@ fun VerifyEmailScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 VerifyEmailUiEvent.VerifyFailure -> {
-                    Toast.makeText(context, "Failed to verify email", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_failed_to_verify_email), Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 VerifyEmailUiEvent.VerifySuccess -> {
@@ -156,7 +163,7 @@ fun VerifyEmailScreen(
             viewModel.onEvent(VerifyEmailUiAction.ResendEmail)
         },
         onNavigationBack = {
-            navigator.popBackStack()
+            navigator.navigateUp()
         }
     )
 }
@@ -191,7 +198,7 @@ private fun VerifyEmail(
                     ) {
                         Icon(
                             imageVector = AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.txt_back)
                         )
                     }
                 }
@@ -222,10 +229,12 @@ private fun VerifyEmail(
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Text(
-                        text = stringResource(
-                            R.string.txt_please_enter_the_code_we_sent_to_your_email,
-                            email
-                        ),
+                        text = buildAnnotatedString {
+                            append(stringResource(R.string.txt_please_enter_the_code_we_sent_to_your_email))
+                            withStyle(style = SpanStyle(color = colorScheme.primary)) {
+                                append(" $email")
+                            }
+                        },
                         style = typography.bodyMedium.copy(
                             fontSize = 16.sp,
                         ),
@@ -268,10 +277,11 @@ private fun VerifyEmail(
                         Text(
                             text = stringResource(R.string.txt_update_email),
                             style = typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = colorScheme.primary,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
-                            )
+                            ),
+                            textDecoration = TextDecoration.Underline
                         )
                     }
                 }
@@ -312,7 +322,7 @@ private fun VerifyEmail(
                                 Text(
                                     text = stringResource(R.string.txt_resend),
                                     style = typography.bodyMedium.copy(
-                                        color = MaterialTheme.colorScheme.onSurface,
+                                        color = colorScheme.onSurface,
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold
                                     )

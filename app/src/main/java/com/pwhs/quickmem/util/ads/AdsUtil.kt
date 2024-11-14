@@ -6,7 +6,6 @@ import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -19,57 +18,53 @@ import com.pwhs.quickmem.core.utils.AppConstant.REWARDED_INTERSTITIAL_ADS_ID
 import com.pwhs.quickmem.core.utils.AppConstant.REWARD_ADS_ID
 
 object AdsUtil {
-    fun interstitialTestAd(context: Context) {
-        // Load an ad
-        InterstitialAd.load(
-            context,
-            INTERSTITIAL_ADS_ID,
-            AdRequest.Builder().build(),
-            object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    // The interstitial ad is loaded
-                    Toast.makeText(context, "Ad Loaded", Toast.LENGTH_SHORT).show()
-                    if (context is MainActivity) {
-                        interstitialAd.show(context)
-                    }
-
-                    interstitialAd.onPaidEventListener =
-                        OnPaidEventListener { p0 ->
-                            Toast.makeText(
-                                context,
-                                p0.toString(),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                }
-
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    // The interstitial ad failed to load
-                    Toast.makeText(context, adError.message, Toast.LENGTH_SHORT).show()
-
-                    adError.cause?.let {
-                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                    adError.responseInfo?.let {
-                        Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
-                    }
-
-                    adError.domain.let {
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    }
-
-                    adError.code.let {
-                        Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
-                    }
-
-                    adError.message.let {
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    }
-
-                }
+    fun interstitialAds(
+        context: Context,
+        isPlus: Boolean = false,
+        onAdWatched: () -> Unit = {}
+    ) {
+        if (isPlus) {
+            onAdWatched()
+        } else {
+            // random number to show ads if it divides by 3 then show ads
+            val randomNumber = (1..100).random()
+            if (randomNumber % 3 == 0) {
+                onAdWatched()
+                return
             }
-        )
+            // Load an ad
+            InterstitialAd.load(
+                context,
+                INTERSTITIAL_ADS_ID,
+                AdRequest.Builder().build(),
+                object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        // The interstitial ad is loaded
+                        if (context is MainActivity) {
+                            interstitialAd.show(context)
+                        }
+                        // after the ad is shown, we need to call the onAdWatched function
+                        interstitialAd.fullScreenContentCallback =
+                            object : FullScreenContentCallback() {
+                                override fun onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent()
+                                    onAdWatched()
+                                }
+
+                                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                    super.onAdFailedToShowFullScreenContent(adError)
+                                    onAdWatched()
+                                }
+                            }
+                    }
+
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        // The interstitial ad failed to load
+                        onAdWatched()
+                    }
+                }
+            )
+        }
     }
 
     fun rewardedTestAd(context: Context, onAdWatched: () -> Unit) {

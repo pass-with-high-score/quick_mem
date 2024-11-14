@@ -136,6 +136,11 @@ fun ListClassesScreen(
                                 )
                             }
                         }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                         items(filterClass) { classItem ->
                             ClassItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -158,11 +163,6 @@ fun ListClassesScreen(
                                     )
                                 }
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))

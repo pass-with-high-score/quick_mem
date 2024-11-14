@@ -140,6 +140,11 @@ fun ListStudySetScreen(
                             )
 
                         }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                         items(filterStudySets) { studySet ->
                             StudySetItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -162,11 +167,6 @@ fun ListStudySetScreen(
                                     )
                                 }
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))
