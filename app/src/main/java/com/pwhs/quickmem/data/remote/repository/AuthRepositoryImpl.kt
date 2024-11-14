@@ -20,6 +20,7 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
@@ -31,7 +32,13 @@ import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody.Companion.toResponseBody
+import retrofit2.Response
 import timber.log.Timber
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -256,4 +263,22 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateAvatar(
+        token: String,
+        avatarId: String,
+        avatarData: RequestBody
+    ): Flow<Resources<UpdateAvatarResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.updateAvatar(
+                    token, avatarId, avatarData
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

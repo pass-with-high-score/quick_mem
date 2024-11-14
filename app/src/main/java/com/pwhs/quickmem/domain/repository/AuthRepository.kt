@@ -13,6 +13,7 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
@@ -22,6 +23,9 @@ import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Response
 
 interface AuthRepository {
     suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>>
@@ -73,4 +77,10 @@ interface AuthRepository {
     ): Flow<Resources<UserDetailResponseModel>>
 
     suspend fun getAvatar(): Flow<Resources<List<String>>>
+
+    suspend fun updateAvatar(
+        token: String,
+        avatarId: String,
+        avatarData: RequestBody
+    ): Flow<Resources<UpdateAvatarResponseModel>>
 }

@@ -1,5 +1,7 @@
 package com.pwhs.quickmem.presentation.app.profile.choose_picture
 
+import android.widget.Toast
+import androidx.compose.foundation.border
 import com.pwhs.quickmem.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,8 +11,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureList
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -37,17 +40,34 @@ fun ChoosePictureScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is ChoosePictureUiEvent.AvatarUpdated -> {
+                    Toast.makeText(context, "Avatar Updated: ${event.avatarUrl}", Toast.LENGTH_SHORT).show()
+                    viewModel.onEvent(ChoosePictureUiAction.ImageSelected(event.avatarUrl))
+                }
+                is ChoosePictureUiEvent.Error -> {
+
+                }
+            }
+        }
+    }
+
     Timber.tag("ChoosePictureScreen").d("Avatar URLs: ${uiState.avatarUrls}")
 
-    ChoosePictureUI(
+    ChoosePicture(
         modifier = modifier,
         isLoading = uiState.isLoading,
         avatarUrls = uiState.avatarUrls,
         selectedAvatarUrl = uiState.selectedAvatarUrl,
-        onSelectedPicture = {
-
+        onSelectedPicture = { avatarUrl ->
+            viewModel.onEvent(ChoosePictureUiAction.ImageSelected(avatarUrl))
         },
         onDoneClick = {
+            viewModel.onEvent(ChoosePictureUiAction.SaveClicked)
             navigator.navigateUp()
         },
         onNavigateBack = {
@@ -57,7 +77,7 @@ fun ChoosePictureScreen(
 }
 
 @Composable
-fun ChoosePictureUI(
+fun ChoosePicture(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     avatarUrls: List<String>,
@@ -94,7 +114,9 @@ fun ChoosePictureUI(
                     contentDescription = "Camera",
                     modifier = Modifier
                         .size(48.dp)
-                        .clickable { },
+                        .clickable {
+
+                        },
                     tint = Color.Gray
                 )
                 Icon(
@@ -102,63 +124,24 @@ fun ChoosePictureUI(
                     contentDescription = "Gallery",
                     modifier = Modifier
                         .size(48.dp)
-                        .clickable { },
+                        .clickable {
+
+                        },
                     tint = Color.Gray
                 )
             }
 
-            ChoosePictureList(
-                avatarUrls = avatarUrls,
-                onImageSelected = onSelectedPicture
-            )
-        }
-    }
-}
-
-@Composable
-fun ChoosePictureList(
-    modifier: Modifier = Modifier,
-    avatarUrls: List<String>,
-    onImageSelected: (String) -> Unit
-) {
-    Timber.tag("ChoosePictureList").d("Avatar URLs in List: $avatarUrls")
-
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-    ) {
-        items(avatarUrls) { avatarUrl ->
-            Timber.tag("AvatarItem").d("Avatar URL: $avatarUrl")
-
-            AvatarItem(
-                avatarUrl = avatarUrl,
-                onSelected = {
-                    Timber.tag("AvatarItem").d("Selected Avatar: $avatarUrl")
-                    onImageSelected(avatarUrl)
-                }
-            )
-        }
-    }
-}
-
-
-@Composable
-fun AvatarItem(
-    avatarUrl: String = "",
-    onSelected: () -> Unit
-) {
-    AsyncImage(
-        model = avatarUrl,
-        contentDescription = "Avatar Image",
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxSize()
-            .clickable {
-                onSelected()
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+            } else {
+                ChoosePictureList(
+                    avatarUrls = avatarUrls,
+                    selectedAvatarUrl = selectedAvatarUrl,
+                    onImageSelected = onSelectedPicture
+                )
             }
-    )
+        }
+    }
 }
+
 
