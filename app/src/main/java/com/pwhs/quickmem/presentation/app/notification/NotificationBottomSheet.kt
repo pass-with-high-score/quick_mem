@@ -7,6 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +23,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +37,10 @@ fun NotificationBottomSheet(
     val uiState by viewModel.uiState.collectAsState()
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
+
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    var selectedItemId by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(userId) {
         viewModel.setArgs(NotificationArgs(userId))
@@ -45,88 +54,120 @@ fun NotificationBottomSheet(
         sheetState = modalBottomSheetState,
         containerColor = MaterialTheme.colorScheme.surface
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.95f)
-        ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                IconButton(
-                    onClick = onDismissRequest,
-                    modifier = Modifier.align(Alignment.CenterStart)
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackBarHostState) },
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_close),
-                        contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        IconButton(
+                            onClick = onDismissRequest,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Close",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
 
-                Text(
-                    text = "Activity",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            when {
-                uiState.isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
-                    }
-                }
-                uiState.error != null -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
                         Text(
-                            text = uiState.error ?: "An error occurred",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
-                uiState.notifications.isEmpty() -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.restriction),
-                            contentDescription = "No Notifications",
-                            modifier = Modifier.size(120.dp),
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.height(21.dp))
-                        Text(
-                            text = "There are no notifications",
-                            fontSize = 18.sp,
-                            style = MaterialTheme.typography.bodyMedium,
+                            text = "Activity",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.align(Alignment.Center)
                         )
                     }
-                }
-                else -> {
-                    uiState.notifications.forEach { notification ->
-                        NotificationItem(
-                            notification = notification,
-                            onDelete = {
-                                viewModel.handleAction(NotificationUiAction.DeleteNotification(notification.id))
-                            },
-                            onMarkAsRead = {
-                                viewModel.handleAction(NotificationUiAction.MarkAsRead(notification.id))
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    when {
+                        uiState.isLoading -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
                             }
-                        )
+                        }
+                        uiState.error != null -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = uiState.error ?: "An error occurred",
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                        uiState.notifications.isEmpty() -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.restriction),
+                                    contentDescription = "No Notifications",
+                                    modifier = Modifier.size(120.dp),
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.height(21.dp))
+                                Text(
+                                    text = "There are no notifications",
+                                    fontSize = 18.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
+                        }
+                        else -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = 16.dp)
+                            ) {
+                                items(uiState.notifications.filter {
+                                    calculateTimeAgo(it.createdAt, onDelete = {
+                                        viewModel.handleAction(NotificationUiAction.DeleteNotification(it.id))
+                                        coroutineScope.launch {
+                                            snackBarHostState.showSnackbar("Notification deleted successfully!")
+                                        }
+                                    }) != "Expired"
+                                }, key = { it.id }) { notification ->
+                                    NotificationItem(
+                                        notification = notification,
+                                        selectedItemId = selectedItemId,
+                                        onSelected = { id -> selectedItemId = id },
+                                        onDelete = {
+                                            viewModel.handleAction(NotificationUiAction.DeleteNotification(notification.id))
+                                            selectedItemId = null
+                                        },
+                                        onMarkAsRead = {
+                                            viewModel.handleAction(NotificationUiAction.MarkAsRead(notification.id))
+                                        }
+                                    )
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(horizontal = 10.dp),
+                                        thickness = 1.dp,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                                    )
+                                }
+
+                                item {
+                                    Spacer(modifier = Modifier.height(60.dp))
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -134,16 +175,42 @@ fun NotificationBottomSheet(
     }
 }
 
+
+fun calculateTimeAgo(createdAt: String, onDelete: () -> Unit): String {
+    return try {
+        val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+        val createdDateTime = OffsetDateTime.parse(createdAt, formatter)
+        val now = OffsetDateTime.now()
+        val duration = Duration.between(createdDateTime, now)
+
+        if (duration.toDays() > 14) {
+            onDelete()
+            return "Expired"
+        } else {
+            when {
+                duration.toMinutes() < 1 -> "${duration.seconds}s"
+                duration.toHours() < 1 -> "${duration.toMinutes()}m"
+                duration.toDays() < 1 -> "${duration.toHours()}h"
+                else -> "${duration.toDays()}d"
+            }
+        }
+    } catch (e: Exception) {
+        "N/A"
+    }
+}
+
 @SuppressLint("UseOfNonLambdaOffsetOverload", "AutoboxingStateCreation")
 @Composable
 fun NotificationItem(
     notification: GetNotificationResponseModel,
+    selectedItemId: String?,
+    onSelected: (String) -> Unit,
     onDelete: () -> Unit,
     onMarkAsRead: () -> Unit,
 ) {
-    val swipeOffset = remember { mutableStateOf(0f) }
+    var swipeOffset by remember { mutableStateOf(0f) }
     val animatedOffset by animateFloatAsState(
-        targetValue = swipeOffset.value,
+        targetValue = if (selectedItemId == notification.id) swipeOffset else 0f,
         animationSpec = tween(durationMillis = 300),
         label = "Delete"
     )
@@ -160,6 +227,8 @@ fun NotificationItem(
         MaterialTheme.colorScheme.onSurface
     }
 
+    val timeAgo = calculateTimeAgo(notification.createdAt, onDelete)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -167,7 +236,7 @@ fun NotificationItem(
             .background(Color.Red)
             .clickable {
                 onDelete()
-                swipeOffset.value = 0f
+                swipeOffset = 0f
             }
     ) {
         Text(
@@ -185,31 +254,24 @@ fun NotificationItem(
                 .fillMaxWidth()
                 .offset(x = animatedOffset.dp)
                 .background(backgroundColor)
-                .drag(
-                    onDrag = { deltaX ->
-                        swipeOffset.value = (swipeOffset.value + deltaX).coerceIn(-100f, 0f)
-                    },
-                    onDragEnd = {
-                        if (swipeOffset.value < -50f) {
-                            swipeOffset.value = -100f
-                        } else {
-                            swipeOffset.value = 0f
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = { onSelected(notification.id) },
+                        onDrag = { _, dragAmount ->
+                            swipeOffset = (swipeOffset + dragAmount.x).coerceIn(-100f, 0f)
+                        },
+                        onDragEnd = {
+                            swipeOffset = if (swipeOffset < -50f) {
+                                -100f
+                            } else {
+                                0f
+                            }
                         }
-                    }
-                )
+                    )
+                }
                 .clickable { onMarkAsRead() },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (!notification.isRead) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_circle),
-                    contentDescription = "Unread",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(start = 16.dp)
-                )
-            }
-
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -222,21 +284,21 @@ fun NotificationItem(
                     color = textColor
                 )
                 Text(
-                    text = notification.message,
+                    text = "${notification.message}  $timeAgo",
                     fontSize = 14.sp,
                     color = textColor
                 )
             }
+
+            if (!notification.isRead) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_circle),
+                    contentDescription = "Unread",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(end = 16.dp)
+                )
+            }
         }
     }
-}
-
-private fun Modifier.drag(
-    onDrag: (Float) -> Unit,
-    onDragEnd: () -> Unit
-) = pointerInput(Unit) {
-    detectDragGestures(
-        onDragEnd = { onDragEnd() },
-        onDrag = { _, dragAmount -> onDrag(dragAmount.x) }
-    )
 }
