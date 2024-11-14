@@ -23,9 +23,7 @@ import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import kotlinx.coroutines.flow.Flow
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 
 interface AuthRepository {
     suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>>

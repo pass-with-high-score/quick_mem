@@ -32,13 +32,8 @@ import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody.Companion.toResponseBody
-import retrofit2.Response
 import timber.log.Timber
-import java.io.IOException
-import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(

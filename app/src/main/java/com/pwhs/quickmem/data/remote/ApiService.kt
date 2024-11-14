@@ -127,13 +127,6 @@ interface ApiService {
         @Query("isOwner") isOwner: Boolean
     ): UserDetailResponseDto
 
-    //Update_Avatar
-    @PATCH("auth/user/avatar/{id}")
-    suspend fun updateAvatar(
-        @Header("Authorization") authorization: String,
-        @Path("userid") id: String
-    )
-
     // Upload
     @Multipart
     @POST("upload")

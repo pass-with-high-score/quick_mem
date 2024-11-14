@@ -1,13 +1,9 @@
 package com.pwhs.quickmem.presentation.app.profile.choose_picture
 
 import android.widget.Toast
-import androidx.compose.foundation.border
 import com.pwhs.quickmem.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -22,8 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureList
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
