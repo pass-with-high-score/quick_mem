@@ -87,26 +87,6 @@ fun NotificationBottomSheet(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     when {
-                        uiState.isLoading -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
-                            }
-                        }
-                        uiState.error != null -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = uiState.error ?: "An error occurred",
-                                    color = MaterialTheme.colorScheme.error,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                        }
                         uiState.notifications.isEmpty() -> {
                             Column(
                                 modifier = Modifier
