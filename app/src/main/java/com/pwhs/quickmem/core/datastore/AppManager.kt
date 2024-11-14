@@ -41,6 +41,10 @@ class AppManager(private val context: Context) {
         .map { preferences ->
             preferences[USER_FULL_NAME] ?: ""
         }
+    val userName: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_NAME] ?: ""
+        }
     val userAvatar: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_AVATAR] ?: ""
@@ -48,10 +52,6 @@ class AppManager(private val context: Context) {
     val userEmail: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_EMAIL] ?: ""
-        }
-    val userName: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[USER_NAME] ?: ""
         }
     val pushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->

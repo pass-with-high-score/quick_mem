@@ -23,6 +23,8 @@ import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateUsernameRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateUsernameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
@@ -129,6 +131,26 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun updateUsername(
+        token: String,
+        updateUsernameRequestModel: UpdateUsernameRequestModel
+    ): Flow<Resources<UpdateUsernameResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.updateUsername(
+                    token,
+                    updateUsernameRequestModel.toDto()
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
 
     override suspend fun updateEmail(
         token: String,
