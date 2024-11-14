@@ -136,6 +136,11 @@ fun ListFolderScreen(
                                 )
                             }
                         }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                         items(filterFolders) { folder ->
                             FolderItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -160,11 +165,6 @@ fun ListFolderScreen(
                                     )
                                 }
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))
