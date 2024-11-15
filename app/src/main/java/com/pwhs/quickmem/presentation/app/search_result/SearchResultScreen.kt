@@ -179,23 +179,27 @@ fun SearchResult(
     onResetClick: () -> Unit = {}
 ) {
     var showFilterBottomSheet by remember { mutableStateOf(false) }
+    var tabIndex by remember { mutableIntStateOf(0) }
+    val tabTitles = listOf(
+        "All Result",
+        "Study Set",
+        "Folder",
+        "Class"
+    )
     Scaffold(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
             TopBarSearchResult(
                 onNavigateBack = onNavigateBack,
-                title = "Result Search"
+                title = "Result Search",
+                onClickFilter = {
+                    showFilterBottomSheet = true
+                }
             )
         }
     ) { innerPadding ->
-        var tabIndex by remember { mutableIntStateOf(0) }
-        val tabTitles = listOf(
-            "All Result",
-            "Study Set",
-            "Folder",
-            "Class"
-        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -238,9 +242,6 @@ fun SearchResult(
                     username = username,
                     onStudySetClick = onStudySetClick,
                     onStudySetRefresh = onStudySetRefresh,
-                    onFilterStudySetBottomSheet = {
-                        showFilterBottomSheet = true
-                    },
                     onResetClick = onResetClick
                 )
 
@@ -265,24 +266,26 @@ fun SearchResult(
         }
     }
     if (showFilterBottomSheet) {
-        FilterStudySetBottomSheet(
-            colorModel = colorModel,
-            onColorChange = onColorChange,
-            onSubjectChange = onSubjectChange,
-            subjectModel = subjectModel,
-            onResetClick = onResetClick,
-            onNavigateBack = {
-                showFilterBottomSheet = false
-            },
-            sizeModel = sizeModel,
-            onSizeChange = onSizeChange,
-            creatorTypeModel = creatorTypeModel,
-            onCreatorChange = onCreatorChange,
-            onApplyClick = {
-                onApplyClick()
-                showFilterBottomSheet = false
-            }
-        )
+        when (tabIndex) {
+            SearchResultEnum.STUDY_SET.index -> FilterStudySetBottomSheet(
+                colorModel = colorModel,
+                onColorChange = onColorChange,
+                onSubjectChange = onSubjectChange,
+                subjectModel = subjectModel,
+                onResetClick = onResetClick,
+                onNavigateBack = {
+                    showFilterBottomSheet = false
+                },
+                sizeModel = sizeModel,
+                onSizeChange = onSizeChange,
+                creatorTypeModel = creatorTypeModel,
+                onCreatorChange = onCreatorChange,
+                onApplyClick = {
+                    onApplyClick()
+                    showFilterBottomSheet = false
+                }
+            )
+        }
     }
 }
 

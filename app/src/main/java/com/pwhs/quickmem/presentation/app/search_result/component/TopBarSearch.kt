@@ -17,9 +17,11 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,6 +30,7 @@ fun TopBarSearchResult(
     modifier: Modifier = Modifier,
     title: String,
     onNavigateBack: () -> Unit,
+    onClickFilter: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -43,6 +46,19 @@ fun TopBarSearchResult(
                     fontSize = 20.sp
                 )
             )
+        },
+        actions = {
+            IconButton(
+                onClick = onClickFilter,
+                colors = iconButtonColors(
+                    contentColor = colorScheme.onSurface
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_filter),
+                    contentDescription = "Filter",
+                )
+            }
         },
         navigationIcon = {
             IconButton(
