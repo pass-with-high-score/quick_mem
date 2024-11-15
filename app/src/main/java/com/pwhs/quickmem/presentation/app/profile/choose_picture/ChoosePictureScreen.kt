@@ -1,21 +1,14 @@
 package com.pwhs.quickmem.presentation.app.profile.choose_picture
 
 import android.widget.Toast
-import com.pwhs.quickmem.R
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureList
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureTopAppBar
