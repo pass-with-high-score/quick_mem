@@ -355,25 +355,6 @@ interface ApiService {
         @Body tokenRequest: TokenRequestDto
     ): Response<Unit>
 
-//    @GET("notifications/user/{id}")
-//    suspend fun getNotificationsByUserId(
-//        @Header("Authorization") token: String,
-//        @Path("id") userId: String
-//    ): List<GetNotificationResponseDto>
-//
-//    @PATCH("notifications/{id}/read")
-//    suspend fun markNotificationAsRead(
-//        @Header("Authorization") token: String,
-//        @Path("id") notificationId: String,
-//        @Body requestDto: MarkNotificationReadRequestDto
-//    )
-//
-//    @DELETE("notifications/{id}")
-//    suspend fun deleteNotification(
-//        @Header("Authorization") token: String,
-//        @Path("id") notificationId: String
-//    )
-
     //Update Avatar
     @PATCH("auth/user/avatar/{id}")
     suspend fun updateAvatar(
