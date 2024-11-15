@@ -31,7 +31,7 @@
     <string name="txt_login_with_email">Đăng nhập bằng email</string>
     <string name="txt_email">Email</string>
     <string name="txt_password">Mật khẩu</string>
-    <string name="txt_forgot_password">Quên mật khẩu?</string>
+    <string name="txt_forgot_password"><u>Quên mật khẩu?</u></string>
     <string name="txt_logging_in">Đang đăng nhập…</string>
     <string name="txt_log_in">Đăng nhập</string>
     <string name="txt_ok">OK</string>
@@ -65,7 +65,7 @@
     <string name="txt_otp_must_not_be_empty">OTP không được để trống</string>
     <string name="txt_otp_must_be_6_digits">OTP phải có 6 chữ số</string>
     <string name="txt_check_your_email">Kiểm tra email của bạn</string>
-    <string name="txt_please_enter_the_code_we_sent_to_your_email">Vui lòng nhập mã chúng tôi đã gửi tới email của bạn %1$s.</string>
+    <string name="txt_please_enter_the_code_we_sent_to_your_email">Vui lòng nhập mã chúng tôi đã gửi tới email của bạn</string>
     <string name="txt_didn_t_receive_the_code">Chưa nhận được mã?</string>
     <string name="txt_update_email">Cập nhật email</string>
     <string name="txt_resend">Gửi lại</string>
@@ -216,5 +216,7 @@
     <string name="txt_add_to_folder">Thêm vào thư mục</string>
     <string name="txt_save_and_edit">Lưu và chỉnh sửa</string>
     <string name="txt_report_study_set">Báo cáo bộ học</string>
+    <string name="txt_failed_to_verify_email">Failed to verify email</string>
+    <string name="txt_forgot_password_image">Forgot Password Image</string>
 
 </resources>

@@ -67,6 +67,7 @@ import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSet
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UpdateUsernameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -84,6 +85,7 @@ fun SettingsScreen(
     resultUpdateEmail: ResultRecipient<UpdateEmailSettingScreenDestination, Boolean>,
     resultChangePassword: ResultRecipient<ChangePasswordSettingScreenDestination, Boolean>,
     resultChangeLanguage: ResultRecipient<ChangeLanguageScreenDestination, Boolean>,
+    resultUpdateUsername: ResultRecipient<UpdateUsernameSettingScreenDestination, Boolean>
 ) {
     val context = LocalContext.current
 
@@ -92,7 +94,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -103,7 +105,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -114,7 +116,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -125,7 +127,18 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultUpdateUsername.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -163,7 +176,12 @@ fun SettingsScreen(
                 }
 
                 SettingUiEvent.NavigateToChangeUsername -> {
-                    // TODO()
+                    navigator.navigate(
+                        UpdateUsernameSettingScreenDestination(
+                            userId = uiState.userId,
+                            username = uiState.username
+                        )
+                    )
                 }
             }
 

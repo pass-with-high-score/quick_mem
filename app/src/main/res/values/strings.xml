@@ -31,7 +31,7 @@
     <string name="txt_login_with_email">Login with email</string>
     <string name="txt_email">Email</string>
     <string name="txt_password">Password</string>
-    <string name="txt_forgot_password">Forgot password?</string>
+    <string name="txt_forgot_password"><u>Forgot password?</u></string>
     <string name="txt_logging_in">Logging in…</string>
     <string name="txt_log_in">Log in</string>
     <string name="txt_ok">OK</string>
@@ -65,7 +65,7 @@
     <string name="txt_otp_must_not_be_empty">OTP must not be empty</string>
     <string name="txt_otp_must_be_6_digits">OTP must be 6 digits</string>
     <string name="txt_check_your_email">Check your email</string>
-    <string name="txt_please_enter_the_code_we_sent_to_your_email">Please enter the code we sent to your email %1$s.</string>
+    <string name="txt_please_enter_the_code_we_sent_to_your_email">Please enter the code we sent to your email</string>
     <string name="txt_didn_t_receive_the_code">Didn\'t receive the code?</string>
     <string name="txt_update_email">Update email</string>
     <string name="txt_resend">Resend</string>
@@ -216,4 +216,6 @@
     <string name="txt_add_to_folder">Add to folder</string>
     <string name="txt_save_and_edit">Save and edit</string>
     <string name="txt_report_study_set">Report study set</string>
+    <string name="txt_failed_to_verify_email">Failed to verify email</string>
+    <string name="txt_forgot_password_image">Forgot Password Image</string>
 </resources>

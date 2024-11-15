@@ -18,6 +18,8 @@ import com.pwhs.quickmem.data.dto.auth.UpdateEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.UpdateEmailResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameResponseDto
+import com.pwhs.quickmem.data.dto.auth.UpdateUsernameRequestDto
+import com.pwhs.quickmem.data.dto.auth.UpdateUsernameResponseDto
 import com.pwhs.quickmem.data.dto.auth.VerifyEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
@@ -90,6 +92,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body updateFullNameRequestDto: UpdateFullNameRequestDto
     ): UpdateFullNameResponseDto
+
+    @PATCH("auth/user/username")
+    suspend fun updateUsername(
+        @Header("Authorization") token: String,
+        @Body updateUsernameRequestDto: UpdateUsernameRequestDto
+    ): UpdateUsernameResponseDto
 
     @PATCH("auth/user/email")
     suspend fun updateEmail(
