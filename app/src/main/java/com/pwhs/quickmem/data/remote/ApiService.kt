@@ -59,7 +59,6 @@ import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -354,25 +353,6 @@ interface ApiService {
         @Header("Authorization") authorization: String,
         @Body tokenRequest: TokenRequestDto
     ): Response<Unit>
-
-//    @GET("notifications/user/{id}")
-//    suspend fun getNotificationsByUserId(
-//        @Header("Authorization") token: String,
-//        @Path("id") userId: String
-//    ): List<GetNotificationResponseDto>
-//
-//    @PATCH("notifications/{id}/read")
-//    suspend fun markNotificationAsRead(
-//        @Header("Authorization") token: String,
-//        @Path("id") notificationId: String,
-//        @Body requestDto: MarkNotificationReadRequestDto
-//    )
-//
-//    @DELETE("notifications/{id}")
-//    suspend fun deleteNotification(
-//        @Header("Authorization") token: String,
-//        @Path("id") notificationId: String
-//    )
 
     //Update Avatar
     @PATCH("auth/user/avatar/{id}")
