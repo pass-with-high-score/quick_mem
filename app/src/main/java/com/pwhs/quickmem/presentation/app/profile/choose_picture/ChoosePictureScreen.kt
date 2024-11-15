@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureList
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureTopAppBar
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -87,46 +88,20 @@ fun ChoosePicture(
             )
         }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_camera),
-                    contentDescription = "Camera",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable {
-
-                        },
-                    tint = Color.Gray
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_gallecy),
-                    contentDescription = "Gallery",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable {
-
-                        },
-                    tint = Color.Gray
-                )
-            }
-
             ChoosePictureList(
                 avatarUrls = avatarUrls,
                 selectedAvatarUrl = selectedAvatarUrl,
                 onImageSelected = onSelectedPicture
             )
         }
+        LoadingOverlay(
+            isLoading = isLoading
+        )
     }
 }
 

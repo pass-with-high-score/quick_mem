@@ -34,13 +34,31 @@ class ChoosePictureViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        getCurrentAvatar()
         getListAvatar()
+    }
+
+    private fun getCurrentAvatar() {
+        viewModelScope.launch {
+            val currentAvatarUrl = appManager.userAvatar.firstOrNull()
+            if (currentAvatarUrl != null) {
+                _uiState.update {
+                    it.copy(
+                        selectedAvatarUrl = currentAvatarUrl
+                    )
+                }
+            }
+        }
     }
 
     fun onEvent(event: ChoosePictureUiAction) {
         when (event) {
             is ChoosePictureUiAction.ImageSelected -> {
-                _uiState.update { it.copy(selectedAvatarUrl = event.avatarUrl) }
+                _uiState.update {
+                    it.copy(
+                        selectedAvatarUrl = event.avatarUrl
+                    )
+                }
             }
 
             ChoosePictureUiAction.SaveClicked -> {
@@ -84,9 +102,12 @@ class ChoosePictureViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        Timber.d("Successfully fetched avatars: ${resource.data}")
+                        val avatarUrls = resource.data ?: emptyList()
                         _uiState.update {
-                            it.copy(isLoading = false, avatarUrls = resource.data ?: emptyList())
+                            it.copy(
+                                isLoading = false,
+                                avatarUrls = avatarUrls,
+                            )
                         }
                     }
                 }
@@ -130,7 +151,11 @@ class ChoosePictureViewModel @Inject constructor(
                             _uiEvent.send(
                                 ChoosePictureUiEvent.AvatarUpdated(newAvatarUrl)
                             )
-                            _uiState.update { it.copy(isLoading = false) }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false
+                                )
+                            }
                         }
                     }
                 }
