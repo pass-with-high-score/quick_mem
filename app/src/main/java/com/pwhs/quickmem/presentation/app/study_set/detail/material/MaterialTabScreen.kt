@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.Icons.Outlined
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -70,6 +71,12 @@ fun MaterialTabScreen(
     var showMenu by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
     var studySetId by remember { mutableStateOf("") }
+    val hintBottomSheet = rememberModalBottomSheetState()
+    var showHint by remember { mutableStateOf(false) }
+    val explanationBottomSheet = rememberModalBottomSheetState()
+    var showExplanation by remember { mutableStateOf(false) }
+    var hint by remember { mutableStateOf("") }
+    var explanation by remember { mutableStateOf("") }
 
     Scaffold { innerPadding ->
         Box(
@@ -226,6 +233,9 @@ fun MaterialTabScreen(
                                     onToggleStarClick(flashCards.id, isStarred)
                                 },
                                 onMenuClick = {
+                                    hint = flashCards.hint ?: "There is no hint for this flashcard."
+                                    explanation = flashCards.explanation
+                                        ?: "There is no explanation for this flashcard."
                                     showMenu = true
                                     studySetId = flashCards.id
                                     onFlashCardClick(flashCards.id)
@@ -248,6 +258,22 @@ fun MaterialTabScreen(
                 Column {
                     ItemMenuBottomSheet(
                         onClick = {
+                            showHint = true
+                            showMenu = false
+                        },
+                        icon = Filled.HelpOutline,
+                        title = stringResource(R.string.txt_hint)
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = {
+                            showExplanation = true
+                            showMenu = false
+                        },
+                        icon = Filled.HelpOutline,
+                        title = stringResource(R.string.txt_explanation)
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = {
                             onEditFlashCardClick()
                             showMenu = false
                         },
@@ -262,6 +288,62 @@ fun MaterialTabScreen(
                         icon = Default.DeleteOutline,
                         title = stringResource(R.string.txt_delete),
                         color = Color.Red,
+                    )
+                }
+            }
+        }
+
+        if (showHint) {
+            ModalBottomSheet(
+                sheetState = hintBottomSheet,
+                onDismissRequest = {
+                    hint = ""
+                    showHint = false
+                }
+            ) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.txt_hint),
+                        style = typography.titleMedium.copy(
+                            color = colorScheme.onSurface,
+                            fontWeight = Bold
+                        ),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Text(
+                        text = hint,
+                        style = typography.bodyMedium.copy(
+                            color = colorScheme.onSurface,
+                        ),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
+
+        if (showExplanation) {
+            ModalBottomSheet(
+                sheetState = explanationBottomSheet,
+                onDismissRequest = {
+                    hint = ""
+                    showExplanation = false
+                }
+            ) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.txt_explanation),
+                        style = typography.titleMedium.copy(
+                            color = colorScheme.onSurface,
+                            fontWeight = Bold
+                        ),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Text(
+                        text = explanation,
+                        style = typography.bodyMedium.copy(
+                            color = colorScheme.onSurface,
+                        ),
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
