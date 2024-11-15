@@ -3,7 +3,6 @@ package com.pwhs.quickmem.presentation.app.search_result.study_set
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -49,7 +47,6 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun ListResultStudySetScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    onFilterStudySetBottomSheet: () -> Unit = {},
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
     onStudySetRefresh: () -> Unit = {},
@@ -138,23 +135,6 @@ fun ListResultStudySetScreen(
                             .fillMaxSize()
                             .padding(top = 8.dp)
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Button(
-                                onClick = onFilterStudySetBottomSheet,
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_filter),
-                                    contentDescription = "Filter",
-                                )
-
-                            }
-                        }
                         LazyColumn {
                             items(studySets) { studySet ->
                                 StudySetItem(
