@@ -12,6 +12,8 @@ import com.pwhs.quickmem.data.dto.auth.SendResetPasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.SendResetPasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.data.dto.auth.SignupResponseDto
+import com.pwhs.quickmem.data.dto.auth.UpdateAvatarRequestDto
+import com.pwhs.quickmem.data.dto.auth.UpdateAvatarResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateEmailRequestDto
 import com.pwhs.quickmem.data.dto.auth.UpdateEmailResponseDto
 import com.pwhs.quickmem.data.dto.auth.UpdateFullNameRequestDto
@@ -380,4 +382,12 @@ interface ApiService {
         @Header("Authorization") authorization: String,
         @Body tokenRequest: TokenRequestDto
     ): Response<Unit>
+
+    //Update Avatar
+    @PATCH("auth/user/avatar/{id}")
+    suspend fun updateAvatar(
+        @Header("Authorization") authorization: String,
+        @Path("id") userId: String,
+        @Body updateAvatarRequestDto: UpdateAvatarRequestDto
+    ): UpdateAvatarResponseDto
 }
