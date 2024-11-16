@@ -60,6 +60,8 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -209,6 +211,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addStudySetToClassesRequestDto: AddStudySetToClassesRequestDto
     )
+
+    @GET("study-set/search")
+    suspend fun searchStudySet(
+        @Header("Authorization") token: String,
+        @Query("title") query: String,
+        @Query("size") size: SearchResultSizeEnum,
+        @Query("creatorType") creatorType: SearchResultCreatorEnum?,
+        @Query("page") page: Int,
+        @Query("colorId") colorId: Int?,
+        @Query("subjectId") subjectId: Int?
+    ): List<GetStudySetResponseDto>
 
     // Flash Card
     @GET("/flashcard/study-set/{id}")
