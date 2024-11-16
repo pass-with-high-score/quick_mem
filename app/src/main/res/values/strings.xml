@@ -220,4 +220,15 @@
     <string name="txt_forgot_password_image">Forgot Password Image</string>
     <string name="txt_choose_a_picture">Choose a picture</string>
     <string name="txt_update_image_successfully">Update Image Successfully!</string>
+    <string name="txt_activity">Activity</string>
+    <string name="txt_no_notifications">No Notifications</string>
+    <string name="txt_there_are_no_notifications">There are no notifications</string>
+    <string name="txt_notification_deleted_successfully">Notification deleted successfully!</string>
+    <string name="txt_expired">Expired</string>
+    <string name="txt_invalid_date_format">Invalid date format</string>
+    <string name="txt_unread">Unread</string>
+    <string name="txt_study_sets_folders_class">Study sets, folders, class,...</string>
+    <string name="txt_notifications">Notifications</string>
+    <string name="txt_streak">Streak</string>
+    <string name="txt_streak_count">Streak %1$s</string>
 </resources>
