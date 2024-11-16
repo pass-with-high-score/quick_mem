@@ -218,4 +218,6 @@
     <string name="txt_report_study_set">Report study set</string>
     <string name="txt_failed_to_verify_email">Failed to verify email</string>
     <string name="txt_forgot_password_image">Forgot Password Image</string>
+    <string name="txt_choose_a_picture">Choose a picture</string>
+    <string name="txt_update_image_successfully">Update Image Successfully!</string>
 </resources>
