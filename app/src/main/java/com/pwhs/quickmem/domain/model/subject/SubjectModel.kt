@@ -17,8 +17,8 @@ data class SubjectModel(
         val defaultSubjects = listOf(
             SubjectModel(
                 1,
-                "Agriculture",
-                iconRes = R.drawable.ic_agriculture,
+                "All",
+                iconRes = R.drawable.ic_all,
                 color = Color(0xFF7f60f9),
                 description = "Agriculture is the study of farming and cultivation of land."
             ),

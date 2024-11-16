@@ -1,0 +1,48 @@
+package com.pwhs.quickmem.data.paging
+
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
+import com.pwhs.quickmem.domain.datasource.StudySetRemoteDataSource
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import retrofit2.HttpException
+import java.io.IOException
+
+class StudySetPagingSource(
+    private val studySetRemoteDataSource: StudySetRemoteDataSource,
+    private val token: String,
+    private val title: String,
+    private val size: SearchResultSizeEnum,
+    private val creatorType: SearchResultCreatorEnum?,
+    private val colorId: Int?,
+    private val subjectId: Int?
+) : PagingSource<Int, GetStudySetResponseModel>() {
+    override fun getRefreshKey(state: PagingState<Int, GetStudySetResponseModel>): Int? {
+        return state.anchorPosition
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GetStudySetResponseModel> {
+        return try {
+            val currentPage = params.key ?: 1
+            val response = studySetRemoteDataSource.getSearchResultStudySets(
+                token = token,
+                title = title,
+                size = size,
+                creatorType = creatorType,
+                page = currentPage,
+                colorId = colorId,
+                subjectId = subjectId
+            )
+            LoadResult.Page(
+                data = response,
+                prevKey = if (currentPage == 1) null else currentPage - 1,
+                nextKey = if (response.isEmpty()) null else currentPage + 1
+            )
+        } catch (exception: IOException) {
+            LoadResult.Error(exception)
+        } catch (exception: HttpException) {
+            LoadResult.Error(exception)
+        }
+    }
+}

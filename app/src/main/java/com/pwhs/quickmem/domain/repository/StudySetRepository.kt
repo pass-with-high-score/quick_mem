@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
@@ -77,5 +78,5 @@ interface StudySetRepository {
         page: Int,
         colorId: Int?,
         subjectId: Int?,
-    ): Flow<Resources<List<GetStudySetResponseModel>>>
+    ): Flow<PagingData<GetStudySetResponseModel>>
 }

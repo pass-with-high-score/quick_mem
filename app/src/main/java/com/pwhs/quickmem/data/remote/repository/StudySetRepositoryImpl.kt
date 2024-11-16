@@ -1,10 +1,15 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
+import com.pwhs.quickmem.data.paging.StudySetPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.datasource.StudySetRemoteDataSource
 import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
@@ -23,7 +28,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class StudySetRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val studySetRemoteDataSource: StudySetRemoteDataSource
 ) : StudySetRepository {
     override suspend fun createStudySet(
         token: String,
@@ -48,7 +54,6 @@ class StudySetRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 val response = apiService.getStudySetById(token, studySetId)
-                // order flashcard by createdAt from newest to oldest
                 response.flashcards = response.flashcards?.sortedByDescending { it.createdAt }
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
@@ -199,25 +204,23 @@ class StudySetRepositoryImpl @Inject constructor(
         page: Int,
         colorId: Int?,
         subjectId: Int?
-    ): Flow<Resources<List<GetStudySetResponseModel>>> {
-        return flow {
-            emit(Resources.Loading())
-            try {
-                val response =
-                    apiService.searchStudySet(
-                        token,
-                        title,
-                        size,
-                        creatorType,
-                        page,
-                        colorId,
-                        subjectId
-                    )
-                emit(Resources.Success(response.map { it.toModel() }))
-            } catch (e: Exception) {
-                Timber.e(e)
-                emit(Resources.Error(e.toString()))
+    ): Flow<PagingData<GetStudySetResponseModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                StudySetPagingSource(
+                    studySetRemoteDataSource,
+                    token,
+                    title,
+                    size,
+                    creatorType,
+                    colorId,
+                    subjectId
+                )
             }
-        }
+        ).flow
     }
 }

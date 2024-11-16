@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
@@ -47,14 +49,10 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>(
@@ -67,6 +65,8 @@ fun SearchResultScreen(
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val studySetItems: LazyPagingItems<GetStudySetResponseModel> =
+        viewModel.studySetState.collectAsLazyPagingItems()
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
@@ -82,12 +82,10 @@ fun SearchResultScreen(
         modifier = modifier,
         query = uiState.query,
         isLoading = uiState.isLoading,
-        studySets = uiState.studySets,
+        studySets = studySetItems,
         classes = uiState.classes,
         folders = uiState.folders,
         users = uiState.users,
-        avatarUrl = uiState.userAvatar,
-        username = uiState.username,
         colorModel = uiState.colorModel,
         onColorChange = {
             viewModel.onEvent(SearchResultUiAction.ColorChanged(it))
@@ -119,7 +117,7 @@ fun SearchResultScreen(
         onStudySetClick = {
             navigator.navigate(
                 StudySetDetailScreenDestination(
-                    id = it.id,
+                    id = it?.id ?: "",
                     code = ""
                 )
             )
@@ -171,21 +169,19 @@ fun SearchResult(
     onColorChange: (ColorModel) -> Unit = {},
     subjectModel: SubjectModel? = SubjectModel.defaultSubjects.first(),
     onSubjectChange: (SubjectModel) -> Unit = {},
-    sizeModel: SearchResultSizeEnum = SearchResultSizeEnum.all,
+    sizeModel: SearchResultSizeEnum = SearchResultSizeEnum.ALL,
     onSizeChange: (SearchResultSizeEnum) -> Unit = {},
-    creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.all,
+    creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.ALL,
     onCreatorChange: (SearchResultCreatorEnum) -> Unit = {},
     onApplyClick: () -> Unit = {},
-    avatarUrl: String = "",
-    username: String = "",
     onStudySetRefresh: () -> Unit = {},
     onClassRefresh: () -> Unit = {},
     onFolderRefresh: () -> Unit = {},
-    studySets: List<GetStudySetResponseModel> = emptyList(),
+    studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
     users: List<SearchUserResponseModel> = emptyList(),
-    onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
+    onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
@@ -254,11 +250,8 @@ fun SearchResult(
                 SearchResultEnum.STUDY_SET.index -> ListResultStudySetScreen(
                     isLoading = isLoading,
                     studySets = studySets,
-                    avatarUrl = avatarUrl,
-                    username = username,
                     onStudySetClick = onStudySetClick,
                     onStudySetRefresh = onStudySetRefresh,
-                    onResetClick = onResetClick
                 )
 
                 SearchResultEnum.FOLDER.index -> ListResultFolderScreen(
@@ -277,6 +270,7 @@ fun SearchResult(
                     onClassClicked = onClassClick,
                     onClassRefresh = onClassRefresh,
                 )
+
                 SearchResultEnum.USER.index -> ListResultUserScreen(
                     modifier = modifier,
                     users = users,
