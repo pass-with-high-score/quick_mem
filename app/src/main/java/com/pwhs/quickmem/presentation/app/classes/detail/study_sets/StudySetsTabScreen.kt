@@ -19,7 +19,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun StudySetsTabScreen(
     modifier: Modifier = Modifier,
-    isOwner:Boolean,
+    isOwner: Boolean = false,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onAddStudySetClicked: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
