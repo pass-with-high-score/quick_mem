@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,17 +44,32 @@ class ProfileViewModel @Inject constructor(
                     )
                 }
             }
+
+            ProfileUiAction.Refresh -> {
+                loadProfile()
+            }
         }
     }
 
     private fun loadProfile() {
-        viewModelScope.launch {
-            val username = appManager.userName.firstOrNull() ?: ""
-            val avatar = appManager.userAvatar.firstOrNull() ?: ""
-            _uiState.value = _uiState.value.copy(
-                username = username,
-                userAvatar = avatar
-            )
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+        try {
+            viewModelScope.launch {
+                val username = appManager.userName.firstOrNull() ?: ""
+                val avatar = appManager.userAvatar.firstOrNull() ?: ""
+                _uiState.value = _uiState.value.copy(
+                    username = username,
+                    userAvatar = avatar,
+                    isLoading = false
+                )
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            _uiState.update {
+                it.copy(isLoading = false)
+            }
         }
     }
 
@@ -69,6 +85,7 @@ class ProfileViewModel @Inject constructor(
 
             override fun onError(error: PurchasesError) {
                 // handle error
+                Timber.e(error.message)
             }
         })
     }

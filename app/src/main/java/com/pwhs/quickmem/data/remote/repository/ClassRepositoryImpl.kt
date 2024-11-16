@@ -61,12 +61,14 @@ class ClassRepositoryImpl @Inject constructor(
 
     override suspend fun getClassByOwnerId(
         token: String,
-        userId: String
+        userId: String,
+        folderId: String?,
+        studySetId: String?
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getClassByOwnerID(token, userId)
+                val response = apiService.getClassByOwnerID(token, userId, folderId, studySetId)
                 Timber.d("listClass: $response")
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {

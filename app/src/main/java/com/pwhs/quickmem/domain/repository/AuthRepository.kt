@@ -13,15 +13,20 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateUsernameRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateUsernameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import kotlinx.coroutines.flow.Flow
+import okhttp3.RequestBody
 
 interface AuthRepository {
     suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>>
@@ -42,6 +47,11 @@ interface AuthRepository {
         token: String,
         updateFullNameRequestModel: UpdateFullNameRequestModel
     ): Flow<Resources<UpdateFullNameResponseModel>>
+
+    suspend fun updateUsername(
+        token: String,
+        updateUsernameRequestModel: UpdateUsernameRequestModel
+    ): Flow<Resources<UpdateUsernameResponseModel>>
 
     suspend fun updateEmail(
         token: String,
@@ -71,4 +81,12 @@ interface AuthRepository {
         token: String,
         isOwner: Boolean
     ): Flow<Resources<UserDetailResponseModel>>
+
+    suspend fun getAvatar(): Flow<Resources<List<String>>>
+
+    suspend fun updateAvatar(
+        token: String,
+        avatarId: String,
+        updateAvatarRequestModel: UpdateAvatarRequestModel
+    ): Flow<Resources<UpdateAvatarResponseModel>>
 }

@@ -134,8 +134,8 @@ fun AddStudySetToFolders(
                     username = username,
                 )
             }
-            LoadingOverlay(isLoading = isLoading)
         }
+        LoadingOverlay(isLoading = isLoading)
     }
 }
 

@@ -14,5 +14,6 @@ data class GetClassByOwnerResponseModel(
     val owner: UserResponseModel,
     val studySetCount: Int,
     val title: String,
+    val isImported: Boolean? = null,
     val updatedAt: String
 )

@@ -23,7 +23,6 @@ class AppManager(private val context: Context) {
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
         val LANGUAGE_CODE = stringPreferencesKey("LANGUAGE_CODE")
-        val IS_SUBSCRIBED = booleanPreferencesKey("IS_SUBSCRIBED")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -42,6 +41,10 @@ class AppManager(private val context: Context) {
         .map { preferences ->
             preferences[USER_FULL_NAME] ?: ""
         }
+    val userName: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_NAME] ?: ""
+        }
     val userAvatar: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_AVATAR] ?: ""
@@ -49,10 +52,6 @@ class AppManager(private val context: Context) {
     val userEmail: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_EMAIL] ?: ""
-        }
-    val userName: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[USER_NAME] ?: ""
         }
     val pushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->

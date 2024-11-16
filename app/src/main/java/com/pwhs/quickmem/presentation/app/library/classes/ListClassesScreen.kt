@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,12 +87,12 @@ fun ListClassesScreen(
                         if (isOwner) {
                             Icon(
                                 imageVector = Icons.Outlined.GroupAdd,
-                                contentDescription = "Folder",
+                                contentDescription = stringResource(R.string.txt_class),
                                 modifier = Modifier.size(60.dp),
                                 tint = colorScheme.primary
                             )
                             Text(
-                                text = "Group study materials to save time and share with others QuickMem members",
+                                text = stringResource(R.string.txt_group_study_materials_to_save_time_and_share_with_other_quickmem_members),
                                 style = typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Medium,
                                     textAlign = TextAlign.Center
@@ -104,7 +105,7 @@ fun ListClassesScreen(
                                     .width(150.dp)
                             ) {
                                 Text(
-                                    "Create a class",
+                                    text = stringResource(R.string.txt_create_a_class),
                                     style = typography.bodyMedium.copy(
                                         fontWeight = FontWeight.Medium
                                     )
@@ -113,10 +114,10 @@ fun ListClassesScreen(
                         } else {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_group),
-                                contentDescription = "Empty class",
+                                contentDescription = stringResource(R.string.txt_empty_class),
                             )
                             Text(
-                                text = "No classes found",
+                                text = stringResource(R.string.txt_no_classes_found),
                                 style = typography.titleLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -131,9 +132,14 @@ fun ListClassesScreen(
                                 SearchTextField(
                                     searchQuery = searchQuery,
                                     onSearchQueryChange = { searchQuery = it },
-                                    placeholder = "Search folders",
+                                    placeholder = stringResource(R.string.txt_search_classes),
                                 )
                             }
+                        }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                         items(filterClass) { classItem ->
                             ClassItem(
@@ -151,17 +157,12 @@ fun ListClassesScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "No classes found",
+                                        text = stringResource(R.string.txt_no_classes_found),
                                         style = typography.bodyLarge,
                                         textAlign = TextAlign.Center
                                     )
                                 }
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))

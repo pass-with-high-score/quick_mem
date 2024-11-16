@@ -15,14 +15,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.ads.AdsUtil.interstitialAds
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +44,21 @@ fun CreateTopAppBar(
     onNavigateBack: () -> Unit,
     onDoneClick: () -> Unit
 ) {
+    var customer: CustomerInfo? by remember { mutableStateOf(null) }
+    LaunchedEffect(key1 = true) {
+        Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
+            override fun onError(error: PurchasesError) {
+                Timber.e("Error getting customer info: $error")
+            }
+
+            override fun onReceived(customerInfo: CustomerInfo) {
+                Timber.d("Customer info: $customerInfo")
+                customer = customerInfo
+            }
+
+        })
+    }
+    val context = LocalContext.current
     CenterAlignedTopAppBar(
         modifier = modifier,
         colors = topAppBarColors(
@@ -49,7 +76,12 @@ fun CreateTopAppBar(
         },
         actions = {
             IconButton(
-                onClick = onDoneClick,
+                onClick = {
+                    val isSubscribed = customer?.activeSubscriptions?.isNotEmpty() == true
+                    interstitialAds(context, isSubscribed) {
+                        onDoneClick()
+                    }
+                },
                 colors = iconButtonColors(
                     contentColor = colorScheme.onSurface
                 )
@@ -90,9 +122,9 @@ fun CreateTopAppBarPreview() {
                 )
             }
         ) {
-            Column (
+            Column(
                 modifier = Modifier.padding(it)
-            ){  }
+            ) { }
         }
     }
 }

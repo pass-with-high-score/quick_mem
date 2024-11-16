@@ -29,9 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -71,9 +73,9 @@ fun LibraryScreen(
             }
 
             is NavResult.Value -> {
-               if (result.value) {
-                   viewModel.onEvent(LibraryUiAction.Refresh)
-               }
+                if (result.value) {
+                    viewModel.onEvent(LibraryUiAction.Refresh)
+                }
             }
         }
     }
@@ -85,9 +87,9 @@ fun LibraryScreen(
             }
 
             is NavResult.Value -> {
-              if (result.value) {
-                  viewModel.onEvent(LibraryUiAction.Refresh)
-              }
+                if (result.value) {
+                    viewModel.onEvent(LibraryUiAction.Refresh)
+                }
             }
         }
     }
@@ -192,14 +194,18 @@ fun Library(
     navigateToCreateFolder: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabTitles = listOf("Study sets", "Classes", "Folders")
+    val tabTitles = listOf(
+        stringResource(R.string.txt_study_sets),
+        stringResource(R.string.txt_classes),
+        stringResource(R.string.txt_folders)
+    )
     Scaffold(
         modifier = modifier,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Library",
+                        text = stringResource(R.string.txt_library),
                         style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -225,7 +231,7 @@ fun Library(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Add study set",
+                            contentDescription = stringResource(R.string.txt_add_study_set),
                             modifier = Modifier.size(24.dp)
                         )
                     }

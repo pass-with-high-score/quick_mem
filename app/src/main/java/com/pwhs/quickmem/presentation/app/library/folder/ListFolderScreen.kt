@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,12 +87,12 @@ fun ListFolderScreen(
                         if (isOwner) {
                             Icon(
                                 imageVector = Icons.Outlined.Folder,
-                                contentDescription = "Folder",
+                                contentDescription = stringResource(R.string.txt_folder),
                                 modifier = Modifier.size(60.dp),
                                 tint = colorScheme.primary
                             )
                             Text(
-                                text = "Organize your study sets in folders by subject, teacher, course, or any other way you like.",
+                                text = stringResource(R.string.txt_organize_your_study_sets_in_folders_by_subject_teacher_course_or_any_other_way_you_like),
                                 style = typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Medium,
                                     textAlign = TextAlign.Center
@@ -104,7 +105,7 @@ fun ListFolderScreen(
                                     .width(150.dp)
                             ) {
                                 Text(
-                                    "Create a folder",
+                                    text = stringResource(R.string.txt_create_a_folder),
                                     style = typography.bodyMedium.copy(
                                         fontWeight = FontWeight.Medium
                                     )
@@ -113,10 +114,10 @@ fun ListFolderScreen(
                         } else {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_folder),
-                                contentDescription = "Empty folder",
+                                contentDescription = stringResource(R.string.txt_empty_folder),
                             )
                             Text(
-                                text = "No folders found",
+                                text = stringResource(R.string.txt_no_folders_found),
                                 style = typography.titleLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -131,9 +132,14 @@ fun ListFolderScreen(
                                 SearchTextField(
                                     searchQuery = searchQuery,
                                     onSearchQueryChange = { searchQuery = it },
-                                    placeholder = "Search folders",
+                                    placeholder = stringResource(R.string.txt_search_folders),
                                 )
                             }
+                        }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                         items(filterFolders) { folder ->
                             FolderItem(
@@ -153,17 +159,12 @@ fun ListFolderScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "No folders found",
+                                        text = stringResource(R.string.txt_no_folders_found),
                                         style = typography.bodyLarge,
                                         textAlign = TextAlign.Center
                                     )
                                 }
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))

@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,7 +50,6 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
-import com.pwhs.quickmem.presentation.app.user_detail.component.UserDetailTabEnum
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -187,7 +187,11 @@ private fun UserDetail(
     onRefresh: () -> Unit = {}
 ) {
     var tabIndex by remember { mutableIntStateOf(UserDetailTabEnum.STUDY_SET.index) }
-    val tabTitles = listOf("Study sets", "Classes", "Folders")
+    val tabTitles = listOf(
+        stringResource(R.string.txt_study_sets),
+        stringResource(R.string.txt_classes),
+        stringResource(R.string.txt_folders)
+    )
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -211,7 +215,7 @@ private fun UserDetail(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Report,
-                                contentDescription = "Report user"
+                                contentDescription = stringResource(R.string.txt_report)
                             )
                         }
                     }
@@ -240,7 +244,7 @@ private fun UserDetail(
                         .placeholder(R.drawable.default_avatar)
                         .error(R.drawable.default_avatar)
                         .build(),
-                    contentDescription = "User Avatar",
+                    contentDescription = stringResource(R.string.txt_user_avatar),
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape),

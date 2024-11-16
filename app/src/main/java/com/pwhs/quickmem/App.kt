@@ -39,7 +39,6 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-
         Purchases.logLevel = RevenueCatLogLevel.DEBUG
         OneSignal.Debug.logLevel = OneSignalLogLevel.VERBOSE
         OneSignal.initWithContext(this, BuildConfig.ONESIGNAL_APP_ID)

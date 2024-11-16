@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.util.gradientBackground
 
@@ -87,9 +89,9 @@ fun StudySetDetailTopAppBar(
                     )
                     Text(
                         when (flashCardCount) {
-                            0 -> "No flashcards"
-                            1 -> "1 flashcard"
-                            else -> "$flashCardCount flashcards"
+                            0 -> stringResource(R.string.txt_no_flashcards)
+                            1 -> stringResource(R.string.txt_one_flashcard)
+                            else -> stringResource(R.string.txt_num_flashcards, flashCardCount)
                         },
                         style = typography.bodyMedium.copy(
                             color = colorScheme.secondary
@@ -113,7 +115,7 @@ fun StudySetDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.txt_back),
                 )
             }
         },
@@ -123,7 +125,7 @@ fun StudySetDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Default.IosShare,
-                    contentDescription = "Share"
+                    contentDescription = stringResource(R.string.txt_share)
                 )
             }
             IconButton(
@@ -131,7 +133,7 @@ fun StudySetDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Default.Add,
-                    contentDescription = "Add"
+                    contentDescription = stringResource(R.string.txt_add_flashcard)
                 )
             }
             IconButton(
@@ -139,7 +141,7 @@ fun StudySetDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Default.MoreVert,
-                    contentDescription = "More"
+                    contentDescription = stringResource(R.string.txt_more)
                 )
             }
         }

@@ -35,7 +35,7 @@ android {
         val bannerAdsId: String =
             localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-5725743620724195/1415385680"
         val interstitialAdsId: String = localProperties.getProperty("INTERSTITIAL_ADS_ID")
-            ?: "ca-app-pub-3940256099942544/1033173712"
+            ?: "ca-app-pub-5725743620724195/5715891999"
         val rewardAdsId: String =
             localProperties.getProperty("REWARD_ADS_ID") ?: "ca-app-pub-3940256099942544/5224354917"
         val rewardedInterstitialAdsId: String =

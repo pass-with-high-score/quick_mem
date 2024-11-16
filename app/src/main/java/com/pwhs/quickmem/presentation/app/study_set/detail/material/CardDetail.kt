@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
@@ -129,7 +130,7 @@ fun CardDetail(
                         ) {
                             Icon(
                                 imageVector = if (targetState) Default.Star else Default.StarBorder,
-                                contentDescription = "Star",
+                                contentDescription = stringResource(R.string.txt_star),
                                 tint = Color(0xFFE0A800),
                                 modifier = Modifier.size(24.dp)
                             )
@@ -159,7 +160,10 @@ fun CardDetail(
                         onClick = onMenuClick,
                         modifier = Modifier.size(24.dp)
                     ) {
-                        Icon(Default.MoreHoriz, contentDescription = "More options")
+                        Icon(
+                            Default.MoreHoriz,
+                            contentDescription = stringResource(R.string.txt_more_options)
+                        )
                     }
                 }
             }

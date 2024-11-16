@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +42,6 @@ import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +75,6 @@ fun ListStudySetScreen(
                 onStudySetRefresh()
             }
         ) {
-            Timber.d("ListStudySetScreen: studySets: $studySets")
             when {
                 studySets.isEmpty() -> {
                     Column(
@@ -108,7 +107,7 @@ fun ListStudySetScreen(
                                 color = colorScheme.onSurface.copy(alpha = 0.1f),
                             )
                             Text(
-                                text = "Get started by searching for a study set or creating your own",
+                                text = stringResource(R.string.txt_get_started_by_searching_for_a_study_set_or_creating_your_own),
                                 textAlign = TextAlign.Center,
                                 style = typography.bodyMedium.copy(
                                     color = colorScheme.onSurface.copy(alpha = 0.6f),
@@ -120,10 +119,10 @@ fun ListStudySetScreen(
                         } else {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_flashcards),
-                                contentDescription = "Empty study set",
+                                contentDescription = stringResource(R.string.txt_empty_study_set),
                             )
                             Text(
-                                text = "No study sets found",
+                                text = stringResource(R.string.txt_no_study_sets_found),
                                 style = typography.titleLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -137,9 +136,14 @@ fun ListStudySetScreen(
                             SearchTextField(
                                 searchQuery = searchQuery,
                                 onSearchQueryChange = { searchQuery = it },
-                                placeholder = "Search study sets"
+                                placeholder = stringResource(R.string.txt_search_study_sets)
                             )
 
+                        }
+                        item {
+                            BannerAds(
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                         items(filterStudySets) { studySet ->
                             StudySetItem(
@@ -157,17 +161,12 @@ fun ListStudySetScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "No study sets found",
+                                        text = stringResource(R.string.txt_no_study_sets_found),
                                         style = typography.bodyLarge,
                                         textAlign = TextAlign.Center
                                     )
                                 }
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))

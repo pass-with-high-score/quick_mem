@@ -9,7 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +44,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -69,9 +72,8 @@ fun LoginWithEmailScreen(
                         context,
                         context.getString(R.string.txt_login_success), Toast.LENGTH_SHORT
                     ).show()
-                    navigator.popBackStack()
                     navigator.navigate(HomeScreenDestination) {
-                        popUpTo(LoginWithEmailScreenDestination) {
+                        popUpTo(WelcomeScreenDestination) {
                             inclusive = true
                         }
                     }
@@ -100,15 +102,10 @@ fun LoginWithEmailScreen(
         },
         onLoginClick = { viewModel.onEvent(LoginWithEmailUiAction.Login) },
         onForgotPasswordClick = {
-            navigator.navigate(SendVerifyEmailScreenDestination) {
-                popUpTo(LoginWithEmailScreenDestination) {
-                    inclusive = true
-                }
-            }
+            navigator.navigate(SendVerifyEmailScreenDestination)
         }
     )
 }
-
 
 @Composable
 private fun LoginWithEmail(
@@ -151,7 +148,7 @@ private fun LoginWithEmail(
 
                 Text(
                     text = stringResource(R.string.txt_login_with_email),
-                    style = MaterialTheme.typography.headlineLarge.copy(
+                    style = typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     ),
@@ -189,11 +186,12 @@ private fun LoginWithEmail(
                     ) {
                         Text(
                             text = stringResource(R.string.txt_forgot_password),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = Color(0xFF2d333d),
+                            style = typography.bodyLarge.copy(
+                                color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             ),
-                            textAlign = TextAlign.End
+                            textAlign = TextAlign.End,
+                            textDecoration = TextDecoration.Underline
                         )
                     }
                 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -123,7 +124,7 @@ fun StandardScaffold(
                                                 .scale(iconScale)
                                         },
                                         painter = painterResource(id = item.icon),
-                                        contentDescription = item.title,
+                                        contentDescription = stringResource(item.title),
                                         tint = color
                                     )
                                 },
@@ -132,7 +133,7 @@ fun StandardScaffold(
                                         text = if (item.route == "fab") {
                                             ""
                                         } else {
-                                            item.title
+                                            stringResource(item.title)
                                         },
                                         style = typography.bodySmall.copy(
                                             color = color,
@@ -189,7 +190,7 @@ fun StandardScaffold(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     BottomSheetItem(
-                        title = "Study set",
+                        title = stringResource(R.string.txt_study_set),
                         icon = R.drawable.ic_card,
                         onClick = {
                             showBottomSheetCreate = false
@@ -197,7 +198,7 @@ fun StandardScaffold(
                         }
                     )
                     BottomSheetItem(
-                        title = "Folder",
+                        title = stringResource(R.string.txt_folder),
                         icon = R.drawable.ic_folder,
                         onClick = {
                             showBottomSheetCreate = false
@@ -205,7 +206,7 @@ fun StandardScaffold(
                         }
                     )
                     BottomSheetItem(
-                        title = "Class",
+                        title = stringResource(R.string.txt_class),
                         icon = R.drawable.ic_school,
                         onClick = {
                             showBottomSheetCreate = false

@@ -58,18 +58,21 @@ import com.pwhs.quickmem.presentation.app.settings.component.SettingValidatePass
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.toFormattedString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.OpenSourceScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangeLanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UpdateUsernameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import com.revenuecat.purchases.CustomerInfo
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -82,14 +85,16 @@ fun SettingsScreen(
     resultUpdateEmail: ResultRecipient<UpdateEmailSettingScreenDestination, Boolean>,
     resultChangePassword: ResultRecipient<ChangePasswordSettingScreenDestination, Boolean>,
     resultChangeLanguage: ResultRecipient<ChangeLanguageScreenDestination, Boolean>,
+    resultUpdateUsername: ResultRecipient<UpdateUsernameSettingScreenDestination, Boolean>
 ) {
+    val context = LocalContext.current
 
     resultUpdateFullName.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -100,7 +105,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -111,7 +116,7 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -122,7 +127,18 @@ fun SettingsScreen(
             NavResult.Canceled -> {}
             is NavResult.Value -> {
                 if (result.value) {
-                    viewModel.initData()
+                    viewModel.onEvent(SettingUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultUpdateUsername.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(SettingUiAction.Refresh)
                 }
             }
         }
@@ -160,7 +176,12 @@ fun SettingsScreen(
                 }
 
                 SettingUiEvent.NavigateToChangeUsername -> {
-                    // TODO()
+                    navigator.navigate(
+                        UpdateUsernameSettingScreenDestination(
+                            userId = uiState.userId,
+                            username = uiState.username
+                        )
+                    )
                 }
             }
 
@@ -187,6 +208,20 @@ fun SettingsScreen(
         onNavigationBack = {
             navigator.navigateUp()
         },
+        onNavigateToOpenSourceLicenses = {
+            navigator.navigate(OpenSourceScreenDestination)
+        },
+        onNavigateToHelpCenter = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/pass-with-high-score/quick_mem/issues")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        },
         onSubmitClick = {
             viewModel.onEvent(SettingUiAction.OnSubmitClick)
         },
@@ -204,7 +239,30 @@ fun SettingsScreen(
         },
         onNavigateToChangeLanguage = {
             navigator.navigate(ChangeLanguageScreenDestination())
-        }
+        },
+        onNavigateToPrivacyPolicy = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        },
+        onNavigateToTermsOfService = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        },
+        customerInfo = uiState.customerInfo
     )
 }
 
@@ -237,6 +295,7 @@ fun Setting(
     onNavigateToOpenSourceLicenses: () -> Unit = {},
     onNavigateToHelpCenter: () -> Unit = {},
     onLogout: () -> Unit = {},
+    customerInfo: CustomerInfo? = null
 ) {
 
     val bottomSheetState = rememberModalBottomSheetState()
@@ -264,7 +323,8 @@ fun Setting(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        stringResource(R.string.txt_settings), style = typography.titleMedium.copy(
+                        text = stringResource(R.string.txt_settings),
+                        style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -290,6 +350,43 @@ fun Setting(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                item {
+                    SettingTitleSection(title = stringResource(R.string.txt_subscription))
+                    SettingCard {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            SettingItem(
+                                title = stringResource(R.string.txt_expiration_date),
+                                subtitle = customerInfo?.latestExpirationDate?.toFormattedString()
+                                    ?: stringResource(R.string.txt_no_subscription),
+                            )
+                            SettingItem(
+                                title = stringResource(R.string.txt_plan),
+                                subtitle = when (customerInfo?.activeSubscriptions?.firstOrNull()
+                                    .toString()) {
+                                    "quickmem_plus:yearly-plan" -> stringResource(R.string.txt_quickmem_plus_yearly)
+                                    "quickmem_plus:monthly-plan" -> stringResource(R.string.txt_quickmem_plus_monthly)
+
+                                    else -> {
+                                        stringResource(R.string.txt_no_subscription)
+                                    }
+                                }
+                            )
+                            customerInfo?.managementURL?.let {
+                                SettingItem(
+                                    title = stringResource(R.string.txt_manage_subscription),
+                                    subtitle = stringResource(R.string.txt_click_here),
+                                    onClick = {
+                                        val browserIntent =
+                                            Intent(Intent.ACTION_VIEW, it)
+                                        context.startActivity(browserIntent)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
                 item {
                     SettingTitleSection(title = stringResource(R.string.txt_personal_info))
                     SettingCard {
@@ -525,10 +622,10 @@ fun Setting(
 
                         context.startActivity(intent)
                     },
-                    title = "Push notifications",
-                    text = "You need to enable push notifications in the app settings",
-                    confirmButtonTitle = "Open settings",
-                    dismissButtonTitle = "Cancel",
+                    title = stringResource(R.string.txt_push_notifications),
+                    text = stringResource(R.string.txt_you_need_to_enable_push_notifications_in_the_app_settings),
+                    confirmButtonTitle = stringResource(R.string.txt_open_settings),
+                    dismissButtonTitle = stringResource(R.string.txt_cancel),
                     buttonColor = colorScheme.primary
                 )
             }

@@ -28,9 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
@@ -43,6 +45,7 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassesScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFoldersScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFlashCardScreenDestination
@@ -135,12 +138,10 @@ fun StudySetDetailScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 StudySetDetailUiEvent.FlashCardDeleted -> {
-                    Timber.d("FlashCardDeleted")
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
 
                 StudySetDetailUiEvent.FlashCardStarred -> {
-                    Timber.d("FlashCardStarred")
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
 
@@ -174,13 +175,11 @@ fun StudySetDetailScreen(
                 }
 
                 StudySetDetailUiEvent.StudySetDeleted -> {
-                    Timber.d("StudySetDeleted")
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
 
                 StudySetDetailUiEvent.StudySetProgressReset -> {
-                    Timber.d("StudySetProgressReset")
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
             }
@@ -212,7 +211,13 @@ fun StudySetDetailScreen(
         onDeleteFlashCard = {
             viewModel.onEvent(StudySetDetailUiAction.OnDeleteFlashCardClicked)
         },
-        onAddToClass = {},
+        onAddToClass = {
+            navigator.navigate(
+                AddStudySetToClassesScreenDestination(
+                    studySetId = uiState.id
+                )
+            )
+        },
         onAddToFolder = {
             navigator.navigate(
                 AddStudySetToFoldersScreenDestination(
@@ -326,7 +331,10 @@ fun StudySetDetail(
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabTitles = listOf("Material", "Progress")
+    val tabTitles = listOf(
+        stringResource(R.string.txt_material),
+        stringResource(R.string.txt_progress)
+    )
     var showMoreBottomSheet by remember { mutableStateOf(false) }
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
@@ -347,7 +355,7 @@ fun StudySetDetail(
                 onMoreClicked = { showMoreBottomSheet = true },
                 onShareClicked = {
                     val link = AppConstant.BASE_URL + "study-set/share/" + linkShareCode
-                    val text = "Check out this study set: $title\n$link"
+                    val text = context.getString(R.string.txt_check_out_this_study_set, title, link)
                     val sendIntent = Intent(Intent.ACTION_SEND).apply {
                         putExtra(Intent.EXTRA_TEXT, text)
                         type = "text/plain"
@@ -448,10 +456,10 @@ fun StudySetDetail(
                 onDeleteStudySet()
                 showDeleteConfirmationDialog = false
             },
-            title = "Delete Study Set",
-            text = "Are you sure you want to delete this study set?",
-            confirmButtonTitle = "Delete",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(R.string.txt_delete_study_set),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_study_set),
+            confirmButtonTitle = stringResource(R.string.txt_delete),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
         )
     }
 
@@ -462,10 +470,10 @@ fun StudySetDetail(
                 onResetProgress()
                 showResetProgressDialog = false
             },
-            title = "Reset Progress",
-            text = "Are you sure you want to reset the progress of this study set?",
-            confirmButtonTitle = "Reset",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(R.string.txt_reset_progress),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_reset_the_progress_of_this_study_set),
+            confirmButtonTitle = stringResource(R.string.txt_reset),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
             buttonColor = Color.Red
         )
     }

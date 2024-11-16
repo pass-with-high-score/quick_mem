@@ -22,7 +22,9 @@ interface ClassRepository {
 
     suspend fun getClassByOwnerId(
         token: String,
-        userId: String
+        userId: String,
+        folderId: String?,
+        studySetId: String?
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>>
 
     suspend fun updateClass(
