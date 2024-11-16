@@ -49,7 +49,6 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -68,6 +67,7 @@ fun SearchResultScreen(
     val studySetItems: LazyPagingItems<GetStudySetResponseModel> =
         viewModel.studySetState.collectAsLazyPagingItems()
     val context = LocalContext.current
+    var tabIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -80,8 +80,9 @@ fun SearchResultScreen(
     }
     SearchResult(
         modifier = modifier,
-        query = uiState.query,
         isLoading = uiState.isLoading,
+        tabIndex = tabIndex,
+        onTabSelected = { tabIndex = it },
         studySets = studySetItems,
         classes = uiState.classes,
         folders = uiState.folders,
@@ -113,6 +114,9 @@ fun SearchResultScreen(
         },
         onFolderRefresh = {
             viewModel.onEvent(SearchResultUiAction.RefreshFolders)
+        },
+        onSearchResultRefresh = {
+            viewModel.onEvent(SearchResultUiAction.RefreshSearchAllResult)
         },
         onStudySetClick = {
             navigator.navigate(
@@ -153,15 +157,20 @@ fun SearchResultScreen(
         },
         onResetClick = {
             viewModel.onEvent(SearchResultUiAction.ResetFilter)
-        }
+        },
+        onSeeAllClickClass = { tabIndex = SearchResultEnum.CLASS.index },
+        onSeeAllClickFolder = { tabIndex = SearchResultEnum.FOLDER.index },
+        onSeeAllClickStudySet = { tabIndex = SearchResultEnum.STUDY_SET.index },
+        onSeeAllClickUsers = { tabIndex = SearchResultEnum.USER.index }
     )
 }
 
 @Composable
 fun SearchResult(
     modifier: Modifier = Modifier,
-    query: String = "",
     isLoading: Boolean = false,
+    tabIndex: Int,
+    onTabSelected: (Int) -> Unit,
     colorModel: ColorModel? = ColorModel.defaultColors.first(),
     onColorChange: (ColorModel) -> Unit = {},
     subjectModel: SubjectModel? = SubjectModel.defaultSubjects.first(),
@@ -183,10 +192,14 @@ fun SearchResult(
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    onResetClick: () -> Unit = {}
+    onResetClick: () -> Unit = {},
+    onSearchResultRefresh: () -> Unit = {},
+    onSeeAllClickStudySet: () -> Unit = {},
+    onSeeAllClickFolder: () -> Unit = {},
+    onSeeAllClickClass: () -> Unit = {},
+    onSeeAllClickUsers: () -> Unit = {}
 ) {
     var showFilterBottomSheet by remember { mutableStateOf(false) }
-    var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf(
         "All Result",
         "Study Set",
@@ -202,8 +215,11 @@ fun SearchResult(
                 onNavigateBack = onNavigateBack,
                 title = "Result Search",
                 onClickFilter = {
-                    showFilterBottomSheet = true
-                }
+                    if (tabIndex == SearchResultEnum.STUDY_SET.index) {
+                        showFilterBottomSheet = true
+                    }
+                },
+                showFilterIcon = tabIndex == SearchResultEnum.STUDY_SET.index
             )
         }
     ) { innerPadding ->
@@ -234,13 +250,24 @@ fun SearchResult(
                             )
                         },
                         selected = tabIndex == index,
-                        onClick = { tabIndex = index },
+                        onClick = { onTabSelected(index) },
                     )
                 }
             }
             when (tabIndex) {
                 SearchResultEnum.ALL_RESULT.index -> ListAllResultScreen(
-
+                    isLoading = isLoading,
+                    studySets = studySets,
+                    classes = classes,
+                    folders = folders,
+                    onStudySetClick = onStudySetClick,
+                    onFolderClick = onFolderClick,
+                    onClassClicked = onClassClick,
+                    onSearchResultRefresh = onSearchResultRefresh,
+                    onSeeAllClickClass = onSeeAllClickClass,
+                    onSeeAllClickFolder = onSeeAllClickFolder,
+                    onSeeAllClickStudySet = onSeeAllClickStudySet,
+                    onSeeAllClickUsers = onSeeAllClickUsers,
                 )
 
                 SearchResultEnum.STUDY_SET.index -> ListResultStudySetScreen(
@@ -274,7 +301,6 @@ fun SearchResult(
                     }
                 )
             }
-            Text(text = "Search Result: $query")
         }
     }
     if (showFilterBottomSheet) {
@@ -305,6 +331,6 @@ fun SearchResult(
 @Composable
 private fun SearchResultScreen() {
     QuickMemTheme {
-        SearchResult()
+//        SearchResult()
     }
 }

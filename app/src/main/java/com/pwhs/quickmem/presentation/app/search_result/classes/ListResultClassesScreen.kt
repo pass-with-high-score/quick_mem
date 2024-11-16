@@ -16,10 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,7 +27,6 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
-import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,13 +39,6 @@ fun ListResultClassesScreen(
     onClassRefresh: () -> Unit = {},
 ) {
     val refreshState = rememberPullToRefreshState()
-    var searchQuery by remember { mutableStateOf("") }
-
-    val filterClass = classes.filter {
-        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
-            it.title.contains(query, ignoreCase = true)
-        } ?: true
-    }
     Scaffold(
         modifier = modifier.fillMaxSize(),
     ) { innerPadding ->
@@ -87,16 +75,7 @@ fun ListResultClassesScreen(
 
                 else -> {
                     LazyColumn {
-                        item {
-                            if (classes.isNotEmpty()) {
-                                SearchTextField(
-                                    searchQuery = searchQuery,
-                                    onSearchQueryChange = { searchQuery = it },
-                                    placeholder = stringResource(R.string.txt_search_classes),
-                                )
-                            }
-                        }
-                        items(filterClass) { classItem ->
+                        items(classes) { classItem ->
                             ClassItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 classItem = classItem,
@@ -104,7 +83,7 @@ fun ListResultClassesScreen(
                             )
                         }
                         item {
-                            if (filterClass.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                            if (classes.isEmpty()) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()

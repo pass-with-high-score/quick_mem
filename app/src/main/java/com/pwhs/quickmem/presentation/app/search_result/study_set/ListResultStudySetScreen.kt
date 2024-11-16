@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
@@ -23,7 +23,6 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +43,6 @@ fun ListResultStudySetScreen(
     studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
     onStudySetRefresh: () -> Unit = {},
-    onResetClick: () -> Unit = {}
 ) {
     val refreshState = rememberPullToRefreshState()
 
@@ -93,12 +91,21 @@ fun ListResultStudySetScreen(
                     studySets?.apply {
                         when {
                             loadState.refresh is LoadState.Loading -> {
-                                CircularProgressIndicator(
+                                Column(
                                     modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.Center),
-                                    color = colorScheme.primary
-                                )
+                                        .fillMaxWidth()
+                                        .padding(innerPadding)
+                                        .padding(top = 40.dp)
+                                        .padding(horizontal = 16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(36.dp),
+                                        color = colorScheme.primary
+                                    )
+                                }
                             }
 
                             loadState.refresh is LoadState.Error -> {
@@ -130,12 +137,21 @@ fun ListResultStudySetScreen(
                             }
 
                             loadState.append is LoadState.Loading -> {
-                                CircularProgressIndicator(
+                                Column(
                                     modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.Center),
-                                    color = colorScheme.primary
-                                )
+                                        .fillMaxWidth()
+                                        .padding(innerPadding)
+                                        .padding(top = 40.dp)
+                                        .padding(horizontal = 16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(36.dp),
+                                        color = colorScheme.primary
+                                    )
+                                }
                             }
 
                             loadState.append is LoadState.Error -> {

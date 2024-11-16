@@ -107,6 +107,16 @@ class SearchResultViewModel @Inject constructor(
                 }
             }
 
+            SearchResultUiAction.RefreshSearchAllResult -> {
+                viewModelScope.launch {
+                    delay(500)
+                    getStudySets()
+                    getClasses()
+                    getFolders()
+                    getUsers()
+                }
+            }
+
             is SearchResultUiAction.ColorChanged -> {
                 _uiState.update {
                     it.copy(colorModel = event.colorModel)
@@ -152,138 +162,155 @@ class SearchResultViewModel @Inject constructor(
     private fun getStudySets() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            studySetRepository.getSearchResultStudySets(
-                token = _uiState.value.token,
-                title = _uiState.value.query,
-                size = _uiState.value.sizeStudySetModel,
-                creatorType = _uiState.value.creatorTypeModel,
-                page = 1,
-                colorId = _uiState.value.colorModel.id,
-                subjectId = _uiState.value.subjectModel.id
-            ).distinctUntilChanged()
-                .onStart {
-                    _studySetState.value = PagingData.empty()
-                }
-                .cachedIn(viewModelScope)
-                .onCompletion {
-                    _uiState.update { it.copy(isLoading = false) }
-                }
-                .collect { pagingData ->
-                    _studySetState.value = pagingData
-                }
+            try {
+                studySetRepository.getSearchResultStudySets(
+                    token = _uiState.value.token,
+                    title = _uiState.value.query,
+                    size = _uiState.value.sizeStudySetModel,
+                    creatorType = _uiState.value.creatorTypeModel,
+                    page = 1,
+                    colorId = _uiState.value.colorModel.id,
+                    subjectId = _uiState.value.subjectModel.id
+                ).distinctUntilChanged()
+                    .onStart {
+                        _studySetState.value = PagingData.empty()
+                    }
+                    .cachedIn(viewModelScope)
+                    .onCompletion {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+                    .collect { pagingData ->
+                        _studySetState.value = pagingData
+                    }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEvent.send(SearchResultUiEvent.Error(e.message ?: "An error occurred"))
+            }
         }
     }
 
     private fun getClasses() {
         viewModelScope.launch {
-            classRepository.getSearchResultClasses(
-                token = _uiState.value.token,
-                title = _uiState.value.query,
-                page = 1
-            ).collectLatest { resources ->
-                when (resources) {
-                    is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                classes = resources.data ?: emptyList(),
+            try {
+                classRepository.getSearchResultClasses(
+                    token = _uiState.value.token,
+                    title = _uiState.value.query,
+                    page = 1
+                ).collectLatest { resources ->
+                    when (resources) {
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    classes = resources.data ?: emptyList(),
+                                )
+                            }
+                        }
+
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(
+                                SearchResultUiEvent.Error(
+                                    resources.message ?: "An error occurred"
+                                )
                             )
                         }
-                    }
 
-                    is Resources.Error -> {
-                        _uiState.update {
-                            it.copy(isLoading = false)
-                        }
-                        _uiEvent.send(
-                            SearchResultUiEvent.Error(
-                                resources.message ?: "An error occurred"
-                            )
-                        )
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
                         }
                     }
                 }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get classes")
             }
         }
     }
 
     private fun getFolders() {
         viewModelScope.launch {
-            folderRepository.getSearchResultFolders(
-                token = _uiState.value.token,
-                title = _uiState.value.query,
-                page = 1
-            ).collectLatest { resources ->
-                when (resources) {
-                    is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                folders = resources.data ?: emptyList(),
+            try {
+                folderRepository.getSearchResultFolders(
+                    token = _uiState.value.token,
+                    title = _uiState.value.query,
+                    page = 1
+                ).collectLatest { resources ->
+                    when (resources) {
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    folders = resources.data ?: emptyList(),
+                                )
+                            }
+                        }
+
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(
+                                SearchResultUiEvent.Error(
+                                    resources.message ?: "An error occurred"
+                                )
                             )
                         }
-                    }
 
-                    is Resources.Error -> {
-                        _uiState.update {
-                            it.copy(isLoading = false)
-                        }
-                        _uiEvent.send(
-                            SearchResultUiEvent.Error(
-                                resources.message ?: "An error occurred"
-                            )
-                        )
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
                         }
                     }
                 }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get folders")
             }
         }
     }
 
     private fun getUsers() {
         viewModelScope.launch {
-            authRepository.searchUser(
-                token = _uiState.value.token,
-                username = _uiState.value.query,
-                page = 1
-            ).collectLatest { resources ->
-                when (resources) {
-                    is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                users = resources.data ?: emptyList(),
+            try {
+                authRepository.searchUser(
+                    token = _uiState.value.token,
+                    username = _uiState.value.query,
+                    page = 1
+                ).collectLatest { resources ->
+                    when (resources) {
+                        is Resources.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    users = resources.data ?: emptyList(),
+                                )
+                            }
+                        }
+
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                            _uiEvent.send(
+                                SearchResultUiEvent.Error(
+                                    resources.message ?: "An error occurred"
+                                )
                             )
                         }
-                    }
 
-                    is Resources.Error -> {
-                        _uiState.update {
-                            it.copy(isLoading = false)
-                        }
-                        _uiEvent.send(
-                            SearchResultUiEvent.Error(
-                                resources.message ?: "An error occurred"
-                            )
-                        )
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
                         }
                     }
                 }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get users")
             }
         }
     }
