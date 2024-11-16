@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import com.pwhs.quickmem.BuildConfig
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
@@ -19,6 +20,8 @@ import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordResponseModel
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 import com.pwhs.quickmem.domain.model.auth.SignupResponseModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarRequestModel
+import com.pwhs.quickmem.domain.model.auth.UpdateAvatarResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailRequestModel
 import com.pwhs.quickmem.domain.model.auth.UpdateEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.UpdateFullNameRequestModel
@@ -32,6 +35,7 @@ import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.RequestBody
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -251,6 +255,42 @@ class AuthRepositoryImpl @Inject constructor(
                     token,
                     userId,
                     isOwner
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getAvatar(): Flow<Resources<List<String>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val avatarUrls = mutableListOf<String>()
+                for (index in 1..18) {
+                    val imageUrl = "${BuildConfig.BASE_URL}public/images/avatar/$index.jpg"
+                    avatarUrls.add(imageUrl)
+                }
+                emit(Resources.Success(avatarUrls))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateAvatar(
+        token: String,
+        avatarId: String,
+        updateAvatarRequestModel: UpdateAvatarRequestModel
+    ): Flow<Resources<UpdateAvatarResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.updateAvatar(
+                    token, avatarId, updateAvatarRequestModel.toDto()
                 )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
