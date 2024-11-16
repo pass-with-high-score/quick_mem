@@ -19,7 +19,6 @@ data class SearchResultUiState(
     val username: String = "",
     val token: String = "",
     val userId: String = "",
-    val studySets: PagingData<GetStudySetResponseModel> = PagingData.empty(),
     val classes: List<GetClassByOwnerResponseModel> = emptyList(),
     val folders: List<GetFolderResponseModel> = emptyList(),
     val users: List<SearchUserResponseModel> = emptyList(),

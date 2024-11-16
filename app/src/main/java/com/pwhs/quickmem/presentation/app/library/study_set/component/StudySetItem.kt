@@ -87,7 +87,7 @@ fun StudySetItem(
                                 fontWeight = FontWeight.Bold
                             )
                     ) {
-                        append("${studySet?.flashCardCount}")
+                        append("${studySet?.flashcardCount}")
                         withStyle(
                             style = typography.bodySmall.toSpanStyle()
                                 .copy(
@@ -148,7 +148,7 @@ private fun StudySetItemPreview() {
                             studySet = GetStudySetResponseModel(
                                 id = "1",
                                 title = "Study Set Title",
-                                flashCardCount = 10,
+                                flashcardCount = 10,
                                 color = ColorModel.defaultColors[0],
                                 subject = SubjectModel.defaultSubjects[0],
                                 owner = UserResponseModel(

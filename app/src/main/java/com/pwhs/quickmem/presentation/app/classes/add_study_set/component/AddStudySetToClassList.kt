@@ -156,7 +156,7 @@ private fun AddStudySetToClassListPreview() {
                     GetStudySetResponseModel(
                         id = "1",
                         title = "Study Set 1",
-                        flashCardCount = 10,
+                        flashcardCount = 10,
                         color = ColorModel.defaultColors[0],
                         subject = SubjectModel.defaultSubjects[0],
                         owner = UserResponseModel(
