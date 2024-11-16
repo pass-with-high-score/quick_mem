@@ -15,7 +15,9 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -46,25 +48,25 @@ fun FolderMenuBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onEditFolder,
                         icon = Outlined.Edit,
-                        title = "Edit"
+                        title = stringResource(R.string.txt_edit_folder),
                     )
                 }
                 ItemMenuBottomSheet(
                     onClick = onShareFolder,
                     icon = Default.IosShare,
-                    title = "Share Folder"
+                    title = stringResource(R.string.txt_share_folder)
                 )
                 ItemMenuBottomSheet(
                     onClick = onReportFolder,
                     icon = Outlined.Report,
-                    title = "Report Folder"
+                    title = stringResource(R.string.txt_report_folder)
                 )
 
                 if (isOwner){
                     ItemMenuBottomSheet(
                         onClick = onDeleteFolder,
                         icon = Default.DeleteOutline,
-                        title = "Delete Folder",
+                        title = stringResource(R.string.txt_delete_folder),
                         color = Color.Red
                     )
                 }

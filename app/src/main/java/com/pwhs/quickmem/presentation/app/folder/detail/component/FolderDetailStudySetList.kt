@@ -20,10 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
@@ -33,7 +35,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun FolderDetailStudySetList(
-    isOwner:Boolean,
+    isOwner: Boolean,
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
@@ -50,7 +52,7 @@ fun FolderDetailStudySetList(
                         .padding(top = 100.dp)
                 ) {
                     Text(
-                        "The folder has no study sets",
+                        text = stringResource(R.string.txt_the_folder_has_no_study_sets),
                         style = typography.titleLarge.copy(
                             fontWeight = Bold,
                             color = colorScheme.onSurface
@@ -58,7 +60,7 @@ fun FolderDetailStudySetList(
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center
                     )
-                    if (isOwner){
+                    if (isOwner) {
                         Button(
                             onClick = onAddFlashCardClick
                         ) {
@@ -67,12 +69,12 @@ fun FolderDetailStudySetList(
                             ) {
                                 Icon(
                                     Icons.Filled.Add,
-                                    contentDescription = "Add",
+                                    contentDescription = stringResource(R.string.txt_add_folders),
                                     tint = colorScheme.background,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
                                 Text(
-                                    "Add study set",
+                                    text = stringResource(R.string.txt_add_study_set),
                                     style = typography.titleMedium.copy(
                                         color = colorScheme.background,
                                         fontWeight = Bold

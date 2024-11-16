@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -118,7 +119,7 @@ fun FolderDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.txt_back),
                 )
             }
         },
@@ -129,7 +130,7 @@ fun FolderDetailTopAppBar(
                 ) {
                     Icon(
                         imageVector = Default.Add,
-                        contentDescription = "Add"
+                        contentDescription = stringResource(R.string.txt_add_study_set)
                     )
                 }
             }
@@ -138,7 +139,7 @@ fun FolderDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Default.MoreVert,
-                    contentDescription = "More"
+                    contentDescription = stringResource(R.string.txt_more_options)
                 )
             }
         }
