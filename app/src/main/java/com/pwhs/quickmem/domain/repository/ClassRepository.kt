@@ -37,4 +37,11 @@ interface ClassRepository {
         token: String,
         classId: String
     ): Flow<Resources<Unit>>
+
+    suspend fun getSearchResultClasses(
+        token: String,
+        query: String,
+        size: Int?,
+        page: Int?,
+    ): Flow<Resources<List<GetClassByOwnerResponseModel>>>
 }

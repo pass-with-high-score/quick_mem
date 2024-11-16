@@ -118,8 +118,8 @@ class FolderRepositoryImpl @Inject constructor(
     override suspend fun getSearchResultFolders(
         token: String,
         query: String,
-        size: Int,
-        page: Int
+        size: Int?,
+        page: Int?
     ): Flow<Resources<List<GetFolderResponseModel>>> {
         return flow {
             emit(Resources.Loading())

@@ -46,7 +46,7 @@ interface FolderRepository {
     suspend fun getSearchResultFolders(
         token: String,
         query: String,
-        size: Int,
-        page: Int,
+        size: Int?,
+        page: Int?,
     ): Flow<Resources<List<GetFolderResponseModel>>>
 }

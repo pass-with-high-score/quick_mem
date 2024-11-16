@@ -303,8 +303,8 @@ interface ApiService {
     suspend fun searchFolder(
         @Header("Authorization") token: String,
         @Query("title") query: String,
-        @Query("size") size: Int,
-        @Query("page") page: Int,
+        @Query("size") size: Int?,
+        @Query("page") page: Int?,
     ): List<GetFolderResponseDto>
 
     // Class
@@ -357,9 +357,9 @@ interface ApiService {
     suspend fun searchClass(
         @Header("Authorization") token: String,
         @Query("title") query: String,
-        @Query("size") size: Int,
-        @Query("page") page: Int,
-    ): List<GetClassDetailResponseDto>
+        @Query("size") size: Int?,
+        @Query("page") page: Int?,
+    ): List<GetClassByOwnerResponseDto>
 
     // Streak
     @GET("streak/{userId}")

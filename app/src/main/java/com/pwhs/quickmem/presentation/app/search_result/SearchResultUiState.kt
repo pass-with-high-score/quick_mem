@@ -23,6 +23,6 @@ data class SearchResultUiState(
     val colorModel: ColorModel = ColorModel.defaultColors.first(),
     val sizeStudySetModel: SearchResultSizeEnum = SearchResultSizeEnum.all,
     val sizeFolderModel : Int = 3,
-    val sizeClassModel : Int = 0,
+    val sizeClassModel : Int = 3,
     val creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.all,
 )

@@ -187,7 +187,40 @@ class SearchResultViewModel @Inject constructor(
 
     private fun getClasses() {
         viewModelScope.launch {
+            classRepository.getSearchResultClasses(
+                token = _uiState.value.token,
+                query = _uiState.value.query,
+                size = _uiState.value.sizeClassModel,
+                page = 1
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                classes = resources.data ?: emptyList(),
+                            )
+                        }
+                    }
 
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            SearchResultUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
         }
     }
 
