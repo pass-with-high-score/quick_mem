@@ -22,6 +22,7 @@ import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBot
 @Composable
 fun ClassDetailBottomSheet(
     modifier: Modifier = Modifier,
+    isOwner:Boolean,
     onAddStudySetToClass: () -> Unit = {},
     onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
@@ -42,21 +43,23 @@ fun ClassDetailBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                ItemMenuBottomSheet(
-                    onClick = onAddStudySetToClass,
-                    icon = Outlined.Add,
-                    title = "Add study set to class"
-                )
-                ItemMenuBottomSheet(
-                    onClick = onAddFolderToClass,
-                    icon = Outlined.Add,
-                    title = "Add folder to class"
-                )
-                ItemMenuBottomSheet(
-                    onClick = onEditClass,
-                    icon = Outlined.Edit,
-                    title = "Save and edit"
-                )
+                if (isOwner){
+                    ItemMenuBottomSheet(
+                        onClick = onAddStudySetToClass,
+                        icon = Outlined.Add,
+                        title = "Add study set to class"
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = onAddFolderToClass,
+                        icon = Outlined.Add,
+                        title = "Add folder to class"
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = onEditClass,
+                        icon = Outlined.Edit,
+                        title = "Save and edit"
+                    )
+                }
                 ItemMenuBottomSheet(
                     onClick = onShareClass,
                     icon = Default.IosShare,
@@ -67,12 +70,14 @@ fun ClassDetailBottomSheet(
                     icon = Outlined.Report,
                     title = "Report Class"
                 )
-                ItemMenuBottomSheet(
-                    onClick = onDeleteClass,
-                    icon = Default.DeleteOutline,
-                    title = "Delete Class",
-                    color = Color.Red
-                )
+                if (isOwner){
+                    ItemMenuBottomSheet(
+                        onClick = onDeleteClass,
+                        icon = Default.DeleteOutline,
+                        title = "Delete Class",
+                        color = Color.Red
+                    )
+                }
             }
         }
     }

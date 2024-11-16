@@ -91,7 +91,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging.ktx)
-    implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
+    implementation(libs.onesignal)
 
     implementation(libs.play.services.ads)
 

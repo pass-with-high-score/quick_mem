@@ -15,13 +15,16 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderMenuBottomSheet(
+    isOwner: Boolean,
     modifier: Modifier = Modifier,
     onEditFolder: () -> Unit = {},
     onDeleteFolder: () -> Unit = {},
@@ -41,27 +44,32 @@ fun FolderMenuBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                ItemMenuBottomSheet(
-                    onClick = onEditFolder,
-                    icon = Outlined.Edit,
-                    title = "Edit"
-                )
+                if (isOwner){
+                    ItemMenuBottomSheet(
+                        onClick = onEditFolder,
+                        icon = Outlined.Edit,
+                        title = stringResource(R.string.txt_edit_folder),
+                    )
+                }
                 ItemMenuBottomSheet(
                     onClick = onShareFolder,
                     icon = Default.IosShare,
-                    title = "Share Folder"
+                    title = stringResource(R.string.txt_share_folder)
                 )
                 ItemMenuBottomSheet(
                     onClick = onReportFolder,
                     icon = Outlined.Report,
-                    title = "Report Folder"
+                    title = stringResource(R.string.txt_report_folder)
                 )
-                ItemMenuBottomSheet(
-                    onClick = onDeleteFolder,
-                    icon = Default.DeleteOutline,
-                    title = "Delete Folder",
-                    color = Color.Red
-                )
+
+                if (isOwner){
+                    ItemMenuBottomSheet(
+                        onClick = onDeleteFolder,
+                        icon = Default.DeleteOutline,
+                        title = stringResource(R.string.txt_delete_folder),
+                        color = Color.Red
+                    )
+                }
             }
         }
     }
@@ -73,7 +81,8 @@ fun FolderMenuBottomSheet(
 private fun FolderMenuBottomSheetPreview() {
     QuickMemTheme {
         FolderMenuBottomSheet(
-            showMoreBottomSheet = true
+            showMoreBottomSheet = true,
+            isOwner = true
         )
     }
 }

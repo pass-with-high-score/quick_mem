@@ -277,7 +277,6 @@ fun SearchResult(
                     onClassClicked = onClassClick,
                     onClassRefresh = onClassRefresh,
                 )
-
                 SearchResultEnum.USER.index -> ListResultUserScreen(
                     modifier = modifier,
                     users = users,

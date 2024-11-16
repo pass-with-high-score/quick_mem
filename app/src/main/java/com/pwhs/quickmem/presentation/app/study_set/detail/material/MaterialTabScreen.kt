@@ -57,6 +57,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun MaterialTabScreen(
     modifier: Modifier = Modifier,
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
+    isOwner:Boolean,
     onFlashCardClick: (String) -> Unit = {},
     onDeleteFlashCardClick: () -> Unit = {},
     onEditFlashCardClick: () -> Unit = {},
@@ -106,25 +107,27 @@ fun MaterialTabScreen(
                                 color = colorScheme.onSurface,
                             ),
                         )
-                        Button(
-                            onClick = onAddFlashCardClick,
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = CenterVertically
+                        if (isOwner){
+                            Button(
+                                onClick = onAddFlashCardClick,
+                                modifier = Modifier.padding(16.dp)
                             ) {
-                                Icon(
-                                    Icons.Filled.Add,
-                                    contentDescription = stringResource(R.string.txt_add),
-                                    tint = colorScheme.background,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(
-                                    text = stringResource(R.string.txt_add_material),
-                                    style = typography.titleMedium.copy(
-                                        color = colorScheme.background
+                                Row(
+                                    verticalAlignment = CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Add,
+                                        contentDescription = stringResource(R.string.txt_add),
+                                        tint = colorScheme.background,
+                                        modifier = Modifier.padding(end = 8.dp)
                                     )
-                                )
+                                    Text(
+                                        text = stringResource(R.string.txt_add_material),
+                                        style = typography.titleMedium.copy(
+                                            color = colorScheme.background
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
@@ -373,6 +376,7 @@ fun MaterialTabScreen(
 fun MaterialTabScreenPreview() {
     QuickMemTheme {
         MaterialTabScreen(
+            isOwner = false,
             flashCards = listOf(
                 StudySetFlashCardResponseModel(
                     id = "1",

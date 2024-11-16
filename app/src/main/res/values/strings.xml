@@ -220,4 +220,26 @@
     <string name="txt_forgot_password_image">Forgot Password Image</string>
     <string name="txt_choose_a_picture">Choose a picture</string>
     <string name="txt_update_image_successfully">Update Image Successfully!</string>
+    <string name="txt_activity">Activity</string>
+    <string name="txt_no_notifications">No Notifications</string>
+    <string name="txt_there_are_no_notifications">There are no notifications</string>
+    <string name="txt_notification_deleted_successfully">Notification deleted successfully!</string>
+    <string name="txt_expired">Expired</string>
+    <string name="txt_invalid_date_format">Invalid date format</string>
+    <string name="txt_unread">Unread</string>
+    <string name="txt_study_sets_folders_class">Study sets, folders, class,...</string>
+    <string name="txt_notifications">Notifications</string>
+    <string name="txt_streak">Streak</string>
+    <string name="txt_streak_count">Streak %1$s</string>
+    <string name="txt_this_class_has_no_folders">This class has no folders</string>
+    <string name="txt_add_folders_to_share_them_with_your_class">Add folders to share them with your class.</string>
+    <string name="txt_add_folders">Add Folders</string>
+    <string name="txt_study_sets_count_class_detail">%1$s study sets</string>
+    <string name="txt_delete_folder">Delete Folder</string>
+    <string name="txt_are_you_sure_you_want_to_delete_this_folder">Are you sure you want to delete this folder?</string>
+    <string name="txt_study">Study</string>
+    <string name="txt_the_folder_has_no_study_sets">The folder has no study sets</string>
+    <string name="txt_report_folder">Report Folder</string>
+    <string name="txt_share_folder">Share Folder</string>
+    <string name="txt_edit_folder">Edit Folder</string>
 </resources>

@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +43,7 @@ import com.pwhs.quickmem.util.gradientBackground
 @Composable
 fun FolderDetailTopAppBar(
     modifier: Modifier = Modifier,
+    isOwner: Boolean = false,
     title: String = "",
     dateLabel: String = "",
     avatarUrl: String = "",
@@ -117,25 +119,27 @@ fun FolderDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.txt_back),
                 )
             }
         },
         actions = {
-            IconButton(
-                onClick = onAddStudySet
-            ) {
-                Icon(
-                    imageVector = Default.Add,
-                    contentDescription = "Add"
-                )
+            if (isOwner){
+                IconButton(
+                    onClick = onAddStudySet
+                ) {
+                    Icon(
+                        imageVector = Default.Add,
+                        contentDescription = stringResource(R.string.txt_add_study_set)
+                    )
+                }
             }
             IconButton(
                 onClick = onMoreClicked
             ) {
                 Icon(
                     imageVector = Default.MoreVert,
-                    contentDescription = "More"
+                    contentDescription = stringResource(R.string.txt_more_options)
                 )
             }
         }
@@ -153,7 +157,8 @@ fun FolderDetailTopAppBarPreview() {
                     dateLabel = "Created 2021-09-01",
                     onNavigateBack = {},
                     onMoreClicked = {},
-                    onAddStudySet = {}
+                    onAddStudySet = {},
+                    isOwner = true
                 )
             }
         ) {

@@ -19,6 +19,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun StudySetsTabScreen(
     modifier: Modifier = Modifier,
+    isOwner: Boolean = false,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onAddStudySetClicked: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
@@ -36,7 +37,8 @@ fun StudySetsTabScreen(
                         title = "This class has no sets",
                         subtitle = "Add flashcard sets to share them with your class.",
                         buttonTitle = "Add study sets",
-                        onAddStudySetClicked = onAddStudySetClicked
+                        onAddStudySetClicked = onAddStudySetClicked,
+                        isOwner = isOwner
                     )
                 }
 
@@ -65,6 +67,6 @@ fun StudySetsTabScreen(
 @Composable
 fun StudySetsTabPreview() {
     QuickMemTheme {
-        StudySetsTabScreen()
+        StudySetsTabScreen(isOwner = true)
     }
 }
