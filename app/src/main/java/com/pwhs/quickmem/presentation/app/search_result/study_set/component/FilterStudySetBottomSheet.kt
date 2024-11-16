@@ -27,9 +27,9 @@ fun FilterStudySetBottomSheet(
     onColorChange: (ColorModel) -> Unit = {},
     onSubjectChange: (SubjectModel) -> Unit = {},
     subjectModel: SubjectModel? = SubjectModel.defaultSubjects.first(),
-    sizeModel: SearchResultSizeEnum = SearchResultSizeEnum.all,
+    sizeModel: SearchResultSizeEnum = SearchResultSizeEnum.ALL,
     onSizeChange: (SearchResultSizeEnum) -> Unit,
-    creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.all,
+    creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.ALL,
     onCreatorChange: (SearchResultCreatorEnum) -> Unit,
     onNavigateBack: () -> Unit,
     onResetClick: () -> Unit,
@@ -63,10 +63,11 @@ fun FilterStudySetBottomSheet(
         item {
             FilterSection(
                 title = "Number of terms",
-                options = SearchResultSizeEnum.entries.map { it.content },
-                selectedOption = sizeModel.content,
+                options = SearchResultSizeEnum.entries.map { it.title },
+                selectedOption = sizeModel.title,
                 onOptionSelected = { selectedContent ->
-                    val selectedSize = SearchResultSizeEnum.entries.first { it.content == selectedContent }
+                    val selectedSize =
+                        SearchResultSizeEnum.entries.first { it.title == selectedContent }
                     onSizeChange(selectedSize)
                 }
             )
@@ -75,10 +76,11 @@ fun FilterStudySetBottomSheet(
         item {
             FilterSection(
                 title = "Created by",
-                options = SearchResultCreatorEnum.entries.map { it.content },
-                selectedOption = creatorTypeModel.content,
+                options = SearchResultCreatorEnum.entries.map { it.title },
+                selectedOption = creatorTypeModel.title,
                 onOptionSelected = {
-                    val selectedCreator = SearchResultCreatorEnum.entries.first { entry -> entry.content == it }
+                    val selectedCreator =
+                        SearchResultCreatorEnum.entries.first { entry -> entry.title == it }
                     onCreatorChange(selectedCreator)
                 }
             )

@@ -3,10 +3,13 @@ package com.pwhs.quickmem.presentation.app.search_result
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
@@ -20,6 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -39,6 +43,10 @@ class SearchResultViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SearchResultUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _studySetState: MutableStateFlow<PagingData<GetStudySetResponseModel>> =
+        MutableStateFlow(PagingData.empty())
+    val studySetState: MutableStateFlow<PagingData<GetStudySetResponseModel>> = _studySetState
 
     private val _uiEvent = Channel<SearchResultUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
@@ -101,6 +109,7 @@ class SearchResultViewModel @Inject constructor(
                     it.copy(colorModel = event.colorModel)
                 }
             }
+
             is SearchResultUiAction.SubjectChanged -> {
                 _uiState.update {
                     it.copy(subjectModel = event.subjectModel)
@@ -116,6 +125,7 @@ class SearchResultViewModel @Inject constructor(
                     it.copy(creatorTypeModel = event.creatorType)
                 }
             }
+
             is SearchResultUiAction.SizeChanged -> {
                 _uiState.update {
                     it.copy(sizeStudySetModel = event.sizeModel)
@@ -127,8 +137,8 @@ class SearchResultViewModel @Inject constructor(
                     it.copy(
                         colorModel = ColorModel.defaultColors.first(),
                         subjectModel = SubjectModel.defaultSubjects.first(),
-                        sizeStudySetModel = SearchResultSizeEnum.all,
-                        creatorTypeModel = SearchResultCreatorEnum.all
+                        sizeStudySetModel = SearchResultSizeEnum.ALL,
+                        creatorTypeModel = SearchResultCreatorEnum.ALL
                     )
                 }
                 Timber.d("query: ${_uiState.value.query}")
@@ -151,35 +161,11 @@ class SearchResultViewModel @Inject constructor(
                 page = 1,
                 colorId = _uiState.value.colorModel.id,
                 subjectId = _uiState.value.subjectModel.id
-            ).collectLatest { resources ->
-                when (resources) {
-                    is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                studySets = resources.data ?: emptyList(),
-                            )
-                        }
-                    }
-
-                    is Resources.Error -> {
-                        _uiState.update {
-                            it.copy(isLoading = false)
-                        }
-                        _uiEvent.send(
-                            SearchResultUiEvent.Error(
-                                resources.message ?: "An error occurred"
-                            )
-                        )
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
-                        }
-                    }
+            ).distinctUntilChanged()
+                .cachedIn(viewModelScope)
+                .collect {
+                    _studySetState.value = it
                 }
-            }
         }
     }
 

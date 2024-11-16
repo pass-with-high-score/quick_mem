@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.search_result
 
+import androidx.paging.PagingData
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
@@ -18,15 +19,15 @@ data class SearchResultUiState(
     val username: String = "",
     val token: String = "",
     val userId: String = "",
-    val studySets: List<GetStudySetResponseModel> = emptyList(),
+    val studySets: PagingData<GetStudySetResponseModel> = PagingData.empty(),
     val classes: List<GetClassByOwnerResponseModel> = emptyList(),
     val folders: List<GetFolderResponseModel> = emptyList(),
     val users: List<SearchUserResponseModel> = emptyList(),
     val userResponseModel: UserResponseModel = UserResponseModel(),
     val subjectModel: SubjectModel = SubjectModel.defaultSubjects.first(),
     val colorModel: ColorModel = ColorModel.defaultColors.first(),
-    val sizeStudySetModel: SearchResultSizeEnum = SearchResultSizeEnum.all,
-    val sizeFolderModel : Int = 3,
-    val sizeClassModel : Int = 3,
-    val creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.all,
+    val sizeStudySetModel: SearchResultSizeEnum = SearchResultSizeEnum.ALL,
+    val sizeFolderModel: Int = 3,
+    val sizeClassModel: Int = 3,
+    val creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.ALL,
 )

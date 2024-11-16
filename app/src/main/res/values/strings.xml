@@ -227,7 +227,7 @@
     <string name="txt_expired">Expired</string>
     <string name="txt_invalid_date_format">Invalid date format</string>
     <string name="txt_unread">Unread</string>
-    <string name="txt_study_sets_folders_class">Study sets, folders, class,...</string>
+    <string name="txt_study_sets_folders_class">Study sets, folders, class,…</string>
     <string name="txt_notifications">Notifications</string>
     <string name="txt_streak">Streak</string>
     <string name="txt_streak_count">Streak %1$s</string>
@@ -242,4 +242,7 @@
     <string name="txt_report_folder">Report Folder</string>
     <string name="txt_share_folder">Share Folder</string>
     <string name="txt_edit_folder">Edit Folder</string>
+    <string name="txt_error_occurred">An error occurred</string>
+    <string name="txt_error">Error</string>
+    <string name="txt_loading">Loading</string>
 </resources>
