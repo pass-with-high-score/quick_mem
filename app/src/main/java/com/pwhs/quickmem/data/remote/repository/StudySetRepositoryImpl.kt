@@ -193,7 +193,7 @@ class StudySetRepositoryImpl @Inject constructor(
 
     override suspend fun getSearchResultStudySets(
         token: String,
-        query: String,
+        title: String,
         size: SearchResultSizeEnum,
         creatorType: SearchResultCreatorEnum?,
         page: Int,
@@ -206,7 +206,7 @@ class StudySetRepositoryImpl @Inject constructor(
                 val response =
                     apiService.searchStudySet(
                         token,
-                        query,
+                        title,
                         size,
                         creatorType,
                         page,

@@ -64,6 +64,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
+import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -73,6 +75,13 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Package
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.models.StoreTransaction
+import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
+import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
+import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
+import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -80,7 +89,7 @@ import com.revenuecat.purchases.CustomerInfo
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(key1 = true) {
@@ -98,12 +107,16 @@ fun HomeScreen(
             navigator.navigate(SearchScreenDestination)
         },
         onNotificationEnabled = { isEnabled ->
-            viewModel.onEvent(HomeUIAction.OnChangeAppPushNotifications(isEnabled))
+            viewModel.onEvent(HomeUiAction.OnChangeAppPushNotifications(isEnabled))
         },
         customer = uiState.customerInfo,
         onCustomerInfoChanged = { customerInfo ->
-            viewModel.onEvent(HomeUIAction.OnChangeCustomerInfo(customerInfo))
+            viewModel.onEvent(HomeUiAction.OnChangeCustomerInfo(customerInfo))
         },
+        notifications = uiState.notifications,
+        onNotificationClicked = { notificationId ->
+            viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
+        }
     )
 }
 
@@ -117,7 +130,15 @@ fun Home(
     onNotificationEnabled: (Boolean) -> Unit = {},
     customer: CustomerInfo? = null,
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
+    onNotificationClicked: (String) -> Unit = {},
+    notifications: List<GetNotificationResponseModel> = emptyList(),
 ) {
+
+    var showNotificationBottomSheet by remember { mutableStateOf(false) }
+    val modalBottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
+
     val streakBottomSheet = rememberModalBottomSheetState()
     var showStreakBottomSheet by remember {
         mutableStateOf(false)
@@ -168,7 +189,6 @@ fun Home(
                 expandedHeight = 140.dp,
                 collapsedHeight = 56.dp,
                 title = {
-                    // only view, search in another screen
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -189,12 +209,12 @@ fun Home(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Search,
-                                contentDescription = "Search",
+                                contentDescription = stringResource(R.string.txt_search),
                                 tint = colorScheme.secondary,
                                 modifier = Modifier.size(15.dp)
                             )
                             Text(
-                                "Study sets, folders, class,...",
+                                text = stringResource(R.string.txt_study_sets_folders_class),
                                 style = typography.bodyMedium.copy(
                                     color = colorScheme.secondary,
                                     fontWeight = FontWeight.Bold
@@ -216,7 +236,7 @@ fun Home(
                             shape = MaterialTheme.shapes.extraLarge,
                         ) {
                             Text(
-                                "Upgrade",
+                                text = stringResource(R.string.txt_upgrade),
                                 style = typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 )
@@ -224,12 +244,12 @@ fun Home(
                         }
                     }
                     IconButton(
-                        onClick = {},
+                        onClick = { showNotificationBottomSheet = true },
                     ) {
                         Box {
                             Icon(
                                 imageVector = Icons.Outlined.Notifications,
-                                contentDescription = "Notifications",
+                                contentDescription = stringResource(R.string.txt_notifications),
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier.size(30.dp)
                             )
@@ -243,7 +263,7 @@ fun Home(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        "1",
+                                        text = "1",
                                         style = typography.bodySmall.copy(
                                             fontSize = 10.sp,
                                             fontWeight = FontWeight.Bold,
@@ -276,12 +296,12 @@ fun Home(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_fire),
-                        contentDescription = "Streak",
+                        contentDescription = stringResource(R.string.txt_streak),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(30.dp)
                     )
                     Text(
-                        "$streakCount",
+                        text = "$streakCount",
                         style = typography.titleLarge.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold,
@@ -332,7 +352,7 @@ fun Home(
                             .height(150.dp)
                     )
                     Text(
-                        "Streak $streakCount",
+                        text = stringResource(R.string.txt_streak_count, streakCount),
                         style = typography.titleLarge.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold
@@ -342,6 +362,70 @@ fun Home(
             }
         }
     }
+
+    if (showNotificationBottomSheet) {
+        NotificationListBottomSheet(
+            onDismissRequest = { showNotificationBottomSheet = false },
+            notifications = notifications,
+            onNotificationClicked = onNotificationClicked,
+            sheetState = modalBottomSheetState
+        )
+    }
+
+    if (isPaywallVisible) {
+        PaywallDialog(
+            paywallDialogOptions = PaywallDialogOptions.Builder()
+                .setListener(
+                    object : PaywallListener {
+
+                        override fun onPurchaseError(error: PurchasesError) {
+                            super.onPurchaseError(error)
+                            Timber.e("purchase error: ${error.message}")
+                        }
+
+                        override fun onPurchaseCancelled() {
+                            super.onPurchaseCancelled()
+                            Timber.d("Purchased Cancelled")
+                        }
+
+                        override fun onPurchaseStarted(rcPackage: Package) {
+                            super.onPurchaseStarted(rcPackage)
+                            Timber.d(
+                                "Purchased Started - package: ${rcPackage.identifier}"
+                            )
+                        }
+
+                        override fun onPurchaseCompleted(
+                            customerInfo: CustomerInfo,
+                            storeTransaction: StoreTransaction,
+                        ) {
+                            super.onPurchaseCompleted(customerInfo, storeTransaction)
+                            Timber.d(
+                                "Purchased Completed - customerInfo: $customerInfo, storeTransaction: $storeTransaction"
+                            )
+                        }
+
+                        override fun onRestoreCompleted(customerInfo: CustomerInfo) {
+                            super.onRestoreCompleted(customerInfo)
+                            Timber.d(
+                                "Restore Completed - customerInfo: $customerInfo"
+                            )
+                        }
+
+                        override fun onRestoreError(error: PurchasesError) {
+                            super.onRestoreError(error)
+                            Timber.e("restore error: ${error.message}")
+                        }
+
+                        override fun onRestoreStarted() {
+                            super.onRestoreStarted()
+                            Timber.d("Restore Started")
+                        }
+                    }
+                )
+                .build()
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -349,6 +433,8 @@ fun Home(
 @Composable
 private fun HomeScreenPreview() {
     QuickMemTheme {
-        Home()
+        Home(
+            streakCount = 5
+        )
     }
 }

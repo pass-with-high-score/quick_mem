@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
+import com.pwhs.quickmem.domain.repository.NotificationRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.revenuecat.purchases.CustomerInfo
@@ -29,35 +31,62 @@ class HomeViewModel @Inject constructor(
     private val studySetRepository: StudySetRepository,
     private val folderRepository: FolderRepository,
     private val classRepository: ClassRepository,
+    private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(HomeUIState())
+    private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<HomeUIEvent>()
+    private val _uiEvent = Channel<HomeUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+
+    init {
+        viewModelScope.launch {
+            val userId = appManager.userId.firstOrNull() ?: ""
+            _uiState.value = HomeUiState(userId = userId)
+            updateStreak()
+            getCustomerInfo()
+            loadNotifications()
+        }
+    }
 
     init {
         updateStreak()
         getCustomerInfo()
     }
 
-    fun onEvent(event: HomeUIAction) {
+
+    fun onEvent(event: HomeUiAction) {
         when (event) {
-            is HomeUIAction.OnChangeAppPushNotifications -> {
+            is HomeUiAction.OnChangeAppPushNotifications -> {
                 viewModelScope.launch {
                     appManager.saveAppPushNotifications(event.isAppPushNotificationsEnabled)
                 }
             }
 
-            is HomeUIAction.OnChangeCustomerInfo -> {
+            is HomeUiAction.OnChangeCustomerInfo -> {
                 _uiState.update {
                     it.copy(
                         customerInfo = event.customerInfo
                     )
                 }
             }
+
+            is HomeUiAction.LoadNotifications -> {
+                loadNotifications()
+            }
+
+            is HomeUiAction.MarkAsRead -> {
+                markNotificationAsRead(event.notificationId)
+            }
+
+            is HomeUiAction.RefreshNotifications -> {
+                loadNotifications()
+            }
+
         }
     }
 
@@ -96,6 +125,62 @@ class HomeViewModel @Inject constructor(
 
                     is Resources.Error -> {
                         _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadNotifications() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            notificationRepository.loadNotifications(userId, token).collect { result ->
+                when (result) {
+                    is Resources.Loading -> {
+                        // do nothing
+                    }
+
+                    is Resources.Success -> _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            notifications = result.data ?: emptyList(),
+                            error = null
+                        )
+                    }
+
+                    is Resources.Error -> _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = result.message ?: "Failed to load notifications"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun markNotificationAsRead(notificationId: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            notificationRepository.markNotificationAsRead(notificationId, token).collect { result ->
+                when (result) {
+                    is Resources.Success -> _uiState.update { state ->
+                        state.copy(
+                            notifications = state.notifications.map { notification ->
+                                if (notification.id == notificationId) notification.copy(isRead = true) else notification
+                            },
+                        )
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(error = result.message ?: "Failed to mark notification as read")
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        // do nothing
                     }
                 }
             }

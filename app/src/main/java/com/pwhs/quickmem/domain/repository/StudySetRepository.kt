@@ -71,7 +71,7 @@ interface StudySetRepository {
 
     suspend fun getSearchResultStudySets(
         token: String,
-        query: String,
+        title: String,
         size: SearchResultSizeEnum,
         creatorType: SearchResultCreatorEnum?,
         page: Int,

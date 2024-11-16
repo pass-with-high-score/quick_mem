@@ -33,6 +33,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun FolderDetailStudySetList(
+    isOwner:Boolean,
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
@@ -57,25 +58,27 @@ fun FolderDetailStudySetList(
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center
                     )
-                    Button(
-                        onClick = onAddFlashCardClick
-                    ) {
-                        Row(
-                            verticalAlignment = CenterVertically
+                    if (isOwner){
+                        Button(
+                            onClick = onAddFlashCardClick
                         ) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "Add",
-                                tint = colorScheme.background,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            Text(
-                                "Add study set",
-                                style = typography.titleMedium.copy(
-                                    color = colorScheme.background,
-                                    fontWeight = Bold
+                            Row(
+                                verticalAlignment = CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Filled.Add,
+                                    contentDescription = "Add",
+                                    tint = colorScheme.background,
+                                    modifier = Modifier.padding(end = 8.dp)
                                 )
-                            )
+                                Text(
+                                    "Add study set",
+                                    style = typography.titleMedium.copy(
+                                        color = colorScheme.background,
+                                        fontWeight = Bold
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -105,6 +108,7 @@ private fun ListStudySetInnerFolderPreview() {
             FolderDetailStudySetList(
                 modifier = Modifier
                     .padding(it),
+                isOwner = true,
                 studySets = listOf(
                     GetStudySetResponseModel(
                         id = "1",
@@ -138,7 +142,8 @@ private fun ListStudySetInnerFolderPreviewEmpty() {
             FolderDetailStudySetList(
                 modifier = Modifier
                     .padding(it),
-                studySets = emptyList()
+                studySets = emptyList(),
+                isOwner = true
             )
         }
     }
