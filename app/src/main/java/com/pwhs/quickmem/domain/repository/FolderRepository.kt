@@ -43,4 +43,10 @@ interface FolderRepository {
         addFolderToClassRequestModel: AddFolderToClassRequestModel
     ): Flow<Resources<Unit>>
 
+    suspend fun getSearchResultFolders(
+        token: String,
+        title: String,
+        size: Int?,
+        page: Int?,
+    ): Flow<Resources<List<GetFolderResponseModel>>>
 }

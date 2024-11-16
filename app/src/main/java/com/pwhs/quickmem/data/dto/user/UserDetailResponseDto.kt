@@ -2,7 +2,7 @@ package com.pwhs.quickmem.data.dto.user
 
 import com.google.gson.annotations.SerializedName
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
-import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
+import com.pwhs.quickmem.data.dto.folder.GetFolderResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 
 data class UserDetailResponseDto(
@@ -11,7 +11,7 @@ data class UserDetailResponseDto(
     @SerializedName("classes")
     val classes: List<GetClassByOwnerResponseDto>,
     @SerializedName("folders")
-    val folders: List<GetFolderDetailResponseDto>,
+    val folders: List<GetFolderResponseDto>,
     @SerializedName("fullname")
     val fullName: String,
     @SerializedName("id")

@@ -40,7 +40,7 @@ import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.folder.AddFolderToClassRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
-import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
+import com.pwhs.quickmem.data.dto.folder.GetFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
 import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
@@ -59,6 +59,7 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.data.dto.user.SearchUserResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
@@ -145,6 +146,14 @@ interface ApiService {
         @Body updateAvatarRequestDto: UpdateAvatarRequestDto
     ): UpdateAvatarResponseDto
 
+    @GET("auth/user/search")
+    suspend fun searchUser(
+        @Header("Authorization") token: String,
+        @Query("username") username: String,
+        @Query("size") size: Int?,
+        @Query("page") page: Int?
+    ): List<SearchUserResponseDto>
+
     // Upload
     @Multipart
     @POST("upload")
@@ -215,7 +224,7 @@ interface ApiService {
     @GET("study-set/search")
     suspend fun searchStudySet(
         @Header("Authorization") token: String,
-        @Query("title") query: String,
+        @Query("title") title: String,
         @Query("size") size: SearchResultSizeEnum,
         @Query("creatorType") creatorType: SearchResultCreatorEnum?,
         @Query("page") page: Int,
@@ -282,7 +291,7 @@ interface ApiService {
     suspend fun getFolderById(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): GetFolderDetailResponseDto
+    ): GetFolderResponseDto
 
     @PUT("folder/{id}")
     suspend fun updateFolder(
@@ -297,7 +306,7 @@ interface ApiService {
         @Path("ownerId") ownerId: String,
         @Query("classId") classId: String? = null,
         @Query("studySetId") studySetId: String? = null
-    ): List<GetFolderDetailResponseDto>
+    ): List<GetFolderResponseDto>
 
     @DELETE("folder/{id}")
     suspend fun deleteFolder(
@@ -310,6 +319,14 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addStudySetToFolderRequestDto: AddStudySetToFolderRequestDto
     )
+
+    @GET("folder/search")
+    suspend fun searchFolder(
+        @Header("Authorization") token: String,
+        @Query("title") title: String,
+        @Query("size") size: Int?,
+        @Query("page") page: Int?,
+    ): List<GetFolderResponseDto>
 
     // Class
     @POST("class")
@@ -356,6 +373,14 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addFolderToClassRequestDto: AddFolderToClassRequestDto
     )
+
+    @GET("class/search")
+    suspend fun searchClass(
+        @Header("Authorization") token: String,
+        @Query("title") title: String,
+        @Query("size") size: Int?,
+        @Query("page") page: Int?,
+    ): List<GetClassByOwnerResponseDto>
 
     // Streak
     @GET("streak/{userId}")

@@ -24,9 +24,9 @@ import com.pwhs.quickmem.domain.model.auth.UpdateUsernameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
+import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import kotlinx.coroutines.flow.Flow
-import okhttp3.RequestBody
 
 interface AuthRepository {
     suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>>
@@ -89,4 +89,11 @@ interface AuthRepository {
         avatarId: String,
         updateAvatarRequestModel: UpdateAvatarRequestModel
     ): Flow<Resources<UpdateAvatarResponseModel>>
+
+    suspend fun searchUser(
+        token: String,
+        username: String,
+        size: Int?,
+        page: Int?
+    ): Flow<Resources<List<SearchUserResponseModel>>>
 }

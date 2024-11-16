@@ -8,6 +8,7 @@ import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
@@ -28,6 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val studySetRepository: StudySetRepository,
     private val classRepository: ClassRepository,
     private val folderRepository: FolderRepository,
@@ -61,11 +63,7 @@ class SearchResultViewModel @Inject constructor(
             getStudySets()
             getClasses()
             getFolders()
-            Timber.d("query: ${_uiState.value.query}")
-            Timber.d("subject: ${_uiState.value.subjectModel.id}")
-            Timber.d("color: ${_uiState.value.colorModel.id}")
-            Timber.d("size: ${_uiState.value.sizeModel}")
-            Timber.d("creatorType: ${_uiState.value.creatorTypeModel}")
+            getUsers()
         }
     }
 
@@ -120,7 +118,7 @@ class SearchResultViewModel @Inject constructor(
             }
             is SearchResultUiAction.SizeChanged -> {
                 _uiState.update {
-                    it.copy(sizeModel = event.sizeModel)
+                    it.copy(sizeStudySetModel = event.sizeModel)
                 }
             }
 
@@ -129,14 +127,14 @@ class SearchResultViewModel @Inject constructor(
                     it.copy(
                         colorModel = ColorModel.defaultColors.first(),
                         subjectModel = SubjectModel.defaultSubjects.first(),
-                        sizeModel = SearchResultSizeEnum.all,
+                        sizeStudySetModel = SearchResultSizeEnum.all,
                         creatorTypeModel = SearchResultCreatorEnum.all
                     )
                 }
                 Timber.d("query: ${_uiState.value.query}")
                 Timber.d("subject: ${_uiState.value.subjectModel.id}")
                 Timber.d("color: ${_uiState.value.colorModel.id}")
-                Timber.d("size: ${_uiState.value.sizeModel}")
+                Timber.d("sizeStudySetModel: ${_uiState.value.sizeStudySetModel}")
                 Timber.d("creatorType: ${_uiState.value.creatorTypeModel}")
                 getStudySets()
             }
@@ -147,8 +145,8 @@ class SearchResultViewModel @Inject constructor(
         viewModelScope.launch {
             studySetRepository.getSearchResultStudySets(
                 token = _uiState.value.token,
-                query = _uiState.value.query,
-                size = _uiState.value.sizeModel,
+                title = _uiState.value.query,
+                size = _uiState.value.sizeStudySetModel,
                 creatorType = _uiState.value.creatorTypeModel,
                 page = 1,
                 colorId = _uiState.value.colorModel.id,
@@ -187,13 +185,118 @@ class SearchResultViewModel @Inject constructor(
 
     private fun getClasses() {
         viewModelScope.launch {
+            classRepository.getSearchResultClasses(
+                token = _uiState.value.token,
+                title = _uiState.value.query,
+                size = _uiState.value.sizeClassModel,
+                page = 1
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                classes = resources.data ?: emptyList(),
+                            )
+                        }
+                    }
 
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            SearchResultUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
         }
     }
 
     private fun getFolders() {
         viewModelScope.launch {
+            folderRepository.getSearchResultFolders(
+                token = _uiState.value.token,
+                title = _uiState.value.query,
+                size = _uiState.value.sizeFolderModel,
+                page = 1
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                folders = resources.data ?: emptyList(),
+                            )
+                        }
+                    }
 
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            SearchResultUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getUsers() {
+        viewModelScope.launch {
+            authRepository.searchUser(
+                token = _uiState.value.token,
+                username = _uiState.value.query,
+                size = 10,
+                page = 1
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                users = resources.data ?: emptyList(),
+                            )
+                        }
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            SearchResultUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
         }
     }
 }

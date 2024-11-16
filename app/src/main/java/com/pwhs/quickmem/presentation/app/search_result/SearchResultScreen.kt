@@ -32,15 +32,17 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
 import com.pwhs.quickmem.presentation.app.search_result.all_result.ListAllResultScreen
 import com.pwhs.quickmem.presentation.app.search_result.classes.ListResultClassesScreen
+import com.pwhs.quickmem.presentation.app.search_result.component.SearchResultEnum
 import com.pwhs.quickmem.presentation.app.search_result.component.TopBarSearchResult
 import com.pwhs.quickmem.presentation.app.search_result.folder.ListResultFolderScreen
 import com.pwhs.quickmem.presentation.app.search_result.study_set.ListResultStudySetScreen
 import com.pwhs.quickmem.presentation.app.search_result.study_set.component.FilterStudySetBottomSheet
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.user.ListResultUserScreen
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -51,6 +53,8 @@ import com.ramcosta.composedestinations.generated.destinations.FolderDetailScree
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination.invoke
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination<RootGraph>(
@@ -81,6 +85,7 @@ fun SearchResultScreen(
         studySets = uiState.studySets,
         classes = uiState.classes,
         folders = uiState.folders,
+        users = uiState.users,
         avatarUrl = uiState.userAvatar,
         username = uiState.username,
         colorModel = uiState.colorModel,
@@ -91,7 +96,7 @@ fun SearchResultScreen(
         onSubjectChange = {
             viewModel.onEvent(SearchResultUiAction.SubjectChanged(it))
         },
-        sizeModel = uiState.sizeModel,
+        sizeModel = uiState.sizeStudySetModel,
         onSizeChange = {
             viewModel.onEvent(SearchResultUiAction.SizeChanged(it))
         },
@@ -137,6 +142,14 @@ fun SearchResultScreen(
                 )
             )
         },
+        onNavigateToUserDetail = {
+            navigator.navigate(
+                UserDetailScreenDestination(
+                    userId = it,
+                    isOwner = uiState.userResponseModel.id == it
+                )
+            )
+        },
         navigateToCreateFolder = {
             navigator.navigate(CreateFolderScreenDestination)
         },
@@ -171,9 +184,11 @@ fun SearchResult(
     studySets: List<GetStudySetResponseModel> = emptyList(),
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
+    users: List<SearchUserResponseModel> = emptyList(),
     onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
+    onNavigateToUserDetail: (String) -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onResetClick: () -> Unit = {}
@@ -184,7 +199,8 @@ fun SearchResult(
         "All Result",
         "Study Set",
         "Folder",
-        "Class"
+        "Class",
+        "User"
     )
     Scaffold(
         containerColor = colorScheme.background,
@@ -260,6 +276,13 @@ fun SearchResult(
                     classes = classes,
                     onClassClicked = onClassClick,
                     onClassRefresh = onClassRefresh,
+                )
+                SearchResultEnum.USER.index -> ListResultUserScreen(
+                    modifier = modifier,
+                    users = users,
+                    onMembersItemClicked = {
+                        onNavigateToUserDetail(it.id)
+                    }
                 )
             }
             Text(text = "Search Result: $query")
