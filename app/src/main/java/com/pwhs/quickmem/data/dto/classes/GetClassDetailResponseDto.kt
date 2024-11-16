@@ -1,7 +1,7 @@
 package com.pwhs.quickmem.data.dto.classes
 
 import com.google.gson.annotations.SerializedName
-import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
+import com.pwhs.quickmem.data.dto.folder.GetFolderResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.user.ClassMemberDto
 import com.pwhs.quickmem.data.dto.user.UserResponseDto
@@ -24,7 +24,7 @@ data class GetClassDetailResponseDto(
     @SerializedName("folderCount")
     val folderCount: Int,
     @SerializedName("folders")
-    val folders: List<GetFolderDetailResponseDto>? = emptyList(),
+    val folders: List<GetFolderResponseDto>? = emptyList(),
     @SerializedName("memberCount")
     val memberCount: Int,
     @SerializedName("members")

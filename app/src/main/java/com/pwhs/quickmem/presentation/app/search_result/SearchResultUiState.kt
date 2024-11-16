@@ -21,6 +21,8 @@ data class SearchResultUiState(
     val folders: List<GetFolderResponseModel> = emptyList(),
     val subjectModel: SubjectModel = SubjectModel.defaultSubjects.first(),
     val colorModel: ColorModel = ColorModel.defaultColors.first(),
-    val sizeModel: SearchResultSizeEnum = SearchResultSizeEnum.all,
+    val sizeStudySetModel: SearchResultSizeEnum = SearchResultSizeEnum.all,
+    val sizeFolderModel : Int = 3,
+    val sizeClassModel : Int = 0,
     val creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.all,
 )

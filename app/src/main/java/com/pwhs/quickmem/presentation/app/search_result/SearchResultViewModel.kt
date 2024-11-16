@@ -64,7 +64,7 @@ class SearchResultViewModel @Inject constructor(
             Timber.d("query: ${_uiState.value.query}")
             Timber.d("subject: ${_uiState.value.subjectModel.id}")
             Timber.d("color: ${_uiState.value.colorModel.id}")
-            Timber.d("size: ${_uiState.value.sizeModel}")
+            Timber.d("size: ${_uiState.value.sizeStudySetModel}")
             Timber.d("creatorType: ${_uiState.value.creatorTypeModel}")
         }
     }
@@ -120,7 +120,7 @@ class SearchResultViewModel @Inject constructor(
             }
             is SearchResultUiAction.SizeChanged -> {
                 _uiState.update {
-                    it.copy(sizeModel = event.sizeModel)
+                    it.copy(sizeStudySetModel = event.sizeModel)
                 }
             }
 
@@ -129,14 +129,14 @@ class SearchResultViewModel @Inject constructor(
                     it.copy(
                         colorModel = ColorModel.defaultColors.first(),
                         subjectModel = SubjectModel.defaultSubjects.first(),
-                        sizeModel = SearchResultSizeEnum.all,
+                        sizeStudySetModel = SearchResultSizeEnum.all,
                         creatorTypeModel = SearchResultCreatorEnum.all
                     )
                 }
                 Timber.d("query: ${_uiState.value.query}")
                 Timber.d("subject: ${_uiState.value.subjectModel.id}")
                 Timber.d("color: ${_uiState.value.colorModel.id}")
-                Timber.d("size: ${_uiState.value.sizeModel}")
+                Timber.d("sizeStudySetModel: ${_uiState.value.sizeStudySetModel}")
                 Timber.d("creatorType: ${_uiState.value.creatorTypeModel}")
                 getStudySets()
             }
@@ -148,7 +148,7 @@ class SearchResultViewModel @Inject constructor(
             studySetRepository.getSearchResultStudySets(
                 token = _uiState.value.token,
                 query = _uiState.value.query,
-                size = _uiState.value.sizeModel,
+                size = _uiState.value.sizeStudySetModel,
                 creatorType = _uiState.value.creatorTypeModel,
                 page = 1,
                 colorId = _uiState.value.colorModel.id,
@@ -193,7 +193,40 @@ class SearchResultViewModel @Inject constructor(
 
     private fun getFolders() {
         viewModelScope.launch {
+            folderRepository.getSearchResultFolders(
+                token = _uiState.value.token,
+                query = _uiState.value.query,
+                size = _uiState.value.sizeFolderModel,
+                page = 1
+            ).collectLatest { resources ->
+                when (resources) {
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                folders = resources.data ?: emptyList(),
+                            )
+                        }
+                    }
 
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                        _uiEvent.send(
+                            SearchResultUiEvent.Error(
+                                resources.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
         }
     }
 }

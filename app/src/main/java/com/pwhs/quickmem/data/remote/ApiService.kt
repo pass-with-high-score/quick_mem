@@ -38,7 +38,7 @@ import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.folder.AddFolderToClassRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
-import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
+import com.pwhs.quickmem.data.dto.folder.GetFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
@@ -270,7 +270,7 @@ interface ApiService {
     suspend fun getFolderById(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): GetFolderDetailResponseDto
+    ): GetFolderResponseDto
 
     @PUT("folder/{id}")
     suspend fun updateFolder(
@@ -285,7 +285,7 @@ interface ApiService {
         @Path("ownerId") ownerId: String,
         @Query("classId") classId: String? = null,
         @Query("studySetId") studySetId: String? = null
-    ): List<GetFolderDetailResponseDto>
+    ): List<GetFolderResponseDto>
 
     @DELETE("folder/{id}")
     suspend fun deleteFolder(
@@ -298,6 +298,14 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addStudySetToFolderRequestDto: AddStudySetToFolderRequestDto
     )
+
+    @GET("folder/search")
+    suspend fun searchFolder(
+        @Header("Authorization") token: String,
+        @Query("title") query: String,
+        @Query("size") size: Int,
+        @Query("page") page: Int,
+    ): List<GetFolderResponseDto>
 
     // Class
     @POST("class")
@@ -344,6 +352,14 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addFolderToClassRequestDto: AddFolderToClassRequestDto
     )
+
+    @GET("class/search")
+    suspend fun searchClass(
+        @Header("Authorization") token: String,
+        @Query("title") query: String,
+        @Query("size") size: Int,
+        @Query("page") page: Int,
+    ): List<GetClassDetailResponseDto>
 
     // Streak
     @GET("streak/{userId}")

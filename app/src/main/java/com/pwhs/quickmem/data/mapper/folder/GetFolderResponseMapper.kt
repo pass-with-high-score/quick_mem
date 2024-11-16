@@ -1,13 +1,13 @@
 package com.pwhs.quickmem.data.mapper.folder
 
-import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
+import com.pwhs.quickmem.data.dto.folder.GetFolderResponseDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.mapper.user.toDto
 import com.pwhs.quickmem.data.mapper.user.toModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 
-fun GetFolderDetailResponseDto.toModel() = GetFolderResponseModel(
+fun GetFolderResponseDto.toModel() = GetFolderResponseModel(
     id = id,
     title = title,
     description = description,
@@ -20,7 +20,7 @@ fun GetFolderDetailResponseDto.toModel() = GetFolderResponseModel(
     updatedAt = updatedAt,
 )
 
-fun GetFolderResponseModel.toDto() = GetFolderDetailResponseDto(
+fun GetFolderResponseModel.toDto() = GetFolderResponseDto(
     id = id,
     title = title,
     description = description,

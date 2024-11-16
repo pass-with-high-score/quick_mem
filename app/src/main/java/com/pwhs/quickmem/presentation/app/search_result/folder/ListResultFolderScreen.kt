@@ -24,10 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -39,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
-import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -55,13 +50,6 @@ fun ListResultFolderScreen(
     onFolderRefresh: () -> Unit = {}
 ) {
     val refreshState = rememberPullToRefreshState()
-    var searchQuery by remember { mutableStateOf("") }
-
-    val filterFolders = folders.filter {
-        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
-            it.title.contains(query, ignoreCase = true)
-        } ?: true
-    }
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
@@ -127,16 +115,7 @@ fun ListResultFolderScreen(
 
                 false -> {
                     LazyColumn {
-                        item {
-                            if (folders.isNotEmpty()) {
-                                SearchTextField(
-                                    searchQuery = searchQuery,
-                                    onSearchQueryChange = { searchQuery = it },
-                                    placeholder = stringResource(R.string.txt_search_folders),
-                                )
-                            }
-                        }
-                        items(filterFolders) { folder ->
+                        items(folders) { folder ->
                             FolderItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 title = folder.title,
@@ -146,7 +125,7 @@ fun ListResultFolderScreen(
                             )
                         }
                         item {
-                            if (filterFolders.isEmpty() && searchQuery.trim().isNotEmpty()) {
+                            if (folders.isEmpty()) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()

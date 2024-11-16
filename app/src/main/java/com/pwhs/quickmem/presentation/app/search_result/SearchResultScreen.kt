@@ -91,7 +91,7 @@ fun SearchResultScreen(
         onSubjectChange = {
             viewModel.onEvent(SearchResultUiAction.SubjectChanged(it))
         },
-        sizeModel = uiState.sizeModel,
+        sizeModel = uiState.sizeStudySetModel,
         onSizeChange = {
             viewModel.onEvent(SearchResultUiAction.SizeChanged(it))
         },

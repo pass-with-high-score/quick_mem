@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.user.UserResponseDto
 
-data class GetFolderDetailResponseDto(
+data class GetFolderResponseDto(
     @SerializedName("id")
     val id: String,
     @SerializedName("title")
