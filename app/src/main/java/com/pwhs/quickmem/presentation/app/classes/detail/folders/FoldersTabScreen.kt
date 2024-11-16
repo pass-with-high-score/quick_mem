@@ -19,6 +19,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun FoldersTabScreen(
     modifier: Modifier = Modifier,
+    isOwner: Boolean,
     folder: List<GetFolderResponseModel> = emptyList(),
     onAddFoldersClicked: () -> Unit = {},
     onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
@@ -35,7 +36,8 @@ fun FoldersTabScreen(
                         title = "This class has no folders",
                         subtitle = "Add folders to share them with your class.",
                         buttonTitle = "Add Folders",
-                        onAddMembersClicked = onAddFoldersClicked
+                        onAddMembersClicked = onAddFoldersClicked,
+                        isOwner = isOwner
                     )
                 }
 
@@ -65,6 +67,6 @@ fun FoldersTabScreen(
 @Composable
 private fun FoldersTabScreenPreview() {
     QuickMemTheme {
-        FoldersTabScreen()
+        FoldersTabScreen(isOwner = false)
     }
 }
