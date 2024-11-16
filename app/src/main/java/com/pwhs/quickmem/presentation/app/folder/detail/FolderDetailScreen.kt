@@ -125,6 +125,7 @@ fun FolderDetailScreen(
     FolderDetail(
         modifier = modifier,
         title = uiState.title,
+        isOwner = uiState.isOwner,
         createdAt = uiState.createdAt,
         updatedAt = uiState.updatedAt,
         isLoading = uiState.isLoading,
@@ -168,6 +169,7 @@ fun FolderDetailScreen(
 fun FolderDetail(
     modifier: Modifier = Modifier,
     title: String = "",
+    isOwner: Boolean,
     createdAt: String = "",
     updatedAt: String = "",
     isLoading: Boolean = false,
@@ -206,19 +208,22 @@ fun FolderDetail(
                 onMoreClicked = { showMoreBottomSheet = true },
                 onAddStudySet = onAddStudySet,
                 avatarUrl = userAvatar,
-                onNavigateToUserDetail = onNavigateToUserDetail
+                onNavigateToUserDetail = onNavigateToUserDetail,
+                isOwner = isOwner
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onStudyFolderClick,
-                containerColor = colorScheme.secondary,
-                contentColor = colorScheme.onSecondary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Study"
-                )
+            if (isOwner) {
+                FloatingActionButton(
+                    onClick = onStudyFolderClick,
+                    containerColor = colorScheme.secondary,
+                    contentColor = colorScheme.onSecondary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Study"
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -237,7 +242,8 @@ fun FolderDetail(
                         .padding(horizontal = 16.dp),
                     studySets = studySets,
                     onStudySetClick = onStudySetClick,
-                    onAddFlashCardClick = onAddStudySet
+                    onAddFlashCardClick = onAddStudySet,
+                    isOwner = isOwner
                 )
             }
             LoadingOverlay(
@@ -271,7 +277,8 @@ fun FolderDetail(
         onReportFolder = {},
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
-        onDismissRequest = { showMoreBottomSheet = false }
+        onDismissRequest = { showMoreBottomSheet = false },
+        isOwner = isOwner
     )
 }
 
@@ -281,6 +288,7 @@ private fun FolderDetailPreview() {
     QuickMemTheme {
         FolderDetail(
             title = "Folder Title",
+            isOwner = true
         )
     }
 }

@@ -42,6 +42,7 @@ import com.pwhs.quickmem.util.gradientBackground
 @Composable
 fun FolderDetailTopAppBar(
     modifier: Modifier = Modifier,
+    isOwner: Boolean = false,
     title: String = "",
     dateLabel: String = "",
     avatarUrl: String = "",
@@ -122,13 +123,15 @@ fun FolderDetailTopAppBar(
             }
         },
         actions = {
-            IconButton(
-                onClick = onAddStudySet
-            ) {
-                Icon(
-                    imageVector = Default.Add,
-                    contentDescription = "Add"
-                )
+            if (isOwner){
+                IconButton(
+                    onClick = onAddStudySet
+                ) {
+                    Icon(
+                        imageVector = Default.Add,
+                        contentDescription = "Add"
+                    )
+                }
             }
             IconButton(
                 onClick = onMoreClicked
@@ -153,7 +156,8 @@ fun FolderDetailTopAppBarPreview() {
                     dateLabel = "Created 2021-09-01",
                     onNavigateBack = {},
                     onMoreClicked = {},
-                    onAddStudySet = {}
+                    onAddStudySet = {},
+                    isOwner = true
                 )
             }
         ) {

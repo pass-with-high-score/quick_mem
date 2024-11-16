@@ -22,6 +22,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderMenuBottomSheet(
+    isOwner: Boolean,
     modifier: Modifier = Modifier,
     onEditFolder: () -> Unit = {},
     onDeleteFolder: () -> Unit = {},
@@ -41,11 +42,13 @@ fun FolderMenuBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                ItemMenuBottomSheet(
-                    onClick = onEditFolder,
-                    icon = Outlined.Edit,
-                    title = "Edit"
-                )
+                if (isOwner){
+                    ItemMenuBottomSheet(
+                        onClick = onEditFolder,
+                        icon = Outlined.Edit,
+                        title = "Edit"
+                    )
+                }
                 ItemMenuBottomSheet(
                     onClick = onShareFolder,
                     icon = Default.IosShare,
@@ -56,12 +59,15 @@ fun FolderMenuBottomSheet(
                     icon = Outlined.Report,
                     title = "Report Folder"
                 )
-                ItemMenuBottomSheet(
-                    onClick = onDeleteFolder,
-                    icon = Default.DeleteOutline,
-                    title = "Delete Folder",
-                    color = Color.Red
-                )
+
+                if (isOwner){
+                    ItemMenuBottomSheet(
+                        onClick = onDeleteFolder,
+                        icon = Default.DeleteOutline,
+                        title = "Delete Folder",
+                        color = Color.Red
+                    )
+                }
             }
         }
     }
@@ -73,7 +79,8 @@ fun FolderMenuBottomSheet(
 private fun FolderMenuBottomSheetPreview() {
     QuickMemTheme {
         FolderMenuBottomSheet(
-            showMoreBottomSheet = true
+            showMoreBottomSheet = true,
+            isOwner = true
         )
     }
 }
