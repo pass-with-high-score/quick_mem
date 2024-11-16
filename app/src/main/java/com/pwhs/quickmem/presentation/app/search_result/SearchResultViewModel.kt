@@ -188,7 +188,6 @@ class SearchResultViewModel @Inject constructor(
             classRepository.getSearchResultClasses(
                 token = _uiState.value.token,
                 title = _uiState.value.query,
-                size = _uiState.value.sizeClassModel,
                 page = 1
             ).collectLatest { resources ->
                 when (resources) {
@@ -227,7 +226,6 @@ class SearchResultViewModel @Inject constructor(
             folderRepository.getSearchResultFolders(
                 token = _uiState.value.token,
                 title = _uiState.value.query,
-                size = _uiState.value.sizeFolderModel,
                 page = 1
             ).collectLatest { resources ->
                 when (resources) {
@@ -266,7 +264,6 @@ class SearchResultViewModel @Inject constructor(
             authRepository.searchUser(
                 token = _uiState.value.token,
                 username = _uiState.value.query,
-                size = 10,
                 page = 1
             ).collectLatest { resources ->
                 when (resources) {

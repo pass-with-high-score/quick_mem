@@ -93,7 +93,6 @@ interface AuthRepository {
     suspend fun searchUser(
         token: String,
         username: String,
-        size: Int?,
         page: Int?
     ): Flow<Resources<List<SearchUserResponseModel>>>
 }

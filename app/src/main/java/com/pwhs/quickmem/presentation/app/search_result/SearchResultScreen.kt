@@ -48,7 +48,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination.invoke
-import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
@@ -86,8 +85,6 @@ fun SearchResultScreen(
         classes = uiState.classes,
         folders = uiState.folders,
         users = uiState.users,
-        avatarUrl = uiState.userAvatar,
-        username = uiState.username,
         colorModel = uiState.colorModel,
         onColorChange = {
             viewModel.onEvent(SearchResultUiAction.ColorChanged(it))
@@ -150,9 +147,6 @@ fun SearchResultScreen(
                 )
             )
         },
-        navigateToCreateFolder = {
-            navigator.navigate(CreateFolderScreenDestination)
-        },
         onNavigateBack = {
             navigator.navigateUp()
         },
@@ -176,8 +170,6 @@ fun SearchResult(
     creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.all,
     onCreatorChange: (SearchResultCreatorEnum) -> Unit = {},
     onApplyClick: () -> Unit = {},
-    avatarUrl: String = "",
-    username: String = "",
     onStudySetRefresh: () -> Unit = {},
     onClassRefresh: () -> Unit = {},
     onFolderRefresh: () -> Unit = {},
@@ -189,7 +181,6 @@ fun SearchResult(
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
-    navigateToCreateFolder: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onResetClick: () -> Unit = {}
 ) {
@@ -254,8 +245,6 @@ fun SearchResult(
                 SearchResultEnum.STUDY_SET.index -> ListResultStudySetScreen(
                     isLoading = isLoading,
                     studySets = studySets,
-                    avatarUrl = avatarUrl,
-                    username = username,
                     onStudySetClick = onStudySetClick,
                     onStudySetRefresh = onStudySetRefresh,
                     onResetClick = onResetClick
@@ -266,7 +255,6 @@ fun SearchResult(
                     isLoading = isLoading,
                     folders = folders,
                     onFolderClick = onFolderClick,
-                    onAddFolderClick = navigateToCreateFolder,
                     onFolderRefresh = onFolderRefresh
                 )
 
