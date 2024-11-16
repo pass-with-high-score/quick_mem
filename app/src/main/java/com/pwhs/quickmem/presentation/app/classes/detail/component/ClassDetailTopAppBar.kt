@@ -29,11 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
@@ -84,7 +86,7 @@ fun ClassDetailTopAppBar(
                         ) {
                             AsyncImage(
                                 model = userResponse.avatarUrl,
-                                contentDescription = "User Avatar",
+                                contentDescription = stringResource(R.string.txt_user_avatar),
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clip(CircleShape)
@@ -104,9 +106,12 @@ fun ClassDetailTopAppBar(
                         )
                         Text(
                             when (studySetCount) {
-                                0 -> "No study sets"
-                                1 -> "1 study set"
-                                else -> "$studySetCount study sets"
+                                0 -> stringResource(R.string.txt_no_study_sets)
+                                1 -> stringResource(R.string.txt_one_study_set)
+                                else -> stringResource(
+                                    R.string.txt_study_sets_count_class_detail,
+                                    studySetCount
+                                )
                             },
                             style = typography.bodyMedium.copy(
                                 color = colorScheme.secondary
@@ -130,7 +135,7 @@ fun ClassDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.txt_back),
                 )
             }
         },
@@ -140,7 +145,7 @@ fun ClassDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Default.Share,
-                    contentDescription = "Share"
+                    contentDescription = stringResource(R.string.txt_share)
                 )
             }
             IconButton(
@@ -148,7 +153,7 @@ fun ClassDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Default.MoreVert,
-                    contentDescription = "More"
+                    contentDescription = stringResource(R.string.txt_more)
                 )
             }
         }

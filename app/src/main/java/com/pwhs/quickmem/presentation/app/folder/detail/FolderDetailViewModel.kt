@@ -49,7 +49,7 @@ class FolderDetailViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = true) }
                     deleteFolder()
                 }else{
-                    _uiEvent.trySend(FolderDetailUiEvent.ShowError("Permission denied: Only folder owner can delete this folder"))
+                    _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't delete this folder"))
                 }
             }
 
