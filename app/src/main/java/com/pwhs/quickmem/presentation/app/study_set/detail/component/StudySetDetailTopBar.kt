@@ -42,6 +42,7 @@ import com.pwhs.quickmem.util.gradientBackground
 @Composable
 fun StudySetDetailTopAppBar(
     modifier: Modifier = Modifier,
+    isOwner: Boolean,
     title: String,
     color: Color,
     userResponse: UserResponseModel,
@@ -128,13 +129,15 @@ fun StudySetDetailTopAppBar(
                     contentDescription = stringResource(R.string.txt_share)
                 )
             }
-            IconButton(
-                onClick = onAddFlashcard
-            ) {
-                Icon(
-                    imageVector = Default.Add,
-                    contentDescription = stringResource(R.string.txt_add_flashcard)
-                )
+            if (isOwner){
+                IconButton(
+                    onClick = onAddFlashcard
+                ) {
+                    Icon(
+                        imageVector = Default.Add,
+                        contentDescription = stringResource(R.string.txt_add_flashcard)
+                    )
+                }
             }
             IconButton(
                 onClick = onMoreClicked

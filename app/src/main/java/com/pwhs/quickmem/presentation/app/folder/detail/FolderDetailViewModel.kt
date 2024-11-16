@@ -45,11 +45,19 @@ class FolderDetailViewModel @Inject constructor(
             }
 
             FolderDetailUiAction.DeleteFolder -> {
-                deleteFolder()
+                if (_uiState.value.isOwner){
+                    deleteFolder()
+                }else{
+                    _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't delete this folder"))
+                }
             }
 
             FolderDetailUiAction.EditFolder -> {
-                _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
+                if (_uiState.value.isOwner){
+                    _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
+                }else{
+                    _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't edit this folder"))
+                }
             }
         }
     }
