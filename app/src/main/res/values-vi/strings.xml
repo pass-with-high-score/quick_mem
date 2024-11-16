@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--    Onboarding-->
     <string name="txt_get_started">Bắt đầu</string>
     <string name="txt_next">Tiếp theo</string>
     <string name="txt_skip">Bỏ qua</string>
@@ -216,7 +215,20 @@
     <string name="txt_add_to_folder">Thêm vào thư mục</string>
     <string name="txt_save_and_edit">Lưu và chỉnh sửa</string>
     <string name="txt_report_study_set">Báo cáo bộ học</string>
-    <string name="txt_failed_to_verify_email">Failed to verify email</string>
-    <string name="txt_forgot_password_image">Forgot Password Image</string>
+    <string name="txt_failed_to_verify_email">Không thể xác minh email</string>
+    <string name="txt_forgot_password_image">Hình ảnh quên mật khẩu</string>
+    <string name="txt_choose_a_picture">Chọn một hình ảnh</string>
+    <string name="txt_update_image_successfully">Cập nhật hình ảnh thành công!</string>
+    <string name="txt_activity">Thông báo</string>
+    <string name="txt_no_notifications">Không có thông báo</string>
+    <string name="txt_there_are_no_notifications">Hiện không có thông báo nào</string>
+    <string name="txt_notification_deleted_successfully">Xóa thông báo thành công!</string>
+    <string name="txt_expired">Đã hết hạn</string>
+    <string name="txt_invalid_date_format">Định dạng ngày không hợp lệ</string>
+    <string name="txt_unread">Chưa đọc</string>
+    <string name="txt_study_sets_folders_class">Bộ học, thư mục, lớp học,...</string>
+    <string name="txt_notifications">Thông báo</string>
+    <string name="txt_streak">Chuỗi ngày</string>
+    <string name="txt_streak_count">Chuỗi ngày %1$s</string>
 
 </resources>
