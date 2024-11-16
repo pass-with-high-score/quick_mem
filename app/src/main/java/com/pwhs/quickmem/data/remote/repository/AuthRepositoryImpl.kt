@@ -266,8 +266,8 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun getAvatar(): Flow<Resources<List<String>>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
                 val avatarUrls = mutableListOf<String>()
                 for (index in 1..18) {
                     val imageUrl = "${BuildConfig.BASE_URL}public/images/avatar/$index.jpg"

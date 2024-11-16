@@ -30,43 +30,22 @@ fun ChoosePictureList(
         modifier = modifier.fillMaxSize()
     ) {
         item {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 55.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_camera),
-                    contentDescription = "Camera",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clickable {
-                            // Action for Camera
-                        },
-                    tint = Color.Gray
-                )
-            }
+            AvatarItem(
+                imageId = R.drawable.ic_camera,
+                isSelected = selectedAvatarUrl == null,
+                onSelected = {
+
+                }
+            )
         }
 
         item {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 55.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_gallecy),
-                    contentDescription = "Camera",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clickable {
-                            // Action for Camera
-                        },
-                    tint = Color.Gray
-                )
-            }
+            AvatarItem(
+                imageId = R.drawable.ic_gallecy,
+                isSelected = selectedAvatarUrl == null,
+                onSelected = {
+                }
+            )
         }
 
         items(avatarUrls) { avatarUrl ->

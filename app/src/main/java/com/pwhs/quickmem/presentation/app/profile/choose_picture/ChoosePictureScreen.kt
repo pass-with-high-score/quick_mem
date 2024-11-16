@@ -9,7 +9,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureList
 import com.pwhs.quickmem.presentation.app.profile.choose_picture.component.ChoosePictureTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -32,7 +35,11 @@ fun ChoosePictureScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is ChoosePictureUiEvent.AvatarUpdated -> {
-                    Toast.makeText(context, "Update Image Successfully!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_update_image_successfully),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     resultNavigator.navigateBack(true)
                 }
 
@@ -68,14 +75,13 @@ fun ChoosePicture(
     selectedAvatarUrl: String?,
     onNavigateBack: () -> Unit,
     onSelectedPicture: (String) -> Unit,
-    title: String = "Choose a picture",
     onDoneClick: () -> Unit
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             ChoosePictureTopAppBar(
-                title = title,
+                title = stringResource(R.string.txt_choose_a_picture),
                 onDoneClick = onDoneClick,
                 onNavigateBack = onNavigateBack
             )
@@ -85,16 +91,17 @@ fun ChoosePicture(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(horizontal = 8.dp)
         ) {
             ChoosePictureList(
                 avatarUrls = avatarUrls,
                 selectedAvatarUrl = selectedAvatarUrl,
                 onImageSelected = onSelectedPicture
             )
+            LoadingOverlay(
+                isLoading = isLoading
+            )
         }
-        LoadingOverlay(
-            isLoading = isLoading
-        )
     }
 }
 

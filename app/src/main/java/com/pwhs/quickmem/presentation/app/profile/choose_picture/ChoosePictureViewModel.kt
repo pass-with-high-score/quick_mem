@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,11 +67,9 @@ class ChoosePictureViewModel @Inject constructor(
                     if (avatarId != null) {
                         updateAvatar(avatarId)
                     } else {
-                        Timber.e("Failed to extract avatar ID from URL: $selectedAvatarUrl")
                         _uiState.update { it.copy(isLoading = false) }
                     }
                 } else {
-                    Timber.e("No avatar selected")
                     _uiState.update { it.copy(isLoading = false) }
                 }
             }
@@ -83,7 +80,6 @@ class ChoosePictureViewModel @Inject constructor(
         val regex = """/avatar/(\d+)\.jpg""".toRegex()
         val matchResult = regex.find(url)
         val avatarId = matchResult?.groups?.get(1)?.value
-        Timber.d("Extracted avatar ID is: $avatarId")
         return avatarId
     }
 
@@ -92,12 +88,10 @@ class ChoosePictureViewModel @Inject constructor(
             authRepository.getAvatar().collectLatest { resource ->
                 when (resource) {
                     is Resources.Error -> {
-                        Timber.e("Error fetching avatars: ${resource.message}")
                         _uiState.update { it.copy(isLoading = false) }
                     }
 
                     is Resources.Loading -> {
-                        Timber.d("Loading avatars")
                         _uiState.update { it.copy(isLoading = true) }
                     }
 
@@ -127,38 +121,34 @@ class ChoosePictureViewModel @Inject constructor(
 
             authRepository.updateAvatar(
                 token, userId, UpdateAvatarRequestModel(avatarId)
-            )
-                .collect { resource ->
-                    when (resource) {
-                        is Resources.Error -> {
-                            Timber.e("Update Avatar Failed: ${resource.message}")
-                            _uiState.update {
-                                it.copy(isLoading = false)
-                            }
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
                         }
+                    }
 
-                        is Resources.Loading -> {
-                            Timber.d("Updating avatar - loading state")
-                            _uiState.update {
-                                it.copy(isLoading = true)
-                            }
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
                         }
+                    }
 
-                        is Resources.Success -> {
-                            val newAvatarUrl = resource.data?.avatarUrl ?: ""
-                            Timber.d("Avatar updated successfully with new URL: $newAvatarUrl")
-                            appManager.saveUserAvatar(newAvatarUrl)
-                            _uiEvent.send(
-                                ChoosePictureUiEvent.AvatarUpdated(newAvatarUrl)
+                    is Resources.Success -> {
+                        val newAvatarUrl = resource.data?.avatarUrl ?: ""
+                        appManager.saveUserAvatar(newAvatarUrl)
+                        _uiEvent.send(
+                            ChoosePictureUiEvent.AvatarUpdated(newAvatarUrl)
+                        )
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false
                             )
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false
-                                )
-                            }
                         }
                     }
                 }
+            }
         }
     }
 }

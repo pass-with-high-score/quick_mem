@@ -40,7 +40,6 @@ fun ChoosePictureTopAppBar(
                 style = typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.onSurface,
-                    fontSize = 20.sp
                 )
             )
         },
@@ -56,7 +55,6 @@ fun ChoosePictureTopAppBar(
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface,
-                        fontSize = 16.sp
                     )
                 )
             }
@@ -69,11 +67,10 @@ fun ChoosePictureTopAppBar(
                 )
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.txt_cancel),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface,
-                        fontSize = 16.sp
                     )
                 )
             }
@@ -88,7 +85,7 @@ fun ChoosePictureTopAppBarPreview() {
         Scaffold(
             topBar = {
                 ChoosePictureTopAppBar(
-                    title = "Choose a picture",
+                    title = stringResource(R.string.txt_choose_a_picture),
                     onDoneClick = {},
                     onNavigateBack = {}
                 )

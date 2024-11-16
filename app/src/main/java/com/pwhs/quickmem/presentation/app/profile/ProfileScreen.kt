@@ -3,11 +3,12 @@ package com.pwhs.quickmem.presentation.app.profile
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -87,6 +88,7 @@ fun ProfileScreen(
         modifier = modifier,
         name = uiState.username,
         avatarUrl = uiState.userAvatar,
+        isLoading = uiState.isLoading,
         onRefresh = {
             viewModel.onEvent(ProfileUiAction.Refresh)
         },
@@ -168,11 +170,12 @@ fun Profile(
         }
     ) { innerPadding ->
         PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
             isRefreshing = isLoading,
             state = refreshState,
             onRefresh = onRefresh
         ) {
-            Column(
+            LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
@@ -180,89 +183,91 @@ fun Profile(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(avatarUrl.ifEmpty { null })
-                        .placeholder(R.drawable.default_avatar)
-                        .error(R.drawable.default_avatar)
-                        .build(),
-                    contentDescription = stringResource(R.string.txt_user_avatar),
-                    modifier = Modifier
-                        .padding(top = 40.dp)
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .clickable { onAvatarClick() },
-                    contentScale = ContentScale.Crop
-                )
-
-                Text(
-                    text = name,
-                    style = typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Black,
-                        fontSize = 24.sp
+                item {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(avatarUrl.ifEmpty { null })
+                            .build(),
+                        contentDescription = stringResource(R.string.txt_user_avatar),
+                        modifier = Modifier
+                            .padding(top = 40.dp)
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .clickable { onAvatarClick() },
+                        contentScale = ContentScale.Crop
                     )
-                )
+                }
 
-                OutlinedButton(
-                    onClick = navigateToSettings,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp),
-                    shape = MaterialTheme.shapes.large,
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = colorScheme.onSurface
-                    ),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colorScheme.onSurface
+                item {
+                    Text(
+                        text = name,
+                        style = typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Black,
+                            fontSize = 24.sp
+                        )
                     )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                }
+                item {
+                    OutlinedButton(
+                        onClick = navigateToSettings,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp)
+                            .padding(vertical = 10.dp),
+                        shape = MaterialTheme.shapes.large,
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = colorScheme.onSurface
+                        ),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = colorScheme.onSurface
+                        )
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp)
                         ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Settings,
+                                    contentDescription = stringResource(R.string.txt_settings),
+                                    modifier = Modifier.size(30.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.txt_your_settings),
+                                    style = typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
                             Icon(
-                                imageVector = Icons.Outlined.Settings,
-                                contentDescription = stringResource(R.string.txt_settings),
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Navigate to settings",
                                 modifier = Modifier.size(30.dp)
                             )
-                            Text(
-                                text = stringResource(R.string.txt_your_settings),
-                                style = typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
                         }
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = "Navigate to settings",
-                            modifier = Modifier.size(30.dp)
-                        )
                     }
                 }
-                Paywall(
-                    isPaywallVisible = isPaywallVisible,
-                    onCustomerInfoChanged = { customerInfo ->
-                        onCustomerInfoChanged(customerInfo)
-                    },
-                    modifier = Modifier,
-                    onPaywallDismissed = {
-                        isPaywallVisible = false
-                    },
-                )
             }
+            Paywall(
+                isPaywallVisible = isPaywallVisible,
+                onCustomerInfoChanged = { customerInfo ->
+                    onCustomerInfoChanged(customerInfo)
+                },
+                modifier = Modifier,
+                onPaywallDismissed = {
+                    isPaywallVisible = false
+                },
+            )
+            LoadingOverlay(
+                isLoading = isLoading
+            )
         }
-
-        LoadingOverlay(
-            isLoading = isLoading
-        )
     }
 }
 
