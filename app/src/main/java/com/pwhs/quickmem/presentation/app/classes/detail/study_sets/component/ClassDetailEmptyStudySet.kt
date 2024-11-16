@@ -25,6 +25,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun ClassDetailEmptyStudySet(
     modifier: Modifier = Modifier,
+    isOwner:Boolean,
     title: String = "",
     subtitle: String = "",
     buttonTitle: String = "",
@@ -54,25 +55,27 @@ fun ClassDetailEmptyStudySet(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            Button(
-                onClick = onAddStudySetClicked,
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+            if(isOwner){
+                Button(
+                    onClick = onAddStudySetClicked,
                 ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = buttonTitle,
-                        tint = colorScheme.background,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text(
-                        text = buttonTitle,
-                        style = typography.titleMedium.copy(
-                            color = colorScheme.background,
-                            fontWeight = Bold
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Filled.Add,
+                            contentDescription = "Add new study set to class",
+                            tint = colorScheme.background,
+                            modifier = Modifier.padding(end = 8.dp)
                         )
-                    )
+                        Text(
+                            text = buttonTitle,
+                            style = typography.titleMedium.copy(
+                                color = colorScheme.background,
+                                fontWeight = Bold
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -87,6 +90,7 @@ private fun ClassDetailEmptyPreview() {
             title = "This class has no sets",
             subtitle = "Add flashcard sets to share them with your class.",
             buttonTitle = "Add study sets",
+            isOwner = true
         )
     }
 }

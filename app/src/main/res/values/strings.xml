@@ -231,4 +231,8 @@
     <string name="txt_notifications">Notifications</string>
     <string name="txt_streak">Streak</string>
     <string name="txt_streak_count">Streak %1$s</string>
+    <string name="txt_this_class_has_no_folders">This class has no folders</string>
+    <string name="txt_add_folders_to_share_them_with_your_class">Add folders to share them with your class.</string>
+    <string name="txt_add_folders">Add Folders</string>
+    <string name="txt_study_sets_count_class_detail">%1$s study sets</string>
 </resources>
