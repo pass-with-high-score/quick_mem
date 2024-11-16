@@ -36,7 +36,7 @@ fun MembersTabScreen(
                         title = "This class has no folders",
                         subtitle = "Add folders to share them with your class.",
                         buttonTitle = "Add Members",
-                        onAddMembersClicked = onAddMembersClicked,
+                        onAddClick = onAddMembersClicked,
                         isOwner = isOwner
                     )
                 }

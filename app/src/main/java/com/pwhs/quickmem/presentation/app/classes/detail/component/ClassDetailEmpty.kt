@@ -29,7 +29,7 @@ fun ClassDetailEmpty(
     title: String = "",
     subtitle: String = "",
     buttonTitle: String = "",
-    onAddMembersClicked: () -> Unit = {},
+    onAddClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
@@ -57,7 +57,7 @@ fun ClassDetailEmpty(
             )
             if (isOwner){
                 Button(
-                    onClick = onAddMembersClicked,
+                    onClick = onAddClick,
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
