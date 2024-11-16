@@ -230,33 +230,26 @@ private fun UserDetail(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .size(50.dp),
-                    color = colorScheme.primary
-                )
-            } else {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(avatarUrl.ifEmpty { null })
-                        .placeholder(R.drawable.default_avatar)
-                        .error(R.drawable.default_avatar)
-                        .build(),
-                    contentDescription = stringResource(R.string.txt_user_avatar),
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
 
-                Text(
-                    text = userName,
-                    style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(avatarUrl.ifEmpty { null })
+                    .placeholder(R.drawable.default_avatar)
+                    .error(R.drawable.default_avatar)
+                    .build(),
+                contentDescription = stringResource(R.string.txt_user_avatar),
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+
+            Text(
+                text = userName,
+                style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
 
             TabRow(
                 selectedTabIndex = tabIndex,

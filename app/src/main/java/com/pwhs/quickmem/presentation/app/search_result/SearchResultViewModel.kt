@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -86,21 +88,22 @@ class SearchResultViewModel @Inject constructor(
             SearchResultUiAction.RefreshClasses -> {
                 viewModelScope.launch {
                     delay(500)
-                    getStudySets()
+                    getClasses()
                 }
             }
 
             SearchResultUiAction.RefreshFolders -> {
                 viewModelScope.launch {
                     delay(500)
-                    getClasses()
+                    getFolders()
                 }
             }
 
             SearchResultUiAction.RefreshStudySets -> {
                 viewModelScope.launch {
+                    Timber.d("Refresh study sets")
                     delay(500)
-                    getFolders()
+                    getStudySets()
                 }
             }
 
@@ -141,11 +144,6 @@ class SearchResultViewModel @Inject constructor(
                         creatorTypeModel = SearchResultCreatorEnum.ALL
                     )
                 }
-                Timber.d("query: ${_uiState.value.query}")
-                Timber.d("subject: ${_uiState.value.subjectModel.id}")
-                Timber.d("color: ${_uiState.value.colorModel.id}")
-                Timber.d("sizeStudySetModel: ${_uiState.value.sizeStudySetModel}")
-                Timber.d("creatorType: ${_uiState.value.creatorTypeModel}")
                 getStudySets()
             }
         }
@@ -153,6 +151,7 @@ class SearchResultViewModel @Inject constructor(
 
     private fun getStudySets() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             studySetRepository.getSearchResultStudySets(
                 token = _uiState.value.token,
                 title = _uiState.value.query,
@@ -162,9 +161,15 @@ class SearchResultViewModel @Inject constructor(
                 colorId = _uiState.value.colorModel.id,
                 subjectId = _uiState.value.subjectModel.id
             ).distinctUntilChanged()
+                .onStart {
+                    _studySetState.value = PagingData.empty()
+                }
                 .cachedIn(viewModelScope)
-                .collect {
-                    _studySetState.value = it
+                .onCompletion {
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+                .collect { pagingData ->
+                    _studySetState.value = pagingData
                 }
         }
     }

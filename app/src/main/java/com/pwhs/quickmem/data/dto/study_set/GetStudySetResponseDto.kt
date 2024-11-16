@@ -15,8 +15,8 @@ data class GetStudySetResponseDto(
     val description: String?,
     @SerializedName("isPublic")
     val isPublic: Boolean,
-    @SerializedName("flashCardCount")
-    val flashCardCount: Int,
+    @SerializedName("flashcardCount")
+    val flashcardCount: Int,
     @SerializedName("flashcards")
     var flashcards: List<StudySetFlashCardResponseDto>? = null,
     @SerializedName("subject")

@@ -95,7 +95,7 @@ class StudySetDetailViewModel @Inject constructor(
                                 description = resource.data.description ?: "",
                                 color = resource.data.color!!.hexValue.toColor(),
                                 subject = resource.data.subject!!,
-                                flashCardCount = resource.data.flashCardCount,
+                                flashCardCount = resource.data.flashcardCount,
                                 flashCards = resource.data.flashcards,
                                 isPublic = resource.data.isPublic,
                                 user = resource.data.owner,

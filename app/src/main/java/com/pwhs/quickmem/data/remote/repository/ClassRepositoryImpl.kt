@@ -49,7 +49,7 @@ class ClassRepositoryImpl @Inject constructor(
                     token,
                     classId
                 )
-                Timber.d("getClassByIddddd: ${response.studySets?.firstOrNull()?.flashCardCount}")
+                Timber.d("getClassByIddddd: ${response.studySets?.firstOrNull()?.flashcardCount}")
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
