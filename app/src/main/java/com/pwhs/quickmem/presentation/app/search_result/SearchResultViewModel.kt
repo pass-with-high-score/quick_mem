@@ -110,10 +110,10 @@ class SearchResultViewModel @Inject constructor(
             SearchResultUiAction.RefreshSearchAllResult -> {
                 viewModelScope.launch {
                     delay(500)
-                    getStudySets()
-                    getClasses()
-                    getFolders()
-                    getUsers()
+                    launch{ getStudySets() }
+                    launch{ getClasses() }
+                    launch{ getFolders() }
+                    launch{ getUsers() }
                 }
             }
 
