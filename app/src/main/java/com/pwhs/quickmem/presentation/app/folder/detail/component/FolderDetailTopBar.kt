@@ -42,7 +42,7 @@ import com.pwhs.quickmem.util.gradientBackground
 @Composable
 fun FolderDetailTopAppBar(
     modifier: Modifier = Modifier,
-    isOwner:Boolean,
+    isOwner: Boolean = false,
     title: String = "",
     dateLabel: String = "",
     avatarUrl: String = "",

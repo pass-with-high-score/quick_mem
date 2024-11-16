@@ -46,6 +46,7 @@ class FolderDetailViewModel @Inject constructor(
 
             FolderDetailUiAction.DeleteFolder -> {
                 if (_uiState.value.isOwner){
+                    _uiState.update { it.copy(isLoading = true) }
                     deleteFolder()
                 }else{
                     _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't delete this folder"))
