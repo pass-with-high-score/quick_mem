@@ -57,6 +57,7 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.data.dto.user.SearchUserResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
@@ -135,6 +136,14 @@ interface ApiService {
         @Query("isOwner") isOwner: Boolean
     ): UserDetailResponseDto
 
+    @GET("auth/user/search")
+    suspend fun searchUser(
+        @Header("Authorization") token: String,
+        @Query("username") username: String,
+        @Query("size") size: Int?,
+        @Query("page") page: Int?
+    ): List<SearchUserResponseDto>
+
     // Upload
     @Multipart
     @POST("upload")
@@ -205,7 +214,7 @@ interface ApiService {
     @GET("study-set/search")
     suspend fun searchStudySet(
         @Header("Authorization") token: String,
-        @Query("title") query: String,
+        @Query("title") title: String,
         @Query("size") size: SearchResultSizeEnum,
         @Query("creatorType") creatorType: SearchResultCreatorEnum?,
         @Query("page") page: Int,
@@ -304,7 +313,7 @@ interface ApiService {
     @GET("folder/search")
     suspend fun searchFolder(
         @Header("Authorization") token: String,
-        @Query("title") query: String,
+        @Query("title") title: String,
         @Query("size") size: Int?,
         @Query("page") page: Int?,
     ): List<GetFolderResponseDto>
@@ -358,7 +367,7 @@ interface ApiService {
     @GET("class/search")
     suspend fun searchClass(
         @Header("Authorization") token: String,
-        @Query("title") query: String,
+        @Query("title") title: String,
         @Query("size") size: Int?,
         @Query("page") page: Int?,
     ): List<GetClassByOwnerResponseDto>
