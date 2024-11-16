@@ -43,6 +43,8 @@ import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderDetailResponseDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
+import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
+import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
@@ -58,6 +60,8 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -132,6 +136,14 @@ interface ApiService {
         @Path("id") userId: String,
         @Query("isOwner") isOwner: Boolean
     ): UserDetailResponseDto
+  
+    //Update Avatar
+    @PATCH("auth/user/avatar/{id}")
+    suspend fun updateAvatar(
+        @Header("Authorization") authorization: String,
+        @Path("id") userId: String,
+        @Body updateAvatarRequestDto: UpdateAvatarRequestDto
+    ): UpdateAvatarResponseDto
 
     // Upload
     @Multipart
@@ -199,6 +211,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body addStudySetToClassesRequestDto: AddStudySetToClassesRequestDto
     )
+
+    @GET("study-set/search")
+    suspend fun searchStudySet(
+        @Header("Authorization") token: String,
+        @Query("title") query: String,
+        @Query("size") size: SearchResultSizeEnum,
+        @Query("creatorType") creatorType: SearchResultCreatorEnum?,
+        @Query("page") page: Int,
+        @Query("colorId") colorId: Int?,
+        @Query("subjectId") subjectId: Int?
+    ): List<GetStudySetResponseDto>
 
     // Flash Card
     @GET("/flashcard/study-set/{id}")
@@ -354,11 +377,22 @@ interface ApiService {
         @Body tokenRequest: TokenRequestDto
     ): Response<Unit>
 
-    //Update Avatar
-    @PATCH("auth/user/avatar/{id}")
-    suspend fun updateAvatar(
-        @Header("Authorization") authorization: String,
-        @Path("id") userId: String,
-        @Body updateAvatarRequestDto: UpdateAvatarRequestDto
-    ): UpdateAvatarResponseDto
+    @GET("notifications/user/{id}")
+    suspend fun getNotificationsByUserId(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String
+    ): List<GetNotificationResponseDto>
+
+    @PATCH("notifications/{id}/read")
+    suspend fun markNotificationAsRead(
+        @Header("Authorization") token: String,
+        @Path("id") notificationId: String,
+        @Body requestDto: MarkNotificationReadRequestDto
+    )
+
+    @DELETE("notifications/{id}")
+    suspend fun deleteNotification(
+        @Header("Authorization") token: String,
+        @Path("id") notificationId: String
+    )
 }

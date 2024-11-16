@@ -219,5 +219,16 @@
     <string name="txt_forgot_password_image">Hình ảnh quên mật khẩu</string>
     <string name="txt_choose_a_picture">Chọn một hình ảnh</string>
     <string name="txt_update_image_successfully">Cập nhật hình ảnh thành công!</string>
+    <string name="txt_activity">Thông báo</string>
+    <string name="txt_no_notifications">Không có thông báo</string>
+    <string name="txt_there_are_no_notifications">Hiện không có thông báo nào</string>
+    <string name="txt_notification_deleted_successfully">Xóa thông báo thành công!</string>
+    <string name="txt_expired">Đã hết hạn</string>
+    <string name="txt_invalid_date_format">Định dạng ngày không hợp lệ</string>
+    <string name="txt_unread">Chưa đọc</string>
+    <string name="txt_study_sets_folders_class">Bộ học, thư mục, lớp học,...</string>
+    <string name="txt_notifications">Thông báo</string>
+    <string name="txt_streak">Chuỗi ngày</string>
+    <string name="txt_streak_count">Chuỗi ngày %1$s</string>
 
 </resources>
