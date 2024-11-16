@@ -64,7 +64,7 @@ fun ClassDetailEmptyStudySet(
                     ) {
                         Icon(
                             Icons.Filled.Add,
-                            contentDescription = buttonTitle,
+                            contentDescription = "Add new study set to class",
                             tint = colorScheme.background,
                             modifier = Modifier.padding(end = 8.dp)
                         )
