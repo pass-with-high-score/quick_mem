@@ -2,6 +2,7 @@
 # default versions
 compileSdk = "35"
 minSdk = "29"
+onesignal = "5.1.25"
 purchases = "8.10.1"
 purchasesUi = "8.10.1"
 targetSdk = "35"
@@ -111,6 +112,7 @@ jakewharton-timber = { module = "com.jakewharton.timber:timber", version.ref = "
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 # Retrofit
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+onesignal = { module = "com.onesignal:OneSignal", version.ref = "onesignal" }
 purchases = { module = "com.revenuecat.purchases:purchases", version.ref = "purchases" }
 purchases-ui = { module = "com.revenuecat.purchases:purchases-ui", version.ref = "purchasesUi" }
 rang-vikalp = { module = "io.ak1:rang-vikalp", version.ref = "rangVikalp" }

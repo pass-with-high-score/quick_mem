@@ -19,6 +19,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun MembersTabScreen(
     modifier: Modifier = Modifier,
+    isOwner:Boolean,
     member: List<ClassMemberModel> = emptyList(),
     onMembersItemClicked: (ClassMemberModel) -> Unit = {},
     onAddMembersClicked: () -> Unit = {},
@@ -35,7 +36,8 @@ fun MembersTabScreen(
                         title = "This class has no folders",
                         subtitle = "Add folders to share them with your class.",
                         buttonTitle = "Add Members",
-                        onAddMembersClicked = onAddMembersClicked
+                        onAddClick = onAddMembersClicked,
+                        isOwner = isOwner
                     )
                 }
 
@@ -63,7 +65,7 @@ fun MembersTabScreen(
 @Composable
 private fun MembersTabScreenPreview() {
     QuickMemTheme {
-        MembersTabScreen()
+        MembersTabScreen(isOwner = false)
     }
 
 }
