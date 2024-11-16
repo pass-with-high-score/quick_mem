@@ -1,10 +1,7 @@
-@file:Suppress("UNUSED_EXPRESSION")
-
 package com.pwhs.quickmem.presentation.app.home
 
 import android.Manifest
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -67,7 +64,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.presentation.app.notification.NotificationBottomSheet
+import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
+import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -83,6 +81,7 @@ import com.revenuecat.purchases.models.StoreTransaction
 import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
 import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
 import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
+import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -108,13 +107,16 @@ fun HomeScreen(
             navigator.navigate(SearchScreenDestination)
         },
         onNotificationEnabled = { isEnabled ->
-            viewModel.onEvent(HomeUIAction.OnChangeAppPushNotifications(isEnabled))
+            viewModel.onEvent(HomeUiAction.OnChangeAppPushNotifications(isEnabled))
         },
         customer = uiState.customerInfo,
         onCustomerInfoChanged = { customerInfo ->
-            viewModel.onEvent(HomeUIAction.OnChangeCustomerInfo(customerInfo))
+            viewModel.onEvent(HomeUiAction.OnChangeCustomerInfo(customerInfo))
         },
-        userId = uiState.userId,
+        notifications = uiState.notifications,
+        onNotificationClicked = { notificationId ->
+            viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
+        }
     )
 }
 
@@ -128,11 +130,14 @@ fun Home(
     onNotificationEnabled: (Boolean) -> Unit = {},
     customer: CustomerInfo? = null,
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
-    userId: String,
+    onNotificationClicked: (String) -> Unit = {},
+    notifications: List<GetNotificationResponseModel> = emptyList(),
 ) {
 
-    val notificationBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showNotificationBottomSheet by remember { mutableStateOf(false) }
+    val modalBottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
 
     val streakBottomSheet = rememberModalBottomSheetState()
     var showStreakBottomSheet by remember {
@@ -204,12 +209,12 @@ fun Home(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Search,
-                                contentDescription = "Search",
+                                contentDescription = stringResource(R.string.txt_search),
                                 tint = colorScheme.secondary,
                                 modifier = Modifier.size(15.dp)
                             )
                             Text(
-                                "Study sets, folders, class,...",
+                                text = stringResource(R.string.txt_study_sets_folders_class),
                                 style = typography.bodyMedium.copy(
                                     color = colorScheme.secondary,
                                     fontWeight = FontWeight.Bold
@@ -231,7 +236,7 @@ fun Home(
                             shape = MaterialTheme.shapes.extraLarge,
                         ) {
                             Text(
-                                "Upgrade",
+                                text = stringResource(R.string.txt_upgrade),
                                 style = typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 )
@@ -244,7 +249,7 @@ fun Home(
                         Box {
                             Icon(
                                 imageVector = Icons.Outlined.Notifications,
-                                contentDescription = "Notifications",
+                                contentDescription = stringResource(R.string.txt_notifications),
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier.size(30.dp)
                             )
@@ -258,7 +263,7 @@ fun Home(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        "1",
+                                        text = "1",
                                         style = typography.bodySmall.copy(
                                             fontSize = 10.sp,
                                             fontWeight = FontWeight.Bold,
@@ -291,12 +296,12 @@ fun Home(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_fire),
-                        contentDescription = "Streak",
+                        contentDescription = stringResource(R.string.txt_streak),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(30.dp)
                     )
                     Text(
-                        "$streakCount",
+                        text = "$streakCount",
                         style = typography.titleLarge.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold,
@@ -347,7 +352,7 @@ fun Home(
                             .height(150.dp)
                     )
                     Text(
-                        "Streak $streakCount",
+                        text = stringResource(R.string.txt_streak_count, streakCount),
                         style = typography.titleLarge.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold
@@ -359,18 +364,13 @@ fun Home(
     }
 
     if (showNotificationBottomSheet) {
-        ModalBottomSheet(
+        NotificationListBottomSheet(
             onDismissRequest = { showNotificationBottomSheet = false },
-            sheetState = notificationBottomSheetState,
-            containerColor = colorScheme.primary
-        ) {
-            NotificationBottomSheet(
-                userId = userId,
-                onDismissRequest = { showNotificationBottomSheet = false }
-            )
-        }
+            notifications = notifications,
+            onNotificationClicked = onNotificationClicked,
+            sheetState = modalBottomSheetState
+        )
     }
-
 
     if (isPaywallVisible) {
         PaywallDialog(
@@ -380,18 +380,17 @@ fun Home(
 
                         override fun onPurchaseError(error: PurchasesError) {
                             super.onPurchaseError(error)
-                            Log.e("PaywallListener", "purchase error: ${error.message}")
+                            Timber.e("purchase error: ${error.message}")
                         }
 
                         override fun onPurchaseCancelled() {
                             super.onPurchaseCancelled()
-                            Log.d("PaywallListener", "Purchased Cancelled")
+                            Timber.d("Purchased Cancelled")
                         }
 
                         override fun onPurchaseStarted(rcPackage: Package) {
                             super.onPurchaseStarted(rcPackage)
-                            Log.d(
-                                "PaywallListener",
+                            Timber.d(
                                 "Purchased Started - package: ${rcPackage.identifier}"
                             )
                         }
@@ -401,28 +400,26 @@ fun Home(
                             storeTransaction: StoreTransaction,
                         ) {
                             super.onPurchaseCompleted(customerInfo, storeTransaction)
-                            Log.d(
-                                "PaywallListener",
+                            Timber.d(
                                 "Purchased Completed - customerInfo: $customerInfo, storeTransaction: $storeTransaction"
                             )
                         }
 
                         override fun onRestoreCompleted(customerInfo: CustomerInfo) {
                             super.onRestoreCompleted(customerInfo)
-                            Log.d(
-                                "PaywallListener",
+                            Timber.d(
                                 "Restore Completed - customerInfo: $customerInfo"
                             )
                         }
 
                         override fun onRestoreError(error: PurchasesError) {
                             super.onRestoreError(error)
-                            Log.e("PaywallListener", "restore error: ${error.message}")
+                            Timber.e("restore error: ${error.message}")
                         }
 
                         override fun onRestoreStarted() {
                             super.onRestoreStarted()
-                            Log.d("PaywallListener", "Restore Started")
+                            Timber.d("Restore Started")
                         }
                     }
                 )
@@ -437,7 +434,6 @@ fun Home(
 private fun HomeScreenPreview() {
     QuickMemTheme {
         Home(
-            userId = "",
             streakCount = 5
         )
     }
