@@ -67,7 +67,7 @@ abstract class RepositoryModule {
     ): NotificationRepository
 
     @Binds
-    abstract fun binSearchQueryRepository(
+    abstract fun bindSearchQueryRepository(
         searchQueryRepositoryImpl: SearchQueryRepositoryImpl
     ): SearchQueryRepository
 }
