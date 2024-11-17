@@ -31,6 +31,7 @@ fun TopBarSearchResult(
     title: String,
     onNavigateBack: () -> Unit,
     onClickFilter: () -> Unit = {},
+    showFilterIcon: Boolean = false
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -48,16 +49,18 @@ fun TopBarSearchResult(
             )
         },
         actions = {
-            IconButton(
-                onClick = onClickFilter,
-                colors = iconButtonColors(
-                    contentColor = colorScheme.onSurface
-                )
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_filter),
-                    contentDescription = "Filter",
-                )
+            if (showFilterIcon) {
+                IconButton(
+                    onClick = onClickFilter,
+                    colors = iconButtonColors(
+                        contentColor = colorScheme.onSurface
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_filter),
+                        contentDescription = "Filter",
+                    )
+                }
             }
         },
         navigationIcon = {

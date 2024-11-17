@@ -91,12 +91,21 @@ fun ListResultStudySetScreen(
                     studySets?.apply {
                         when {
                             loadState.refresh is LoadState.Loading -> {
-                                CircularProgressIndicator(
+                                Column(
                                     modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.Center),
-                                    color = colorScheme.primary
-                                )
+                                        .fillMaxWidth()
+                                        .padding(innerPadding)
+                                        .padding(top = 40.dp)
+                                        .padding(horizontal = 16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(36.dp),
+                                        color = colorScheme.primary
+                                    )
+                                }
                             }
 
                             loadState.refresh is LoadState.Error -> {
@@ -128,12 +137,21 @@ fun ListResultStudySetScreen(
                             }
 
                             loadState.append is LoadState.Loading -> {
-                                CircularProgressIndicator(
+                                Column(
                                     modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.Center),
-                                    color = colorScheme.primary
-                                )
+                                        .fillMaxWidth()
+                                        .padding(innerPadding)
+                                        .padding(top = 40.dp)
+                                        .padding(horizontal = 16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(36.dp),
+                                        color = colorScheme.primary
+                                    )
+                                }
                             }
 
                             loadState.append is LoadState.Error -> {

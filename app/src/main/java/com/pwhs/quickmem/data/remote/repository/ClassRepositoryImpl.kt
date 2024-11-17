@@ -116,14 +116,13 @@ class ClassRepositoryImpl @Inject constructor(
     override suspend fun getSearchResultClasses(
         token: String,
         title: String,
-        size: Int?,
         page: Int?
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
                 val response = apiService.searchClass(
-                    token, title, size, page
+                    token, title, page
                 )
                 Timber.d("getSearchResultClasses: $response")
                 emit(Resources.Success(response.map { it.toModel() }))

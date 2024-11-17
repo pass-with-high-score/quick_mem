@@ -7,17 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Folder
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,10 +34,8 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun ListResultFolderScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    isOwner: Boolean = false,
     folders: List<GetFolderResponseModel> = emptyList(),
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
-    onAddFolderClick: () -> Unit = {},
     onFolderRefresh: () -> Unit = {}
 ) {
     val refreshState = rememberPullToRefreshState()
@@ -72,44 +61,15 @@ fun ListResultFolderScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        if (isOwner) {
-                            Icon(
-                                imageVector = Icons.Outlined.Folder,
-                                contentDescription = stringResource(R.string.txt_folder),
-                                modifier = Modifier.size(60.dp),
-                                tint = colorScheme.primary
-                            )
-                            Text(
-                                text = stringResource(R.string.txt_organize_your_study_sets_in_folders_by_subject_teacher_course_or_any_other_way_you_like),
-                                style = typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Medium,
-                                    textAlign = TextAlign.Center
-                                ),
-                            )
-                            Button(
-                                shape = MaterialTheme.shapes.medium,
-                                onClick = onAddFolderClick,
-                                modifier = Modifier
-                                    .width(150.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.txt_create_a_folder),
-                                    style = typography.bodyMedium.copy(
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                        } else {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_folder),
-                                contentDescription = stringResource(R.string.txt_empty_folder),
-                            )
-                            Text(
-                                text = stringResource(R.string.txt_no_folders_found),
-                                style = typography.titleLarge,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_folder),
+                            contentDescription = stringResource(R.string.txt_empty_folder),
+                        )
+                        Text(
+                            text = stringResource(R.string.txt_no_folders_found),
+                            style = typography.titleLarge,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
 

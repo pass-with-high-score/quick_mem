@@ -118,13 +118,12 @@ class FolderRepositoryImpl @Inject constructor(
     override suspend fun getSearchResultFolders(
         token: String,
         title: String,
-        size: Int?,
         page: Int?
     ): Flow<Resources<List<GetFolderResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.searchFolder(token, title, size, page)
+                val response = apiService.searchFolder(token, title, page)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)

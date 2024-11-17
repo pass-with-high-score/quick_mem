@@ -303,13 +303,12 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun searchUser(
         token: String,
         username: String,
-        size: Int?,
         page: Int?
     ): Flow<Resources<List<SearchUserResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.searchUser(token, username, size, page)
+                val response = apiService.searchUser(token, username, page)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)

@@ -148,7 +148,6 @@ interface ApiService {
     suspend fun searchUser(
         @Header("Authorization") token: String,
         @Query("username") username: String,
-        @Query("size") size: Int?,
         @Query("page") page: Int?
     ): List<SearchUserResponseDto>
 
@@ -322,7 +321,6 @@ interface ApiService {
     suspend fun searchFolder(
         @Header("Authorization") token: String,
         @Query("title") title: String,
-        @Query("size") size: Int?,
         @Query("page") page: Int?,
     ): List<GetFolderResponseDto>
 
@@ -376,7 +374,6 @@ interface ApiService {
     suspend fun searchClass(
         @Header("Authorization") token: String,
         @Query("title") title: String,
-        @Query("size") size: Int?,
         @Query("page") page: Int?,
     ): List<GetClassByOwnerResponseDto>
 
