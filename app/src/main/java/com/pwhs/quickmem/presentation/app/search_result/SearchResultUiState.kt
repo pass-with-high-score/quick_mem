@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.search_result
 
-import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
@@ -16,7 +15,6 @@ data class SearchResultUiState(
     val username: String = "",
     val token: String = "",
     val userId: String = "",
-    val classes: List<GetClassByOwnerResponseModel> = emptyList(),
     val users: List<SearchUserResponseModel> = emptyList(),
     val userResponseModel: UserResponseModel = UserResponseModel(),
     val subjectModel: SubjectModel = SubjectModel.defaultSubjects.first(),

@@ -73,6 +73,9 @@ fun SearchResultScreen(
     val folderItems: LazyPagingItems<GetFolderResponseModel> =
         viewModel.folderState.collectAsLazyPagingItems()
 
+    val classItems: LazyPagingItems<GetClassByOwnerResponseModel> =
+        viewModel.classState.collectAsLazyPagingItems()
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -88,7 +91,7 @@ fun SearchResultScreen(
         tabIndex = tabIndex,
         onTabSelected = { tabIndex = it },
         studySets = studySetItems,
-        classes = uiState.classes,
+        classes = classItems,
         folders = folderItems,
         users = uiState.users,
         colorModel = uiState.colorModel,
@@ -133,10 +136,10 @@ fun SearchResultScreen(
         onClassClick = {
             navigator.navigate(
                 ClassDetailScreenDestination(
-                    id = it.id,
-                    code = it.joinToken ?: "",
-                    title = it.title,
-                    description = it.description
+                    id = it?.id ?: "",
+                    code = it?.joinToken ?: "",
+                    title = it?.title ?: "",
+                    description = it?.description ?: ""
                 )
             )
         },
@@ -188,11 +191,11 @@ fun SearchResult(
     onClassRefresh: () -> Unit = {},
     onFolderRefresh: () -> Unit = {},
     studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
-    classes: List<GetClassByOwnerResponseModel> = emptyList(),
+    classes: LazyPagingItems<GetClassByOwnerResponseModel>? = null,
     folders: LazyPagingItems<GetFolderResponseModel>? = null,
     users: List<SearchUserResponseModel> = emptyList(),
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
-    onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
+    onClassClick: (GetClassByOwnerResponseModel?) -> Unit = {},
     onFolderClick: (GetFolderResponseModel?) -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
     onNavigateBack: () -> Unit = {},
@@ -264,6 +267,7 @@ fun SearchResult(
                     studySets = studySets,
                     classes = classes,
                     folders = folders,
+                    users = users,
                     onStudySetClick = onStudySetClick,
                     onFolderClick = onFolderClick,
                     onClassClicked = onClassClick,

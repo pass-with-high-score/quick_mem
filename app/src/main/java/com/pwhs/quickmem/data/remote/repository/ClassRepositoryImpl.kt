@@ -1,9 +1,14 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.classes.toModel
+import com.pwhs.quickmem.data.paging.ClassPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.datasource.ClassRemoteDataSource
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
@@ -17,7 +22,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ClassRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val classRemoteDataSource: ClassRemoteDataSource
 ) : ClassRepository {
     override suspend fun createClass(
         token: String,
@@ -117,20 +123,20 @@ class ClassRepositoryImpl @Inject constructor(
         token: String,
         title: String,
         page: Int?
-    ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
-        return flow {
-            emit(Resources.Loading())
-            try {
-                val response = apiService.searchClass(
-                    token, title, page
+    ): Flow<PagingData<GetClassByOwnerResponseModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                ClassPagingSource(
+                    classRemoteDataSource,
+                    token,
+                    title
                 )
-                Timber.d("getSearchResultClasses: $response")
-                emit(Resources.Success(response.map { it.toModel() }))
-            } catch (e: Exception) {
-                Timber.e(e)
-                emit(Resources.Error(e.toString()))
             }
-        }
+        ).flow
     }
 
 

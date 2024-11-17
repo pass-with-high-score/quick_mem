@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
@@ -42,5 +43,5 @@ interface ClassRepository {
         token: String,
         title: String,
         page: Int?,
-    ): Flow<Resources<List<GetClassByOwnerResponseModel>>>
+    ): Flow<PagingData<GetClassByOwnerResponseModel>>
 }

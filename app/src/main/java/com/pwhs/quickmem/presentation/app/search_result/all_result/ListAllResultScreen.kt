@@ -41,8 +41,8 @@ fun ListAllResultScreen(
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
     folders: LazyPagingItems<GetFolderResponseModel>? = null,
     onFolderClick: (GetFolderResponseModel?) -> Unit = {},
-    classes: List<GetClassByOwnerResponseModel> = emptyList(),
-    onClassClicked: (GetClassByOwnerResponseModel) -> Unit = {},
+    classes: LazyPagingItems<GetClassByOwnerResponseModel>? = null,
+    onClassClicked: (GetClassByOwnerResponseModel?) -> Unit = {},
     users: List<SearchUserResponseModel> = emptyList(),
     onMembersItemClicked: (SearchUserResponseModel) -> Unit = {},
     onSearchResultRefresh: () -> Unit = {},
@@ -64,7 +64,7 @@ fun ListAllResultScreen(
                 onSearchResultRefresh()
             }
         ) {
-            when (studySets?.itemCount == 0 && folders?.itemCount == 0 && classes.isEmpty() && users.isEmpty()) {
+            when (studySets?.itemCount == 0 && folders?.itemCount == 0 && classes?.itemCount == 0 && users.isEmpty()) {
                 true -> {
                     Column(
                         modifier = Modifier
@@ -127,14 +127,15 @@ fun ListAllResultScreen(
                             }
                         }
 
-                        if (classes.isNotEmpty()) {
+                        if (classes?.itemCount != 0) {
                             item {
                                 SectionHeader(
                                     title = "Classes",
                                     onSeeAllClick = onSeeAllClickClass
                                 )
                             }
-                            items(classes.take(4)) { classItem ->
+                            items(classes?.itemCount?.coerceAtMost(4) ?: 0) {
+                                val classItem = classes?.get(it)
                                 ClassItem(
                                     classItem = classItem,
                                     onClick = { onClassClicked(classItem) }
