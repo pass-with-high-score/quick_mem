@@ -25,6 +25,7 @@ import com.pwhs.quickmem.R
 @Composable
 fun StudySetMoreOptionsBottomSheet(
     modifier: Modifier = Modifier,
+    isOwner: Boolean,
     onAddToFolder: () -> Unit,
     onAddToClass: () -> Unit,
     onEditStudySet: () -> Unit,
@@ -33,7 +34,8 @@ fun StudySetMoreOptionsBottomSheet(
     showMoreBottomSheet: Boolean,
     sheetShowMoreState: SheetState,
     onDismissRequest: () -> Unit,
-    onResetProgress: () -> Unit
+    onResetProgress: () -> Unit,
+    onCopyStudySet: () -> Unit
 ) {
     if (showMoreBottomSheet) {
         ModalBottomSheet(
@@ -45,30 +47,32 @@ fun StudySetMoreOptionsBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                if (isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onEditStudySet,
+                        icon = Outlined.Edit,
+                        title = stringResource(id = R.string.txt_edit_study_set)
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = onAddToFolder,
+                        icon = Outlined.Folder,
+                        title = stringResource(R.string.txt_add_to_folder)
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = onAddToClass,
+                        icon = Outlined.Group,
+                        title = stringResource(R.string.txt_add_to_classes)
+                    )
+                    ItemMenuBottomSheet(
+                        onClick = onResetProgress,
+                        icon = Outlined.Refresh,
+                        title = stringResource(R.string.txt_reset_progress)
+                    )
+                }
                 ItemMenuBottomSheet(
-                    onClick = onEditStudySet,
-                    icon = Outlined.Edit,
-                    title = stringResource(id = R.string.txt_edit_study_set)
-                )
-                ItemMenuBottomSheet(
-                    onClick = onAddToFolder,
-                    icon = Outlined.Folder,
-                    title = stringResource(R.string.txt_add_to_folder)
-                )
-                ItemMenuBottomSheet(
-                    onClick = onAddToClass,
-                    icon = Outlined.Group,
-                    title = stringResource(R.string.txt_add_to_classes)
-                )
-                ItemMenuBottomSheet(
-                    onClick = { },
+                    onClick = onCopyStudySet,
                     icon = Outlined.ContentCopy,
-                    title = stringResource(R.string.txt_save_and_edit)
-                )
-                ItemMenuBottomSheet(
-                    onClick = onResetProgress,
-                    icon = Outlined.Refresh,
-                    title = stringResource(R.string.txt_reset_progress)
+                    title = stringResource(R.string.txt_make_a_copy)
                 )
                 ItemMenuBottomSheet(
                     onClick = onInfoStudySet,
@@ -80,12 +84,14 @@ fun StudySetMoreOptionsBottomSheet(
                     icon = Outlined.Report,
                     title = stringResource(R.string.txt_report_study_set)
                 )
-                ItemMenuBottomSheet(
-                    onClick = onDeleteStudySet,
-                    icon = Default.DeleteOutline,
-                    title = stringResource(R.string.txt_delete_study_set),
-                    color = Color.Red
-                )
+                if (isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onDeleteStudySet,
+                        icon = Default.DeleteOutline,
+                        title = stringResource(R.string.txt_delete_study_set),
+                        color = Color.Red
+                    )
+                }
             }
         }
     }

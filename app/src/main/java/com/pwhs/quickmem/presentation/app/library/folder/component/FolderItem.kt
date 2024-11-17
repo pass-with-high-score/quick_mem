@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.library.folder.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,7 +58,9 @@ fun FolderItem(
         )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .padding(16.dp)
+                .background(Color.Transparent)
         ) {
             Row(
                 modifier = Modifier
@@ -126,14 +129,15 @@ private fun FolderItemPreview() {
     QuickMemTheme {
         Scaffold {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
+//                    .padding(horizontal = 16.dp)
             ) {
                 item {
                     repeat(10) {
                         FolderItem(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                                .fillMaxWidth(),
                             title = "Folder 1",
                             numOfStudySets = 3,
                             userResponseModel = UserResponseModel(

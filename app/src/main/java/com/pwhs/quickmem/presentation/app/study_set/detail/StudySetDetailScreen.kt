@@ -295,7 +295,8 @@ fun StudySetDetailScreen(
                     isOwner = uiState.isOwner
                 )
             )
-        }
+        },
+        isOwner = uiState.isOwner
     )
 }
 
@@ -304,6 +305,7 @@ fun StudySetDetailScreen(
 fun StudySetDetail(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    isOwner: Boolean,
     onNavigateBack: () -> Unit = {},
     onAddFlashcard: () -> Unit = {},
     title: String = "",
@@ -362,7 +364,8 @@ fun StudySetDetail(
                     }
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     context.startActivity(shareIntent)
-                }
+                },
+                isOwner = isOwner
             )
         }
     ) { innerPadding ->
@@ -413,7 +416,8 @@ fun StudySetDetail(
                             onNavigateToQuiz = onNavigateToQuiz,
                             onNavigateToTrueFalse = onNavigateToTrueFalse,
                             onNavigateToWrite = onNavigateToWrite,
-                            onNavigateToFlip = onNavigateToFlip
+                            onNavigateToFlip = onNavigateToFlip,
+                            isOwner = isOwner
                         )
 
                         StudySetDetailEnum.PROGRESS.index -> ProgressTabScreen(
@@ -447,7 +451,9 @@ fun StudySetDetail(
         onResetProgress = {
             showResetProgressDialog = true
             showMoreBottomSheet = false
-        }
+        },
+        isOwner = isOwner,
+        onCopyStudySet = {},
     )
     if (showDeleteConfirmationDialog) {
         QuickMemAlertDialog(
@@ -482,5 +488,5 @@ fun StudySetDetail(
 @Preview(showBackground = true)
 @Composable
 fun StudySetDetailScreenPreview() {
-    StudySetDetail()
+    StudySetDetail(isOwner = false)
 }

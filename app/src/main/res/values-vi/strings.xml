@@ -213,11 +213,35 @@
     <string name="txt_more">Thêm</string>
     <string name="txt_edit_study_set">Chỉnh sửa bộ học</string>
     <string name="txt_add_to_folder">Thêm vào thư mục</string>
-    <string name="txt_save_and_edit">Lưu và chỉnh sửa</string>
+    <string name="txt_make_a_copy">Tạo một bản sao mới</string>
     <string name="txt_report_study_set">Báo cáo bộ học</string>
     <string name="txt_failed_to_verify_email">Không thể xác minh email</string>
     <string name="txt_forgot_password_image">Hình ảnh quên mật khẩu</string>
     <string name="txt_choose_a_picture">Chọn một hình ảnh</string>
     <string name="txt_update_image_successfully">Cập nhật hình ảnh thành công!</string>
-
+    <string name="txt_activity">Thông báo</string>
+    <string name="txt_no_notifications">Không có thông báo</string>
+    <string name="txt_there_are_no_notifications">Hiện không có thông báo nào</string>
+    <string name="txt_notification_deleted_successfully">Xóa thông báo thành công!</string>
+    <string name="txt_expired">Đã hết hạn</string>
+    <string name="txt_invalid_date_format">Định dạng ngày không hợp lệ</string>
+    <string name="txt_unread">Chưa đọc</string>
+    <string name="txt_study_sets_folders_class">Bộ học, thư mục, lớp học,…</string>
+    <string name="txt_notifications">Thông báo</string>
+    <string name="txt_streak">Chuỗi ngày</string>
+    <string name="txt_streak_count">Chuỗi ngày %1$s</string>
+    <string name="txt_this_class_has_no_folders">Lớp này không có thư mục nào</string>
+    <string name="txt_add_folders_to_share_them_with_your_class">Thêm thư mục để chia sẻ với lớp của bạn.</string>
+    <string name="txt_add_folders">Thêm thư mục</string>
+    <string name="txt_study_sets_count_class_detail">%1$s bộ học</string>
+    <string name="txt_delete_folder">Xóa thư mục</string>
+    <string name="txt_are_you_sure_you_want_to_delete_this_folder">Bạn có chắc chắn muốn xóa thư mục này không?</string>
+    <string name="txt_study">Học</string>
+    <string name="txt_the_folder_has_no_study_sets">Thư mục này không có bộ học nào</string>
+    <string name="txt_report_folder">Báo cáo thư mục</string>
+    <string name="txt_share_folder">Chia sẻ thư mục</string>
+    <string name="txt_edit_folder">Chỉnh sửa thư mục</string>
+    <string name="txt_error_occurred">Đã xảy ra lỗi</string>
+    <string name="txt_error">Lỗi</string>
+    <string name="txt_loading">Đang tải…</string>
 </resources>

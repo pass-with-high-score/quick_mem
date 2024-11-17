@@ -31,11 +31,11 @@ import com.pwhs.quickmem.domain.model.auth.UpdateUsernameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
+import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okhttp3.RequestBody
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -299,4 +299,22 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun searchUser(
+        token: String,
+        username: String,
+        page: Int?
+    ): Flow<Resources<List<SearchUserResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.searchUser(token, username, page)
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
 }

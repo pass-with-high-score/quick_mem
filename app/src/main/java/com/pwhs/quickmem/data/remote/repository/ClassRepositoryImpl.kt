@@ -49,7 +49,7 @@ class ClassRepositoryImpl @Inject constructor(
                     token,
                     classId
                 )
-                Timber.d("getClassByIddddd: ${response.studySets?.firstOrNull()?.flashCardCount}")
+                Timber.d("getClassByIddddd: ${response.studySets?.firstOrNull()?.flashcardCount}")
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -112,5 +112,26 @@ class ClassRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getSearchResultClasses(
+        token: String,
+        title: String,
+        page: Int?
+    ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.searchClass(
+                    token, title, page
+                )
+                Timber.d("getSearchResultClasses: $response")
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
 
 }

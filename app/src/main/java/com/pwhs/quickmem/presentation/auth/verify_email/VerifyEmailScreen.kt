@@ -59,9 +59,9 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.SetNewPasswordScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.VerifyEmailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber
 
@@ -89,10 +89,11 @@ fun VerifyEmailScreen(
                 VerifyEmailUiEvent.VerifySuccess -> {
                     navigator.popBackStack()
                     navigator.navigate(UpdateFullNameScreenDestination) {
-                        popUpTo(VerifyEmailScreenDestination) {
-                            inclusive = true
-                            launchSingleTop = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
 

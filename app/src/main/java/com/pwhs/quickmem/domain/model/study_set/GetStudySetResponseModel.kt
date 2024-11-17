@@ -13,7 +13,7 @@ data class GetStudySetResponseModel(
     val subject: SubjectModel? = null,
     val color: ColorModel? = null,
     val owner: UserResponseModel,
-    val flashCardCount: Int,
+    val flashcardCount: Int,
     val linkShareCode: String? = null,
     val flashcards: List<StudySetFlashCardResponseModel>,
     val isImported: Boolean? = null,

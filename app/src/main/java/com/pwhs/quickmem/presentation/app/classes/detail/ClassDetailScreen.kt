@@ -198,6 +198,7 @@ fun ClassDetailScreen(
     ClassDetail(
         modifier = modifier,
         linkShareCode = uiState.joinClassCode,
+        isOwner = uiState.isOwner,
         onRefresh = {
             viewModel.onEvent(ClassDetailUiAction.Refresh)
         },
@@ -255,6 +256,7 @@ fun ClassDetailScreen(
 @Composable
 fun ClassDetail(
     modifier: Modifier = Modifier,
+    isOwner: Boolean,
     title: String = "",
     isLoading: Boolean = false,
     linkShareCode: String = "",
@@ -345,20 +347,23 @@ fun ClassDetail(
                         ClassDetailEnums.STUDY_SETS.index -> StudySetsTabScreen(
                             onAddStudySetClicked = onNavigateAddStudySets,
                             studySets = studySets,
-                            onStudySetItemClicked = onStudySetItemClicked
+                            onStudySetItemClicked = onStudySetItemClicked,
+                            isOwner = isOwner
                         )
 
                         ClassDetailEnums.FOLDERS.index -> FoldersTabScreen(
                             onAddFoldersClicked = onNavigateAddFolder,
                             folder = folders,
-                            onFolderItemClicked = onFolderItemClicked
+                            onFolderItemClicked = onFolderItemClicked,
+                            isOwner = isOwner
                         )
 
                         ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
                             member = members,
                             onMembersItemClicked = {
                                 onNavigateToUserDetail(it.id)
-                            }
+                            },
+                            isOwner = isOwner
                         )
                     }
 
@@ -399,7 +404,8 @@ fun ClassDetail(
         onReportClass = {},
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
-        onDismissRequest = { showMoreBottomSheet = false }
+        onDismissRequest = { showMoreBottomSheet = false },
+        isOwner = isOwner
     )
 }
 
@@ -409,6 +415,7 @@ private fun ClassDetailScreenPreview() {
     QuickMemTheme {
         ClassDetail(
             title = "Class Title",
+            isOwner = false
         )
     }
 }

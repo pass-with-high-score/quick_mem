@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
@@ -10,6 +11,8 @@ import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import kotlinx.coroutines.flow.Flow
 
 interface StudySetRepository {
@@ -66,4 +69,14 @@ interface StudySetRepository {
         token: String,
         addStudySetToClassesRequestModel: AddStudySetToClassesRequestModel
     ): Flow<Resources<Unit>>
+
+    suspend fun getSearchResultStudySets(
+        token: String,
+        title: String,
+        size: SearchResultSizeEnum,
+        creatorType: SearchResultCreatorEnum?,
+        page: Int,
+        colorId: Int?,
+        subjectId: Int?,
+    ): Flow<PagingData<GetStudySetResponseModel>>
 }

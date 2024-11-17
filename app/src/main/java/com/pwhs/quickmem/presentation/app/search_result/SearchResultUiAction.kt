@@ -1,3 +1,20 @@
 package com.pwhs.quickmem.presentation.app.search_result
 
-sealed class SearchResultUiAction()
+import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+
+sealed class SearchResultUiAction() {
+    data object Refresh : SearchResultUiAction()
+    data object RefreshStudySets : SearchResultUiAction()
+    data object RefreshClasses : SearchResultUiAction()
+    data object RefreshFolders : SearchResultUiAction()
+    data object RefreshSearchAllResult : SearchResultUiAction()
+    data class SubjectChanged(val subjectModel: SubjectModel) : SearchResultUiAction()
+    data class ColorChanged(val colorModel: ColorModel) : SearchResultUiAction()
+    data class SizeChanged(val sizeModel: SearchResultSizeEnum) : SearchResultUiAction()
+    data class CreatorTypeChanged(val creatorType: SearchResultCreatorEnum) : SearchResultUiAction()
+    data object ApplyFilter : SearchResultUiAction()
+    data object ResetFilter : SearchResultUiAction()
+}

@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.onboarding
 
-import com.pwhs.quickmem.presentation.onboarding.component.OnboardingPageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,11 +29,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingButton
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingIndicator
+import com.pwhs.quickmem.presentation.onboarding.component.OnboardingPageView
 import com.pwhs.quickmem.presentation.onboarding.data.onboardingPagesList
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -80,9 +80,11 @@ fun OnboardingScreen(
                     onClick = {
                         viewModel.saveIsFirstRun(false)
                         navigator.navigate(WelcomeScreenDestination) {
-                            popUpTo(SplashScreenDestination) {
-                                inclusive = true
+                            popUpTo(NavGraphs.root) {
+                                saveState = false
                             }
+                            launchSingleTop = true
+                            restoreState = false
                         }
                     },
                     backgroundColor = Color.White,
@@ -133,9 +135,11 @@ fun OnboardingScreen(
                         onClick = {
                             viewModel.saveIsFirstRun(false)
                             navigator.navigate(WelcomeScreenDestination) {
-                                popUpTo(SplashScreenDestination) {
-                                    inclusive = true
+                                popUpTo(NavGraphs.root) {
+                                    saveState = false
                                 }
+                                launchSingleTop = true
+                                restoreState = false
                             }
                         }
                     )

@@ -3,6 +3,9 @@ package com.pwhs.quickmem.util
 import androidx.compose.ui.graphics.Color
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 fun String.upperCaseFirstLetter(): String {
@@ -50,4 +53,22 @@ fun formatDate(dateString: String): String {
     val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val date = inputFormat.parse(dateString) ?: return ""
     return outputFormat.format(date)
+}
+
+fun String.calculateTimeAgo(): String {
+    return try {
+        val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+        val createdDateTime = OffsetDateTime.parse(this, formatter)
+        val now = OffsetDateTime.now()
+        val duration = Duration.between(createdDateTime, now)
+
+        when {
+            duration.toMinutes() < 1 -> "${duration.seconds}s"
+            duration.toHours() < 1 -> "${duration.toMinutes()}m"
+            duration.toDays() < 1 -> "${duration.toHours()}h"
+            else -> "${duration.toDays()}d"
+        }
+    } catch (e: Exception) {
+        "N/A"
+    }
 }

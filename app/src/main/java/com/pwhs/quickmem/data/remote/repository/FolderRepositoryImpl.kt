@@ -1,9 +1,14 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.folder.toDto
 import com.pwhs.quickmem.data.mapper.folder.toModel
+import com.pwhs.quickmem.data.paging.FolderPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.datasource.FolderRemoteDataSource
 import com.pwhs.quickmem.domain.model.folder.AddFolderToClassRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderResponseModel
@@ -17,7 +22,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class FolderRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val folderRemoteDataSource: FolderRemoteDataSource
 ) : FolderRepository {
     override suspend fun createFolder(
         token: String,
@@ -113,5 +119,25 @@ class FolderRepositoryImpl @Inject constructor(
                 emit(Resources.Error(e.toString()))
             }
         }
+    }
+
+    override suspend fun getSearchResultFolders(
+        token: String,
+        title: String,
+        page: Int?
+    ): Flow<PagingData<GetFolderResponseModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                FolderPagingSource(
+                    folderRemoteDataSource,
+                    token,
+                    title
+                )
+            }
+        ).flow
     }
 }

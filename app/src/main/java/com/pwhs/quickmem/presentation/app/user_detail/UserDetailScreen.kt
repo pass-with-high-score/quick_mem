@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.user_detail
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,7 +11,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Report
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +50,7 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -223,21 +224,15 @@ private fun UserDetail(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .size(50.dp),
-                    color = colorScheme.primary
-                )
-            } else {
+        Box {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(avatarUrl.ifEmpty { null })
@@ -256,65 +251,70 @@ private fun UserDetail(
                     style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(top = 8.dp)
                 )
-            }
 
-            TabRow(
-                selectedTabIndex = tabIndex,
-                indicator = { tabPositions ->
-                    SecondaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                        color = colorScheme.primary
-                    )
-                },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        text = {
-                            Text(
-                                title, style = typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (tabIndex == index) Color.Black else Color.Gray
+
+                TabRow(
+                    selectedTabIndex = tabIndex,
+                    indicator = { tabPositions ->
+                        SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                            color = colorScheme.primary
+                        )
+                    },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            text = {
+                                Text(
+                                    title, style = typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (tabIndex == index) Color.Black else Color.Gray
+                                    )
                                 )
-                            )
-                        },
-                        selected = tabIndex == index,
-                        onClick = { tabIndex = index }
-                    )
+                            },
+                            selected = tabIndex == index,
+                            onClick = { tabIndex = index }
+                        )
+                    }
+                }
+
+                when (tabIndex) {
+                    UserDetailTabEnum.STUDY_SET.index -> {
+                        ListStudySetScreen(
+                            studySets = studySets,
+                            onStudySetClick = onStudySetClick,
+                            onStudySetRefresh = onRefresh,
+                            isLoading = isLoading,
+                            isOwner = isOwner
+                        )
+                    }
+
+                    UserDetailTabEnum.CLASS.index -> {
+                        ListClassesScreen(
+                            classes = classes,
+                            isLoading = isLoading,
+                            isOwner = isOwner,
+                            onClassClicked = onClassClick,
+                            onClassRefresh = onRefresh
+                        )
+                    }
+
+                    UserDetailTabEnum.FOLDER.index -> {
+                        ListFolderScreen(
+                            folders = folders,
+                            isLoading = isLoading,
+                            isOwner = isOwner,
+                            onFolderClick = onFolderClick,
+                            onFolderRefresh = onRefresh
+                        )
+                    }
                 }
             }
-
-            when (tabIndex) {
-                UserDetailTabEnum.STUDY_SET.index -> {
-                    ListStudySetScreen(
-                        studySets = studySets,
-                        onStudySetClick = onStudySetClick,
-                        onStudySetRefresh = onRefresh,
-                        isLoading = isLoading,
-                        isOwner = isOwner
-                    )
-                }
-
-                UserDetailTabEnum.CLASS.index -> {
-                    ListClassesScreen(
-                        classes = classes,
-                        isLoading = isLoading,
-                        isOwner = isOwner,
-                        onClassClicked = onClassClick,
-                        onClassRefresh = onRefresh
-                    )
-                }
-
-                UserDetailTabEnum.FOLDER.index -> {
-                    ListFolderScreen(
-                        folders = folders,
-                        isLoading = isLoading,
-                        isOwner = isOwner,
-                        onFolderClick = onFolderClick,
-                        onFolderRefresh = onRefresh
-                    )
-                }
-            }
+            LoadingOverlay(
+                isLoading = isLoading,
+                text = stringResource(R.string.txt_loading)
+            )
         }
     }
 }

@@ -20,10 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
@@ -33,6 +35,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun FolderDetailStudySetList(
+    isOwner: Boolean,
     modifier: Modifier = Modifier,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (String) -> Unit = {},
@@ -49,7 +52,7 @@ fun FolderDetailStudySetList(
                         .padding(top = 100.dp)
                 ) {
                     Text(
-                        "The folder has no study sets",
+                        text = stringResource(R.string.txt_the_folder_has_no_study_sets),
                         style = typography.titleLarge.copy(
                             fontWeight = Bold,
                             color = colorScheme.onSurface
@@ -57,25 +60,27 @@ fun FolderDetailStudySetList(
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center
                     )
-                    Button(
-                        onClick = onAddFlashCardClick
-                    ) {
-                        Row(
-                            verticalAlignment = CenterVertically
+                    if (isOwner) {
+                        Button(
+                            onClick = onAddFlashCardClick
                         ) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "Add",
-                                tint = colorScheme.background,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            Text(
-                                "Add study set",
-                                style = typography.titleMedium.copy(
-                                    color = colorScheme.background,
-                                    fontWeight = Bold
+                            Row(
+                                verticalAlignment = CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Filled.Add,
+                                    contentDescription = stringResource(R.string.txt_add_folders),
+                                    tint = colorScheme.background,
+                                    modifier = Modifier.padding(end = 8.dp)
                                 )
-                            )
+                                Text(
+                                    text = stringResource(R.string.txt_add_study_set),
+                                    style = typography.titleMedium.copy(
+                                        color = colorScheme.background,
+                                        fontWeight = Bold
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -105,11 +110,12 @@ private fun ListStudySetInnerFolderPreview() {
             FolderDetailStudySetList(
                 modifier = Modifier
                     .padding(it),
+                isOwner = true,
                 studySets = listOf(
                     GetStudySetResponseModel(
                         id = "1",
                         title = "Study Set 1",
-                        flashCardCount = 10,
+                        flashcardCount = 10,
                         color = ColorModel.defaultColors[0],
                         subject = SubjectModel.defaultSubjects[0],
                         owner = UserResponseModel(
@@ -138,7 +144,8 @@ private fun ListStudySetInnerFolderPreviewEmpty() {
             FolderDetailStudySetList(
                 modifier = Modifier
                     .padding(it),
-                studySets = emptyList()
+                studySets = emptyList(),
+                isOwner = true
             )
         }
     }

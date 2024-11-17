@@ -42,11 +42,11 @@ import com.pwhs.quickmem.util.toColor
 @Composable
 fun StudySetItem(
     modifier: Modifier = Modifier,
-    studySet: GetStudySetResponseModel,
+    studySet: GetStudySetResponseModel?,
     onStudySetClick: (String) -> Unit = {}
 ) {
     Card(
-        onClick = { onStudySetClick(studySet.id) },
+        onClick = { onStudySetClick(studySet?.id ?: "") },
         colors = cardColors(
             containerColor = Color.White,
         ),
@@ -58,7 +58,7 @@ fun StudySetItem(
         ),
         border = BorderStroke(
             width = 1.dp,
-            color = studySet.color?.hexValue?.toColor()
+            color = studySet?.color?.hexValue?.toColor()
                 ?: ColorModel.defaultColors[0].hexValue.toColor()
         )
     ) {
@@ -68,13 +68,13 @@ fun StudySetItem(
                 .background(Color.Transparent)
         ) {
             Text(
-                studySet.title,
+                text = "${studySet?.title}",
                 style = typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                color = studySet.color?.hexValue?.toColor()
+                color = studySet?.color?.hexValue?.toColor()
                     ?.copy(alpha = 0.8f)
                     ?: ColorModel.defaultColors[0].hexValue.toColor()
                         .copy(alpha = 0.8f),
@@ -87,7 +87,7 @@ fun StudySetItem(
                                 fontWeight = FontWeight.Bold
                             )
                     ) {
-                        append("${studySet.flashCardCount}")
+                        append("${studySet?.flashcardCount}")
                         withStyle(
                             style = typography.bodySmall.toSpanStyle()
                                 .copy(
@@ -100,7 +100,7 @@ fun StudySetItem(
                 }
             )
             Text(
-                studySet.subject?.name
+                text = studySet?.subject?.name
                     ?: SubjectModel.defaultSubjects[0].name,
                 style = typography.bodySmall.copy(
                     color = MaterialTheme.colorScheme.onSurface.copy(
@@ -114,7 +114,7 @@ fun StudySetItem(
                 modifier = Modifier.padding(top = 8.dp)
             ) {
                 AsyncImage(
-                    model = studySet.owner.avatarUrl,
+                    model = studySet?.owner?.avatarUrl,
                     contentDescription = stringResource(R.string.txt_user_avatar),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -122,7 +122,7 @@ fun StudySetItem(
                         .clip(CircleShape)
                 )
                 Text(
-                    studySet.owner.username,
+                    text = "${studySet?.owner?.username}",
                     style = typography.bodySmall
                 )
             }
@@ -148,7 +148,7 @@ private fun StudySetItemPreview() {
                             studySet = GetStudySetResponseModel(
                                 id = "1",
                                 title = "Study Set Title",
-                                flashCardCount = 10,
+                                flashcardCount = 10,
                                 color = ColorModel.defaultColors[0],
                                 subject = SubjectModel.defaultSubjects[0],
                                 owner = UserResponseModel(
