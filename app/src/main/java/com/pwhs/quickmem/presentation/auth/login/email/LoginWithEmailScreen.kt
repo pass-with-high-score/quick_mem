@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,10 +42,9 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SendVerifyEmailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -73,9 +73,11 @@ fun LoginWithEmailScreen(
                         context.getString(R.string.txt_login_success), Toast.LENGTH_SHORT
                     ).show()
                     navigator.navigate(HomeScreenDestination) {
-                        popUpTo(WelcomeScreenDestination) {
-                            inclusive = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
 
@@ -172,7 +174,9 @@ private fun LoginWithEmail(
                     iconId = R.drawable.ic_lock,
                     contentDescription = stringResource(R.string.txt_password),
                     type = TextFieldType.PASSWORD,
-                    error = passwordError
+                    error = passwordError,
+                    imeAction = ImeAction.Done,
+                    onDone = onLoginClick
                 )
 
                 Box(

@@ -34,9 +34,9 @@ import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.util.splashBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.OnboardingScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
@@ -54,35 +54,41 @@ fun SplashScreen(
             when (event) {
                 is SplashUiEvent.IsLoggedIn -> {
                     navigator.navigate(HomeScreenDestination) {
-                        popUpTo(SplashScreenDestination) {
-                            inclusive = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
 
                 is SplashUiEvent.FirstRun -> {
                     navigator.navigate(OnboardingScreenDestination) {
-                        popUpTo(SplashScreenDestination) {
-                            inclusive = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
 
                 is SplashUiEvent.NotFirstRun -> {
                     navigator.navigate(WelcomeScreenDestination) {
-                        popUpTo(SplashScreenDestination) {
-                            inclusive = true
-                            launchSingleTop = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
 
                 is SplashUiEvent.NotLoggedIn -> {
                     navigator.navigate(WelcomeScreenDestination) {
-                        popUpTo(SplashScreenDestination) {
-                            inclusive = true
-                            launchSingleTop = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
             }
