@@ -69,6 +69,7 @@ fun SearchResultScreen(
 
     val studySetItems: LazyPagingItems<GetStudySetResponseModel> =
         viewModel.studySetState.collectAsLazyPagingItems()
+
     val folderItems: LazyPagingItems<GetFolderResponseModel> =
         viewModel.folderState.collectAsLazyPagingItems()
 
