@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.core.di
 
+import com.pwhs.quickmem.data.local.repository.SearchQueryRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.AuthRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.ClassRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.FlashCardRepositoryImpl
@@ -13,6 +14,7 @@ import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
+import com.pwhs.quickmem.domain.repository.SearchQueryRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.domain.repository.UploadImageRepository
@@ -63,4 +65,9 @@ abstract class RepositoryModule {
     abstract fun bindNotificationRepository(
         notificationRepositoryImpl: NotificationRepositoryImpl
     ): NotificationRepository
+
+    @Binds
+    abstract fun binSearchQueryRepository(
+        searchQueryRepositoryImpl: SearchQueryRepositoryImpl
+    ): SearchQueryRepository
 }

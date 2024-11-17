@@ -29,8 +29,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.search.SearchQueryModel
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
@@ -42,7 +43,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = viewModel(),
+    viewModel: SearchViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -82,7 +83,7 @@ fun SearchScreen(
 private fun Search(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    listResult: List<String> = emptyList(),
+    listResult: List<SearchQueryModel> = emptyList(),
     query: String = "",
     onQueryChange: (String) -> Unit = {},
     onSearch: () -> Unit = {}
@@ -146,7 +147,7 @@ private fun Search(
                 ) {
                     items(listResult.asReversed()) { result ->
                         Text(
-                            text = result,
+                            text = result.query,
                             style = typography.bodyLarge,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         )

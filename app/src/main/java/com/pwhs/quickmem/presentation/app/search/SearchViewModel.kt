@@ -2,7 +2,7 @@ package com.pwhs.quickmem.presentation.app.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.domain.repository.SearchQueryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val appManager: AppManager
+    private val searchQueryRepository: SearchQueryRepository,
 ) : ViewModel() {
 
     init {
@@ -40,19 +40,17 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             val query = uiState.value.query
             if (query.isNotBlank()) {
-                _uiState.update { it.copy(isLoading = true) }
-                appManager.addRecentSearch(query)
-                _uiState.update { it.copy(isLoading = false) }
-                _uiEvent.trySend(SearchUiEvent.NavigateToResult(query))
+                searchQueryRepository.addSearchQuery(query)
             }
+            _uiEvent.trySend(SearchUiEvent.NavigateToResult(query))
         }
     }
 
+
     private fun loadSearchHistory() {
         viewModelScope.launch {
-            appManager.recentSearches.collect { result ->
-                _uiState.update { it.copy(listResult = result) }
-            }
+            val searches = searchQueryRepository.getRecentSearches()
+            _uiState.update { it.copy(listResult = searches) }
         }
     }
 }

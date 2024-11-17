@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.onesignal)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.bundles.roomdb)
 
     implementation(libs.play.services.ads)
 

@@ -7,6 +7,8 @@ pagingRuntimeKtx = "3.3.4"
 pagingCompose = "3.3.4"
 purchases = "8.10.1"
 purchasesUi = "8.10.1"
+roomRuntime = "2.6.1"
+roomCompiler = "2.6.1"
 targetSdk = "35"
 versionCode = "3"
 versionName = "1.2"
@@ -70,6 +72,9 @@ androidx-foundation = { module = "androidx.compose.foundation:foundation", versi
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
 drawbox = { module = "io.ak1:drawbox", version.ref = "drawbox" }
 easycrop = { module = "io.github.mr0xf00:easycrop", version.ref = "easycrop" }
@@ -138,6 +143,7 @@ retrofit = ["retrofit", "logging-interceptor", "converter-gson"]
 android-testing = ["androidx-junit", "androidx-espresso-core", "androidx-ui-test-junit4"]
 testing = ["junit"]
 debugging = ["androidx-ui-tooling", "androidx-ui-test-manifest"]
+roomdb = ["androidx-room-compiler", "androidx-room-ktx", "androidx-room-runtime"]
 
 
 [plugins]
