@@ -1,10 +1,7 @@
 package com.pwhs.quickmem.presentation.app.search_result
 
-import androidx.paging.PagingData
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
-import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
-import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
@@ -20,7 +17,6 @@ data class SearchResultUiState(
     val token: String = "",
     val userId: String = "",
     val classes: List<GetClassByOwnerResponseModel> = emptyList(),
-    val folders: List<GetFolderResponseModel> = emptyList(),
     val users: List<SearchUserResponseModel> = emptyList(),
     val userResponseModel: UserResponseModel = UserResponseModel(),
     val subjectModel: SubjectModel = SubjectModel.defaultSubjects.first(),
