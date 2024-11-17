@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,6 +67,7 @@ fun SearchScreen(
     Search(
         modifier = modifier,
         query = uiState.query,
+        listResult = uiState.listResult,
         onQueryChange = { viewModel.onEvent(SearchUiAction.OnQueryChanged(it)) },
         onNavigateBack = {
             navigator.navigateUp()
@@ -79,6 +82,7 @@ fun SearchScreen(
 private fun Search(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
+    listResult: List<String> = emptyList(),
     query: String = "",
     onQueryChange: (String) -> Unit = {},
     onSearch: () -> Unit = {}
@@ -112,26 +116,42 @@ private fun Search(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.txt_enter_a_topic_or_keywords),
-                    style = typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = colorScheme.onSurface.copy(alpha = 0.6f)
+            if (listResult.isEmpty()) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Text(
+                        text = stringResource(R.string.txt_enter_a_topic_or_keywords),
+                        style = typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
                     )
-                )
-                Text(
-                    text = stringResource(R.string.txt_tip_the_more_specific_the_better),
-                    style = typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = colorScheme.onSurface.copy(alpha = 0.6f)
+                    Text(
+                        text = stringResource(R.string.txt_tip_the_more_specific_the_better),
+                        style = typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
                     )
-                )
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(listResult.asReversed()) { result ->
+                        Text(
+                            text = result,
+                            style = typography.bodyLarge,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
+                    }
+                }
             }
         }
     }

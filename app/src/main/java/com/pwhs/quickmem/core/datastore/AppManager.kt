@@ -5,9 +5,11 @@ import android.util.Patterns
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.google.gson.Gson
 import com.pwhs.quickmem.core.data.LanguageCode
 import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
@@ -23,6 +25,7 @@ class AppManager(private val context: Context) {
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
         val LANGUAGE_CODE = stringPreferencesKey("LANGUAGE_CODE")
+        val RECENT_SEARCHES = stringPreferencesKey("RECENT_SEARCHES")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -64,6 +67,19 @@ class AppManager(private val context: Context) {
     val languageCode: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[LANGUAGE_CODE] ?: LanguageCode.EN.name.lowercase()
+        }
+
+    private val gson = Gson()
+
+    val recentSearches: Flow<List<String>> = context.dataStore.data
+        .map { preferences ->
+            val json = preferences[RECENT_SEARCHES] ?: "[]"
+            try {
+                gson.fromJson(json, Array<String>::class.java).toList()
+            } catch (e: Exception) {
+                Timber.e(e, "Error parsing recent searches")
+                emptyList()
+            }
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -141,5 +157,22 @@ class AppManager(private val context: Context) {
         context.dataStore.edit { preferences ->
             preferences[LANGUAGE_CODE] = languageCode
         }
+    }
+
+    private suspend fun saveRecentSearches(searches: List<String>) {
+        Timber.d("Saving recent searches: $searches")
+        val json = gson.toJson(searches)
+        context.dataStore.edit { preferences ->
+            preferences[RECENT_SEARCHES] = json
+        }
+    }
+
+    suspend fun addRecentSearch(search: String) {
+        if (search.isBlank()) return
+        val currentSearches = recentSearches.firstOrNull() ?: emptyList()
+        val updatedSearches = (listOf(search) + currentSearches)
+            .distinct()
+            .take(10)
+        saveRecentSearches(updatedSearches)
     }
 }

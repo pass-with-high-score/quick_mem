@@ -1,16 +1,26 @@
 package com.pwhs.quickmem.presentation.app.search
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.AppManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor() : ViewModel() {
+class SearchViewModel @Inject constructor(
+    private val appManager: AppManager
+) : ViewModel() {
+
+    init {
+        loadSearchHistory()
+    }
+
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -19,27 +29,29 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     fun onEvent(event: SearchUiAction) {
         when (event) {
-            is SearchUiAction.Search -> {
-                search()
-            }
-
+            is SearchUiAction.Search -> search()
             is SearchUiAction.OnQueryChanged -> {
-                _uiState.update {
-                    it.copy(query = event.query)
-                }
+                _uiState.update { it.copy(query = event.query, error = "") }
             }
         }
     }
 
     private fun search() {
-        val query = uiState.value.query
-        if (query.isNotBlank()) {
-            _uiEvent.trySend(SearchUiEvent.NavigateToResult(query))
-        } else {
-            _uiState.update {
-                it.copy(error = "Query cannot be empty")
+        viewModelScope.launch {
+            val query = uiState.value.query
+            if (query.isNotBlank()) {
+                _uiState.update { it.copy(isLoading = true) }
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEvent.trySend(SearchUiEvent.NavigateToResult(query))
             }
-            _uiEvent.trySend(SearchUiEvent.ShowError("Query cannot be empty"))
+        }
+    }
+
+    private fun loadSearchHistory() {
+        viewModelScope.launch {
+            appManager.recentSearches.collect { result ->
+                _uiState.update { it.copy(listResult = result) }
+            }
         }
     }
 }
