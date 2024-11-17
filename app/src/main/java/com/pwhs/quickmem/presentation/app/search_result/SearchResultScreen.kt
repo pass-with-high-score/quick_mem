@@ -1,8 +1,9 @@
 package com.pwhs.quickmem.presentation.app.search_result
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -45,6 +46,7 @@ import com.pwhs.quickmem.presentation.app.search_result.study_set.component.Filt
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import com.pwhs.quickmem.presentation.app.search_result.user.ListResultUserScreen
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -76,6 +78,9 @@ fun SearchResultScreen(
     val classItems: LazyPagingItems<GetClassByOwnerResponseModel> =
         viewModel.classState.collectAsLazyPagingItems()
 
+    val userItems: LazyPagingItems<SearchUserResponseModel> =
+        viewModel.userState.collectAsLazyPagingItems()
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -87,13 +92,13 @@ fun SearchResultScreen(
     }
     SearchResult(
         modifier = modifier,
-        isLoading = uiState.isLoading,
         tabIndex = tabIndex,
+        query = uiState.query,
         onTabSelected = { tabIndex = it },
         studySets = studySetItems,
         classes = classItems,
         folders = folderItems,
-        users = uiState.users,
+        users = userItems,
         colorModel = uiState.colorModel,
         onColorChange = {
             viewModel.onEvent(SearchResultUiAction.ColorChanged(it))
@@ -121,9 +126,6 @@ fun SearchResultScreen(
         },
         onFolderRefresh = {
             viewModel.onEvent(SearchResultUiAction.RefreshFolders)
-        },
-        onSearchResultRefresh = {
-            viewModel.onEvent(SearchResultUiAction.RefreshSearchAllResult)
         },
         onStudySetClick = {
             navigator.navigate(
@@ -174,8 +176,9 @@ fun SearchResultScreen(
 
 @Composable
 fun SearchResult(
-    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    query: String = "",
+    modifier: Modifier = Modifier,
     tabIndex: Int,
     onTabSelected: (Int) -> Unit,
     colorModel: ColorModel? = ColorModel.defaultColors.first(),
@@ -193,14 +196,13 @@ fun SearchResult(
     studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
     classes: LazyPagingItems<GetClassByOwnerResponseModel>? = null,
     folders: LazyPagingItems<GetFolderResponseModel>? = null,
-    users: List<SearchUserResponseModel> = emptyList(),
+    users: LazyPagingItems<SearchUserResponseModel>? = null,
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
     onClassClick: (GetClassByOwnerResponseModel?) -> Unit = {},
     onFolderClick: (GetFolderResponseModel?) -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onResetClick: () -> Unit = {},
-    onSearchResultRefresh: () -> Unit = {},
     onSeeAllClickStudySet: () -> Unit = {},
     onSeeAllClickFolder: () -> Unit = {},
     onSeeAllClickClass: () -> Unit = {},
@@ -220,7 +222,7 @@ fun SearchResult(
         topBar = {
             TopBarSearchResult(
                 onNavigateBack = onNavigateBack,
-                title = "Result Search",
+                title = "Result \"${query}\"",
                 onClickFilter = {
                     if (tabIndex == SearchResultEnum.STUDY_SET.index) {
                         showFilterBottomSheet = true
@@ -231,84 +233,84 @@ fun SearchResult(
         }
     ) { innerPadding ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            ScrollableTabRow(
-                selectedTabIndex = tabIndex,
-                indicator = { tabPositions ->
-                    SecondaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex])
-                    )
-                },
-                contentColor = colorScheme.onSurface,
-                edgePadding = 8.dp
+        Box {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding)
             ) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        text = {
-                            Text(
-                                title, style = typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (tabIndex == index) Color.Black else Color.Gray
+                ScrollableTabRow(
+                    selectedTabIndex = tabIndex,
+                    indicator = { tabPositions ->
+                        SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(tabPositions[tabIndex])
+                        )
+                    },
+                    contentColor = colorScheme.onSurface,
+                    edgePadding = 8.dp
+                ) {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            text = {
+                                Text(
+                                    title, style = typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (tabIndex == index) Color.Black else Color.Gray
+                                    )
                                 )
-                            )
-                        },
-                        selected = tabIndex == index,
-                        onClick = { onTabSelected(index) },
+                            },
+                            selected = tabIndex == index,
+                            onClick = { onTabSelected(index) },
+                        )
+                    }
+                }
+                when (tabIndex) {
+                    SearchResultEnum.ALL_RESULT.index -> ListAllResultScreen(
+                        studySets = studySets,
+                        classes = classes,
+                        folders = folders,
+                        users = users,
+                        onStudySetClick = onStudySetClick,
+                        onFolderClick = onFolderClick,
+                        onClassClicked = onClassClick,
+                        onSeeAllClickClass = onSeeAllClickClass,
+                        onSeeAllClickFolder = onSeeAllClickFolder,
+                        onSeeAllClickStudySet = onSeeAllClickStudySet,
+                        onSeeAllClickUsers = onSeeAllClickUsers,
+                    )
+
+                    SearchResultEnum.STUDY_SET.index -> ListResultStudySetScreen(
+                        studySets = studySets,
+                        onStudySetClick = onStudySetClick,
+                        onStudySetRefresh = onStudySetRefresh,
+                    )
+
+                    SearchResultEnum.FOLDER.index -> ListResultFolderScreen(
+                        modifier = modifier,
+                        folders = folders,
+                        onFolderClick = onFolderClick,
+                        onFolderRefresh = onFolderRefresh
+                    )
+
+                    SearchResultEnum.CLASS.index -> ListResultClassesScreen(
+                        modifier = modifier,
+                        classes = classes,
+                        onClassClicked = onClassClick,
+                        onClassRefresh = onClassRefresh,
+                    )
+
+                    SearchResultEnum.USER.index -> ListResultUserScreen(
+                        modifier = modifier,
+                        users = users,
+                        onMembersItemClicked = {
+                            onNavigateToUserDetail(it?.id ?: "")
+                        }
                     )
                 }
             }
-            when (tabIndex) {
-                SearchResultEnum.ALL_RESULT.index -> ListAllResultScreen(
-                    isLoading = isLoading,
-                    studySets = studySets,
-                    classes = classes,
-                    folders = folders,
-                    users = users,
-                    onStudySetClick = onStudySetClick,
-                    onFolderClick = onFolderClick,
-                    onClassClicked = onClassClick,
-                    onSearchResultRefresh = onSearchResultRefresh,
-                    onSeeAllClickClass = onSeeAllClickClass,
-                    onSeeAllClickFolder = onSeeAllClickFolder,
-                    onSeeAllClickStudySet = onSeeAllClickStudySet,
-                    onSeeAllClickUsers = onSeeAllClickUsers,
-                )
-
-                SearchResultEnum.STUDY_SET.index -> ListResultStudySetScreen(
-                    isLoading = isLoading,
-                    studySets = studySets,
-                    onStudySetClick = onStudySetClick,
-                    onStudySetRefresh = onStudySetRefresh,
-                )
-
-                SearchResultEnum.FOLDER.index -> ListResultFolderScreen(
-                    modifier = modifier,
-                    isLoading = isLoading,
-                    folders = folders,
-                    onFolderClick = onFolderClick,
-                    onFolderRefresh = onFolderRefresh
-                )
-
-                SearchResultEnum.CLASS.index -> ListResultClassesScreen(
-                    modifier = modifier,
-                    isLoading = isLoading,
-                    classes = classes,
-                    onClassClicked = onClassClick,
-                    onClassRefresh = onClassRefresh,
-                )
-
-                SearchResultEnum.USER.index -> ListResultUserScreen(
-                    modifier = modifier,
-                    users = users,
-                    onMembersItemClicked = {
-                        onNavigateToUserDetail(it.id)
-                    }
-                )
-            }
+            LoadingOverlay(
+                isLoading = isLoading
+            )
         }
     }
     if (showFilterBottomSheet) {
@@ -339,6 +341,11 @@ fun SearchResult(
 @Composable
 private fun SearchResultScreen() {
     QuickMemTheme {
-//        SearchResult()
+        SearchResult(
+            isLoading = false,
+            tabIndex = 0,
+            onTabSelected = {},
+            onNavigateBack = {}
+        )
     }
 }

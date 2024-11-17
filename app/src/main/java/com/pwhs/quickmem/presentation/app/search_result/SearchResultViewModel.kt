@@ -7,12 +7,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
-import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
@@ -20,6 +20,8 @@ import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,6 +65,10 @@ class SearchResultViewModel @Inject constructor(
         MutableStateFlow(PagingData.empty())
     val classState: MutableStateFlow<PagingData<GetClassByOwnerResponseModel>> = _classState
 
+    private val _userState: MutableStateFlow<PagingData<SearchUserResponseModel>> =
+        MutableStateFlow(PagingData.empty())
+    val userState: MutableStateFlow<PagingData<SearchUserResponseModel>> = _userState
+
     init {
         val query = savedStateHandle.get<String>("query") ?: ""
         _uiState.update { it.copy(query = query) }
@@ -80,10 +86,19 @@ class SearchResultViewModel @Inject constructor(
                     username = username
                 )
             }
-            getStudySets()
-            getClasses()
-            getFolders()
-            getUsers()
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+                awaitAll(
+                    async { getStudySets() },
+                    async { getClasses() },
+                    async { getFolders() },
+                    async { getUsers() }
+                )
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to load data")
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -253,40 +268,23 @@ class SearchResultViewModel @Inject constructor(
 
     private fun getUsers() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             try {
                 authRepository.searchUser(
                     token = _uiState.value.token,
                     username = _uiState.value.query,
                     page = 1
-                ).collectLatest { resources ->
-                    when (resources) {
-                        is Resources.Success -> {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    users = resources.data ?: emptyList(),
-                                )
-                            }
-                        }
-
-                        is Resources.Error -> {
-                            _uiState.update {
-                                it.copy(isLoading = false)
-                            }
-                            _uiEvent.send(
-                                SearchResultUiEvent.Error(
-                                    resources.message ?: "An error occurred"
-                                )
-                            )
-                        }
-
-                        is Resources.Loading -> {
-                            _uiState.update {
-                                it.copy(isLoading = true)
-                            }
-                        }
+                ).distinctUntilChanged()
+                    .onStart {
+                        _userState.value = PagingData.empty()
                     }
-                }
+                    .cachedIn(viewModelScope)
+                    .onCompletion {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+                    .collectLatest { resources ->
+                        _userState.value = resources
+                    }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to get users")
             }

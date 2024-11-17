@@ -32,8 +32,8 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun SearchUserResultItem(
     modifier: Modifier = Modifier,
-    onClicked: (SearchUserResponseModel) -> Unit = {},
-    searchMemberModel: SearchUserResponseModel
+    onClicked: (SearchUserResponseModel?) -> Unit = {},
+    searchMemberModel: SearchUserResponseModel?
 ) {
     Card(
         modifier = modifier
@@ -65,7 +65,7 @@ fun SearchUserResultItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     AsyncImage(
-                        model = searchMemberModel.avatarUrl,
+                        model = searchMemberModel?.avatarUrl,
                         contentDescription = "avatar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -73,7 +73,7 @@ fun SearchUserResultItem(
                             .clip(CircleShape)
                     )
                     Text(
-                        searchMemberModel.username,
+                        searchMemberModel?.username ?: "",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)

@@ -1,13 +1,18 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.pwhs.quickmem.BuildConfig
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
 import com.pwhs.quickmem.data.mapper.user.toModel
+import com.pwhs.quickmem.data.paging.UserPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.data.remote.EmailService
+import com.pwhs.quickmem.domain.datasource.UserRemoteDataResource
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
@@ -41,7 +46,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
-    private val emailService: EmailService
+    private val emailService: EmailService,
+    private val userRemoteDataResource: UserRemoteDataResource
 ) : AuthRepository {
     override suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>> {
         return flow {
@@ -304,17 +310,19 @@ class AuthRepositoryImpl @Inject constructor(
         token: String,
         username: String,
         page: Int?
-    ): Flow<Resources<List<SearchUserResponseModel>>> {
-        return flow {
-            emit(Resources.Loading())
-            try {
-                val response = apiService.searchUser(token, username, page)
-                emit(Resources.Success(response.map { it.toModel() }))
-            } catch (e: Exception) {
-                Timber.e(e)
-                emit(Resources.Error(e.toString()))
+    ): Flow<PagingData<SearchUserResponseModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                UserPagingSource(
+                    userRemoteDataResource,
+                    token,
+                    username
+                )
             }
-        }
+        ).flow
     }
-
 }
