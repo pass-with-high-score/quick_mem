@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.folder.AddFolderToClassRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderRequestModel
@@ -47,5 +48,5 @@ interface FolderRepository {
         token: String,
         title: String,
         page: Int?,
-    ): Flow<Resources<List<GetFolderResponseModel>>>
+    ): Flow<PagingData<GetFolderResponseModel>>
 }

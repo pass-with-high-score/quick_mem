@@ -9,6 +9,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -49,6 +50,10 @@ class SearchResultViewModel @Inject constructor(
     private val _studySetState: MutableStateFlow<PagingData<GetStudySetResponseModel>> =
         MutableStateFlow(PagingData.empty())
     val studySetState: MutableStateFlow<PagingData<GetStudySetResponseModel>> = _studySetState
+
+    private val _folderState: MutableStateFlow<PagingData<GetFolderResponseModel>> =
+        MutableStateFlow(PagingData.empty())
+    val folderState: MutableStateFlow<PagingData<GetFolderResponseModel>> = _folderState
 
     private val _uiEvent = Channel<SearchResultUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
@@ -189,6 +194,32 @@ class SearchResultViewModel @Inject constructor(
         }
     }
 
+    private fun getFolders() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                folderRepository.getSearchResultFolders(
+                    token = _uiState.value.token,
+                    title = _uiState.value.query,
+                    page = 1
+                ).distinctUntilChanged()
+                    .onStart {
+                        _folderState.value = PagingData.empty()
+                    }
+                    .cachedIn(viewModelScope)
+                    .onCompletion {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+                    .collect{ pagingData ->
+                        _folderState.value = pagingData
+                    }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEvent.send(SearchResultUiEvent.Error(e.message ?: "An error occurred"))
+            }
+        }
+    }
+
     private fun getClasses() {
         viewModelScope.launch {
             try {
@@ -227,48 +258,6 @@ class SearchResultViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to get classes")
-            }
-        }
-    }
-
-    private fun getFolders() {
-        viewModelScope.launch {
-            try {
-                folderRepository.getSearchResultFolders(
-                    token = _uiState.value.token,
-                    title = _uiState.value.query,
-                    page = 1
-                ).collectLatest { resources ->
-                    when (resources) {
-                        is Resources.Success -> {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    folders = resources.data ?: emptyList(),
-                                )
-                            }
-                        }
-
-                        is Resources.Error -> {
-                            _uiState.update {
-                                it.copy(isLoading = false)
-                            }
-                            _uiEvent.send(
-                                SearchResultUiEvent.Error(
-                                    resources.message ?: "An error occurred"
-                                )
-                            )
-                        }
-
-                        is Resources.Loading -> {
-                            _uiState.update {
-                                it.copy(isLoading = true)
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to get folders")
             }
         }
     }

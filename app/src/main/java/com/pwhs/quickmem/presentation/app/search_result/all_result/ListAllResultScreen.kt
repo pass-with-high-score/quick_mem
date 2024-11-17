@@ -25,6 +25,7 @@ import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
 import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
 import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
@@ -38,8 +39,8 @@ fun ListAllResultScreen(
     isLoading: Boolean = false,
     studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
-    folders: List<GetFolderResponseModel> = emptyList(),
-    onFolderClick: (GetFolderResponseModel) -> Unit = {},
+    folders: LazyPagingItems<GetFolderResponseModel>? = null,
+    onFolderClick: (GetFolderResponseModel?) -> Unit = {},
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
     onClassClicked: (GetClassByOwnerResponseModel) -> Unit = {},
     users: List<SearchUserResponseModel> = emptyList(),
@@ -63,7 +64,7 @@ fun ListAllResultScreen(
                 onSearchResultRefresh()
             }
         ) {
-            when (studySets?.itemCount == 0 && folders.isEmpty() && classes.isEmpty() && users.isEmpty()) {
+            when (studySets?.itemCount == 0 && folders?.itemCount == 0 && classes.isEmpty() && users.isEmpty()) {
                 true -> {
                     Column(
                         modifier = Modifier
@@ -108,19 +109,20 @@ fun ListAllResultScreen(
                             }
                         }
 
-                        if (folders.isNotEmpty()) {
+                        if (folders?.itemCount != 0) {
                             item {
                                 SectionHeader(
                                     title = "Folders",
                                     onSeeAllClick = onSeeAllClickFolder
                                 )
                             }
-                            items(folders.take(4)) { folder ->
+                            items(folders?.itemCount?.coerceAtMost(4) ?: 0) {
+                                val folder = folders?.get(it)
                                 FolderItem(
-                                    title = folder.title,
-                                    numOfStudySets = folder.studySetCount,
+                                    title = folder?.title ?: "",
+                                    numOfStudySets = folder?.studySetCount ?: 0,
                                     onClick = { onFolderClick(folder) },
-                                    userResponseModel = folder.owner
+                                    userResponseModel = folder?.owner ?: UserResponseModel()
                                 )
                             }
                         }

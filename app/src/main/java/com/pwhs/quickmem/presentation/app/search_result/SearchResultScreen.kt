@@ -64,10 +64,14 @@ fun SearchResultScreen(
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val studySetItems: LazyPagingItems<GetStudySetResponseModel> =
-        viewModel.studySetState.collectAsLazyPagingItems()
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
+
+    val studySetItems: LazyPagingItems<GetStudySetResponseModel> =
+        viewModel.studySetState.collectAsLazyPagingItems()
+
+    val folderItems: LazyPagingItems<GetFolderResponseModel> =
+        viewModel.folderState.collectAsLazyPagingItems()
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -85,7 +89,7 @@ fun SearchResultScreen(
         onTabSelected = { tabIndex = it },
         studySets = studySetItems,
         classes = uiState.classes,
-        folders = uiState.folders,
+        folders = folderItems,
         users = uiState.users,
         colorModel = uiState.colorModel,
         onColorChange = {
@@ -139,7 +143,7 @@ fun SearchResultScreen(
         onFolderClick = {
             navigator.navigate(
                 FolderDetailScreenDestination(
-                    id = it.id,
+                    id = it?.id ?: "",
                     code = ""
                 )
             )
@@ -185,11 +189,11 @@ fun SearchResult(
     onFolderRefresh: () -> Unit = {},
     studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
-    folders: List<GetFolderResponseModel> = emptyList(),
+    folders: LazyPagingItems<GetFolderResponseModel>? = null,
     users: List<SearchUserResponseModel> = emptyList(),
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
-    onFolderClick: (GetFolderResponseModel) -> Unit = {},
+    onFolderClick: (GetFolderResponseModel?) -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onResetClick: () -> Unit = {},
