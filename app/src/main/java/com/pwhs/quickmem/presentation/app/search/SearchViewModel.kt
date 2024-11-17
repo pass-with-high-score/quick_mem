@@ -41,6 +41,7 @@ class SearchViewModel @Inject constructor(
             val query = uiState.value.query
             if (query.isNotBlank()) {
                 _uiState.update { it.copy(isLoading = true) }
+                appManager.addRecentSearch(query)
                 _uiState.update { it.copy(isLoading = false) }
                 _uiEvent.trySend(SearchUiEvent.NavigateToResult(query))
             }
