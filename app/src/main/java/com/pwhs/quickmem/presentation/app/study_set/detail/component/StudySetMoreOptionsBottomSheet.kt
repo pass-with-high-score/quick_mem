@@ -25,7 +25,7 @@ import com.pwhs.quickmem.R
 @Composable
 fun StudySetMoreOptionsBottomSheet(
     modifier: Modifier = Modifier,
-    isOwner:Boolean,
+    isOwner: Boolean,
     onAddToFolder: () -> Unit,
     onAddToClass: () -> Unit,
     onEditStudySet: () -> Unit,
@@ -34,7 +34,8 @@ fun StudySetMoreOptionsBottomSheet(
     showMoreBottomSheet: Boolean,
     sheetShowMoreState: SheetState,
     onDismissRequest: () -> Unit,
-    onResetProgress: () -> Unit
+    onResetProgress: () -> Unit,
+    onCopyStudySet: () -> Unit
 ) {
     if (showMoreBottomSheet) {
         ModalBottomSheet(
@@ -46,7 +47,7 @@ fun StudySetMoreOptionsBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (isOwner){
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onEditStudySet,
                         icon = Outlined.Edit,
@@ -63,16 +64,16 @@ fun StudySetMoreOptionsBottomSheet(
                         title = stringResource(R.string.txt_add_to_classes)
                     )
                     ItemMenuBottomSheet(
-                        onClick = { },
-                        icon = Outlined.ContentCopy,
-                        title = stringResource(R.string.txt_save_and_edit)
-                    )
-                    ItemMenuBottomSheet(
                         onClick = onResetProgress,
                         icon = Outlined.Refresh,
                         title = stringResource(R.string.txt_reset_progress)
                     )
                 }
+                ItemMenuBottomSheet(
+                    onClick = onCopyStudySet,
+                    icon = Outlined.ContentCopy,
+                    title = stringResource(R.string.txt_make_a_copy)
+                )
                 ItemMenuBottomSheet(
                     onClick = onInfoStudySet,
                     icon = Outlined.Info,
@@ -83,7 +84,7 @@ fun StudySetMoreOptionsBottomSheet(
                     icon = Outlined.Report,
                     title = stringResource(R.string.txt_report_study_set)
                 )
-                if (isOwner){
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onDeleteStudySet,
                         icon = Default.DeleteOutline,

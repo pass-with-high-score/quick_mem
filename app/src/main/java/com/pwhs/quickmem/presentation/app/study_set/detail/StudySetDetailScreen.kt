@@ -305,7 +305,7 @@ fun StudySetDetailScreen(
 fun StudySetDetail(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    isOwner:Boolean,
+    isOwner: Boolean,
     onNavigateBack: () -> Unit = {},
     onAddFlashcard: () -> Unit = {},
     title: String = "",
@@ -452,7 +452,8 @@ fun StudySetDetail(
             showResetProgressDialog = true
             showMoreBottomSheet = false
         },
-        isOwner = isOwner
+        isOwner = isOwner,
+        onCopyStudySet = {},
     )
     if (showDeleteConfirmationDialog) {
         QuickMemAlertDialog(

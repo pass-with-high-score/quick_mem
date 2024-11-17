@@ -213,7 +213,7 @@
     <string name="txt_more">Thêm</string>
     <string name="txt_edit_study_set">Chỉnh sửa bộ học</string>
     <string name="txt_add_to_folder">Thêm vào thư mục</string>
-    <string name="txt_save_and_edit">Lưu và chỉnh sửa</string>
+    <string name="txt_make_a_copy">Tạo một bản sao mới</string>
     <string name="txt_report_study_set">Báo cáo bộ học</string>
     <string name="txt_failed_to_verify_email">Không thể xác minh email</string>
     <string name="txt_forgot_password_image">Hình ảnh quên mật khẩu</string>
