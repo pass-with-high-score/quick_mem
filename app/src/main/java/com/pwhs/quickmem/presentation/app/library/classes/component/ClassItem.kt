@@ -39,7 +39,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun ClassItem(
     modifier: Modifier = Modifier,
-    classItem: GetClassByOwnerResponseModel,
+    classItem: GetClassByOwnerResponseModel?,
     onClick: () -> Unit = {}
 ) {
     Card(
@@ -70,7 +70,7 @@ fun ClassItem(
                     contentDescription = stringResource(R.string.txt_class_icon)
                 )
                 Text(
-                    text = classItem.title,
+                    text = "${classItem?.title}",
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -81,10 +81,10 @@ fun ClassItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = when (classItem.memberCount) {
+                    text = when (classItem?.memberCount) {
                         0 -> stringResource(R.string.txt_no_members)
                         1 -> stringResource(R.string.txt_one_member)
-                        else -> stringResource(R.string.txt_nums_members, classItem.memberCount)
+                        else -> stringResource(R.string.txt_nums_members, classItem?.memberCount ?: 0)
                     },
                     style = typography.bodyMedium
                 )
@@ -100,7 +100,7 @@ fun ClassItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     AsyncImage(
-                        model = classItem.owner.avatarUrl,
+                        model = classItem?.owner?.avatarUrl,
                         contentDescription = stringResource(R.string.txt_user_avatar),
                         modifier = Modifier
                             .size(24.dp)
@@ -108,7 +108,7 @@ fun ClassItem(
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = classItem.owner.username,
+                        text = classItem?.owner?.username ?: "",
                         style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )

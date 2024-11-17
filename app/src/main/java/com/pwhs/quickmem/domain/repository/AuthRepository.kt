@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
@@ -94,5 +95,5 @@ interface AuthRepository {
         token: String,
         username: String,
         page: Int?
-    ): Flow<Resources<List<SearchUserResponseModel>>>
+    ): Flow<PagingData<SearchUserResponseModel>>
 }

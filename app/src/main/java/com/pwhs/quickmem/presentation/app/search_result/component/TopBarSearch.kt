@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,12 +12,14 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
@@ -33,7 +34,7 @@ fun TopBarSearchResult(
     onClickFilter: () -> Unit = {},
     showFilterIcon: Boolean = false
 ) {
-    CenterAlignedTopAppBar(
+    TopAppBar(
         modifier = modifier,
         colors = topAppBarColors(
             containerColor = Color.Transparent,
@@ -45,7 +46,9 @@ fun TopBarSearchResult(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.onSurface,
                     fontSize = 20.sp
-                )
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         actions = {
@@ -91,9 +94,9 @@ fun CreateTopAppBarPreview() {
                 )
             }
         ) {
-            Column (
+            Column(
                 modifier = Modifier.padding(it)
-            ){  }
+            ) { }
         }
     }
 }
