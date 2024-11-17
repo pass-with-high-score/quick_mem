@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -46,7 +47,9 @@ fun AuthTextField(
     type: TextFieldType = TextFieldType.TEXT,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    error: String? = null
+    error: String? = null,
+    imeAction: ImeAction = ImeAction.Next,
+    onDone: () -> Unit = {}
 ) {
     var showPassword by rememberSaveable { mutableStateOf(false) }
     Column {
@@ -67,11 +70,16 @@ fun AuthTextField(
             enabled = enabled,
             maxLines = 1,
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next,
+                imeAction = imeAction,
                 keyboardType = when (type) {
                     TextFieldType.EMAIL -> KeyboardType.Email
                     TextFieldType.PASSWORD -> KeyboardType.Password
                     else -> KeyboardType.Text
+                }
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onDone()
                 }
             ),
             leadingIcon = {

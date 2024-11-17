@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.LoginWithEmailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SetNewPasswordScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -75,9 +77,11 @@ fun SetNewPasswordScreen(
                     ).show()
                     navigator.popBackStack()
                     navigator.navigate(LoginWithEmailScreenDestination) {
-                        popUpTo(SetNewPasswordScreenDestination) {
-                            inclusive = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
             }
@@ -172,11 +176,13 @@ private fun SetNewPassword(
                     iconId = R.drawable.ic_lock,
                     contentDescription = stringResource(R.string.txt_confirm_password),
                     type = TextFieldType.PASSWORD,
-                    error = confirmPasswordError
+                    error = confirmPasswordError,
+                    imeAction = ImeAction.Done,
+                    onDone = onSubmitClick
                 )
 
                 AuthButton(
-                    text = "Done",
+                    text = stringResource(R.string.txt_done),
                     onClick = onSubmitClick,
                     modifier = Modifier.padding(top = 16.dp),
                     colors = colorScheme.primary,

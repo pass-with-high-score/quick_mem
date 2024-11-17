@@ -61,10 +61,10 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toFormattedString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.OpenSourceScreenDestination
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.ChangeLanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.OpenSourceScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateUsernameSettingScreenDestination
@@ -145,15 +145,16 @@ fun SettingsScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
-
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is SettingUiEvent.NavigateToLogin -> {
                     navigator.navigate(WelcomeScreenDestination) {
-                        popUpTo(ProfileScreenDestination) {
-                            inclusive = true
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
                         }
+                        launchSingleTop = true
+                        restoreState = false
                     }
                 }
 
