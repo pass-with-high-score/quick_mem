@@ -25,6 +25,7 @@ fun GetClassDetailResponseDto.toModel() = GetClassDetailResponseModel(
     members = members?.map { it.toModel() } ?: emptyList(),
     studySetCount = studySetCount,
     studySets = studySets?.map { it.toModel() } ?: emptyList(),
+    isJoined = isJoined
 )
 
 
@@ -44,4 +45,5 @@ fun GetClassDetailResponseModel.toDto() = GetClassDetailResponseDto(
     members = members?.map { it.toDto() } ?: emptyList(),
     studySetCount = studySetCount,
     studySets = studySets?.map { it.toDto() } ?: emptyList(),
+    isJoined = isJoined
 )

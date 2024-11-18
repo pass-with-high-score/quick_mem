@@ -13,6 +13,7 @@ import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
@@ -139,5 +140,42 @@ class ClassRepositoryImpl @Inject constructor(
         ).flow
     }
 
+    override suspend fun getClassByCode(
+        token: String,
+        userId: String,
+        classCode: String
+    ): Flow<Resources<GetClassDetailResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                Timber.d("getClassByCode: token:  $token, userId:  $userId, classCode: $classCode")
+                val response = apiService.getClassByJoinToken(
+                    token = token,
+                    userId = userId,
+                    joinToken = classCode
+                )
+                Timber.d("getClassByCode: $response")
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 
+    override suspend fun joinClass(
+        token: String,
+        joinClassRequestModel: JoinClassRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.joinClass(token, joinClassRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

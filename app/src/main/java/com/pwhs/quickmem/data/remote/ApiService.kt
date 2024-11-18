@@ -28,6 +28,7 @@ import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
+import com.pwhs.quickmem.data.dto.classes.JoinClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
@@ -135,7 +136,7 @@ interface ApiService {
         @Path("id") userId: String,
         @Query("isOwner") isOwner: Boolean
     ): UserDetailResponseDto
-  
+
     //Update Avatar
     @PATCH("auth/user/avatar/{id}")
     suspend fun updateAvatar(
@@ -229,7 +230,7 @@ interface ApiService {
         @Query("subjectId") subjectId: Int?
     ): List<GetStudySetResponseDto>
 
-    // Flash Card
+    // Flashcard
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
         @Header("Authorization") token: String,
@@ -376,6 +377,19 @@ interface ApiService {
         @Query("title") title: String,
         @Query("page") page: Int?,
     ): List<GetClassByOwnerResponseDto>
+
+    @GET("class/token/{joinToken}")
+    suspend fun getClassByJoinToken(
+        @Header("Authorization") token: String,
+        @Path("joinToken") joinToken: String,
+        @Query("userId") userId: String
+    ): GetClassDetailResponseDto
+
+    @POST("class/join")
+    suspend fun joinClass(
+        @Header("Authorization") token: String,
+        @Body joinClassRequestDto: JoinClassRequestDto
+    )
 
     // Streak
     @GET("streak/{userId}")

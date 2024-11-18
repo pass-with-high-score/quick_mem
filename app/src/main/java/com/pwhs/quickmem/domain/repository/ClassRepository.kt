@@ -6,6 +6,7 @@ import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import kotlinx.coroutines.flow.Flow
@@ -44,4 +45,15 @@ interface ClassRepository {
         title: String,
         page: Int?,
     ): Flow<PagingData<GetClassByOwnerResponseModel>>
+
+    suspend fun getClassByCode(
+        token: String,
+        userId: String,
+        classCode: String
+    ): Flow<Resources<GetClassDetailResponseModel>>
+
+    suspend fun joinClass(
+        token: String,
+        joinClassRequestModel: JoinClassRequestModel
+    ): Flow<Resources<Unit>>
 }
