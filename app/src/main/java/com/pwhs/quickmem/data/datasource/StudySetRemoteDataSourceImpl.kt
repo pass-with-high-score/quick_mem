@@ -18,7 +18,8 @@ class StudySetRemoteDataSourceImpl(
         creatorType: SearchResultCreatorEnum?,
         page: Int,
         colorId: Int?,
-        subjectId: Int?
+        subjectId: Int?,
+        isAIGenerated: Boolean?
     ): List<GetStudySetResponseModel> {
         try {
             val response =
@@ -29,7 +30,8 @@ class StudySetRemoteDataSourceImpl(
                     creatorType?.query,
                     page,
                     colorId,
-                    subjectId
+                    subjectId,
+                    isAIGenerated
                 )
             return response.map { it.toModel() }
         } catch (e: Exception) {

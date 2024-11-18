@@ -15,6 +15,8 @@ data class GetStudySetResponseDto(
     val description: String?,
     @SerializedName("isPublic")
     val isPublic: Boolean,
+    @SerializedName("isAIGenerated")
+    val isAIGenerated: Boolean?,
     @SerializedName("flashcardCount")
     val flashcardCount: Int,
     @SerializedName("flashcards")

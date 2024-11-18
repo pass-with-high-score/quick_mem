@@ -14,6 +14,7 @@ data class SearchResultUiState(
     val username: String = "",
     val token: String = "",
     val userId: String = "",
+    val isAIGenerated: Boolean = false,
     val userResponseModel: UserResponseModel = UserResponseModel(),
     val subjectModel: SubjectModel = SubjectModel.defaultSubjects.first(),
     val colorModel: ColorModel = ColorModel.defaultColors.first(),

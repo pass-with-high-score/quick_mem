@@ -78,5 +78,6 @@ interface StudySetRepository {
         page: Int,
         colorId: Int?,
         subjectId: Int?,
+        isAIGenerated: Boolean?
     ): Flow<PagingData<GetStudySetResponseModel>>
 }

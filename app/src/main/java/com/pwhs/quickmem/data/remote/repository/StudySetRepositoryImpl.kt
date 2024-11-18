@@ -203,7 +203,8 @@ class StudySetRepositoryImpl @Inject constructor(
         creatorType: SearchResultCreatorEnum?,
         page: Int,
         colorId: Int?,
-        subjectId: Int?
+        subjectId: Int?,
+        isAIGenerated: Boolean?
     ): Flow<PagingData<GetStudySetResponseModel>> {
         return Pager(
             config = PagingConfig(
@@ -218,7 +219,8 @@ class StudySetRepositoryImpl @Inject constructor(
                     size,
                     creatorType,
                     colorId,
-                    subjectId
+                    subjectId,
+                    isAIGenerated
                 )
             }
         ).flow

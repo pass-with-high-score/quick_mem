@@ -15,6 +15,7 @@ sealed class SearchResultUiAction() {
     data class ColorChanged(val colorModel: ColorModel) : SearchResultUiAction()
     data class SizeChanged(val sizeModel: SearchResultSizeEnum) : SearchResultUiAction()
     data class CreatorTypeChanged(val creatorType: SearchResultCreatorEnum) : SearchResultUiAction()
+    data class IsAiGeneratedChanged(val isAiGenerated: Boolean) : SearchResultUiAction()
     data object ApplyFilter : SearchResultUiAction()
     data object ResetFilter : SearchResultUiAction()
 }

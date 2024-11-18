@@ -168,7 +168,8 @@ private fun AddStudySetToClassListPreview() {
                         linkShareCode = "123",
                         flashcards = emptyList(),
                         createdAt = "2021-01-01",
-                        updatedAt = "2021-01-01"
+                        updatedAt = "2021-01-01",
+                        isAIGenerated = false
                     )
                 )
             )

@@ -16,7 +16,8 @@ class StudySetPagingSource(
     private val size: SearchResultSizeEnum,
     private val creatorType: SearchResultCreatorEnum?,
     private val colorId: Int?,
-    private val subjectId: Int?
+    private val subjectId: Int?,
+    private val isAIGenerated: Boolean?
 ) : PagingSource<Int, GetStudySetResponseModel>() {
     override fun getRefreshKey(state: PagingState<Int, GetStudySetResponseModel>): Int? {
         return state.anchorPosition
@@ -32,7 +33,8 @@ class StudySetPagingSource(
                 creatorType = creatorType,
                 page = currentPage,
                 colorId = colorId,
-                subjectId = subjectId
+                subjectId = subjectId,
+                isAIGenerated = isAIGenerated
             )
             LoadResult.Page(
                 data = response,
