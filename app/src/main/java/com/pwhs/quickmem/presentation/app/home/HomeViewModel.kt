@@ -123,14 +123,22 @@ class HomeViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         val streaks = resource.data?.streaks ?: emptyList()
-                        val streakDates = calculateStreakDates(streaks)
+                        val today = LocalDate.now().minusDays(1) // trừ đi 1 ngày vì lịch UTC
+
+                        val currentStreak = streaks.find {
+                            OffsetDateTime.parse(it.date).toLocalDate() == today
+                        }
+
+                        val streakDates = currentStreak?.let {
+                            calculateStreakDates(it)
+                        } ?: emptyList()
 
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             streaks = streaks,
                             streakDates = streakDates
                         )
-                        Timber.d("Date: ${resource.data?.streaks?.firstOrNull()?.date}")
+                        Timber.d("Date: $streakDates")
                     }
 
                     is Resources.Error -> {
@@ -141,12 +149,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun calculateStreakDates(streaks: List<StreakModel>): List<LocalDate> {
-        if (streaks.isEmpty()) return emptyList()
+    private fun calculateStreakDates(streak: StreakModel): List<LocalDate> {
+        val firstStreakDate = OffsetDateTime.parse(streak.date).toLocalDate()
 
-        val firstStreakDate = OffsetDateTime.parse(streaks.first().date).toLocalDate()
-
-        return (0 until streaks.first().streakCount).map {
+        return (0 until streak.streakCount).map {
             firstStreakDate.minusDays(it.toLong())
         }
     }
