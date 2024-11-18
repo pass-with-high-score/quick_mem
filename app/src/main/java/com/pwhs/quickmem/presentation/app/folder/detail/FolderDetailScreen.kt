@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.folder.detail
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailTopAppBar
@@ -131,6 +133,7 @@ fun FolderDetailScreen(
         createdAt = uiState.createdAt,
         updatedAt = uiState.updatedAt,
         isLoading = uiState.isLoading,
+        linkShareCode = uiState.linkShareCode,
         onFolderRefresh = { viewModel.onEvent(FolderDetailUiAction.Refresh) },
         userAvatar = uiState.user.avatarUrl,
         studySets = uiState.studySets,
@@ -172,6 +175,7 @@ fun FolderDetail(
     modifier: Modifier = Modifier,
     title: String = "",
     isOwner: Boolean,
+    linkShareCode: String = "",
     createdAt: String = "",
     updatedAt: String = "",
     isLoading: Boolean = false,
@@ -186,7 +190,7 @@ fun FolderDetail(
     onAddStudySet: () -> Unit = {},
     onNavigateToUserDetail: () -> Unit = {}
 ) {
-
+    val context = LocalContext.current
     val formattedCreatedAt = formatDate(createdAt)
     val formattedUpdatedAt = formatDate(updatedAt)
     val dateLabel = if (createdAt != updatedAt) {
@@ -275,7 +279,16 @@ fun FolderDetail(
             showDeleteConfirmationDialog = true
             showMoreBottomSheet = false
         },
-        onShareFolder = {},
+        onShareFolder = {
+            val link = AppConstant.BASE_URL + "folder/share/" + linkShareCode
+            val text = context.getString(R.string.txt_check_out_this_folder, title, link)
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                putExtra(Intent.EXTRA_TEXT, text)
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            context.startActivity(shareIntent)
+        },
         onReportFolder = {},
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,

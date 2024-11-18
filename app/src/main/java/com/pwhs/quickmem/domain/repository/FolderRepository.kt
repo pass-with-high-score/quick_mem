@@ -49,4 +49,9 @@ interface FolderRepository {
         title: String,
         page: Int?,
     ): Flow<PagingData<GetFolderResponseModel>>
+
+    suspend fun getFolderByLinkCode(
+        token: String,
+        code: String
+    ): Flow<Resources<CreateFolderResponseModel>>
 }

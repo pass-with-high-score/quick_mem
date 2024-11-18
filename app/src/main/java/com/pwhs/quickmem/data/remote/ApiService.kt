@@ -231,6 +231,12 @@ interface ApiService {
         @Query("isAIGenerated") isAIGenerated: Boolean?
     ): List<GetStudySetResponseDto>
 
+    @GET("study-set/link/{code}")
+    suspend fun getStudySetByLinkCode(
+        @Header("Authorization") token: String,
+        @Path("code") code: String
+    ): GetStudySetResponseDto
+
     // Flashcard
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
@@ -325,6 +331,12 @@ interface ApiService {
         @Query("title") title: String,
         @Query("page") page: Int?,
     ): List<GetFolderResponseDto>
+
+    @GET("folder/link/{code}")
+    suspend fun getFolderByLinkCode(
+        @Header("Authorization") token: String,
+        @Path("code") code: String
+    ): CreateFolderResponseDto
 
     // Class
     @POST("class")

@@ -80,4 +80,9 @@ interface StudySetRepository {
         subjectId: Int?,
         isAIGenerated: Boolean?
     ): Flow<PagingData<GetStudySetResponseModel>>
+
+    suspend fun getStudySetByCode(
+        token: String,
+        code: String
+    ): Flow<Resources<GetStudySetResponseModel>>
 }

@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.presentation.app.paywall
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.PurchasesError
@@ -13,7 +12,6 @@ import timber.log.Timber
 
 @Composable
 fun Paywall(
-    modifier: Modifier = Modifier,
     isPaywallVisible: Boolean,
     onCustomerInfoChanged: (CustomerInfo) -> Unit,
     onPaywallDismissed: () -> Unit

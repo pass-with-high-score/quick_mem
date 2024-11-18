@@ -106,6 +106,7 @@ fun HomeScreen(
         modifier = modifier,
         streakCount = uiState.streakCount,
         streakDates = uiState.streakDates,
+        notificationCount = uiState.notificationCount,
         onNavigateToSearch = {
             navigator.navigate(SearchScreenDestination)
         },
@@ -126,11 +127,12 @@ fun HomeScreen(
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun Home(
+private fun Home(
     modifier: Modifier = Modifier,
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),
     currentDate: LocalDate = LocalDate.now(),
+    notificationCount: Int = 0,
     onNavigateToSearch: () -> Unit = {},
     onNotificationEnabled: (Boolean) -> Unit = {},
     customer: CustomerInfo? = null,
@@ -258,24 +260,26 @@ fun Home(
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier.size(30.dp)
                             )
-                            Badge(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .size(16.dp),
-                            ) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "1",
-                                        style = typography.bodySmall.copy(
-                                            fontSize = 10.sp,
-                                            fontWeight = FontWeight.Bold,
-                                        )
-                                    )
-                                }
-                            }
+                           if (notificationCount > 0) {
+                               Badge(
+                                   modifier = Modifier
+                                       .align(Alignment.TopEnd)
+                                       .size(16.dp),
+                               ) {
+                                   Box(
+                                       modifier = Modifier.fillMaxSize(),
+                                       contentAlignment = Alignment.Center
+                                   ) {
+                                       Text(
+                                           text = "$notificationCount",
+                                           style = typography.bodySmall.copy(
+                                               fontSize = 10.sp,
+                                               fontWeight = FontWeight.Bold,
+                                           )
+                                       )
+                                   }
+                               }
+                           }
                         }
                     }
                 }
@@ -329,7 +333,6 @@ fun Home(
         onCustomerInfoChanged = { customerInfo ->
             onCustomerInfoChanged(customerInfo)
         },
-        modifier = Modifier,
         onPaywallDismissed = {
             isPaywallVisible = false
         },

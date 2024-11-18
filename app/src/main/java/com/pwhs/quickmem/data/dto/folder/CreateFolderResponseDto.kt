@@ -11,6 +11,8 @@ data class CreateFolderResponseDto(
     val description: String,
     @SerializedName("isPublic")
     val isPublic: Boolean,
+    @SerializedName("linkShareCode")
+    val linkShareCode: String? = null,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

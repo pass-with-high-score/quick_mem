@@ -6,5 +6,6 @@ data class CreateFolderResponseModel(
     val description: String,
     val isPublic: Boolean,
     val updatedAt: String,
-    val createdAt: String
+    val createdAt: String,
+    val linkShareCode: String? = null,
 )

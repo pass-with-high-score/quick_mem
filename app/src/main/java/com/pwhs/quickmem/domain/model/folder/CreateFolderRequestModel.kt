@@ -4,5 +4,5 @@ data class CreateFolderRequestModel(
     val description: String,
     val isPublic: Boolean,
     val title: String,
-    val ownerId: String
+    val ownerId: String,
 )

@@ -186,10 +186,12 @@ class HomeViewModel @Inject constructor(
                         // do nothing
                     }
 
-                    is Resources.Success -> _uiState.update {
-                        it.copy(
+                    is Resources.Success -> _uiState.update { state ->
+                        val notificationCount = result.data?.count { !it.isRead } ?: 0
+                        state.copy(
                             isLoading = false,
                             notifications = result.data ?: emptyList(),
+                            notificationCount = notificationCount,
                             error = null
                         )
                     }
@@ -215,6 +217,7 @@ class HomeViewModel @Inject constructor(
                             notifications = state.notifications.map { notification ->
                                 if (notification.id == notificationId) notification.copy(isRead = true) else notification
                             },
+                            notificationCount = state.notificationCount - 1,
                         )
                     }
 
