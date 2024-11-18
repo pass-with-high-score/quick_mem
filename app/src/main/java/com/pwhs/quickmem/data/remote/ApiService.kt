@@ -49,11 +49,13 @@ import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
+import com.pwhs.quickmem.data.dto.study_set.AddMakeACopyRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFoldersRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
+import com.pwhs.quickmem.data.dto.study_set.GetMakeACopyResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
@@ -415,4 +417,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") notificationId: String
     )
+
+    //Make a copy
+    @POST("/study-set/duplicate")
+    suspend fun duplicateStudySet(
+        @Header("Authorization") token: String,
+        @Body request: AddMakeACopyRequestDto
+    ): GetMakeACopyResponseDto
+
 }

@@ -182,6 +182,12 @@ fun StudySetDetailScreen(
                 StudySetDetailUiEvent.StudySetProgressReset -> {
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
+
+                is StudySetDetailUiEvent.StudySetCopied -> {
+                    resultNavigator.setResult(true)
+                    navigator.navigateUp()
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
             }
         }
     }
@@ -296,7 +302,9 @@ fun StudySetDetailScreen(
                 )
             )
         },
-        isOwner = uiState.isOwner
+        isOwner = uiState.isOwner,
+        onCopyStudySet = {
+            viewModel.onEvent(StudySetDetailUiAction.OnMakeCopyClicked) }
     )
 }
 
@@ -329,7 +337,8 @@ fun StudySetDetail(
     onNavigateToWrite: () -> Unit = {},
     onNavigateToFlip: () -> Unit = {},
     onRefresh: () -> Unit = {},
-    onNavigateToUserDetail: () -> Unit = {}
+    onNavigateToUserDetail: () -> Unit = {},
+    onCopyStudySet: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -453,7 +462,7 @@ fun StudySetDetail(
             showMoreBottomSheet = false
         },
         isOwner = isOwner,
-        onCopyStudySet = {},
+        onCopyStudySet = onCopyStudySet
     )
     if (showDeleteConfirmationDialog) {
         QuickMemAlertDialog(

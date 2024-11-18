@@ -7,6 +7,7 @@ import com.pwhs.quickmem.core.data.ResetType
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.study_set.GetMakeACopyResponseModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.util.toColor
@@ -73,6 +74,12 @@ class StudySetDetailViewModel @Inject constructor(
 
             is StudySetDetailUiAction.OnResetProgressClicked -> {
                 resetProgress(event.id)
+            }
+
+            StudySetDetailUiAction.OnMakeCopyClicked -> {
+                makeCopyStudySet { newStudySet ->
+                    _uiEvent.trySend(StudySetDetailUiEvent.StudySetCopied(newStudySet))
+                }
             }
         }
     }
@@ -212,6 +219,37 @@ class StudySetDetailViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun makeCopyStudySet(onSuccess: (GetMakeACopyResponseModel) -> Unit) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            if (token.isEmpty()) {
+                return@launch
+            }
+            val userId = appManager.userId.firstOrNull() ?: ""
+            if (userId.isEmpty()) {
+                return@launch
+            }
+
+            studySetRepository.makeCopyStudySet(token, _uiState.value.id, userId).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.update { it.copy(isCopying = true) }
+                    }
+                    is Resources.Success -> {
+                        _uiState.update { it.copy(isCopying = false) }
+                        val newStudySet = resource.data
+                        _uiEvent.send(StudySetDetailUiEvent.StudySetCopied(newStudySet!!))
+                        onSuccess(newStudySet)
+                    }
+                    is Resources.Error -> {
+                        _uiState.update { it.copy(isCopying = false) }
+                        Timber.d("Error: ${resource.message}")
+                    }
+                }
+            }
         }
     }
 }

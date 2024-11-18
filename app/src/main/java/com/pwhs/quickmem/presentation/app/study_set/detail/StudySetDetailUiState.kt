@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 import androidx.compose.ui.graphics.Color
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
+import com.pwhs.quickmem.domain.model.study_set.GetMakeACopyResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 
@@ -24,4 +25,6 @@ data class StudySetDetailUiState(
     val isLoading: Boolean = false,
     val shouldLoad: Boolean = false,
     val isOwner: Boolean = false,
+    val isCopying: Boolean = false,
+    val newStudySet: GetMakeACopyResponseModel? = null
 )

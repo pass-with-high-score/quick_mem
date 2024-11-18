@@ -8,6 +8,7 @@ import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.GetMakeACopyResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
@@ -79,4 +80,10 @@ interface StudySetRepository {
         colorId: Int?,
         subjectId: Int?,
     ): Flow<PagingData<GetStudySetResponseModel>>
+
+    suspend fun makeCopyStudySet(
+        token: String,
+        studySetId: String,
+        newOwnerId: String
+    ): Flow<Resources<GetMakeACopyResponseModel>>
 }
