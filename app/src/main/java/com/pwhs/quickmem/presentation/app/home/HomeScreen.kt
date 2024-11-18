@@ -342,18 +342,9 @@ private fun Home(
             Column(
                 modifier = Modifier
                     .fillMaxHeight(0.65f)
-                    .padding(bottom = 16.dp)
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Streak",
-                    style = typography.titleLarge.copy(
-                        color = colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
                 LottieAnimation(
                     composition = composition,
                     progress = { progress },
@@ -364,13 +355,21 @@ private fun Home(
                 Text(
                     text = streakCount.toString(),
                     style = typography.titleLarge.copy(
-                        color = colorScheme.primary,
+                        color = Color(0xFFf2ac40),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 48.sp
+                        fontSize = 52.sp
                     )
                 )
                 Text(
-                    text = "Study next week to keep your streak going!",
+                    text = "day streak",
+                    style = typography.titleLarge.copy(
+                        color = Color(0xFFf2ac40),
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = "Practice every day so you don't lose your streak!",
                     modifier.padding(top = 16.dp)
                 )
                 StreakCalendar(
