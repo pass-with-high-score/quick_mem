@@ -185,7 +185,8 @@ private fun AddStudySetToFolderItemPreview() {
                                 isPublic = true,
                                 createdAt = "2021-01-01T00:00:00Z",
                                 updatedAt = "2021-01-01T00:00:00Z",
-                                flashcards = emptyList()
+                                flashcards = emptyList(),
+                                isAIGenerated = false
                             )
                         )
                     }

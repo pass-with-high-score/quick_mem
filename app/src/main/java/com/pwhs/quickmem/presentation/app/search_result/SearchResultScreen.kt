@@ -115,6 +115,10 @@ fun SearchResultScreen(
         onCreatorChange = {
             viewModel.onEvent(SearchResultUiAction.CreatorTypeChanged(it))
         },
+        isAiGenerated = uiState.isAIGenerated,
+        onIsAiGeneratedChange = {
+            viewModel.onEvent(SearchResultUiAction.IsAiGeneratedChanged(it))
+        },
         onApplyClick = {
             viewModel.onEvent(SearchResultUiAction.ApplyFilter)
         },
@@ -189,6 +193,8 @@ fun SearchResult(
     onSizeChange: (SearchResultSizeEnum) -> Unit = {},
     creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.ALL,
     onCreatorChange: (SearchResultCreatorEnum) -> Unit = {},
+    isAiGenerated: Boolean = false,
+    onIsAiGeneratedChange: (Boolean) -> Unit = {},
     onApplyClick: () -> Unit = {},
     onStudySetRefresh: () -> Unit = {},
     onClassRefresh: () -> Unit = {},
@@ -327,6 +333,8 @@ fun SearchResult(
                 onSizeChange = onSizeChange,
                 creatorTypeModel = creatorTypeModel,
                 onCreatorChange = onCreatorChange,
+                onIsAiGeneratedChange = onIsAiGeneratedChange,
+                isAiGenerated = isAiGenerated,
                 onApplyClick = {
                     onApplyClick()
                     showFilterBottomSheet = false

@@ -226,7 +226,8 @@ interface ApiService {
         @Query("creatorType") creatorType: String?,
         @Query("page") page: Int,
         @Query("colorId") colorId: Int?,
-        @Query("subjectId") subjectId: Int?
+        @Query("subjectId") subjectId: Int?,
+        @Query("isAIGenerated") isAIGenerated: Boolean?
     ): List<GetStudySetResponseDto>
 
     // Flash Card

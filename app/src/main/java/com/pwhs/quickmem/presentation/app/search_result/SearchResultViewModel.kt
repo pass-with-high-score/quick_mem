@@ -182,6 +182,12 @@ class SearchResultViewModel @Inject constructor(
                 }
                 getStudySets()
             }
+
+            is SearchResultUiAction.IsAiGeneratedChanged -> {
+                _uiState.update {
+                    it.copy(isAIGenerated = event.isAiGenerated)
+                }
+            }
         }
     }
 
@@ -196,7 +202,8 @@ class SearchResultViewModel @Inject constructor(
                     creatorType = _uiState.value.creatorTypeModel,
                     page = 1,
                     colorId = _uiState.value.colorModel.id,
-                    subjectId = _uiState.value.subjectModel.id
+                    subjectId = _uiState.value.subjectModel.id,
+                    isAIGenerated = _uiState.value.isAIGenerated
                 ).distinctUntilChanged()
                     .onStart {
                         _studySetState.value = PagingData.empty()
