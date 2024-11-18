@@ -105,10 +105,6 @@ fun FilterStudySetBottomSheet(
                 Switch(
                     checked = isAiGenerated,
                     onCheckedChange = { onIsAiGeneratedChange(it) },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color(0xFF4752A6),
-                        uncheckedThumbColor = Color.Gray
-                    )
                 )
             }
         }
@@ -137,10 +133,9 @@ fun FilterStudySetBottomSheet(
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4752A6))
             ) {
                 Text(
-                    "Apply",
+                    text = "Apply",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
