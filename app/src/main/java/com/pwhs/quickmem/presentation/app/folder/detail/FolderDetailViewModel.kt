@@ -78,6 +78,7 @@ class FolderDetailViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     title = data.title,
+                                    linkShareCode = data.linkShareCode ?: "",
                                     description = data.description,
                                     isPublic = data.isPublic,
                                     studySetCount = data.studySetCount,

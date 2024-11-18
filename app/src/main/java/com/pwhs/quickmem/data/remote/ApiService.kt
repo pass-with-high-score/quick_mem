@@ -332,6 +332,12 @@ interface ApiService {
         @Query("page") page: Int?,
     ): List<GetFolderResponseDto>
 
+    @GET("folder/link/{code}")
+    suspend fun getFolderByLinkCode(
+        @Header("Authorization") token: String,
+        @Path("code") code: String
+    ): CreateFolderResponseDto
+
     // Class
     @POST("class")
     suspend fun createClass(

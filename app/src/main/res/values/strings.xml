@@ -169,6 +169,7 @@
     <string name="txt_material">Material</string>
     <string name="txt_progress">Progress</string>
     <string name="txt_check_out_this_study_set">Check out this study set: %1$s\n%2$s</string>
+    <string name="txt_check_out_this_folder">Check out this folder: %1$s\n%2$s</string>
     <string name="txt_delete_study_set">Delete Study Set</string>
     <string name="txt_are_you_sure_you_want_to_delete_this_study_set">Are you sure you want to delete this study set?</string>
     <string name="txt_delete">Delete</string>

@@ -8,6 +8,7 @@ fun CreateFolderResponseModel.toDto() = CreateFolderResponseDto(
     title = title,
     description = description,
     isPublic = isPublic,
+    linkShareCode = linkShareCode,
     createdAt = createdAt,
     updatedAt = updatedAt
 )
@@ -17,6 +18,7 @@ fun CreateFolderResponseDto.toModel() = CreateFolderResponseModel(
     title = title,
     description = description,
     isPublic = isPublic,
+    linkShareCode = linkShareCode,
     createdAt = createdAt,
     updatedAt = updatedAt
 )

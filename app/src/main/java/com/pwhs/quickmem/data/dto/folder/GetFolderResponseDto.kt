@@ -19,6 +19,8 @@ data class GetFolderResponseDto(
     val owner: UserResponseDto,
     @SerializedName("studySets")
     val studySets: List<GetStudySetResponseDto>? = null,
+    @SerializedName("linkShareCode")
+    val linkShareCode: String? = null,
     @SerializedName("isImported")
     val isImported: Boolean? = null,
     @SerializedName("createdAt")
