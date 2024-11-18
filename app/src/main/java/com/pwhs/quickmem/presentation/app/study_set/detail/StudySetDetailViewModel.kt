@@ -240,9 +240,8 @@ class StudySetDetailViewModel @Inject constructor(
                     }
                     is Resources.Success -> {
                         _uiState.update { it.copy(isCopying = false) }
-                        val newStudySet = resource.data
-                        _uiEvent.send(StudySetDetailUiEvent.StudySetCopied(newStudySet!!))
-                        onSuccess(newStudySet)
+                        onSuccess(resource.data!!)
+                        getStudySetById()
                     }
                     is Resources.Error -> {
                         _uiState.update { it.copy(isCopying = false) }
