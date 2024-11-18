@@ -40,7 +40,7 @@ fun ListAllResultScreen(
     classes: LazyPagingItems<GetClassByOwnerResponseModel>? = null,
     onClassClicked: (GetClassByOwnerResponseModel?) -> Unit = {},
     users: LazyPagingItems<SearchUserResponseModel>? = null,
-    onMembersItemClicked: (SearchUserResponseModel?) -> Unit = {},
+    onUserItemClicked: (SearchUserResponseModel?) -> Unit = {},
     onSeeAllClickStudySet: () -> Unit = {},
     onSeeAllClickFolder: () -> Unit = {},
     onSeeAllClickClass: () -> Unit = {},
@@ -139,7 +139,7 @@ fun ListAllResultScreen(
                             val user = users?.get(it)
                             SearchUserResultItem(
                                 searchMemberModel = user,
-                                onClicked = { onMembersItemClicked(user) }
+                                onClicked = { onUserItemClicked(user) }
                             )
                         }
                     }

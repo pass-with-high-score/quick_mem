@@ -38,7 +38,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun ListResultUserScreen(
     modifier: Modifier = Modifier,
     users: LazyPagingItems<SearchUserResponseModel>? = null,
-    onMembersItemClicked: (SearchUserResponseModel?) -> Unit = {},
+    onUserItemClicked: (SearchUserResponseModel?) -> Unit = {},
     onUserRefresh: () -> Unit = {}
 ) {
     Scaffold { innerPadding ->
@@ -57,7 +57,7 @@ fun ListResultUserScreen(
                     SearchUserResultItem(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         searchMemberModel = user,
-                        onClicked = onMembersItemClicked
+                        onClicked = onUserItemClicked
                     )
                 }
                 item {

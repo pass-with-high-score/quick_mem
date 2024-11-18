@@ -153,11 +153,11 @@ fun SearchResultScreen(
                 )
             )
         },
-        onNavigateToUserDetail = {
+        onUserItemClicked = {
             navigator.navigate(
                 UserDetailScreenDestination(
-                    userId = it,
-                    isOwner = uiState.userResponseModel.id == it
+                    userId = it?.id ?: "",
+                    isOwner = uiState.userResponseModel.id == (it?.id ?: "")
                 )
             )
         },
@@ -200,7 +200,7 @@ fun SearchResult(
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
     onClassClick: (GetClassByOwnerResponseModel?) -> Unit = {},
     onFolderClick: (GetFolderResponseModel?) -> Unit = {},
-    onNavigateToUserDetail: (String) -> Unit = {},
+    onUserItemClicked: (SearchUserResponseModel?) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onResetClick: () -> Unit = {},
     onSeeAllClickStudySet: () -> Unit = {},
@@ -273,6 +273,7 @@ fun SearchResult(
                         onStudySetClick = onStudySetClick,
                         onFolderClick = onFolderClick,
                         onClassClicked = onClassClick,
+                        onUserItemClicked = onUserItemClicked,
                         onSeeAllClickClass = onSeeAllClickClass,
                         onSeeAllClickFolder = onSeeAllClickFolder,
                         onSeeAllClickStudySet = onSeeAllClickStudySet,
@@ -302,9 +303,7 @@ fun SearchResult(
                     SearchResultEnum.USER.index -> ListResultUserScreen(
                         modifier = modifier,
                         users = users,
-                        onMembersItemClicked = {
-                            onNavigateToUserDetail(it?.id ?: "")
-                        }
+                        onUserItemClicked = onUserItemClicked
                     )
                 }
             }
