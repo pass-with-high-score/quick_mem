@@ -76,14 +76,6 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Package
-import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.models.StoreTransaction
-import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
-import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
-import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
-import timber.log.Timber
-import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -260,26 +252,26 @@ private fun Home(
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier.size(30.dp)
                             )
-                           if (notificationCount > 0) {
-                               Badge(
-                                   modifier = Modifier
-                                       .align(Alignment.TopEnd)
-                                       .size(16.dp),
-                               ) {
-                                   Box(
-                                       modifier = Modifier.fillMaxSize(),
-                                       contentAlignment = Alignment.Center
-                                   ) {
-                                       Text(
-                                           text = "$notificationCount",
-                                           style = typography.bodySmall.copy(
-                                               fontSize = 10.sp,
-                                               fontWeight = FontWeight.Bold,
-                                           )
-                                       )
-                                   }
-                               }
-                           }
+                            if (notificationCount > 0) {
+                                Badge(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .size(16.dp),
+                                ) {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = "$notificationCount",
+                                            style = typography.bodySmall.copy(
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -387,60 +379,15 @@ private fun Home(
         )
     }
 
-    if (isPaywallVisible) {
-        PaywallDialog(
-            paywallDialogOptions = PaywallDialogOptions.Builder()
-                .setListener(
-                    object : PaywallListener {
-
-                        override fun onPurchaseError(error: PurchasesError) {
-                            super.onPurchaseError(error)
-                            Timber.e("purchase error: ${error.message}")
-                        }
-
-                        override fun onPurchaseCancelled() {
-                            super.onPurchaseCancelled()
-                            Timber.d("Purchased Cancelled")
-                        }
-
-                        override fun onPurchaseStarted(rcPackage: Package) {
-                            super.onPurchaseStarted(rcPackage)
-                            Timber.d(
-                                "Purchased Started - package: ${rcPackage.identifier}"
-                            )
-                        }
-
-                        override fun onPurchaseCompleted(
-                            customerInfo: CustomerInfo,
-                            storeTransaction: StoreTransaction,
-                        ) {
-                            super.onPurchaseCompleted(customerInfo, storeTransaction)
-                            Timber.d(
-                                "Purchased Completed - customerInfo: $customerInfo, storeTransaction: $storeTransaction"
-                            )
-                        }
-
-                        override fun onRestoreCompleted(customerInfo: CustomerInfo) {
-                            super.onRestoreCompleted(customerInfo)
-                            Timber.d(
-                                "Restore Completed - customerInfo: $customerInfo"
-                            )
-                        }
-
-                        override fun onRestoreError(error: PurchasesError) {
-                            super.onRestoreError(error)
-                            Timber.e("restore error: ${error.message}")
-                        }
-
-                        override fun onRestoreStarted() {
-                            super.onRestoreStarted()
-                            Timber.d("Restore Started")
-                        }
-                    }
-                )
-                .build()
-        )
-    }
+    Paywall(
+        isPaywallVisible = isPaywallVisible,
+        onCustomerInfoChanged = { customerInfo ->
+            onCustomerInfoChanged(customerInfo)
+        },
+        onPaywallDismissed = {
+            isPaywallVisible = false
+        },
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
