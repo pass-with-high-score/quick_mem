@@ -40,7 +40,6 @@ fun SettingItem(
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp)
-                .clip(shapes.medium)
         ) {
             Text(
                 text = title,

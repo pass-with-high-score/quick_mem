@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
@@ -22,23 +23,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.settings.component.SettingCard
 import com.pwhs.quickmem.presentation.app.settings.component.SettingItem
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTitleSection
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.util.ads.AdsUtil.interstitialAds
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
+import timber.log.Timber
 
 @Destination<RootGraph>(
     navArgs = JoinClassArgs::class
@@ -90,6 +103,14 @@ fun JoinClassScreen(
         modifier = modifier,
         classDetailResponseModel = uiState.classDetailResponseModel,
         onJoinClass = { viewModel.onEvent(JoinClassUiAction.JoinClass) },
+        onOwnerClick = {
+            navigator.navigate(
+                UserDetailScreenDestination(
+                    userId = uiState.classDetailResponseModel?.owner?.id ?: "",
+                    isOwner = false
+                )
+            )
+        },
         onBackHome = {
             navigator.navigate(NavGraphs.root) {
                 popUpTo(NavGraphs.root) {
@@ -110,8 +131,24 @@ fun JoinClass(
     isLoading: Boolean = false,
     classDetailResponseModel: GetClassDetailResponseModel? = null,
     onJoinClass: () -> Unit = {},
-    onBackHome: () -> Unit = {}
+    onBackHome: () -> Unit = {},
+    onOwnerClick: () -> Unit = {}
 ) {
+    var customer: CustomerInfo? by remember { mutableStateOf(null) }
+    val context = LocalContext.current
+    LaunchedEffect(key1 = true) {
+        Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
+            override fun onError(error: PurchasesError) {
+                Timber.e("Error getting customer info: $error")
+            }
+
+            override fun onReceived(customerInfo: CustomerInfo) {
+                Timber.d("Customer info: $customerInfo")
+                customer = customerInfo
+            }
+
+        })
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -148,8 +185,8 @@ fun JoinClass(
                                 subtitle = classDetailResponseModel?.title ?: "",
                                 showArrow = false
                             )
-                            HorizontalDivider()
                             if (classDetailResponseModel?.description?.isNotEmpty() == true) {
+                                HorizontalDivider()
                                 SettingItem(
                                     title = "Description",
                                     subtitle = classDetailResponseModel.description,
@@ -162,7 +199,9 @@ fun JoinClass(
 
                 item {
                     SettingTitleSection("Owner")
-                    SettingCard {
+                    SettingCard(
+                        onClick = onOwnerClick
+                    ) {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
@@ -178,6 +217,7 @@ fun JoinClass(
                                     modifier = Modifier
                                         .padding(end = 16.dp)
                                         .size(20.dp)
+                                        .clip(CircleShape)
                                 )
                             }
                         }
@@ -186,11 +226,19 @@ fun JoinClass(
 
                 item {
                     Button(
-                        onClick = onJoinClass,
+                        onClick = {
+                            val isSubscribed = customer?.activeSubscriptions?.isNotEmpty() == true
+                            interstitialAds(context, isSubscribed) {
+                                onJoinClass()
+                            }
+                        },
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(text = "Join Class")
                     }
+                }
+                item {
+                    BannerAds()
                 }
             }
             LoadingOverlay(isLoading = isLoading)
