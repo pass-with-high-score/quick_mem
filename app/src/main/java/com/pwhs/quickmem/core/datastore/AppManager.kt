@@ -55,7 +55,7 @@ class AppManager(private val context: Context) {
         }
     val pushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[PUSH_NOTIFICATIONS] ?: false
+            preferences[PUSH_NOTIFICATIONS] ?: true
         }
     val appPushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
