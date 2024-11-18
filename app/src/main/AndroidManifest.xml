@@ -79,7 +79,7 @@
 
                 <data
                     android:host="share"
-                    android:path="/studyset"
+                    android:path="/study-set"
                     android:scheme="quickmem" />
             </intent-filter>
             <intent-filter android:label="filter_react_native">

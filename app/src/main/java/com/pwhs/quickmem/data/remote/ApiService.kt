@@ -231,6 +231,12 @@ interface ApiService {
         @Query("isAIGenerated") isAIGenerated: Boolean?
     ): List<GetStudySetResponseDto>
 
+    @GET("study-set/link/{code}")
+    suspend fun getStudySetByLinkCode(
+        @Header("Authorization") token: String,
+        @Path("code") code: String
+    ): GetStudySetResponseDto
+
     // Flashcard
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(

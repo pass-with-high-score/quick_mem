@@ -225,4 +225,20 @@ class StudySetRepositoryImpl @Inject constructor(
             }
         ).flow
     }
+
+    override suspend fun getStudySetByCode(
+        token: String,
+        code: String
+    ): Flow<Resources<GetStudySetResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getStudySetByLinkCode(token, code)
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }
