@@ -1,6 +1,10 @@
 package com.pwhs.quickmem.data.dto.study_set
 
 import com.google.gson.annotations.SerializedName
+import com.pwhs.quickmem.data.dto.color.ColorResponseDto
+import com.pwhs.quickmem.data.dto.flashcard.StudySetFlashCardResponseDto
+import com.pwhs.quickmem.data.dto.subject.SubjectResponseDto
+import com.pwhs.quickmem.data.dto.user.UserResponseDto
 
 data class GetMakeACopyResponseDto(
     @SerializedName("id")
@@ -8,7 +12,7 @@ data class GetMakeACopyResponseDto(
     @SerializedName("title")
     val title: String,
     @SerializedName("description")
-    val description: String?,
+    val description: String? = null,
     @SerializedName("isPublic")
     val isPublic: Boolean,
     @SerializedName("isAIGenerated")
@@ -18,57 +22,15 @@ data class GetMakeACopyResponseDto(
     @SerializedName("updatedAt")
     val updatedAt: String,
     @SerializedName("linkShareCode")
-    val linkShareCode: String?,
+    val linkShareCode: String? = null,
     @SerializedName("subject")
-    val subject: SubjectDto,
+    val subject: SubjectResponseDto? = null,
     @SerializedName("owner")
-    val owner: OwnerDto,
+    val owner: UserResponseDto,
     @SerializedName("color")
-    val color: ColorDto,
+    val color: ColorResponseDto? = null,
     @SerializedName("flashcardCount")
     val flashcardCount: Int,
     @SerializedName("flashcards")
-    val flashcards: List<FlashcardDto>
-) {
-    data class SubjectDto(
-        @SerializedName("id")
-        val id: Int,
-        @SerializedName("name")
-        val name: String
-    )
-
-    data class OwnerDto(
-        @SerializedName("id")
-        val id: String,
-        @SerializedName("username")
-        val username: String,
-        @SerializedName("avatarUrl")
-        val avatarUrl: String,
-        @SerializedName("role")
-        val role: String
-    )
-
-    data class ColorDto(
-        @SerializedName("id")
-        val id: Int,
-        @SerializedName("name")
-        val name: String,
-        @SerializedName("hexValue")
-        val hexValue: String
-    )
-
-    data class FlashcardDto(
-        @SerializedName("id")
-        val id: String,
-        @SerializedName("term")
-        val term: String,
-        @SerializedName("definition")
-        val definition: String,
-        @SerializedName("definitionImageUrl")
-        val definitionImageUrl: String?,
-        @SerializedName("hint")
-        val hint: String?,
-        @SerializedName("explanation")
-        val explanation: String?
-    )
-}
+    val flashcards: List<StudySetFlashCardResponseDto>? = null
+)

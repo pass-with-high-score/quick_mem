@@ -7,7 +7,6 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.study_set.AddMakeACopyRequestDto
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
-import com.pwhs.quickmem.data.mapper.study_set.toGetMakeACopyResponseModel
 import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.paging.StudySetPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
@@ -237,7 +236,7 @@ class StudySetRepositoryImpl @Inject constructor(
             try {
                 val request = AddMakeACopyRequestDto(studySetId = studySetId, newOwnerId = newOwnerId)
                 val response = apiService.duplicateStudySet(token, request)
-                emit(Resources.Success(response.toGetMakeACopyResponseModel()))
+                emit(Resources.Success( response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

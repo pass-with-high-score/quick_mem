@@ -225,14 +225,7 @@ class StudySetDetailViewModel @Inject constructor(
     private fun makeCopyStudySet(onSuccess: (GetMakeACopyResponseModel) -> Unit) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            if (token.isEmpty()) {
-                return@launch
-            }
             val userId = appManager.userId.firstOrNull() ?: ""
-            if (userId.isEmpty()) {
-                return@launch
-            }
-
             studySetRepository.makeCopyStudySet(token, _uiState.value.id, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {

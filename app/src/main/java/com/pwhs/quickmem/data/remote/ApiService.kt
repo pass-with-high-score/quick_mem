@@ -419,7 +419,7 @@ interface ApiService {
     )
 
     //Make a copy
-    @POST("/study-set/duplicate")
+    @POST("study-set/duplicate")
     suspend fun duplicateStudySet(
         @Header("Authorization") token: String,
         @Body request: AddMakeACopyRequestDto

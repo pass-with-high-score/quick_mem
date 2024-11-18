@@ -186,7 +186,6 @@ fun StudySetDetailScreen(
                 is StudySetDetailUiEvent.StudySetCopied -> {
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
-                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
             }
         }
