@@ -95,7 +95,7 @@ fun StreakCalendar(
     }
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF)
+@Preview(showBackground = true)
 @Composable
 fun StreakCalendarPreview() {
     QuickMemTheme {
