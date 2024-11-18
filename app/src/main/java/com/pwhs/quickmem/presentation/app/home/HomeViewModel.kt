@@ -123,7 +123,10 @@ class HomeViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         val streaks = resource.data?.streaks ?: emptyList()
-                        val today = LocalDate.now().minusDays(1) // trừ đi 1 ngày vì lịch UTC
+
+                        // trừ đi 1 ngày vì lịch UTC
+//                        val today = LocalDate.now().minusDays(1)
+                        val today = LocalDate.now()
 
                         val currentStreak = streaks.find {
                             OffsetDateTime.parse(it.date).toLocalDate() == today
