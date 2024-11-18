@@ -244,4 +244,6 @@
     <string name="txt_error_occurred">Đã xảy ra lỗi</string>
     <string name="txt_error">Lỗi</string>
     <string name="txt_loading">Đang tải…</string>
+    <string name="txt_resent">Lịch sử tìm kiếm</string>
+    <string name="txt_clear_all">Xóa tất cả</string>
 </resources>

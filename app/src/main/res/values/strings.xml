@@ -245,4 +245,6 @@
     <string name="txt_error_occurred">An error occurred</string>
     <string name="txt_error">Error</string>
     <string name="txt_loading">Loading…</string>
+    <string name="txt_resent">Resent Search</string>
+    <string name="txt_clear_all">Clear all</string>
 </resources>
