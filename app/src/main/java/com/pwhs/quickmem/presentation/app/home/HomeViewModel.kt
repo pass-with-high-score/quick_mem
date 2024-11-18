@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.streak.StreakModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
@@ -23,6 +24,9 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.time.LocalDate
+import java.time.OffsetDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,6 +60,7 @@ class HomeViewModel @Inject constructor(
     init {
         updateStreak()
         getCustomerInfo()
+        getStreaksByUserId()
     }
 
 
@@ -104,6 +109,46 @@ class HomeViewModel @Inject constructor(
                 // handle error
             }
         })
+    }
+
+    private fun getStreaksByUserId() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            streakRepository.getStreaksByUserId(token, userId).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+
+                    is Resources.Success -> {
+                        val streaks = resource.data?.streaks ?: emptyList()
+                        val streakDates = calculateStreakDates(streaks)
+
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            streaks = streaks,
+                            streakDates = streakDates
+                        )
+                        Timber.d("Date: ${resource.data?.streaks?.firstOrNull()?.date}")
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun calculateStreakDates(streaks: List<StreakModel>): List<LocalDate> {
+        if (streaks.isEmpty()) return emptyList()
+
+        val firstStreakDate = OffsetDateTime.parse(streaks.first().date).toLocalDate()
+
+        return (0 until streaks.first().streakCount).map {
+            firstStreakDate.minusDays(it.toLong())
+        }
     }
 
     private fun updateStreak() {

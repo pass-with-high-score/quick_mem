@@ -66,6 +66,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
 import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
+import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -82,6 +83,7 @@ import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
 import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
 import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 import timber.log.Timber
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -103,6 +105,7 @@ fun HomeScreen(
     Home(
         modifier = modifier,
         streakCount = uiState.streakCount,
+        streakDates = uiState.streakDates,
         onNavigateToSearch = {
             navigator.navigate(SearchScreenDestination)
         },
@@ -116,7 +119,7 @@ fun HomeScreen(
         notifications = uiState.notifications,
         onNotificationClicked = { notificationId ->
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
-        }
+        },
     )
 }
 
@@ -126,6 +129,8 @@ fun HomeScreen(
 fun Home(
     modifier: Modifier = Modifier,
     streakCount: Int = 0,
+    streakDates: List<LocalDate> = emptyList(),
+    currentDate: LocalDate = LocalDate.now(),
     onNavigateToSearch: () -> Unit = {},
     onNotificationEnabled: (Boolean) -> Unit = {},
     customer: CustomerInfo? = null,
@@ -311,8 +316,9 @@ fun Home(
             }
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            Text("Home Screen")
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             Text(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
@@ -338,27 +344,33 @@ fun Home(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(bottom = 16.dp)
                     .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    LottieAnimation(
-                        composition = composition,
-                        progress = { progress },
-                        modifier = Modifier
-                            .width(150.dp)
-                            .height(150.dp)
+                LottieAnimation(
+                    composition = composition,
+                    progress = { progress },
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(150.dp)
+                )
+                Text(
+                    text = streakCount.toString(),
+                    style = typography.titleLarge.copy(
+                        color = colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 48.sp
                     )
-                    Text(
-                        text = stringResource(R.string.txt_streak_count, streakCount),
-                        style = typography.titleLarge.copy(
-                            color = colorScheme.primary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
+                )
+                Text(
+                    text = "Study next week to keep your streak going!",
+                    modifier.padding(top = 16.dp)
+                )
+                StreakCalendar(
+                    currentDate = currentDate,
+                    streakDates = streakDates
+                )
             }
         }
     }
@@ -434,7 +446,13 @@ fun Home(
 private fun HomeScreenPreview() {
     QuickMemTheme {
         Home(
-            streakCount = 5
+            streakCount = 5,
+            currentDate = LocalDate.now(),
+            streakDates = listOf(
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(3)
+            )
         )
     }
 }
