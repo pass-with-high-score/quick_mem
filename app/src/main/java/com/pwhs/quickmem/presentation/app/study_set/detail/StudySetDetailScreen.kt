@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,6 +79,7 @@ fun StudySetDetailScreen(
     resultQuiz: ResultRecipient<LearnByQuizScreenDestination, Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     resultBakFlashCard.onNavResult { result ->
         when (result) {
@@ -183,6 +185,7 @@ fun StudySetDetailScreen(
                 }
 
                 is StudySetDetailUiEvent.StudySetCopied -> {
+                    Toast.makeText(context, "Study set copied", Toast.LENGTH_SHORT).show()
                     navigator.navigate(
                         StudySetDetailScreenDestination(
                             id = event.newStudySetId,
@@ -465,7 +468,10 @@ fun StudySetDetail(
             showMoreBottomSheet = false
         },
         isOwner = isOwner,
-        onCopyStudySet = onCopyStudySet
+        onCopyStudySet = {
+            onCopyStudySet()
+            showMoreBottomSheet = false
+        }
     )
     if (showDeleteConfirmationDialog) {
         QuickMemAlertDialog(
