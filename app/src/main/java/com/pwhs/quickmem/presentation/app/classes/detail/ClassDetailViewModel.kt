@@ -90,8 +90,7 @@ class ClassDetailViewModel @Inject constructor(
             }
 
             is ClassDetailUiAction.ExitClass -> {
-                exitClass(classId = _uiState.value.id)
-                _uiEvent.trySend(ClassDetailUiEvent.ExitClass)
+                exitClass()
             }
 
             is ClassDetailUiAction.NavigateToRemoveMembers -> {
@@ -180,17 +179,17 @@ class ClassDetailViewModel @Inject constructor(
                             }
                             _uiEvent.send(ClassDetailUiEvent.ClassDeleted)
                         }
-
                     }
                 }
             }
         }
     }
 
-    private fun exitClass(classId: String) {
+    private fun exitClass() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
             classRepository.exitClass(token, ExitClassRequestModel(userId, classId))
                 .collectLatest { resource ->
                     when (resource) {

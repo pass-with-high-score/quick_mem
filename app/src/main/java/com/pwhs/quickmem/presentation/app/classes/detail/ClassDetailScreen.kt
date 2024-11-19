@@ -194,8 +194,8 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.ExitClass -> {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
                     Toast.makeText(context, "Exit Class", Toast.LENGTH_SHORT).show()
-                    navigator.navigateUp()
                 }
 
                 ClassDetailUiEvent.OnNavigateToRemoveMembers -> {
