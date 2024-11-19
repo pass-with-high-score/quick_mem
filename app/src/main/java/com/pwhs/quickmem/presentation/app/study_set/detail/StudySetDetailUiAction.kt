@@ -11,4 +11,5 @@ sealed class StudySetDetailUiAction {
     data object OnEditFlashCardClicked : StudySetDetailUiAction()
     data object OnDeleteStudySetClicked : StudySetDetailUiAction()
     data class OnResetProgressClicked(val id: String) : StudySetDetailUiAction()
+    data object OnMakeCopyClicked : StudySetDetailUiAction()
 }

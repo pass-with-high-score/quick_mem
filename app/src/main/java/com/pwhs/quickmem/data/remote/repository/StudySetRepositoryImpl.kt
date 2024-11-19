@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
@@ -235,6 +236,24 @@ class StudySetRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.getStudySetByLinkCode(token, code)
                 emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun makeCopyStudySet(
+        token: String,
+        studySetId: String,
+        newOwnerId: String
+    ): Flow<Resources<CreateStudySetResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val request = MakeACopyStudySetRequestDto(studySetId = studySetId, newOwnerId = newOwnerId)
+                val response = apiService.duplicateStudySet(token, request)
+                emit(Resources.Success( response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
