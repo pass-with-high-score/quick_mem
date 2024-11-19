@@ -17,9 +17,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="${appIcon}"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="${appIcon}"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuickMem"
         android:usesCleartextTraffic="true"
@@ -28,8 +28,10 @@
             android:name="android.adservices.AD_SERVICES_CONFIG"
             android:resource="@xml/ga_ad_services_config"
             tools:replace="android:resource" />
+
         <activity
             android:name=".MainActivity"
+            android:enabled="true"
             android:exported="true"
             android:theme="@style/Theme.QuickMem"
             android:windowSoftInputMode="adjustResize">
@@ -94,6 +96,21 @@
                     android:scheme="quickmem" />
             </intent-filter>
         </activity>
+
+        <activity-alias
+            android:name=".MainActivityAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_premium"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <service
             android:name=".core.service.AppFirebaseMessagingService"
             android:exported="false">
@@ -101,6 +118,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />

@@ -60,12 +60,53 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            isMinifyEnabled = false
+        }
+    }
+
+    setFlavorDimensions(flavorDimensions = listOf("environment"))
+    productFlavors {
+        create("development") {
+            applicationIdSuffix = ".dev"
+            versionName = "1.0.0-dev"
+            versionCode = 1
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "QuickMem Dev"
+            )
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_dev"
+        }
+
+        create("production") {
+            versionName = "1.0.0"
+            versionCode = 1
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "QuickMem"
+            )
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
+        }
+
+        create("staging") {
+            applicationIdSuffix = ".staging"
+            versionName = "1.0.0-staging"
+            versionCode = 1
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "QuickMem Staging"
+            )
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_staging"
         }
     }
     compileOptions {

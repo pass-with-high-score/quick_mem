@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,6 +73,7 @@ import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
+import com.pwhs.quickmem.util.changeAppIcon
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
@@ -134,6 +136,8 @@ private fun Home(
     onNotificationClicked: (String) -> Unit = {},
     notifications: List<GetNotificationResponseModel> = emptyList(),
 ) {
+
+    val context = LocalContext.current
 
     var showNotificationBottomSheet by remember { mutableStateOf(false) }
     val modalBottomSheetState = rememberModalBottomSheetState(
@@ -320,6 +324,20 @@ private fun Home(
             Text(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
+            Button(
+                onClick = {
+                    context.changeAppIcon("${context.packageName}.MainActivityAlias")
+                }
+            ) {
+                Text(text = "Change icon")
+            }
+            Button(
+                onClick = {
+                    context.changeAppIcon("${context.packageName}.MainActivity")
+                }
+            ) {
+                Text(text = "Change icon")
+            }
         }
     }
     Paywall(
