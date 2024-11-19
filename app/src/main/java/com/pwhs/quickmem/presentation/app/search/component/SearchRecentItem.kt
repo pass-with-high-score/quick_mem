@@ -28,14 +28,14 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 fun SearchRecentItem(
     modifier: Modifier = Modifier,
     query: String,
-    onSearchResent: (String) -> Unit = {},
+    onSearchRecent: (String) -> Unit = {},
     onDelete: () -> Unit
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                onSearchResent(query)
+                onSearchRecent(query)
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

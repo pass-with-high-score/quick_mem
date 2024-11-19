@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.pwhs.quickmem.data.local.dao.SearchQueryDao
 import com.pwhs.quickmem.data.local.entities.SearchQueryEntity
 
-@Database(entities = [SearchQueryEntity::class], version = 1, exportSchema = false)
+@Database(entities = [SearchQueryEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun searchQueryDao(): SearchQueryDao
 
