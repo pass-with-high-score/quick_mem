@@ -8,6 +8,7 @@ import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.domain.repository.SearchQueryRepository
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
@@ -27,7 +28,8 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val searchQueryRepository: SearchQueryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingUiState())
@@ -210,6 +212,7 @@ class SettingsViewModel @Inject constructor(
                 tokenManager.clearTokens()
                 appManager.clearAllData()
                 Purchases.sharedInstance.logOut()
+                searchQueryRepository.clearSearchHistory()
                 _uiEvent.send(SettingUiEvent.NavigateToLogin)
             } catch (e: Exception) {
                 Timber.e(e)
