@@ -160,7 +160,8 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.OnJoinClass -> {
-
+                    Toast.makeText(context, "You are member in this class", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 is ClassDetailUiEvent.ShowError -> {
@@ -217,6 +218,7 @@ fun ClassDetailScreen(
         },
         title = uiState.title,
         isLoading = uiState.isLoading,
+        isAllowMember = uiState.allowMember,
         userResponseModel = uiState.userResponseModel,
         studySets = uiState.studySets,
         folders = uiState.folders,
@@ -262,6 +264,9 @@ fun ClassDetailScreen(
         },
         onRemoveMembers = {
             viewModel.onEvent(ClassDetailUiAction.OnDeleteMember(it))
+        },
+        onJoinClass = {
+            viewModel.onEvent(ClassDetailUiAction.OnJoinClass)
         }
     )
 }
@@ -274,6 +279,7 @@ fun ClassDetail(
     title: String = "",
     isLoading: Boolean = false,
     isMember: Boolean = false,
+    isAllowMember: Boolean = false,
     linkShareCode: String = "",
     userResponseModel: UserResponseModel = UserResponseModel(),
     studySets: List<GetStudySetResponseModel> = emptyList(),
@@ -285,6 +291,7 @@ fun ClassDetail(
     onNavigateToUserDetail: (String) -> Unit = {},
     onEditClass: () -> Unit = {},
     onExitClass: () -> Unit = {},
+    onJoinClass: () -> Unit = {},
     onRemoveMembers: (String) -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
@@ -447,7 +454,9 @@ fun ClassDetail(
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false },
         isOwner = isOwner,
-        isMember = isMember
+        isMember = isMember,
+        isAllowMember = isAllowMember,
+        onJoinClass = onJoinClass
     )
 }
 

@@ -9,5 +9,6 @@ sealed class ClassDetailUiAction {
     data class OnDeleteMember(val memberId: String) : ClassDetailUiAction()
     data object OnNavigateToAddFolder : ClassDetailUiAction()
     data object OnNavigateToAddStudySets : ClassDetailUiAction()
+    data object OnJoinClass : ClassDetailUiAction()
     data object ExitClass : ClassDetailUiAction()
 }

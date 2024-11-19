@@ -5,19 +5,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.Icons.Outlined
+import androidx.compose.material.icons.automirrored.filled.AddToHomeScreen
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,6 +30,7 @@ fun ClassDetailBottomSheet(
     modifier: Modifier = Modifier,
     isOwner: Boolean,
     isMember: Boolean,
+    isAllowMember: Boolean,
     onAddStudySetToClass: () -> Unit = {},
     onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
@@ -33,6 +38,7 @@ fun ClassDetailBottomSheet(
     onDeleteClass: () -> Unit = {},
     onShareClass: () -> Unit = {},
     onReportClass: () -> Unit = {},
+    onJoinClass: () -> Unit = {},
     showMoreBottomSheet: Boolean = false,
     sheetShowMoreState: SheetState = rememberModalBottomSheetState(),
     onDismissRequest: () -> Unit = {},
@@ -70,6 +76,14 @@ fun ClassDetailBottomSheet(
                         icon = Icons.AutoMirrored.Filled.ExitToApp,
                         title = "Exit Class",
                         color = Color.Red
+                    )
+                }
+
+                if(!isMember && isAllowMember){
+                    ItemMenuBottomSheet(
+                        onClick = onJoinClass,
+                        icon = Outlined.GroupAdd,
+                        title = "Join Class"
                     )
                 }
                 ItemMenuBottomSheet(
