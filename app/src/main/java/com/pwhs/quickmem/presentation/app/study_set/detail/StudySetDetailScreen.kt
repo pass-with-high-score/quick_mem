@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,13 +55,13 @@ import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScre
 import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
-import timber.log.Timber
 
 @Destination<RootGraph>(
     navArgs = StudySetDetailArgs::class
@@ -78,6 +79,7 @@ fun StudySetDetailScreen(
     resultQuiz: ResultRecipient<LearnByQuizScreenDestination, Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     resultBakFlashCard.onNavResult { result ->
         when (result) {
@@ -146,7 +148,6 @@ fun StudySetDetailScreen(
                 }
 
                 StudySetDetailUiEvent.NavigateToEditStudySet -> {
-                    Timber.d("${uiState.id} ${uiState.title} ${uiState.subject.id} ${uiState.colorModel.id} ${uiState.isPublic}")
                     navigator.navigate(
                         EditStudySetScreenDestination(
                             studySetId = uiState.id,
@@ -181,6 +182,16 @@ fun StudySetDetailScreen(
 
                 StudySetDetailUiEvent.StudySetProgressReset -> {
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+
+                is StudySetDetailUiEvent.StudySetCopied -> {
+                    Toast.makeText(context, "Study set copied", Toast.LENGTH_SHORT).show()
+                    navigator.navigate(
+                        StudySetDetailScreenDestination(
+                            id = event.newStudySetId,
+                            code = ""
+                        )
+                    )
                 }
             }
         }
@@ -296,7 +307,10 @@ fun StudySetDetailScreen(
                 )
             )
         },
-        isOwner = uiState.isOwner
+        isOwner = uiState.isOwner,
+        onCopyStudySet = {
+            viewModel.onEvent(StudySetDetailUiAction.OnMakeCopyClicked)
+        }
     )
 }
 
@@ -329,7 +343,8 @@ fun StudySetDetail(
     onNavigateToWrite: () -> Unit = {},
     onNavigateToFlip: () -> Unit = {},
     onRefresh: () -> Unit = {},
-    onNavigateToUserDetail: () -> Unit = {}
+    onNavigateToUserDetail: () -> Unit = {},
+    onCopyStudySet: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -453,7 +468,10 @@ fun StudySetDetail(
             showMoreBottomSheet = false
         },
         isOwner = isOwner,
-        onCopyStudySet = {},
+        onCopyStudySet = {
+            onCopyStudySet()
+            showMoreBottomSheet = false
+        }
     )
     if (showDeleteConfirmationDialog) {
         QuickMemAlertDialog(

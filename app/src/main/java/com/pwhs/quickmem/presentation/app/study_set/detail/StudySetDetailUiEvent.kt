@@ -7,4 +7,5 @@ sealed class StudySetDetailUiEvent {
     data object NavigateToEditFlashCard : StudySetDetailUiEvent()
     data object StudySetDeleted : StudySetDetailUiEvent()
     data object StudySetProgressReset : StudySetDetailUiEvent()
+    data class StudySetCopied(val newStudySetId: String) : StudySetDetailUiEvent()
 }
