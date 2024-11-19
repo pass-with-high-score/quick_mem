@@ -54,13 +54,13 @@ import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScre
 import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
-import timber.log.Timber
 
 @Destination<RootGraph>(
     navArgs = StudySetDetailArgs::class
@@ -146,7 +146,6 @@ fun StudySetDetailScreen(
                 }
 
                 StudySetDetailUiEvent.NavigateToEditStudySet -> {
-                    Timber.d("${uiState.id} ${uiState.title} ${uiState.subject.id} ${uiState.colorModel.id} ${uiState.isPublic}")
                     navigator.navigate(
                         EditStudySetScreenDestination(
                             studySetId = uiState.id,
@@ -184,8 +183,12 @@ fun StudySetDetailScreen(
                 }
 
                 is StudySetDetailUiEvent.StudySetCopied -> {
-                    resultNavigator.setResult(true)
-                    navigator.navigateUp()
+                    navigator.navigate(
+                        StudySetDetailScreenDestination(
+                            id = event.newStudySetId,
+                            code = ""
+                        )
+                    )
                 }
             }
         }
@@ -303,7 +306,8 @@ fun StudySetDetailScreen(
         },
         isOwner = uiState.isOwner,
         onCopyStudySet = {
-            viewModel.onEvent(StudySetDetailUiAction.OnMakeCopyClicked) }
+            viewModel.onEvent(StudySetDetailUiAction.OnMakeCopyClicked)
+        }
     )
 }
 

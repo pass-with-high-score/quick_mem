@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.data.dto.study_set.AddMakeACopyRequestDto
+import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
@@ -17,7 +17,6 @@ import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
-import com.pwhs.quickmem.domain.model.study_set.GetMakeACopyResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
@@ -230,11 +229,11 @@ class StudySetRepositoryImpl @Inject constructor(
         token: String,
         studySetId: String,
         newOwnerId: String
-    ): Flow<Resources<GetMakeACopyResponseModel>> {
+    ): Flow<Resources<CreateStudySetResponseModel>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val request = AddMakeACopyRequestDto(studySetId = studySetId, newOwnerId = newOwnerId)
+                val request = MakeACopyStudySetRequestDto(studySetId = studySetId, newOwnerId = newOwnerId)
                 val response = apiService.duplicateStudySet(token, request)
                 emit(Resources.Success( response.toModel()))
             } catch (e: Exception) {
