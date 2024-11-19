@@ -17,14 +17,14 @@ val firasansExtraboldFont = FontFamily(
 )
 val bodyFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Itim"),
+        googleFont = GoogleFont("Host Outfit"),
         fontProvider = provider,
     )
 )
 
 val displayFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Itim"),
+        googleFont = GoogleFont("Outfit"),
         fontProvider = provider,
     )
 )

@@ -14,5 +14,5 @@ fun CreateFolderRequestDto.toModel() = CreateFolderRequestModel(
     title = title,
     description = description,
     isPublic = isPublic,
-    ownerId = ownerId
+    ownerId = ownerId,
 )

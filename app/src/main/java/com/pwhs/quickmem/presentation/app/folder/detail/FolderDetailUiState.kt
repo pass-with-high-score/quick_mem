@@ -6,6 +6,7 @@ import com.pwhs.quickmem.domain.model.users.UserResponseModel
 data class FolderDetailUiState(
     val id: String = "",
     val title: String = "",
+    val linkShareCode: String = "",
     val description: String = "",
     val isPublic: Boolean = false,
     val studySetCount: Int = 0,

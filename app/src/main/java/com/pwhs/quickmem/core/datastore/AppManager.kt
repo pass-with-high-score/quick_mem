@@ -55,7 +55,7 @@ class AppManager(private val context: Context) {
         }
     val pushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[PUSH_NOTIFICATIONS] ?: false
+            preferences[PUSH_NOTIFICATIONS] ?: true
         }
     val appPushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
@@ -108,12 +108,6 @@ class AppManager(private val context: Context) {
         }
     }
 
-    suspend fun clearAllData() {
-        context.dataStore.edit { preferences ->
-            preferences.clear()
-        }
-    }
-
     suspend fun saveUserEmail(email: String) {
         require(email.isNotEmpty()) { "Email cannot be empty" }
         require(Patterns.EMAIL_ADDRESS.matcher(email).matches()) { "Invalid email address" }
@@ -140,6 +134,12 @@ class AppManager(private val context: Context) {
         Timber.d("Saving language code: $languageCode")
         context.dataStore.edit { preferences ->
             preferences[LANGUAGE_CODE] = languageCode
+        }
+    }
+
+    suspend fun clearAllData() {
+        context.dataStore.edit { preferences ->
+            preferences.clear()
         }
     }
 }

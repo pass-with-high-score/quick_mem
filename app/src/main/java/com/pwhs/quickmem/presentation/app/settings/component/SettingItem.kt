@@ -27,7 +27,8 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: String? = null,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    showArrow: Boolean = true
 ) {
     Row(
         modifier = modifier
@@ -39,7 +40,6 @@ fun SettingItem(
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp)
-                .clip(shapes.medium)
         ) {
             Text(
                 text = title,
@@ -57,12 +57,14 @@ fun SettingItem(
                 )
             }
         }
-        Icon(
-            imageVector = AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = "Navigate to $title",
-            modifier = Modifier.size(30.dp),
-            tint = colorScheme.onSurfaceVariant
-        )
+        if (showArrow) {
+            Icon(
+                imageVector = AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = "Navigate to $title",
+                modifier = Modifier.size(30.dp),
+                tint = colorScheme.onSurfaceVariant
+            )
+        }
     }
 
 }

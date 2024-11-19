@@ -140,4 +140,20 @@ class FolderRepositoryImpl @Inject constructor(
             }
         ).flow
     }
+
+    override suspend fun getFolderByLinkCode(
+        token: String,
+        code: String
+    ): Flow<Resources<CreateFolderResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getFolderByLinkCode(token, code)
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

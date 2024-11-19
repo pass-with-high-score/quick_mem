@@ -28,6 +28,7 @@ import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
+import com.pwhs.quickmem.data.dto.classes.JoinClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
@@ -227,9 +228,17 @@ interface ApiService {
         @Query("creatorType") creatorType: String?,
         @Query("page") page: Int,
         @Query("colorId") colorId: Int?,
-        @Query("subjectId") subjectId: Int?
+        @Query("subjectId") subjectId: Int?,
+        @Query("isAIGenerated") isAIGenerated: Boolean?
     ): List<GetStudySetResponseDto>
 
+    @GET("study-set/link/{code}")
+    suspend fun getStudySetByLinkCode(
+        @Header("Authorization") token: String,
+        @Path("code") code: String
+    ): GetStudySetResponseDto
+
+    // Flashcard
     @POST("study-set/duplicate")
     suspend fun duplicateStudySet(
         @Header("Authorization") token: String,
@@ -331,6 +340,12 @@ interface ApiService {
         @Query("page") page: Int?,
     ): List<GetFolderResponseDto>
 
+    @GET("folder/link/{code}")
+    suspend fun getFolderByLinkCode(
+        @Header("Authorization") token: String,
+        @Path("code") code: String
+    ): CreateFolderResponseDto
+
     // Class
     @POST("class")
     suspend fun createClass(
@@ -383,6 +398,19 @@ interface ApiService {
         @Query("title") title: String,
         @Query("page") page: Int?,
     ): List<GetClassByOwnerResponseDto>
+
+    @GET("class/token/{joinToken}")
+    suspend fun getClassByJoinToken(
+        @Header("Authorization") token: String,
+        @Path("joinToken") joinToken: String,
+        @Query("userId") userId: String
+    ): GetClassDetailResponseDto
+
+    @POST("class/join")
+    suspend fun joinClass(
+        @Header("Authorization") token: String,
+        @Body joinClassRequestDto: JoinClassRequestDto
+    )
 
     // Streak
     @GET("streak/{userId}")

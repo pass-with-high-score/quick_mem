@@ -168,6 +168,7 @@
     <string name="txt_material">Tài liệu</string>
     <string name="txt_progress">Tiến trình</string>
     <string name="txt_check_out_this_study_set">Xem bộ học này: %1$s\n%2$s</string>
+    <string name="txt_check_out_this_folder">Xem folder này: %1$s\n%2$s</string>
     <string name="txt_delete_study_set">Xóa bộ học</string>
     <string name="txt_are_you_sure_you_want_to_delete_this_study_set">Bạn có chắc chắn muốn xóa bộ học này không?</string>
     <string name="txt_delete">Xóa</string>
@@ -244,4 +245,7 @@
     <string name="txt_error_occurred">Đã xảy ra lỗi</string>
     <string name="txt_error">Lỗi</string>
     <string name="txt_loading">Đang tải…</string>
+    <string name="txt_recent">Lịch sử tìm kiếm</string>
+    <string name="txt_clear_all">Xóa tất cả</string>
+    <string name="txt_deleted_successfully">Đã xóa thành công</string>
 </resources>

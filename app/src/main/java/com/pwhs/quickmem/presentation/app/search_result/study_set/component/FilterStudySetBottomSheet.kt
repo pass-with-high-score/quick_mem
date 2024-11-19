@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +30,8 @@ fun FilterStudySetBottomSheet(
     subjectModel: SubjectModel? = SubjectModel.defaultSubjects.first(),
     sizeModel: SearchResultSizeEnum = SearchResultSizeEnum.ALL,
     onSizeChange: (SearchResultSizeEnum) -> Unit,
+    isAiGenerated: Boolean = false,
+    onIsAiGeneratedChange: (Boolean) -> Unit,
     creatorTypeModel: SearchResultCreatorEnum = SearchResultCreatorEnum.ALL,
     onCreatorChange: (SearchResultCreatorEnum) -> Unit,
     onNavigateBack: () -> Unit,
@@ -87,6 +90,26 @@ fun FilterStudySetBottomSheet(
         }
 
         item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "AI Generated",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Switch(
+                    checked = isAiGenerated,
+                    onCheckedChange = { onIsAiGeneratedChange(it) },
+                )
+            }
+        }
+
+        item {
             StudySetSubjectInput(
                 subjectModel = subjectModel,
                 onShowBottomSheet = {
@@ -110,10 +133,9 @@ fun FilterStudySetBottomSheet(
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4752A6))
             ) {
                 Text(
-                    "Apply",
+                    text = "Apply",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold

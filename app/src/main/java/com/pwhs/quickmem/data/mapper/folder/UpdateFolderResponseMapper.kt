@@ -12,6 +12,7 @@ fun UpdateFolderResponseModel.toDto() = UpdateFolderResponseDto(
     isPublic = isPublic,
     studySetCount = studySetCount,
     studySets = studySets.map { it.toDto() },
+    linkShareCode = linkShareCode,
     updatedAt = updatedAt,
     createdAt = createdAt
 )
@@ -22,6 +23,7 @@ fun UpdateFolderResponseDto.toModel() = UpdateFolderResponseModel(
     description = description,
     isPublic = isPublic,
     studySetCount = studySetCount,
+    linkShareCode = linkShareCode,
     studySets = studySets.map { it.toModel() },
     updatedAt = updatedAt,
     createdAt = createdAt

@@ -10,6 +10,7 @@ data class GetClassDetailResponseModel(
     val title: String,
     val description: String,
     val owner: UserResponseModel,
+    val isJoined: Boolean? = false,
     val joinToken: String,
     val createdAt: String,
     val updatedAt: String,

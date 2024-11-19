@@ -12,6 +12,7 @@ data class GetFolderResponseModel(
     val owner: UserResponseModel,
     val studySets: List<GetStudySetResponseModel>? = null,
     val isImported: Boolean? = null,
+    val linkShareCode: String? = null,
     val createdAt: String,
     val updatedAt: String,
 )

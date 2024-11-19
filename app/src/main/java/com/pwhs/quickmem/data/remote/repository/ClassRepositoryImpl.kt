@@ -1,13 +1,19 @@
 package com.pwhs.quickmem.data.remote.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.classes.toModel
+import com.pwhs.quickmem.data.paging.ClassPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.datasource.ClassRemoteDataSource
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
@@ -17,7 +23,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ClassRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val classRemoteDataSource: ClassRemoteDataSource
 ) : ClassRepository {
     override suspend fun createClass(
         token: String,
@@ -117,15 +124,38 @@ class ClassRepositoryImpl @Inject constructor(
         token: String,
         title: String,
         page: Int?
-    ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
+    ): Flow<PagingData<GetClassByOwnerResponseModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                ClassPagingSource(
+                    classRemoteDataSource,
+                    token,
+                    title
+                )
+            }
+        ).flow
+    }
+
+    override suspend fun getClassByCode(
+        token: String,
+        userId: String,
+        classCode: String
+    ): Flow<Resources<GetClassDetailResponseModel>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.searchClass(
-                    token, title, page
+                Timber.d("getClassByCode: token:  $token, userId:  $userId, classCode: $classCode")
+                val response = apiService.getClassByJoinToken(
+                    token = token,
+                    userId = userId,
+                    joinToken = classCode
                 )
-                Timber.d("getSearchResultClasses: $response")
-                emit(Resources.Success(response.map { it.toModel() }))
+                Timber.d("getClassByCode: $response")
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
@@ -133,5 +163,19 @@ class ClassRepositoryImpl @Inject constructor(
         }
     }
 
-
+    override suspend fun joinClass(
+        token: String,
+        joinClassRequestModel: JoinClassRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.joinClass(token, joinClassRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

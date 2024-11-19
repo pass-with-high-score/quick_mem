@@ -204,7 +204,8 @@ class StudySetRepositoryImpl @Inject constructor(
         creatorType: SearchResultCreatorEnum?,
         page: Int,
         colorId: Int?,
-        subjectId: Int?
+        subjectId: Int?,
+        isAIGenerated: Boolean?
     ): Flow<PagingData<GetStudySetResponseModel>> {
         return Pager(
             config = PagingConfig(
@@ -219,10 +220,27 @@ class StudySetRepositoryImpl @Inject constructor(
                     size,
                     creatorType,
                     colorId,
-                    subjectId
+                    subjectId,
+                    isAIGenerated
                 )
             }
         ).flow
+    }
+
+    override suspend fun getStudySetByCode(
+        token: String,
+        code: String
+    ): Flow<Resources<GetStudySetResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getStudySetByLinkCode(token, code)
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
     }
 
     override suspend fun makeCopyStudySet(

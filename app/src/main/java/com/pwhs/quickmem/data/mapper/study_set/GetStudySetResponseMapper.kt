@@ -25,6 +25,7 @@ fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
     owner = owner.toModel(),
     linkShareCode = linkShareCode,
     isImported = isImported,
+    isAIGenerated = isAIGenerated,
 )
 
 fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
@@ -41,4 +42,5 @@ fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
     owner = owner.toDto(),
     linkShareCode = linkShareCode,
     isImported = isImported,
+    isAIGenerated = isAIGenerated,
 )

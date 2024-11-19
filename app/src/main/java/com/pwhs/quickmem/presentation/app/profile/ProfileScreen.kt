@@ -259,7 +259,6 @@ fun Profile(
                 onCustomerInfoChanged = { customerInfo ->
                     onCustomerInfoChanged(customerInfo)
                 },
-                modifier = Modifier,
                 onPaywallDismissed = {
                     isPaywallVisible = false
                 },

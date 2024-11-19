@@ -78,7 +78,13 @@ interface StudySetRepository {
         page: Int,
         colorId: Int?,
         subjectId: Int?,
+        isAIGenerated: Boolean?
     ): Flow<PagingData<GetStudySetResponseModel>>
+
+    suspend fun getStudySetByCode(
+        token: String,
+        code: String
+    ): Flow<Resources<GetStudySetResponseModel>>
 
     suspend fun makeCopyStudySet(
         token: String,

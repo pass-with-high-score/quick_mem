@@ -37,4 +37,6 @@ data class GetClassDetailResponseDto(
     val createdAt: String,
     @SerializedName("updatedAt")
     val updatedAt: String,
+    @SerializedName("isJoined")
+    val isJoined: Boolean? = false
 )
