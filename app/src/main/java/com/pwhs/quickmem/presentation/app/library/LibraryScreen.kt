@@ -276,14 +276,17 @@ fun Library(
                     studySets = studySets,
                     avatarUrl = avatarUrl,
                     username = username,
+                    isOwner = true,
                     onStudySetClick = onStudySetClick,
-                    onStudySetRefresh = onStudySetRefresh
+                    onStudySetRefresh = onStudySetRefresh,
                 )
 
                 LibraryTabEnum.CLASS.index -> ListClassesScreen(
                     modifier = modifier,
                     isLoading = isLoading,
                     classes = classes,
+                    isOwner = true,
+                    onAddClassClick = navigateToCreateClass,
                     onClassClicked = onClassClick,
                     onClassRefresh = onClassRefresh,
                 )
@@ -292,6 +295,7 @@ fun Library(
                     modifier = modifier,
                     isLoading = isLoading,
                     folders = folders,
+                    isOwner = true,
                     onFolderClick = onFolderClick,
                     onAddFolderClick = navigateToCreateFolder,
                     onFolderRefresh = onFolderRefresh
