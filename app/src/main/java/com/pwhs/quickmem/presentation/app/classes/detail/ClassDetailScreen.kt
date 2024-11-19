@@ -51,6 +51,7 @@ import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassS
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.RemoveMemberScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -195,6 +196,10 @@ fun ClassDetailScreen(
                 ClassDetailUiEvent.ExitClass -> {
                     Toast.makeText(context, "Exit Class", Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
+                }
+
+                ClassDetailUiEvent.OnNavigateToRemoveMembers -> {
+                    navigator.navigate(RemoveMemberScreenDestination(classId = uiState.id))
                 }
             }
         }

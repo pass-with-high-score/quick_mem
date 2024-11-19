@@ -15,6 +15,7 @@ import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
@@ -188,6 +189,22 @@ class ClassRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 apiService.exitClass(token, exitClassRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun removeMembers(
+        token: String,
+        removeMembersRequestModel: RemoveMembersRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.removeMembers(token, removeMembersRequestModel.toDto())
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)

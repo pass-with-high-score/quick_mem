@@ -7,6 +7,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -91,6 +92,10 @@ class ClassDetailViewModel @Inject constructor(
                 exitClass(classId = _uiState.value.id)
                 _uiEvent.trySend(ClassDetailUiEvent.ExitClass)
             }
+
+            ClassDetailUiAction.NavigateToRemoveMembers -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToRemoveMembers)
+            }
         }
     }
 
@@ -169,36 +174,37 @@ class ClassDetailViewModel @Inject constructor(
         }
     }
 
-    private fun exitClass(classId:String) {
+    private fun exitClass(classId: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            classRepository.exitClass(token, ExitClassRequestModel(userId, classId)).collectLatest { resource ->
-                when(resource){
-                    is Resources.Error -> {
-                        Timber.e(resource.message)
-                        _uiState.update {
-                            it.copy(isLoading = false)
-                        }
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
-                        }
-                    }
-
-                    is Resources.Success -> {
-                        resource.data?.let {
-                            Timber.d("Exited this class")
+            classRepository.exitClass(token, ExitClassRequestModel(userId, classId))
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Error -> {
+                            Timber.e(resource.message)
                             _uiState.update {
                                 it.copy(isLoading = false)
                             }
-                            _uiEvent.send(ClassDetailUiEvent.ExitClass)
+                        }
+
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+
+                        is Resources.Success -> {
+                            resource.data?.let {
+                                Timber.d("Exited this class")
+                                _uiState.update {
+                                    it.copy(isLoading = false)
+                                }
+                                _uiEvent.send(ClassDetailUiEvent.ExitClass)
+                            }
                         }
                     }
                 }
-            }
         }
     }
 }

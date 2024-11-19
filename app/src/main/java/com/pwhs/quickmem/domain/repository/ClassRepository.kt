@@ -8,6 +8,7 @@ import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import kotlinx.coroutines.flow.Flow
@@ -62,4 +63,9 @@ interface ClassRepository {
         token: String,
         exitClassRequestModel: ExitClassRequestModel
     ): Flow<Resources<Unit>>
+
+    suspend fun removeMembers(
+        token: String,
+        removeMembersRequestModel: RemoveMembersRequestModel
+    ):Flow<Resources<Unit>>
 }

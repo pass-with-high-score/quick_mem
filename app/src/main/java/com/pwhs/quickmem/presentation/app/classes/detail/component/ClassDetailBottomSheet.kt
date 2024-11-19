@@ -67,8 +67,7 @@ fun ClassDetailBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onRemoveMembers,
                         icon = Default.DeleteOutline,
-                        title = "Remove members",
-                        color = Color.Black
+                        title = "Remove members"
                     )
                 } else {
                     ItemMenuBottomSheet(
