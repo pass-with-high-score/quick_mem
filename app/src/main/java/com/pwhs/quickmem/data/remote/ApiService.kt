@@ -51,6 +51,7 @@ import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
+import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFoldersRequestDto
@@ -239,6 +240,13 @@ interface ApiService {
     ): GetStudySetResponseDto
 
     // Flashcard
+    @POST("study-set/duplicate")
+    suspend fun duplicateStudySet(
+        @Header("Authorization") token: String,
+        @Body request: MakeACopyStudySetRequestDto
+    ): CreateStudySetResponseDto
+
+    // Flash Card
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
         @Header("Authorization") token: String,
@@ -449,4 +457,5 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") notificationId: String
     )
+
 }

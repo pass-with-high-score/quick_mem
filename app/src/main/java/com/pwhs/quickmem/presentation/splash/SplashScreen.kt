@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.splash
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +50,7 @@ fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 ) {
-
+    val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -90,6 +92,11 @@ fun SplashScreen(
                         launchSingleTop = true
                         restoreState = false
                     }
+                }
+
+                is SplashUiEvent.NoInternet -> {
+                    // Show no internet dialog
+                    Toast.makeText(context, "No internet", Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -31,6 +31,7 @@ fun SearchTextField(
     searchQuery: String = "",
     placeholder: String = "",
     onSearchQueryChange: (String) -> Unit = {},
+    errorMessage: String = "",
     onSearch: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -72,13 +73,25 @@ fun SearchTextField(
                     tint = colorScheme.onSurface
                 )
             },
+            supportingText = {
+                if (errorMessage.isNotEmpty()) {
+                    Text(
+                        text = errorMessage,
+                        style = typography.bodySmall.copy(
+                            color = colorScheme.error
+                        )
+                    )
+                }
+            },
             colors = colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
                 cursorColor = colorScheme.onSurface,
                 focusedTextColor = colorScheme.onSurface,
-                unfocusedTextColor = colorScheme.onSurface
+                unfocusedTextColor = colorScheme.onSurface,
+                errorContainerColor = Color.Transparent,
             ),
+            isError = errorMessage.isNotEmpty(),
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp),
