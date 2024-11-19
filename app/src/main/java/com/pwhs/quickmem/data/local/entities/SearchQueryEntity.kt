@@ -8,7 +8,7 @@ import javax.annotation.Nonnull
 
 @Entity(
     tableName = "recent_search",
-    indices = [Index(value = ["query"])]
+    indices = [Index(value = ["query"], unique = true)]
 )
 data class SearchQueryEntity(
     @PrimaryKey(autoGenerate = true)
