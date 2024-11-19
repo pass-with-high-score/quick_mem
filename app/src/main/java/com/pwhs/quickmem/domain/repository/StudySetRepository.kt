@@ -85,4 +85,10 @@ interface StudySetRepository {
         token: String,
         code: String
     ): Flow<Resources<GetStudySetResponseModel>>
+
+    suspend fun makeCopyStudySet(
+        token: String,
+        studySetId: String,
+        newOwnerId: String
+    ): Flow<Resources<CreateStudySetResponseModel>>
 }

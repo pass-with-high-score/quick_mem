@@ -27,24 +27,46 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.search.SearchQueryModel
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
+import com.pwhs.quickmem.presentation.app.search.component.SearchRecentList
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchResultScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
+import timber.log.Timber
 
 @Destination<RootGraph>
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = viewModel(),
-    navigator: DestinationsNavigator
+    viewModel: SearchViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator,
+    resultSearchResult: ResultRecipient<SearchResultScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultSearchResult.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {
+                Timber.d("SearchScreen: NavResult.Canceled")
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(SearchUiAction.OnRefresh)
+                }
+            }
+        }
+
+    }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -59,19 +81,35 @@ fun SearchScreen(
                 is SearchUiEvent.ShowError -> {
                     Toast.makeText(context, event.error, Toast.LENGTH_SHORT).show()
                 }
+
+                SearchUiEvent.ClearAllSearchRecent -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_deleted_successfully), Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
+
     Search(
         modifier = modifier,
         query = uiState.query,
+        listResult = uiState.listResult,
+        errorMessage = uiState.error,
         onQueryChange = { viewModel.onEvent(SearchUiAction.OnQueryChanged(it)) },
-        onNavigateBack = {
-            navigator.navigateUp()
+        onNavigateBack = { navigator.navigateUp() },
+        onSearch = { viewModel.onEvent(SearchUiAction.Search) },
+        onClearAll = { viewModel.onEvent(SearchUiAction.DeleteAllSearch) },
+        onSearchRecentClick = { query ->
+            viewModel.onEvent(
+                SearchUiAction.SearchWithQueryRecent(
+                    query
+                )
+            )
         },
-        onSearch = { viewModel.onEvent(SearchUiAction.Search) }
+        onDeleteQuery = { query -> viewModel.onEvent(SearchUiAction.DeleteSearch(query.query)) }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,10 +117,16 @@ fun SearchScreen(
 private fun Search(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
+    listResult: List<SearchQueryModel> = emptyList(),
     query: String = "",
+    errorMessage: String = "",
+    onClearAll: () -> Unit = {},
     onQueryChange: (String) -> Unit = {},
-    onSearch: () -> Unit = {}
+    onSearch: () -> Unit = {},
+    onSearchRecentClick: (String) -> Unit = {},
+    onDeleteQuery: (SearchQueryModel) -> Unit = {}
 ) {
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -91,12 +135,13 @@ private fun Search(
                     SearchTextField(
                         searchQuery = query,
                         onSearchQueryChange = onQueryChange,
+                        errorMessage = errorMessage,
                         placeholder = stringResource(R.string.txt_study_sets_folder_classes),
-                        onSearch = onSearch
-                    )
+                        onSearch = onSearch,
+
+                        )
                 },
-                expandedHeight = 140.dp,
-                collapsedHeight = 64.dp,
+                expandedHeight = 160.dp,
                 actions = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -112,25 +157,35 @@ private fun Search(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.txt_enter_a_topic_or_keywords),
-                    style = typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = colorScheme.onSurface.copy(alpha = 0.6f)
+            if (listResult.isEmpty()) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Text(
+                        text = stringResource(R.string.txt_enter_a_topic_or_keywords),
+                        style = typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
                     )
-                )
-                Text(
-                    text = stringResource(R.string.txt_tip_the_more_specific_the_better),
-                    style = typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = colorScheme.onSurface.copy(alpha = 0.6f)
+                    Text(
+                        text = stringResource(R.string.txt_tip_the_more_specific_the_better),
+                        style = typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
                     )
+                }
+            } else {
+                SearchRecentList(
+                    listResult = listResult,
+                    onSearchRecent = { query -> onSearchRecentClick(query) },
+                    onDelete = { query -> onDeleteQuery(query) },
+                    onClearAll = onClearAll
                 )
             }
         }
@@ -141,6 +196,15 @@ private fun Search(
 @Composable
 private fun SearchScreenPreview() {
     QuickMemTheme {
-        Search()
+        Search(
+            query = "",
+            listResult = emptyList(),
+            onQueryChange = {},
+            onSearch = {},
+            onClearAll = {},
+            onSearchRecentClick = {},
+            onNavigateBack = {},
+            onDeleteQuery = {}
+        )
     }
 }

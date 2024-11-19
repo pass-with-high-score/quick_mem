@@ -24,6 +24,8 @@ class SplashViewModel @Inject constructor(
     init {
         if (isInternetAvailable(getApplication())) {
             checkAuth()
+        } else {
+            _uiEvent.trySend(SplashUiEvent.NoInternet)
         }
     }
 

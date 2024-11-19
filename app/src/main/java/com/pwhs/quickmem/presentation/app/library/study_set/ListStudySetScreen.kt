@@ -50,7 +50,7 @@ fun ListStudySetScreen(
     isLoading: Boolean = false,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
-    onStudySetRefresh: () -> Unit = {},
+    onStudySetRefresh: () -> Unit = {}, 
     avatarUrl: String = "",
     username: String = "",
     isOwner: Boolean = false
