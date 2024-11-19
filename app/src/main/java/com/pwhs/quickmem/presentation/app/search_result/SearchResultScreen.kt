@@ -55,6 +55,7 @@ import com.ramcosta.composedestinations.generated.destinations.FolderDetailScree
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination<RootGraph>(
     navArgs = SearchResultArgs::class
@@ -63,7 +64,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun SearchResultScreen(
     modifier: Modifier = Modifier,
     viewModel: SearchResultViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    resultBackNavigator: ResultBackNavigator<Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -166,7 +168,7 @@ fun SearchResultScreen(
             )
         },
         onNavigateBack = {
-            navigator.navigateUp()
+            resultBackNavigator.navigateBack(true)
         },
         onResetClick = {
             viewModel.onEvent(SearchResultUiAction.ResetFilter)

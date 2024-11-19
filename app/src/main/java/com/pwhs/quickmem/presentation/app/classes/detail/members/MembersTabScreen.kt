@@ -33,8 +33,8 @@ fun MembersTabScreen(
                 member.isEmpty() -> {
                     ClassDetailEmpty(
                         modifier = Modifier.padding(innerPadding),
-                        title = "This class has no folders",
-                        subtitle = "Add folders to share them with your class.",
+                        title = "This class has no members",
+                        subtitle = "Add members to share them with your class.",
                         buttonTitle = "Add Members",
                         onAddClick = onAddMembersClicked,
                         isOwner = isOwner
