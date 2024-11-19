@@ -8,4 +8,5 @@ sealed class ClassDetailUiEvent {
     data class ShowError(val message: String) : ClassDetailUiEvent()
     data object ClassDeleted : ClassDetailUiEvent()
     data object NavigateToEditClass : ClassDetailUiEvent()
+    data object ExitClass : ClassDetailUiEvent()
 }

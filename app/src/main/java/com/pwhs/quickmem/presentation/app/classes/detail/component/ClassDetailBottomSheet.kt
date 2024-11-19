@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
@@ -22,10 +23,12 @@ import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBot
 @Composable
 fun ClassDetailBottomSheet(
     modifier: Modifier = Modifier,
-    isOwner:Boolean,
+    isOwner: Boolean,
     onAddStudySetToClass: () -> Unit = {},
     onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
+    onRemoveMembers: () -> Unit = {},
+    onExitClass: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onShareClass: () -> Unit = {},
     onReportClass: () -> Unit = {},
@@ -43,7 +46,7 @@ fun ClassDetailBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (isOwner){
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onAddStudySetToClass,
                         icon = Outlined.Add,
@@ -60,6 +63,21 @@ fun ClassDetailBottomSheet(
                         title = "Save and edit"
                     )
                 }
+                if (isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onRemoveMembers,
+                        icon = Default.DeleteOutline,
+                        title = "Remove members",
+                        color = Color.Black
+                    )
+                } else {
+                    ItemMenuBottomSheet(
+                        onClick = onExitClass,
+                        icon = Default.ExitToApp,
+                        title = "Exit Class",
+                        color = Color.Red
+                    )
+                }
                 ItemMenuBottomSheet(
                     onClick = onShareClass,
                     icon = Default.IosShare,
@@ -70,7 +88,7 @@ fun ClassDetailBottomSheet(
                     icon = Outlined.Report,
                     title = "Report Class"
                 )
-                if (isOwner){
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onDeleteClass,
                         icon = Default.DeleteOutline,
@@ -78,6 +96,7 @@ fun ClassDetailBottomSheet(
                         color = Color.Red
                     )
                 }
+
             }
         }
     }

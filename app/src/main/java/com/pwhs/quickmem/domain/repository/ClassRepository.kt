@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
+import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
@@ -55,5 +56,10 @@ interface ClassRepository {
     suspend fun joinClass(
         token: String,
         joinClassRequestModel: JoinClassRequestModel
+    ): Flow<Resources<Unit>>
+
+    suspend fun exitClass(
+        token: String,
+        exitClassRequestModel: ExitClassRequestModel
     ): Flow<Resources<Unit>>
 }

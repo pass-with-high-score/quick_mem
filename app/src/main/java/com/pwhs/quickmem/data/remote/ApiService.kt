@@ -26,6 +26,7 @@ import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
 import com.pwhs.quickmem.data.dto.classes.AddStudySetToClassesRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
+import com.pwhs.quickmem.data.dto.classes.ExitClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
 import com.pwhs.quickmem.data.dto.classes.JoinClassRequestDto
@@ -402,6 +403,12 @@ interface ApiService {
     suspend fun joinClass(
         @Header("Authorization") token: String,
         @Body joinClassRequestDto: JoinClassRequestDto
+    )
+
+    @POST("class/exit")
+    suspend fun exitClass(
+        @Header("Authorization") token: String,
+        @Body exitClassRequestDto: ExitClassRequestDto
     )
 
     // Streak

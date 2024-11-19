@@ -191,6 +191,11 @@ fun ClassDetailScreen(
                 ClassDetailUiEvent.OnNavigateToAddStudySets -> {
                     navigator.navigate(AddStudySetToClassScreenDestination(classId = uiState.id))
                 }
+
+                ClassDetailUiEvent.ExitClass -> {
+                    Toast.makeText(context, "Exit Class", Toast.LENGTH_SHORT).show()
+                    navigator.navigateUp()
+                }
             }
         }
     }
@@ -246,6 +251,12 @@ fun ClassDetailScreen(
                     code = ""
                 )
             )
+        },
+        onExitClass = {
+            viewModel.onEvent(ClassDetailUiAction.ExitClass)
+        },
+        onRemoveMembers = {
+            navigator.navigateUp()
         }
     )
 }
@@ -267,6 +278,8 @@ fun ClassDetail(
     onNavigateAddStudySets: () -> Unit = {},
     onNavigateToUserDetail: (String) -> Unit = {},
     onEditClass: () -> Unit = {},
+    onExitClass: () -> Unit = {},
+    onRemoveMembers: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
@@ -279,6 +292,7 @@ fun ClassDetail(
     var showMoreBottomSheet by remember { mutableStateOf(false) }
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    var showExitConfirmationDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Scaffold(
@@ -390,6 +404,22 @@ fun ClassDetail(
             dismissButtonTitle = "Cancel",
         )
     }
+
+    if (showExitConfirmationDialog) {
+        QuickMemAlertDialog(
+            onDismissRequest = {
+                showExitConfirmationDialog = false
+            },
+            onConfirm = {
+                onExitClass()
+                showExitConfirmationDialog = false
+            },
+            title = "Exit Class",
+            text = "Are you sure you want to exit this class?",
+            confirmButtonTitle = "Exit",
+            dismissButtonTitle = "Cancel",
+        )
+    }
     ClassDetailBottomSheet(
         onAddStudySetToClass = onNavigateAddStudySets,
         onAddFolderToClass = onNavigateAddFolder,
@@ -398,6 +428,11 @@ fun ClassDetail(
             showDeleteConfirmationDialog = true
             showMoreBottomSheet = false
         },
+        onExitClass = {
+            showExitConfirmationDialog = true
+            showMoreBottomSheet = false
+        },
+        onRemoveMembers = {},
         onShareClass = {},
         onReportClass = {},
         showMoreBottomSheet = showMoreBottomSheet,
