@@ -7,6 +7,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -89,8 +90,7 @@ class ClassDetailViewModel @Inject constructor(
             }
 
             is ClassDetailUiAction.ExitClass -> {
-                exitClass(classId = _uiState.value.id)
-                _uiEvent.trySend(ClassDetailUiEvent.ExitClass)
+                exitClass()
             }
 
             is ClassDetailUiAction.NavigateToRemoveMembers -> {
@@ -99,6 +99,10 @@ class ClassDetailViewModel @Inject constructor(
 
             is ClassDetailUiAction.OnDeleteMember -> {
                 removeMember(event.memberId)
+            }
+
+            ClassDetailUiAction.OnJoinClass -> {
+                joinClassByToken()
             }
         }
     }
@@ -120,7 +124,9 @@ class ClassDetailViewModel @Inject constructor(
                     is Resources.Success -> {
                         resource.data?.let { data ->
                             val isOwner = data.owner.id == appManager.userId.firstOrNull()
-                            val isMember = data.members?.any { it.id == appManager.userId.firstOrNull() } ?: false
+                            val isMember =
+                                data.members?.any { it.id == appManager.userId.firstOrNull() }
+                                    ?: false
                             _uiState.update {
                                 it.copy(
                                     title = data.title,
@@ -173,17 +179,17 @@ class ClassDetailViewModel @Inject constructor(
                             }
                             _uiEvent.send(ClassDetailUiEvent.ClassDeleted)
                         }
-
                     }
                 }
             }
         }
     }
 
-    private fun exitClass(classId: String) {
+    private fun exitClass() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
             classRepository.exitClass(token, ExitClassRequestModel(userId, classId))
                 .collectLatest { resource ->
                     when (resource) {
@@ -255,6 +261,43 @@ class ClassDetailViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun joinClassByToken() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            val joinClassCode = _uiState.value.joinClassCode
+            classRepository.joinClass(token, JoinClassRequestModel(joinClassCode, userId, classId))
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Error -> {
+                            Timber.e(resource.message)
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                        }
+
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+
+                        is Resources.Success -> {
+                            getClassByID()
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isMember = true
+                                )
+                            }
+                            _uiEvent.trySend(ClassDetailUiEvent.OnJoinClass)
+                        }
+                    }
+                }
         }
     }
 }
