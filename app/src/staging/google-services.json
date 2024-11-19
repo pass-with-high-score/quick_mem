@@ -45,9 +45,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:743857474439:android:8221f32bb78f3507286122",
+        "mobilesdk_app_id": "1:743857474439:android:9a9e4dd396aa9784286122",
         "android_client_info": {
-          "package_name": "com.pwhs.staging"
+          "package_name": "com.pwhs.quickmem.staging"
         }
       },
       "oauth_client": [],
