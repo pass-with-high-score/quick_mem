@@ -120,6 +120,7 @@ class ClassDetailViewModel @Inject constructor(
                     is Resources.Success -> {
                         resource.data?.let { data ->
                             val isOwner = data.owner.id == appManager.userId.firstOrNull()
+                            val isMember = data.members?.any { it.id == appManager.userId.firstOrNull() } ?: false
                             _uiState.update {
                                 it.copy(
                                     title = data.title,
@@ -127,6 +128,7 @@ class ClassDetailViewModel @Inject constructor(
                                     joinClassCode = data.joinToken,
                                     id = data.id,
                                     isLoading = false,
+                                    isMember = isMember,
                                     isOwner = isOwner,
                                     allowSet = data.allowSetManagement,
                                     allowMember = data.allowMemberManagement,

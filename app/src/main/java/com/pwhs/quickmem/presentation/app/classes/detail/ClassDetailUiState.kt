@@ -15,6 +15,7 @@ data class ClassDetailUiState(
     val isLoading: Boolean = false,
     val allowSet: Boolean = false,
     val allowMember: Boolean = false,
+    val isMember: Boolean = false,
     val userResponseModel: UserResponseModel = UserResponseModel(),
     val studySets: List<GetStudySetResponseModel> = emptyList(),
     val folders: List<GetFolderResponseModel> = emptyList(),

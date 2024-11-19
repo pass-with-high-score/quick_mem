@@ -208,6 +208,7 @@ fun ClassDetailScreen(
         modifier = modifier,
         linkShareCode = uiState.joinClassCode,
         isOwner = uiState.isOwner,
+        isMember = uiState.isMember,
         onRefresh = {
             viewModel.onEvent(ClassDetailUiAction.Refresh)
         },
@@ -272,6 +273,7 @@ fun ClassDetail(
     isOwner: Boolean,
     title: String = "",
     isLoading: Boolean = false,
+    isMember: Boolean = false,
     linkShareCode: String = "",
     userResponseModel: UserResponseModel = UserResponseModel(),
     studySets: List<GetStudySetResponseModel> = emptyList(),
@@ -444,7 +446,8 @@ fun ClassDetail(
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false },
-        isOwner = isOwner
+        isOwner = isOwner,
+        isMember = isMember
     )
 }
 

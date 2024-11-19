@@ -25,6 +25,7 @@ import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBot
 fun ClassDetailBottomSheet(
     modifier: Modifier = Modifier,
     isOwner: Boolean,
+    isMember: Boolean,
     onAddStudySetToClass: () -> Unit = {},
     onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
@@ -63,7 +64,7 @@ fun ClassDetailBottomSheet(
                         title = "Edit Class"
                     )
                 }
-                if (!isOwner) {
+                if (!isOwner && isMember) {
                     ItemMenuBottomSheet(
                         onClick = onExitClass,
                         icon = Icons.AutoMirrored.Filled.ExitToApp,
