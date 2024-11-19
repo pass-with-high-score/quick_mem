@@ -199,7 +199,7 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.OnNavigateToRemoveMembers -> {
-                    navigator.navigate(RemoveMemberScreenDestination(classId = uiState.id))
+
                 }
             }
         }
