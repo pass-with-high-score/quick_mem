@@ -19,10 +19,11 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun MembersTabScreen(
     modifier: Modifier = Modifier,
-    isOwner:Boolean,
+    isOwner: Boolean,
     member: List<ClassMemberModel> = emptyList(),
     onMembersItemClicked: (ClassMemberModel) -> Unit = {},
     onAddMembersClicked: () -> Unit = {},
+    onDeletedClicked: (String) -> Unit = {}
 ) {
     Scaffold { innerPadding ->
         Box(
@@ -51,7 +52,9 @@ fun MembersTabScreen(
                             ClassMemberItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 classMemberModel = member,
-                                onClicked = onMembersItemClicked
+                                onClicked = onMembersItemClicked,
+                                canDelete = isOwner,
+                                onDeleteClicked = onDeletedClicked
                             )
                         }
                     }
