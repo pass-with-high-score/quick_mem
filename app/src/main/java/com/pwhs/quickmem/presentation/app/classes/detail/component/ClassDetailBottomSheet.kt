@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -26,6 +27,7 @@ fun ClassDetailBottomSheet(
     modifier: Modifier = Modifier,
     isOwner: Boolean,
     isMember: Boolean,
+    isAllowMember: Boolean,
     onAddStudySetToClass: () -> Unit = {},
     onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
@@ -33,6 +35,7 @@ fun ClassDetailBottomSheet(
     onDeleteClass: () -> Unit = {},
     onShareClass: () -> Unit = {},
     onReportClass: () -> Unit = {},
+    onJoinClass: () -> Unit = {},
     showMoreBottomSheet: Boolean = false,
     sheetShowMoreState: SheetState = rememberModalBottomSheetState(),
     onDismissRequest: () -> Unit = {},
@@ -70,6 +73,14 @@ fun ClassDetailBottomSheet(
                         icon = Icons.AutoMirrored.Filled.ExitToApp,
                         title = "Exit Class",
                         color = Color.Red
+                    )
+                }
+
+                if(!isMember && isAllowMember){
+                    ItemMenuBottomSheet(
+                        onClick = onJoinClass,
+                        icon = Outlined.GroupAdd,
+                        title = "Join Class"
                     )
                 }
                 ItemMenuBottomSheet(
