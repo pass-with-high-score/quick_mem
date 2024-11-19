@@ -51,7 +51,6 @@ import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassS
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.RemoveMemberScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -261,7 +260,7 @@ fun ClassDetailScreen(
             viewModel.onEvent(ClassDetailUiAction.ExitClass)
         },
         onRemoveMembers = {
-            navigator.navigateUp()
+            viewModel.onEvent(ClassDetailUiAction.OnDeleteMember(it))
         }
     )
 }
@@ -284,7 +283,7 @@ fun ClassDetail(
     onNavigateToUserDetail: (String) -> Unit = {},
     onEditClass: () -> Unit = {},
     onExitClass: () -> Unit = {},
-    onRemoveMembers: () -> Unit = {},
+    onRemoveMembers: (String) -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
@@ -380,7 +379,10 @@ fun ClassDetail(
                             onMembersItemClicked = {
                                 onNavigateToUserDetail(it.id)
                             },
-                            isOwner = isOwner
+                            isOwner = isOwner,
+                            onDeletedClicked = {
+                                onRemoveMembers(it)
+                            }
                         )
                     }
 
@@ -437,7 +439,6 @@ fun ClassDetail(
             showExitConfirmationDialog = true
             showMoreBottomSheet = false
         },
-        onRemoveMembers = {},
         onShareClass = {},
         onReportClass = {},
         showMoreBottomSheet = showMoreBottomSheet,

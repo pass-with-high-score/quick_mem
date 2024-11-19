@@ -2,10 +2,11 @@ package com.pwhs.quickmem.presentation.app.classes.detail.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.Icons.Outlined
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.DeleteOutline
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
@@ -27,7 +28,6 @@ fun ClassDetailBottomSheet(
     onAddStudySetToClass: () -> Unit = {},
     onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
-    onRemoveMembers: () -> Unit = {},
     onExitClass: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onShareClass: () -> Unit = {},
@@ -60,19 +60,13 @@ fun ClassDetailBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onEditClass,
                         icon = Outlined.Edit,
-                        title = "Save and edit"
+                        title = "Edit Class"
                     )
                 }
-                if (isOwner) {
-                    ItemMenuBottomSheet(
-                        onClick = onRemoveMembers,
-                        icon = Default.DeleteOutline,
-                        title = "Remove members"
-                    )
-                } else {
+                if (!isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onExitClass,
-                        icon = Default.ExitToApp,
+                        icon = Icons.AutoMirrored.Filled.ExitToApp,
                         title = "Exit Class",
                         color = Color.Red
                     )

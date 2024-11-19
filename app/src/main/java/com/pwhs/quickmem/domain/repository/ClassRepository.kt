@@ -67,5 +67,5 @@ interface ClassRepository {
     suspend fun removeMembers(
         token: String,
         removeMembersRequestModel: RemoveMembersRequestModel
-    ):Flow<Resources<Unit>>
+    ): Flow<Resources<Unit>>
 }

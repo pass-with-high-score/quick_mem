@@ -420,7 +420,7 @@ interface ApiService {
         @Body exitClassRequestDto: ExitClassRequestDto
     )
 
-    @DELETE("class/members")
+    @POST("class/members")
     suspend fun removeMembers(
         @Header("Authorization") token: String,
         @Body removeMembersRequestDto: RemoveMembersRequestDto
