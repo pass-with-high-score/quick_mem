@@ -104,7 +104,6 @@ class ClassDetailViewModel @Inject constructor(
 
             ClassDetailUiAction.OnJoinClass -> {
                 joinClassByToken()
-                _uiEvent.trySend(ClassDetailUiEvent.OnJoinClass)
             }
         }
     }
@@ -281,14 +280,20 @@ class ClassDetailViewModel @Inject constructor(
                                 it.copy(isLoading = false)
                             }
                         }
+
                         is Resources.Loading -> {
                             _uiState.update {
                                 it.copy(isLoading = true)
                             }
                         }
+
                         is Resources.Success -> {
+                            getClassByID()
                             _uiState.update {
-                                it.copy(isLoading = false)
+                                it.copy(
+                                    isLoading = false,
+                                    isMember = true
+                                )
                             }
                             _uiEvent.trySend(ClassDetailUiEvent.OnJoinClass)
                         }
