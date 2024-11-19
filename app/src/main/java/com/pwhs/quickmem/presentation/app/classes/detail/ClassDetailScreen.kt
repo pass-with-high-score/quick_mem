@@ -456,7 +456,10 @@ fun ClassDetail(
         isOwner = isOwner,
         isMember = isMember,
         isAllowMember = isAllowMember,
-        onJoinClass = onJoinClass
+        onJoinClass = {
+            onJoinClass()
+            showMoreBottomSheet = false
+        }
     )
 }
 
