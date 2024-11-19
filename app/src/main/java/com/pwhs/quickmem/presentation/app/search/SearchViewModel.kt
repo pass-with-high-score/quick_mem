@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.domain.repository.SearchQueryRepository
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -75,7 +73,6 @@ class SearchViewModel @Inject constructor(
                 _uiState.update { it.copy(listResult = searches) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false) }
-                Timber.tag("SearchViewModel").e(e, "Error loading search history")
                 _uiEvent.send(SearchUiEvent.ShowError("Failed to load search history"))
             }
         }
@@ -99,7 +96,6 @@ class SearchViewModel @Inject constructor(
                 loadSearchHistory()
                 _uiEvent.trySend(SearchUiEvent.ClearAllSearchResent)
             } catch (e: Exception) {
-                Timber.tag("SearchViewModel").e(e, "Error clearing all search history")
                 _uiEvent.send(SearchUiEvent.ShowError("Failed to clear search history"))
             }
         }

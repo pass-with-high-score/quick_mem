@@ -40,16 +40,34 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchResultScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
+import timber.log.Timber
 
 @Destination<RootGraph>
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    resultSearchResult: ResultRecipient<SearchResultScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultSearchResult.onNavResult {  result ->
+        when(result) {
+            NavResult.Canceled -> {
+                Timber.d("SearchScreen: NavResult.Canceled")
+            }
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(SearchUiAction.OnRefresh)
+                }
+            }
+        }
+
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -61,14 +79,13 @@ fun SearchScreen(
                         )
                     )
                 }
+
                 is SearchUiEvent.ShowError -> {
                     Toast.makeText(context, event.error, Toast.LENGTH_SHORT).show()
                 }
+
                 SearchUiEvent.ClearAllSearchResent -> {
                     Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show()
-                }
-                SearchUiEvent.Loading -> {
-                    // Nếu cần xử lý thêm, có thể thêm logic tại đây
                 }
             }
         }
@@ -83,7 +100,13 @@ fun SearchScreen(
         onNavigateBack = { navigator.navigateUp() },
         onSearch = { viewModel.onEvent(SearchUiAction.Search) },
         onClearAll = { viewModel.onEvent(SearchUiAction.DeleteAllSearch) },
-        onSearchResentClick = { query -> viewModel.onEvent(SearchUiAction.SearchWithQueryResent(query)) },
+        onSearchResentClick = { query ->
+            viewModel.onEvent(
+                SearchUiAction.SearchWithQueryResent(
+                    query
+                )
+            )
+        },
         onRefresh = { viewModel.onEvent(SearchUiAction.OnRefresh) },
         onDeleteQuery = { query -> viewModel.onEvent(SearchUiAction.DeleteSearch(query.query)) }
     )

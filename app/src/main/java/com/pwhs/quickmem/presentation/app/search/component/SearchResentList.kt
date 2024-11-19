@@ -65,11 +65,11 @@ fun SearchResentList(
         }
 
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxSize()
         ) {
             items(listResult.asReversed()) { result ->
                 SearchRecentItem(
+                    modifier = Modifier.padding(top = 8.dp),
                     query = result.query,
                     onSearchResent = onSearchResent,
                     onDelete = { onDelete(result) }
@@ -79,7 +79,7 @@ fun SearchResentList(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun PreviewListSearchResent() {
     val sampleData = listOf(
@@ -92,14 +92,5 @@ fun PreviewListSearchResent() {
 
     SearchResentList(
         listResult = sampleData,
-        onClearAll = {
-
-        },
-        onSearchResent = { query ->
-
-        },
-        onDelete = { query ->
-
-        }
     )
 }

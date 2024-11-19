@@ -20,7 +20,7 @@ class SearchQueryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getRecentSearches(limit: Int): List<SearchQueryModel> {
-        return searchQueryDao.getRecentSearches(limit).map { it.toModel() }
+        return searchQueryDao.getRecentSearches(limit).map { it.toModel() }.reversed()
     }
 
     override suspend fun clearSearchHistory() {
