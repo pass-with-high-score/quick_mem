@@ -123,25 +123,14 @@ class HomeViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         val streaks = resource.data?.streaks ?: emptyList()
-
-                        // trừ đi 1 ngày vì lịch UTC
-//                        val today = LocalDate.now().minusDays(1)
-                        val today = LocalDate.now()
-
-                        val currentStreak = streaks.find {
-                            OffsetDateTime.parse(it.date).toLocalDate() == today
-                        }
-
-                        val streakDates = currentStreak?.let {
-                            calculateStreakDates(it)
-                        } ?: emptyList()
+                        val streakDates = calculateStreakDates(streaks)
 
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             streaks = streaks,
                             streakDates = streakDates
                         )
-                        Timber.d("Date: $streakDates")
+                        Timber.d("Dates: $streakDates")
                     }
 
                     is Resources.Error -> {
@@ -152,12 +141,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun calculateStreakDates(streak: StreakModel): List<LocalDate> {
-        val firstStreakDate = OffsetDateTime.parse(streak.date).toLocalDate()
-
-        return (0 until streak.streakCount).map {
-            firstStreakDate.minusDays(it.toLong())
-        }
+    private fun calculateStreakDates(streaks: List<StreakModel>): List<LocalDate> {
+        return streaks.flatMap { streak ->
+            val firstStreakDate = OffsetDateTime.parse(streak.date).toLocalDate()
+            (0 until streak.streakCount).map {
+                firstStreakDate.minusDays(it.toLong())
+            }
+        }.distinct()
     }
 
     private fun updateStreak() {
@@ -175,6 +165,7 @@ class HomeViewModel @Inject constructor(
                             isLoading = false,
                             streakCount = resource.data?.streakCount ?: 0
                         )
+                        Timber.d("Streak count: ${resource.data?.streakCount}")
                     }
 
                     is Resources.Error -> {
