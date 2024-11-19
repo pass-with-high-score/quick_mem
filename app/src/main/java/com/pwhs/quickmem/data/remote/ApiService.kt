@@ -30,6 +30,7 @@ import com.pwhs.quickmem.data.dto.classes.ExitClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
 import com.pwhs.quickmem.data.dto.classes.JoinClassRequestDto
+import com.pwhs.quickmem.data.dto.classes.RemoveMembersRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
@@ -417,6 +418,12 @@ interface ApiService {
     suspend fun exitClass(
         @Header("Authorization") token: String,
         @Body exitClassRequestDto: ExitClassRequestDto
+    )
+
+    @POST("class/members")
+    suspend fun removeMembers(
+        @Header("Authorization") token: String,
+        @Body removeMembersRequestDto: RemoveMembersRequestDto
     )
 
     // Streak

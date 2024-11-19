@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -66,6 +67,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
 import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
+import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -75,6 +77,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -96,6 +99,7 @@ fun HomeScreen(
     Home(
         modifier = modifier,
         streakCount = uiState.streakCount,
+        streakDates = uiState.streakDates,
         notificationCount = uiState.notificationCount,
         onNavigateToSearch = {
             navigator.navigate(SearchScreenDestination)
@@ -110,7 +114,7 @@ fun HomeScreen(
         notifications = uiState.notifications,
         onNotificationClicked = { notificationId ->
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
-        }
+        },
     )
 }
 
@@ -120,6 +124,8 @@ fun HomeScreen(
 private fun Home(
     modifier: Modifier = Modifier,
     streakCount: Int = 0,
+    streakDates: List<LocalDate> = emptyList(),
+    currentDate: LocalDate = LocalDate.now(),
     notificationCount: Int = 0,
     onNavigateToSearch: () -> Unit = {},
     onNotificationEnabled: (Boolean) -> Unit = {},
@@ -308,8 +314,9 @@ private fun Home(
             }
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            Text("Home Screen")
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             Text(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
@@ -330,31 +337,45 @@ private fun Home(
                 showStreakBottomSheet = false
             },
             sheetState = streakBottomSheet,
+            dragHandle = {}
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxHeight(0.65f)
                     .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    LottieAnimation(
-                        composition = composition,
-                        progress = { progress },
-                        modifier = Modifier
-                            .width(150.dp)
-                            .height(150.dp)
+                LottieAnimation(
+                    composition = composition,
+                    progress = { progress },
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(150.dp)
+                )
+                Text(
+                    text = streakCount.toString(),
+                    style = typography.titleLarge.copy(
+                        color = Color(0xFFf2ac40),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 52.sp
                     )
-                    Text(
-                        text = stringResource(R.string.txt_streak_count, streakCount),
-                        style = typography.titleLarge.copy(
-                            color = colorScheme.primary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
+                )
+                Text(
+                    text = "day streak",
+                    style = typography.titleLarge.copy(
+                        color = Color(0xFFf2ac40),
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = "Practice every day so you don't lose your streak!",
+                    modifier.padding(top = 16.dp)
+                )
+                StreakCalendar(
+                    currentDate = currentDate,
+                    streakDates = streakDates
+                )
             }
         }
     }
@@ -385,7 +406,13 @@ private fun Home(
 private fun HomeScreenPreview() {
     QuickMemTheme {
         Home(
-            streakCount = 5
+            streakCount = 5,
+            currentDate = LocalDate.now(),
+            streakDates = listOf(
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(3)
+            )
         )
     }
 }

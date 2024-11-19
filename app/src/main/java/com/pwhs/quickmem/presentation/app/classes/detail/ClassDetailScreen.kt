@@ -196,6 +196,10 @@ fun ClassDetailScreen(
                     Toast.makeText(context, "Exit Class", Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
                 }
+
+                ClassDetailUiEvent.OnNavigateToRemoveMembers -> {
+
+                }
             }
         }
     }
@@ -256,7 +260,7 @@ fun ClassDetailScreen(
             viewModel.onEvent(ClassDetailUiAction.ExitClass)
         },
         onRemoveMembers = {
-            navigator.navigateUp()
+            viewModel.onEvent(ClassDetailUiAction.OnDeleteMember(it))
         }
     )
 }
@@ -279,7 +283,7 @@ fun ClassDetail(
     onNavigateToUserDetail: (String) -> Unit = {},
     onEditClass: () -> Unit = {},
     onExitClass: () -> Unit = {},
-    onRemoveMembers: () -> Unit = {},
+    onRemoveMembers: (String) -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
@@ -375,7 +379,10 @@ fun ClassDetail(
                             onMembersItemClicked = {
                                 onNavigateToUserDetail(it.id)
                             },
-                            isOwner = isOwner
+                            isOwner = isOwner,
+                            onDeletedClicked = {
+                                onRemoveMembers(it)
+                            }
                         )
                     }
 
@@ -432,7 +439,6 @@ fun ClassDetail(
             showExitConfirmationDialog = true
             showMoreBottomSheet = false
         },
-        onRemoveMembers = {},
         onShareClass = {},
         onReportClass = {},
         showMoreBottomSheet = showMoreBottomSheet,

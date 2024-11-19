@@ -7,6 +7,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -66,30 +67,38 @@ class ClassDetailViewModel @Inject constructor(
                 getClassByID()
             }
 
-            ClassDetailUiAction.NavigateToWelcomeClicked -> {
+            is ClassDetailUiAction.NavigateToWelcomeClicked -> {
                 _uiEvent.trySend(ClassDetailUiEvent.NavigateToWelcome)
             }
 
-            ClassDetailUiAction.DeleteClass -> {
+            is ClassDetailUiAction.DeleteClass -> {
                 deleteClass(id = _uiState.value.id)
                 _uiEvent.trySend(ClassDetailUiEvent.ClassDeleted)
             }
 
-            ClassDetailUiAction.EditClass -> {
+            is ClassDetailUiAction.EditClass -> {
                 _uiEvent.trySend(ClassDetailUiEvent.NavigateToEditClass)
             }
 
-            ClassDetailUiAction.OnNavigateToAddFolder -> {
+            is ClassDetailUiAction.OnNavigateToAddFolder -> {
                 _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddFolder)
             }
 
-            ClassDetailUiAction.OnNavigateToAddStudySets -> {
+            is ClassDetailUiAction.OnNavigateToAddStudySets -> {
                 _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToAddStudySets)
             }
 
-            ClassDetailUiAction.ExitClass -> {
+            is ClassDetailUiAction.ExitClass -> {
                 exitClass(classId = _uiState.value.id)
                 _uiEvent.trySend(ClassDetailUiEvent.ExitClass)
+            }
+
+            is ClassDetailUiAction.NavigateToRemoveMembers -> {
+                _uiEvent.trySend(ClassDetailUiEvent.OnNavigateToRemoveMembers)
+            }
+
+            is ClassDetailUiAction.OnDeleteMember -> {
+                removeMember(event.memberId)
             }
         }
     }
@@ -169,12 +178,53 @@ class ClassDetailViewModel @Inject constructor(
         }
     }
 
-    private fun exitClass(classId:String) {
+    private fun exitClass(classId: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            classRepository.exitClass(token, ExitClassRequestModel(userId, classId)).collectLatest { resource ->
-                when(resource){
+            classRepository.exitClass(token, ExitClassRequestModel(userId, classId))
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Error -> {
+                            Timber.e(resource.message)
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
+                        }
+
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+
+                        is Resources.Success -> {
+                            resource.data?.let {
+                                Timber.d("Exited this class")
+                                _uiState.update {
+                                    it.copy(isLoading = false)
+                                }
+                                _uiEvent.send(ClassDetailUiEvent.ExitClass)
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun removeMember(memberId: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            val userId = appManager.userId.firstOrNull() ?: ""
+            classRepository.removeMembers(
+                token, RemoveMembersRequestModel(
+                    userId = userId,
+                    classId = classId,
+                    memberIds = listOf(memberId)
+                )
+            ).collectLatest { resource ->
+                when (resource) {
                     is Resources.Error -> {
                         Timber.e(resource.message)
                         _uiState.update {
@@ -189,12 +239,16 @@ class ClassDetailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
+                        val members = _uiState.value.members.toMutableList()
+                        members.removeAll { it.id == memberId }
                         resource.data?.let {
-                            Timber.d("Exited this class")
+                            Timber.d("Member removed")
                             _uiState.update {
-                                it.copy(isLoading = false)
+                                it.copy(
+                                    isLoading = false,
+                                    members = members
+                                )
                             }
-                            _uiEvent.send(ClassDetailUiEvent.ExitClass)
                         }
                     }
                 }
