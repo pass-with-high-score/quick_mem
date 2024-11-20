@@ -48,6 +48,10 @@ class ProfileViewModel @Inject constructor(
             ProfileUiAction.Refresh -> {
                 loadProfile()
             }
+
+            ProfileUiAction.OnNavigateToViewAllAchievements -> {
+                _uiEvent.trySend(ProfileUiEvent.OnNavigateToViewAllAchievements)
+            }
         }
     }
 

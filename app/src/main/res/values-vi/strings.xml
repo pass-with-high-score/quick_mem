@@ -248,4 +248,6 @@
     <string name="txt_recent">Lịch sử tìm kiếm</string>
     <string name="txt_clear_all">Xóa tất cả</string>
     <string name="txt_deleted_successfully">Đã xóa thành công</string>
+    <string name="txt_achievements">Thành tựu</string>
+    <string name="txt_viewall">Xem tất cả</string>
 </resources>
