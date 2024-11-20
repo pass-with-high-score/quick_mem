@@ -47,9 +47,11 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.states.WrongAnswer
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.StudySetDonutChart
-import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.WrongAnswer
 import com.pwhs.quickmem.presentation.component.ViewImageDialog
+import com.pwhs.quickmem.ui.theme.correctColor
+import com.pwhs.quickmem.ui.theme.incorrectColor
 import com.pwhs.quickmem.util.toStringTime
 
 @Composable
@@ -64,8 +66,6 @@ fun QuizFlashCardFinish(
     onContinueLearningClicked: () -> Unit,
     listWrongAnswer: List<WrongAnswer>,
     onRestartClicked: () -> Unit,
-    wrongColor: Color,
-    correctColor: Color
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
     val progress by animateLottieCompositionAsState(
@@ -335,7 +335,7 @@ fun QuizFlashCardFinish(
                         Text(
                             text = "Your Answer: ${it.userAnswer}",
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                color = wrongColor
+                                color = incorrectColor
                             )
                         )
                     }

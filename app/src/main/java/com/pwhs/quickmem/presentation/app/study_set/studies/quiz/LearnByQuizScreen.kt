@@ -38,7 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pwhs.quickmem.core.data.QuizStatus
+import com.pwhs.quickmem.core.data.enums.QuizStatus
+import com.pwhs.quickmem.core.data.states.RandomAnswer
+import com.pwhs.quickmem.core.data.states.WrongAnswer
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component.QuizFlashCardFinish
 import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component.QuizView
@@ -126,8 +128,6 @@ fun LearnByQuiz(
     onContinueLearningClicked: () -> Unit = {},
     onRestartClicked: () -> Unit = {}
 ) {
-    val incorrectColor = Color(0xFF860010)
-    val correctColor = Color(0xFF6c9184)
     var canResetState by remember { mutableStateOf(false) }
     val showHintBottomSheet = remember { mutableStateOf(false) }
     val hintBottomSheetState = rememberModalBottomSheetState()
@@ -155,20 +155,20 @@ fun LearnByQuiz(
                     }
                 },
                 actions = {
-                    if (!flashCard?.hint.isNullOrEmpty()) {
-                        IconButton(
-                            onClick = {
-                                showHintBottomSheet.value = true
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Default.LightMode,
-                                contentDescription = "Hint",
-                                tint = studySetColor
-                            )
-                        }
-                    }
                     if (!isEndOfList) {
+                        if (!flashCard?.hint.isNullOrEmpty()) {
+                            IconButton(
+                                onClick = {
+                                    showHintBottomSheet.value = true
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Default.LightMode,
+                                    contentDescription = "Hint",
+                                    tint = studySetColor
+                                )
+                            }
+                        }
                         IconButton(
                             onClick = onRestartClicked
                         ) {
@@ -234,8 +234,6 @@ fun LearnByQuiz(
                                     .fillMaxSize(),
                                 flashCard = flashCard,
                                 randomAnswer = randomAnswers,
-                                correctColor = correctColor,
-                                incorrectColor = incorrectColor,
                                 onCorrectAnswer = { status, userAnswer ->
                                     selectedAnswer = userAnswer
                                     onCorrectAnswer(flashCard.id, status, userAnswer)
@@ -263,8 +261,6 @@ fun LearnByQuiz(
                                 onRestartClicked()
                             },
                             listWrongAnswer = listWrongAnswer,
-                            wrongColor = incorrectColor,
-                            correctColor = correctColor
                         )
                     }
                 }

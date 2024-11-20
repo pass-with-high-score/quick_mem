@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.quiz
 
-import com.pwhs.quickmem.core.data.QuizStatus
+import com.pwhs.quickmem.core.data.enums.QuizStatus
 
 sealed class LearnByQuizUiAction {
     data object LoadNextFlashCard : LearnByQuizUiAction()

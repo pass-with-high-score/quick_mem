@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.core.data
+package com.pwhs.quickmem.core.data.enums
 
 enum class Rating { // TODO: Clean up this enum
     MASTERED,

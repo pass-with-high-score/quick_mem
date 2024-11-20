@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.RandomAnswer
+import com.pwhs.quickmem.core.data.states.RandomAnswer
 import com.pwhs.quickmem.presentation.component.ViewImageDialog
 
 @Composable

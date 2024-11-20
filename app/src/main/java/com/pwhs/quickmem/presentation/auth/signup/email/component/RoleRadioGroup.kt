@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.UserRole
+import com.pwhs.quickmem.core.data.enums.UserRole
 import com.pwhs.quickmem.util.upperCaseFirstLetter
 
 @Composable

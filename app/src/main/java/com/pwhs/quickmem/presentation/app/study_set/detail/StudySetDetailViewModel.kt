@@ -3,7 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.data.ResetType
+import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources

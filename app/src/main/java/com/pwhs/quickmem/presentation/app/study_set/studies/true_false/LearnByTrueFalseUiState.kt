@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.studies.quiz
+package com.pwhs.quickmem.presentation.app.study_set.studies.true_false
 
 import com.pwhs.quickmem.core.data.states.RandomAnswer
 import com.pwhs.quickmem.core.data.states.WrongAnswer
@@ -6,7 +6,7 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 
-data class LearnFlashCardUiState(
+data class LearnByTrueFalseUiState(
     val isLoading: Boolean = false,
     val studySetId: String = "",
     val studySetTitle: String = "",

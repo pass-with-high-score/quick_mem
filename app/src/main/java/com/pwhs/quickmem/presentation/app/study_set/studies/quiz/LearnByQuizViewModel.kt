@@ -6,9 +6,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.LearnMode
-import com.pwhs.quickmem.core.data.QuizStatus
-import com.pwhs.quickmem.core.data.ResetType
+import com.pwhs.quickmem.core.data.enums.LearnMode
+import com.pwhs.quickmem.core.data.enums.QuizStatus
+import com.pwhs.quickmem.core.data.enums.ResetType
+import com.pwhs.quickmem.core.data.states.RandomAnswer
+import com.pwhs.quickmem.core.data.states.WrongAnswer
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel

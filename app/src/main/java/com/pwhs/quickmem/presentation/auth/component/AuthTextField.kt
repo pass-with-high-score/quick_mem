@@ -31,7 +31,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.TextFieldType
+import com.pwhs.quickmem.core.data.enums.TextFieldType
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.upperCaseFirstLetter
 

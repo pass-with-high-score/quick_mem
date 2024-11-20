@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.presentation.app.settings
 
-import com.pwhs.quickmem.core.data.LanguageCode
+import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.revenuecat.purchases.CustomerInfo
 
 data class SettingUiState(

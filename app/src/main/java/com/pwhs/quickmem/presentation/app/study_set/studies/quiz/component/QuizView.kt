@@ -18,21 +18,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.core.data.QuizStatus
+import com.pwhs.quickmem.core.data.enums.QuizStatus
+import com.pwhs.quickmem.core.data.states.RandomAnswer
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
-import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.RandomAnswer
+import com.pwhs.quickmem.ui.theme.correctColor
+import com.pwhs.quickmem.ui.theme.incorrectColor
 
 @Composable
 fun QuizView(
     modifier: Modifier = Modifier,
     flashCard: FlashCardResponseModel,
     randomAnswer: List<RandomAnswer> = emptyList(),
-    correctColor: Color = MaterialTheme.colorScheme.primary,
-    incorrectColor: Color = MaterialTheme.colorScheme.error,
     onCorrectAnswer: (QuizStatus, String) -> Unit,
     canResetState: Boolean = false
 ) {

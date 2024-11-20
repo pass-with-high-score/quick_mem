@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.FlipCardStatus
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel

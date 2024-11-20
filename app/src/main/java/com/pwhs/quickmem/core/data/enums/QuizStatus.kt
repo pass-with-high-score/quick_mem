@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.core.data
+package com.pwhs.quickmem.core.data.enums
 
 enum class QuizStatus(val status: String) {
     NONE("none"),

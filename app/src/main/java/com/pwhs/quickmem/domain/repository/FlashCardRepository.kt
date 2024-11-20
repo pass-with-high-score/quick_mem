@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.domain.repository
 
-import com.pwhs.quickmem.core.data.LearnMode
+import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
 import com.pwhs.quickmem.domain.model.flashcard.EditFlashCardModel

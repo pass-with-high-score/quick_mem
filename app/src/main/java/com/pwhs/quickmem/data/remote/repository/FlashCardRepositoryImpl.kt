@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.data.remote.repository
 
-import com.pwhs.quickmem.core.data.LearnMode
+import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.QuizStatusFlashCardDto
