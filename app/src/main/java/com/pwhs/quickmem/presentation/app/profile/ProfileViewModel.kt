@@ -37,13 +37,14 @@ class ProfileViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        loadProfile()
         getUserProfile()
         getCustomerInfo()
     }
 
     fun onEvent(event: ProfileUiAction) {
         when (event) {
-            is ProfileUiAction.LoadProfile -> getUserProfile()
+            is ProfileUiAction.LoadProfile -> loadProfile()
             is ProfileUiAction.OnChangeCustomerInfo -> {
                 _uiState.update {
                     it.copy(
@@ -53,7 +54,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             ProfileUiAction.Refresh -> {
-                getUserProfile()
+                loadProfile()
             }
         }
     }
@@ -78,24 +79,14 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            authRepository.getUserProfile(token, userId).collectLatest { resouce ->
-                when(resouce){
-                    is Resources.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false
-                            )
-                        }
-                    }
+
+            authRepository.getUserProfile(token, userId).collectLatest { resource ->
+                when (resource) {
                     is Resources.Loading -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = true
-                            )
-                        }
+                        _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resources.Success -> {
-                        resouce.data?.let { data->
+                        resource.data?.let { data ->
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -103,9 +94,38 @@ class ProfileViewModel @Inject constructor(
                                     userAvatar = data.avatarUrl
                                 )
                             }
+                            appManager.saveUserName(data.username)
+                            appManager.saveUserAvatar(data.avatarUrl)
                         }
                     }
+                    is Resources.Error -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                        Timber.e("Error fetching profile: ${resource.message}")
+                    }
                 }
+            }
+        }
+    }
+
+    private fun loadProfile() {
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launch {
+            try {
+                launch {
+                    appManager.userName.collectLatest { username ->
+                        _uiState.update { it.copy(username = username) }
+                    }
+                }
+
+                launch {
+                    appManager.userAvatar.collectLatest { avatarUrl ->
+                        _uiState.update { it.copy(userAvatar = avatarUrl) }
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error observing DataStore")
             }
         }
     }

@@ -141,6 +141,12 @@ interface ApiService {
         @Query("isOwner") isOwner: Boolean
     ): UserDetailResponseDto
 
+    @GET("auth/profile/{id}")
+    suspend fun getUserProfile(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String
+    ): GetUserProfileResponseDto
+
     //Update Avatar
     @PATCH("auth/user/avatar/{id}")
     suspend fun updateAvatar(
@@ -466,10 +472,4 @@ interface ApiService {
         @Path("id") notificationId: String
     )
 
-    //Profile
-    @GET("auth/profile/{id}")
-    suspend fun getUserProfile(
-        @Header("Authorization") token: String,
-        @Path("id") userId: String
-    ): GetUserProfileResponseDto
 }
