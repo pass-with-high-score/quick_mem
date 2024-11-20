@@ -277,7 +277,13 @@ fun StudySetDetailScreen(
         },
         onNavigateToTrueFalse = {
             navigator.navigate(
-                LearnByTrueFalseScreenDestination
+                LearnByTrueFalseScreenDestination(
+                    studySetId = uiState.id,
+                    studySetTitle = uiState.title,
+                    studySetDescription = uiState.description,
+                    studySetColorId = uiState.colorModel.id,
+                    studySetSubjectId = uiState.subject.id,
+                )
             )
         },
         onNavigateToWrite = {
