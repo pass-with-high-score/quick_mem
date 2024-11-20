@@ -17,14 +17,21 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 @Destination<RootGraph>
 @Composable
 fun ReportScreen(
     reportType: ReportTypeEnum,
-    navigator: DestinationsNavigator
+    userID: String,
+    userName: String,
+    navigator: DestinationsNavigator,
 ) {
     var selectedReason by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Report(
         title = reportType.title,
@@ -32,7 +39,33 @@ fun ReportScreen(
         options = reportType.options,
         selectedReason = selectedReason,
         onReasonSelected = { selectedReason = it },
-        onContinue = {},
+        onContinue = {
+            if (selectedReason.isNotEmpty()) {
+                val body = """
+                Reason for reporting: $selectedReason
+                User ID: $userID
+                User Name: $userName
+                """.trimIndent()
+                Toast.makeText(context, "Body: $body", Toast.LENGTH_LONG).show()
+                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse("mailto:report@quickmem.app")
+                    putExtra(Intent.EXTRA_SUBJECT, "Report")
+                    putExtra(Intent.EXTRA_TEXT, body)
+                }
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(
+                        context,
+                        "There is no email application on this device.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                Toast.makeText(context, "Please select a reason for reporting.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        },
         onBackClick = { navigator.popBackStack() }
     )
 }

@@ -316,7 +316,9 @@ fun StudySetDetailScreen(
         onReportClick = {
             navigator.navigate(
                 ReportScreenDestination(
-                    reportType = ReportTypeEnum.STUDY_SET
+                    reportType = ReportTypeEnum.STUDY_SET,
+                    userID = uiState.user.id,
+                    userName = uiState.user.username
                 )
             )
         }

@@ -57,9 +57,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import timber.log.Timber
@@ -171,7 +171,9 @@ fun UserDetailScreen(
         onReportClick = {
             navigator.navigate(
                 ReportScreenDestination(
-                    reportType = ReportTypeEnum.USER_DETAIL
+                    reportType = ReportTypeEnum.USER_DETAIL,
+                    userID = uiState.userId,
+                    userName = uiState.userName
                 )
             )
         }
