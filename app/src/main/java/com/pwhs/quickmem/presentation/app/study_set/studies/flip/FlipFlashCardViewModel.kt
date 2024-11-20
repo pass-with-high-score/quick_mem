@@ -172,7 +172,7 @@ class FlipFlashCardViewModel @Inject constructor(
             flashCardRepository.getFlashCardsByStudySetId(
                 token = token,
                 studySetId = _uiState.value.studySetId,
-                learnMode = LearnMode.flip
+                learnMode = LearnMode.FLIP
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
@@ -237,7 +237,7 @@ class FlipFlashCardViewModel @Inject constructor(
             studySetRepository.resetProgress(
                 token,
                 _uiState.value.studySetId,
-                resetType = ResetType.flipStatus.name
+                resetType = ResetType.FLIP_STATUS.type
             )
                 .collect { resource ->
                     when (resource) {

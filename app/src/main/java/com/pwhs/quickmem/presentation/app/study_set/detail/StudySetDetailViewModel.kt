@@ -198,7 +198,7 @@ class StudySetDetailViewModel @Inject constructor(
     private fun resetProgress(id: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            studySetRepository.resetProgress(token, id, resetType = ResetType.resetAll.name)
+            studySetRepository.resetProgress(token, id, resetType = ResetType.RESET_ALL.type)
                 .collect { resource ->
                     when (resource) {
                         is Resources.Loading -> {

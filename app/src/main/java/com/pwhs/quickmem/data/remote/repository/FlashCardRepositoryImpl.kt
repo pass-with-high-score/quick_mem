@@ -3,6 +3,7 @@ package com.pwhs.quickmem.data.remote.repository
 import com.pwhs.quickmem.core.data.LearnMode
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.QuizStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.mapper.flashcard.toDto
@@ -152,6 +153,27 @@ class FlashCardRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateQuizStatus(
+        token: String,
+        id: String,
+        quizStatus: String
+    ): Flow<Resources<UpdateFlashCardResponseModel>> {
+        return flow {
+            try {
+                val response =
+                    apiService.updateQuizStatus(token, id, QuizStatusFlashCardDto(quizStatus))
+                Timber.d("updateQuizStatus: $response")
+                emit(Resources.Success(response.toModel()))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
     override suspend fun getFlashCardsByStudySetId(
         token: String,
         studySetId: String,
@@ -163,9 +185,8 @@ class FlashCardRepositoryImpl @Inject constructor(
                 val response = apiService.getFlashCardsByStudySetId(
                     token = token,
                     id = studySetId,
-                    learnMode = learnMode.name
+                    learnMode = learnMode.mode
                 )
-                Timber.d("getFlashCardsByStudySetId: $response")
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: HttpException) {
                 Timber.e(e)
