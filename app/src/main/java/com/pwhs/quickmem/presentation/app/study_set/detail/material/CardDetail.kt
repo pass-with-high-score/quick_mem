@@ -47,7 +47,8 @@ fun CardDetail(
     isStarred: Boolean = true,
     onToggleStarClick: (Boolean) -> Unit = { },
     onMenuClick: () -> Unit = {},
-    imageURL: String? = null
+    imageURL: String? = null,
+    isOwner: Boolean = false
 ) {
     // TextToSpeech state
     val context = LocalContext.current
@@ -120,20 +121,22 @@ fun CardDetail(
                             }
                         )
                     }
-                    AnimatedContent(
-                        targetState = isStarred,
-                    ) { targetState ->
-                        IconButton(
-                            onClick = {
-                                onToggleStarClick(!targetState)
+                    if (isOwner) {
+                        AnimatedContent(
+                            targetState = isStarred,
+                        ) { targetState ->
+                            IconButton(
+                                onClick = {
+                                    onToggleStarClick(!targetState)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (targetState) Default.Star else Default.StarBorder,
+                                    contentDescription = stringResource(R.string.txt_star),
+                                    tint = Color(0xFFE0A800),
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = if (targetState) Default.Star else Default.StarBorder,
-                                contentDescription = stringResource(R.string.txt_star),
-                                tint = Color(0xFFE0A800),
-                                modifier = Modifier.size(24.dp)
-                            )
                         }
                     }
                 }
