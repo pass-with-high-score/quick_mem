@@ -1,6 +1,8 @@
 package com.pwhs.quickmem.util
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -50,4 +52,22 @@ fun Context.updateLocale(languageCode: String) {
     val config = Configuration(resources.configuration)
     config.setLocale(locale)
     resources.updateConfiguration(config, resources.displayMetrics)
+}
+
+fun Context.changeAppIcon(aliasToEnable: String) {
+    val pm = this.packageManager
+    val aliases = listOf("$packageName.MainActivity", "$packageName.MainActivityAlias")
+
+    aliases.forEach { alias ->
+        val state = if (alias == aliasToEnable)
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        else
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+
+        pm.setComponentEnabledSetting(
+            ComponentName(this, alias),
+            state,
+            PackageManager.DONT_KILL_APP
+        )
+    }
 }
