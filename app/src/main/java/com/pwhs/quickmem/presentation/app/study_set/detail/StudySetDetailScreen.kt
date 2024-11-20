@@ -38,13 +38,13 @@ import com.pwhs.quickmem.core.data.FlipCardStatus
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.StudySetDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.StudySetMoreOptionsBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.detail.material.MaterialTabScreen
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabScreen
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
-import com.pwhs.quickmem.presentation.report.ReportTypeEnum
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassesScreenDestination

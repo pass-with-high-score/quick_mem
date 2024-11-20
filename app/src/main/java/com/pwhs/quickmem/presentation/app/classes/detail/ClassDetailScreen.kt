@@ -42,9 +42,9 @@ import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTo
 import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.study_sets.StudySetsTabScreen
+import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
-import com.pwhs.quickmem.presentation.report.ReportTypeEnum
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph

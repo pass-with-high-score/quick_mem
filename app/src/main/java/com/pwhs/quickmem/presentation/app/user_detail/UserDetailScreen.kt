@@ -50,8 +50,8 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
+import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
-import com.pwhs.quickmem.presentation.report.ReportTypeEnum
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph

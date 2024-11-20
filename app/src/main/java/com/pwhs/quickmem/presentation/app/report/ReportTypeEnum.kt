@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.report
+package com.pwhs.quickmem.presentation.app.report
 
 enum class ReportTypeEnum(
     val title: String,

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.report
+package com.pwhs.quickmem.presentation.app.report
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -46,7 +46,6 @@ fun ReportScreen(
                 User ID: $userID
                 User Name: $userName
                 """.trimIndent()
-                Toast.makeText(context, "Body: $body", Toast.LENGTH_LONG).show()
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:report@quickmem.app")
                     putExtra(Intent.EXTRA_SUBJECT, "Report")
