@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.profile
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -119,10 +122,7 @@ fun ProfileScreen(
         },
         customerInfo = uiState.customerInfo,
         streakCount = homeState.streakCount,
-        streakDates = homeState.streakDates,
-        onViewAllAchievement = {
-
-        }
+        streakDates = homeState.streakDates
     )
 }
 
@@ -146,12 +146,6 @@ fun Profile(
     var isPaywallVisible by remember {
         mutableStateOf(false)
     }
-
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fire_streak))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever,
-    )
 
     val refreshState = rememberPullToRefreshState()
     Scaffold(
@@ -301,24 +295,6 @@ fun Profile(
                                 fontSize = 24.sp
                             )
                         )
-                        TextButton(
-                            onClick = onViewAllAchievement,
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            colors = ButtonDefaults.textButtonColors(
-                                contentColor = colorScheme.primary
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(R.string.txt_viewall),
-                                style = typography.bodyMedium.copy(
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = colorScheme.primary,
-                                    fontSize = 18.sp
-                                )
-                            )
-                        }
-
-
                     }
                 }
 
@@ -326,7 +302,10 @@ fun Profile(
                     Card(
                         modifier = Modifier
                             .fillMaxSize(),
-                        onClick = onViewAllAchievement
+                        onClick = onViewAllAchievement,
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorScheme.surface
+                        )
                     ) {
                         Column(
                             modifier = Modifier
@@ -334,12 +313,10 @@ fun Profile(
                                 .padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            LottieAnimation(
-                                composition = composition,
-                                progress = { progress },
-                                modifier = Modifier
-                                    .width(150.dp)
-                                    .height(150.dp)
+                            Image(
+                                painter = painterResource(R.drawable.ic_fire),
+                                modifier = modifier.size(150.dp),
+                                contentDescription = "streak fire"
                             )
                             Text(
                                 text = streakCount.toString(),
