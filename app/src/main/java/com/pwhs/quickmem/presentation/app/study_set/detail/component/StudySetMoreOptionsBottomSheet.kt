@@ -35,7 +35,8 @@ fun StudySetMoreOptionsBottomSheet(
     sheetShowMoreState: SheetState,
     onDismissRequest: () -> Unit,
     onResetProgress: () -> Unit,
-    onCopyStudySet: () -> Unit
+    onCopyStudySet: () -> Unit,
+    onReportClick: () -> Unit
 ) {
     if (showMoreBottomSheet) {
         ModalBottomSheet(
@@ -80,7 +81,7 @@ fun StudySetMoreOptionsBottomSheet(
                     title = stringResource(R.string.txt_study_set_info)
                 )
                 ItemMenuBottomSheet(
-                    onClick = {},
+                    onClick = onReportClick,
                     icon = Outlined.Report,
                     title = stringResource(R.string.txt_report_study_set)
                 )

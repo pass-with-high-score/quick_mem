@@ -44,6 +44,7 @@ import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScree
 import com.pwhs.quickmem.presentation.app.classes.detail.study_sets.StudySetsTabScreen
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
+import com.pwhs.quickmem.presentation.report.ReportTypeEnum
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -51,6 +52,7 @@ import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassS
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -267,6 +269,13 @@ fun ClassDetailScreen(
         },
         onJoinClass = {
             viewModel.onEvent(ClassDetailUiAction.OnJoinClass)
+        },
+        onReportClass = {
+            navigator.navigate(
+                ReportScreenDestination(
+                    reportType = ReportTypeEnum.CLASS
+                )
+            )
         }
     )
 }
@@ -297,6 +306,7 @@ fun ClassDetail(
     onRefresh: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
     onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
+    onReportClass: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Study sets", "Folders", "Members")
@@ -449,7 +459,10 @@ fun ClassDetail(
             showMoreBottomSheet = false
         },
         onShareClass = {},
-        onReportClass = {},
+        onReportClass = {
+            onReportClass()
+            showMoreBottomSheet = false
+        },
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false },

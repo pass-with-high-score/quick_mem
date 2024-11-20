@@ -44,6 +44,7 @@ import com.pwhs.quickmem.presentation.app.study_set.detail.material.MaterialTabS
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.ProgressTabScreen
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
+import com.pwhs.quickmem.presentation.report.ReportTypeEnum
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassesScreenDestination
@@ -55,6 +56,7 @@ import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScre
 import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -310,6 +312,13 @@ fun StudySetDetailScreen(
         isOwner = uiState.isOwner,
         onCopyStudySet = {
             viewModel.onEvent(StudySetDetailUiAction.OnMakeCopyClicked)
+        },
+        onReportClick = {
+            navigator.navigate(
+                ReportScreenDestination(
+                    reportType = ReportTypeEnum.STUDY_SET
+                )
+            )
         }
     )
 }
@@ -344,7 +353,8 @@ fun StudySetDetail(
     onNavigateToFlip: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onNavigateToUserDetail: () -> Unit = {},
-    onCopyStudySet: () -> Unit = {}
+    onCopyStudySet: () -> Unit = {},
+    onReportClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -470,6 +480,10 @@ fun StudySetDetail(
         isOwner = isOwner,
         onCopyStudySet = {
             onCopyStudySet()
+            showMoreBottomSheet = false
+        },
+        onReportClick = {
+            onReportClick()
             showMoreBottomSheet = false
         }
     )
