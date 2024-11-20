@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
+package com.pwhs.quickmem.presentation.app.study_set.studies.flip
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -41,12 +41,12 @@ import com.msusman.compose.cardstack.SwipeMethod
 import com.msusman.compose.cardstack.rememberStackState
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.component.StudyCardBottomSheet
-import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardButton
-import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardFinish
-import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardIconButton
-import com.pwhs.quickmem.presentation.app.study_set.study.component.FlipFlashCardStatusRow
-import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyFlipFlashCard
-import com.pwhs.quickmem.presentation.app.study_set.study.component.StudyTopAppBar
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.FlipFlashCardButton
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.FlipFlashCardFinish
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.FlipFlashCardIconButton
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.FlipFlashCardStatusRow
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.StudyFlipFlashCard
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.StudyTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor

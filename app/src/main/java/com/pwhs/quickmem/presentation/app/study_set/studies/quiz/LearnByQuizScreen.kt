@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.quiz
+package com.pwhs.quickmem.presentation.app.study_set.studies.quiz
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
-import com.pwhs.quickmem.presentation.app.study_set.study.quiz.component.QuizView
+import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component.QuizView
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination

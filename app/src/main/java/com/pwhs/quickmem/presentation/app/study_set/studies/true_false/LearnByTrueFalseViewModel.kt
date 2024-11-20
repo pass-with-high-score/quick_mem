@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.truefalse
+package com.pwhs.quickmem.presentation.app.study_set.studies.true_false
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

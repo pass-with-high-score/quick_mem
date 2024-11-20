@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.quiz.component
+package com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.pwhs.quickmem.presentation.app.study_set.study.quiz.RandomAnswer
+import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.RandomAnswer
 
 @Composable
 fun LearnQuizCardAnswer(

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.flip_flashcard
+package com.pwhs.quickmem.presentation.app.study_set.studies.flip
 
 sealed class FlipFlashCardUiAction {
     data class OnSwipe(val id: String) : FlipFlashCardUiAction()

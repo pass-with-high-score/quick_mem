@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.quiz.component
+package com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
-import com.pwhs.quickmem.presentation.app.study_set.study.quiz.RandomAnswer
+import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.RandomAnswer
 import timber.log.Timber
 
 @Composable

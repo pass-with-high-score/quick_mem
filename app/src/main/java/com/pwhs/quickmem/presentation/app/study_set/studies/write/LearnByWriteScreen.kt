@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.write
+package com.pwhs.quickmem.presentation.app.study_set.studies.write
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.component
+package com.pwhs.quickmem.presentation.app.study_set.studies.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

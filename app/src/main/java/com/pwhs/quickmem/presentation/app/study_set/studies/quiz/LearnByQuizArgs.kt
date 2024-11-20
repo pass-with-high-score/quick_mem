@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.quiz
+package com.pwhs.quickmem.presentation.app.study_set.studies.quiz
 
 data class LearnByQuizArgs(
     val studySetId: String,

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.write
+package com.pwhs.quickmem.presentation.app.study_set.studies.write
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.study.component
+package com.pwhs.quickmem.presentation.app.study_set.studies.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
