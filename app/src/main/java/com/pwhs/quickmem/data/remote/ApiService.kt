@@ -61,6 +61,7 @@ import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
+import com.pwhs.quickmem.data.dto.subject.GetTop5SubjectResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.SearchUserResponseDto
@@ -239,6 +240,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("code") code: String
     ): GetStudySetResponseDto
+
+    // subject
+    @GET("study-set/top-subject")
+    suspend fun getTop5Subject(
+        @Header("Authorization") token: String
+    ): List<GetTop5SubjectResponseDto>
 
     // Flashcard
     @POST("study-set/duplicate")

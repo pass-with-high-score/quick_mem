@@ -6,6 +6,8 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.streak.StreakModel
+import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
@@ -54,6 +56,7 @@ class HomeViewModel @Inject constructor(
             updateStreak()
             getCustomerInfo()
             loadNotifications()
+            getTop5Subjects()
         }
     }
 
@@ -233,5 +236,39 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun getTop5Subjects() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            studySetRepository.getTop5Subject(token).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            top5Subjects = getTopSubjects(resource.data ?: emptyList())
+                        )
+                        Timber.d("SubjectModels: ${getTopSubjects(resource.data ?: emptyList())}")
+                        Timber.d("Top 5 subjects: ${resource.data}")
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getTopSubjects(
+        top5Subjects: List<GetTop5SubjectResponseModel>,
+        subjectModels: List<SubjectModel> = SubjectModel.defaultSubjects
+    ): List<SubjectModel> {
+        val topSubjectIds = top5Subjects.map { it.id }
+        return subjectModels.filter { it.id in topSubjectIds }
     }
 }
