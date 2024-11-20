@@ -11,7 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,7 +47,6 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination<RootGraph>(
@@ -57,7 +56,6 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 fun LearnByQuizScreen(
     modifier: Modifier = Modifier,
     resultNavigator: ResultBackNavigator<Boolean>,
-    navigator: DestinationsNavigator,
     viewModel: LearnByQuizViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -164,8 +162,9 @@ fun LearnByQuiz(
                             }
                         ) {
                             Icon(
-                                imageVector = Default.Info,
-                                contentDescription = "Hint"
+                                imageVector = Default.LightMode,
+                                contentDescription = "Hint",
+                                tint = studySetColor
                             )
                         }
                     }

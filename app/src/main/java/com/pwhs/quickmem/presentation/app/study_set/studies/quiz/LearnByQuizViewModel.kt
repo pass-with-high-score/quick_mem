@@ -225,7 +225,7 @@ class LearnByQuizViewModel @Inject constructor(
                             // get the next flash card (one that is not answered)
                             val nextFlashCard = flashCardList.firstOrNull { !it.isAnswered }
 
-                            _uiState.update { it ->
+                            _uiState.update {
                                 it.copy(
                                     flashCardList = flashCardList,
                                     nextFlashCard = nextFlashCard,
@@ -266,7 +266,13 @@ class LearnByQuizViewModel @Inject constructor(
             }
             .toMutableList()
 
-        answers.add(RandomAnswer(answer = currentCard.definition, isCorrect = true))
+        answers.add(
+            RandomAnswer(
+                answer = currentCard.definition,
+                isCorrect = true,
+                imageURL = currentCard.definitionImageURL ?: ""
+            )
+        )
         return answers.shuffled()
     }
 

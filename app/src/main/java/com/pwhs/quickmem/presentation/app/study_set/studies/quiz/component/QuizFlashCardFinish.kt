@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +49,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.StudySetDonutChart
 import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.WrongAnswer
+import com.pwhs.quickmem.presentation.component.ViewImageDialog
 import com.pwhs.quickmem.util.toStringTime
 
 @Composable
@@ -74,6 +79,8 @@ fun QuizFlashCardFinish(
         correctAnswerCount < flashCardSize -> "Almost there! Keep pushing!"
         else -> "Excellent! You've mastered it!"
     }
+    var isImageViewerOpen by remember { mutableStateOf(false) }
+    var definitionImageUri by remember { mutableStateOf("") }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -300,12 +307,19 @@ fun QuizFlashCardFinish(
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
+                                modifier = Modifier.weight(1f)
                             )
                             if (!it.flashCard.definitionImageURL.isNullOrEmpty()) {
                                 AsyncImage(
                                     model = it.flashCard.definitionImageURL,
                                     contentDescription = "Definition Image",
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .clickable {
+                                            isImageViewerOpen = true
+                                            definitionImageUri = it.flashCard.definitionImageURL
+                                        },
+                                    contentScale = ContentScale.Crop
                                 )
                             }
                         }
@@ -327,6 +341,17 @@ fun QuizFlashCardFinish(
                     }
                 }
             }
+        }
+
+        // Image Viewer Dialog
+        if (isImageViewerOpen) {
+            ViewImageDialog(
+                definitionImageUri = definitionImageUri,
+                onDismissRequest = {
+                    isImageViewerOpen = false
+                    definitionImageUri = ""
+                }
+            )
         }
     }
 }

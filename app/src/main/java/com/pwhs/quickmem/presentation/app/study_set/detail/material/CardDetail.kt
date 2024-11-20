@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.study_set.detail.material
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.component.ViewImageDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -53,6 +55,8 @@ fun CardDetail(
     // TextToSpeech state
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    var isImageViewerOpen by remember { mutableStateOf(false) }
+    var definitionImageUri by remember { mutableStateOf("") }
     var isSpeaking by remember { mutableStateOf(false) }
     var startTTS by remember { mutableStateOf(false) }
     val tts = remember {
@@ -147,7 +151,12 @@ fun CardDetail(
                 AsyncImage(
                     model = imageURL,
                     contentDescription = null,
-                    modifier = Modifier.size(100.dp),
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clickable {
+                            isImageViewerOpen = true
+                            definitionImageUri = imageURL
+                        },
                     contentScale = ContentScale.Crop
                 )
             }
@@ -171,6 +180,17 @@ fun CardDetail(
                 }
             }
         }
+    }
+
+    // Image Viewer Dialog
+    if (isImageViewerOpen) {
+        ViewImageDialog(
+            definitionImageUri = definitionImageUri,
+            onDismissRequest = {
+                isImageViewerOpen = false
+                definitionImageUri = ""
+            }
+        )
     }
 
     DisposableEffect(Unit) {
