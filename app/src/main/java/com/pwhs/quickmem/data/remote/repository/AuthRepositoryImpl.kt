@@ -16,6 +16,7 @@ import com.pwhs.quickmem.domain.datasource.UserRemoteDataResource
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
+import com.pwhs.quickmem.domain.model.auth.GetUserProfileResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -324,5 +325,21 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             }
         ).flow
+    }
+
+    override suspend fun getUserProfile(
+        token: String,
+        userId: String
+    ): Flow<Resources<GetUserProfileResponseModel>> {
+        return flow {
+            try {
+                emit(Resources.Loading())
+                val response = apiService.getUserProfile(token, userId)
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
     }
 }
