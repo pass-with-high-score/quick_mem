@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.classes.DeleteFolderRequestModel
 import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
@@ -108,6 +109,10 @@ class ClassDetailViewModel @Inject constructor(
 
             is ClassDetailUiAction.OnDeleteStudySetInClass -> {
                 deleteStudySetInClass(event.studySetId)
+            }
+
+            is ClassDetailUiAction.OnDeleteFolderInClass -> {
+                deleteFolderInClass(event.folderId)
             }
         }
     }
@@ -315,6 +320,43 @@ class ClassDetailViewModel @Inject constructor(
             classRepository.deleteStudySetInClass(
                 token,
                 DeleteStudySetsRequestModel(userId, classId, studySetId)
+            ).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success ->
+                        resource.data?.let {
+                            getClassByID()
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                )
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    private fun deleteFolderInClass(folderId: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            classRepository.deleteFolderInClass(
+                token,
+                DeleteFolderRequestModel(userId, classId, folderId)
             ).collectLatest { resource ->
                 when (resource) {
                     is Resources.Error -> {

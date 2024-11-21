@@ -147,7 +147,8 @@ fun ListFolderScreen(
                                 title = folder.title,
                                 numOfStudySets = folder.studySetCount,
                                 onClick = { onFolderClick(folder) },
-                                userResponseModel = folder.owner
+                                userResponseModel = folder.owner,
+                                folder = folder
                             )
                         }
                         item {

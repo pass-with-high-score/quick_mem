@@ -270,6 +270,9 @@ fun ClassDetailScreen(
         },
         onDeleteStudySetClick = {
             viewModel.onEvent(ClassDetailUiAction.OnDeleteStudySetInClass(it))
+        },
+        onDeleteFolderClick = {
+            viewModel.onEvent(ClassDetailUiAction.OnDeleteFolderInClass(it))
         }
     )
 }
@@ -300,7 +303,8 @@ fun ClassDetail(
     onRefresh: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
     onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
-    onDeleteStudySetClick: (String) -> Unit = {}
+    onDeleteStudySetClick: (String) -> Unit = {},
+    onDeleteFolderClick: (String) -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Study sets", "Folders", "Members")
@@ -385,7 +389,8 @@ fun ClassDetail(
                             onAddFoldersClicked = onNavigateAddFolder,
                             folder = folders,
                             onFolderItemClicked = onFolderItemClicked,
-                            isOwner = isOwner
+                            isOwner = isOwner,
+                            onDeleteFolderClicked = onDeleteFolderClick
                         )
 
                         ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
