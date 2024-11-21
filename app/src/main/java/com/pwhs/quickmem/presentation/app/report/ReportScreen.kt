@@ -18,45 +18,65 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 
 @Destination<RootGraph>
 @Composable
 fun ReportScreen(
+    userID: String? = null,
+    userName: String? = null,
+    studySetID: String? = null,
+    classID: String? = null,
     reportType: ReportTypeEnum,
-    userID: String,
-    userName: String,
     navigator: DestinationsNavigator,
 ) {
-    var selectedReason by remember { mutableStateOf("") }
     val context = LocalContext.current
+    var selectedReason by remember { mutableStateOf("") }
+
+    val questionText = reportType.questionText
+    val options = reportType.options
 
     Report(
         title = reportType.title,
-        questionText = reportType.questionText,
-        options = reportType.options,
+        questionText = questionText,
+        options = options,
         selectedReason = selectedReason,
         onReasonSelected = { selectedReason = it },
         onContinue = {
             if (selectedReason.isNotEmpty()) {
                 val body = """
-                Reason for reporting: $selectedReason
-                User ID: $userID
-                User Name: $userName
-                """.trimIndent()
-                val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("mailto:report@quickmem.app")
-                    putExtra(Intent.EXTRA_SUBJECT, "Report")
-                    putExtra(Intent.EXTRA_TEXT, body)
-                }
-                if (intent.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(intent)
-                } else {
+            Reason for reporting: $selectedReason
+            ${when (reportType) {
+                    ReportTypeEnum.USER_DETAIL -> "User ID: ${userID ?: "Not available"}\nUser Name: ${userName ?: "Not available"}"
+                    ReportTypeEnum.STUDY_SET -> "Class ID: ${studySetID ?: "Not available"}\nUser ID: ${userID ?: "Not available"}\nUser Name: ${userName ?: "Not available"}"
+                    ReportTypeEnum.CLASS -> "Class ID: ${classID ?: "Not available"}\nUser ID: ${userID ?: "Not available"}\nUser Name: ${userName ?: "Not available"}"
+                }}
+
+            You can also attach any files or images if necessary.
+        """.trimIndent()
+
+                try {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "message/rfc822"
+                        putExtra(Intent.EXTRA_EMAIL, arrayOf("report@quickmem.app"))
+                        putExtra(Intent.EXTRA_SUBJECT, "Report")
+                        putExtra(Intent.EXTRA_TEXT, body)
+                    }
+
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(intent)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "There is no email application on this device.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
                     Toast.makeText(
                         context,
-                        "There is no email application on this device.",
+                        "An error occurred while trying to send the email.",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

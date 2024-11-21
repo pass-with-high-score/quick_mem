@@ -275,7 +275,8 @@ fun ClassDetailScreen(
                 ReportScreenDestination(
                     reportType = ReportTypeEnum.CLASS,
                     userID = uiState.userResponseModel.id,
-                    userName = uiState.userResponseModel.username
+                    userName = uiState.userResponseModel.username,
+                    classID = uiState.id
                 )
             )
         }

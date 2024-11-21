@@ -318,7 +318,8 @@ fun StudySetDetailScreen(
                 ReportScreenDestination(
                     reportType = ReportTypeEnum.STUDY_SET,
                     userID = uiState.user.id,
-                    userName = uiState.user.username
+                    userName = uiState.user.username,
+                    studySetID = uiState.id
                 )
             )
         }
