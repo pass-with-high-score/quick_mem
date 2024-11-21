@@ -21,19 +21,15 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 
-@Destination<RootGraph>
+@Destination<RootGraph>(navArgs = ReportArgs::class)
 @Composable
 fun ReportScreen(
-    userID: String? = null,
-    userName: String? = null,
-    studySetID: String? = null,
-    classID: String? = null,
-    reportType: ReportTypeEnum,
     navigator: DestinationsNavigator,
+    args: ReportArgs
 ) {
     val context = LocalContext.current
     var selectedReason by remember { mutableStateOf("") }
-
+    val reportType = args.reportType
     val questionText = reportType.questionText
     val options = reportType.options
 
@@ -48,9 +44,9 @@ fun ReportScreen(
                 val body = """
             Reason for reporting: $selectedReason
             ${when (reportType) {
-                    ReportTypeEnum.USER_DETAIL -> "User ID: ${userID ?: "Not available"}\nUser Name: ${userName ?: "Not available"}"
-                    ReportTypeEnum.STUDY_SET -> "Class ID: ${studySetID ?: "Not available"}\nUser ID: ${userID ?: "Not available"}\nUser Name: ${userName ?: "Not available"}"
-                    ReportTypeEnum.CLASS -> "Class ID: ${classID ?: "Not available"}\nUser ID: ${userID ?: "Not available"}\nUser Name: ${userName ?: "Not available"}"
+                    ReportTypeEnum.USER_DETAIL -> "User ID: ${args.userID ?: "Not available"}\nUser Name: ${args.userName ?: "Not available"}"
+                    ReportTypeEnum.STUDY_SET -> "Class ID: ${args.studySetID ?: "Not available"}\nUser ID: ${args.userID ?: "Not available"}\nUser Name: ${args.ownerName ?: "Not available"}"
+                    ReportTypeEnum.CLASS -> "Class ID: ${args.classID ?: "Not available"}\nUser ID: ${args.userID ?: "Not available"}\nUser Name: ${args.ownerName ?: "Not available"}"
                 }}
 
             You can also attach any files or images if necessary.
@@ -60,7 +56,7 @@ fun ReportScreen(
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "message/rfc822"
                         putExtra(Intent.EXTRA_EMAIL, arrayOf("report@quickmem.app"))
-                        putExtra(Intent.EXTRA_SUBJECT, "Report")
+                        putExtra(Intent.EXTRA_SUBJECT, "Report for ${args.ownerName ?: "Unknown Owner"}")
                         putExtra(Intent.EXTRA_TEXT, body)
                     }
 
