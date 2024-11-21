@@ -271,14 +271,11 @@ fun ClassDetailScreen(
             viewModel.onEvent(ClassDetailUiAction.OnJoinClass)
         },
         onReportClass = {
-            val ownerName = viewModel.uiState.value.userResponseModel.username
             navigator.navigate(
                 ReportScreenDestination(
                     reportType = ReportTypeEnum.CLASS,
-                    userID = uiState.userResponseModel.id,
-                    userName = uiState.userResponseModel.username,
-                    classID = uiState.id,
-                    ownerName = ownerName
+                    classId = uiState.id,
+                    username = uiState.userResponseModel.username
                 )
             )
         }

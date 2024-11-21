@@ -172,8 +172,8 @@ fun UserDetailScreen(
             navigator.navigate(
                 ReportScreenDestination(
                     reportType = ReportTypeEnum.USER_DETAIL,
-                    userID = uiState.userId,
-                    userName = uiState.userName
+                    username = uiState.userName,
+                    userId = uiState.userId
                 )
             )
         }
@@ -222,7 +222,7 @@ private fun UserDetail(
                 actions = {
                     if (!isOwner) {
                         IconButton(
-                            onClick = {onReportClick()}
+                            onClick = { onReportClick() }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Report,

@@ -320,14 +320,11 @@ fun StudySetDetailScreen(
             viewModel.onEvent(StudySetDetailUiAction.OnMakeCopyClicked)
         },
         onReportClick = {
-            val ownerName = viewModel.uiState.value.user.username
             navigator.navigate(
                 ReportScreenDestination(
                     reportType = ReportTypeEnum.STUDY_SET,
-                    userID = uiState.user.id,
-                    userName = uiState.user.username,
-                    studySetID = uiState.id,
-                    ownerName = ownerName
+                    studySetId = uiState.id,
+                    username = uiState.user.username
                 )
             )
         }
