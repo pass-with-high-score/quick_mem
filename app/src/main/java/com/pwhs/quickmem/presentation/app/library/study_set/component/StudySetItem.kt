@@ -162,7 +162,9 @@ private fun StudySetItemPreview() {
                             updatedAt = "2021-01-01T00:00:00Z",
                             flashcards = emptyList(),
                             isAIGenerated = false
-                        )
+                        ),
+                        isOwner = true,
+                        onDeleteClick = {}
                     )
                 }
             }

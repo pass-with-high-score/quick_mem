@@ -26,6 +26,7 @@ import com.pwhs.quickmem.data.dto.auth.VerifyPasswordResponseDto
 import com.pwhs.quickmem.data.dto.classes.AddStudySetToClassesRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.CreateClassResponseDto
+import com.pwhs.quickmem.data.dto.classes.DeleteFolderRequestDto
 import com.pwhs.quickmem.data.dto.classes.DeleteStudySetsRequestDto
 import com.pwhs.quickmem.data.dto.classes.ExitClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
@@ -439,6 +440,12 @@ interface ApiService {
     suspend fun deleteStudySetInClass(
         @Header("Authorization") token: String,
         @Body deleteStudySetsRequestDto: DeleteStudySetsRequestDto
+    )
+
+    @POST("class/remove-folder")
+    suspend fun deleteFolderInClass(
+        @Header("Authorization") token: String,
+        @Body deleteFolderResponseDto: DeleteFolderRequestDto
     )
 
     // Streak

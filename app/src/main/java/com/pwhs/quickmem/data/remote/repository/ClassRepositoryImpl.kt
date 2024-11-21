@@ -12,6 +12,7 @@ import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.datasource.ClassRemoteDataSource
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
+import com.pwhs.quickmem.domain.model.classes.DeleteFolderRequestModel
 import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
@@ -223,6 +224,22 @@ class ClassRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 apiService.deleteStudySetInClass(token, deleteStudySetsRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun deleteFolderInClass(
+        token: String,
+        deleteFolderRequestModel: DeleteFolderRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.deleteFolderInClass(token, deleteFolderRequestModel.toDto())
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
