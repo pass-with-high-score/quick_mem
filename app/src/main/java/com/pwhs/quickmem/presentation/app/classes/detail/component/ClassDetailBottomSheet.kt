@@ -103,6 +103,13 @@ fun ClassDetailBottomSheet(
                         color = Color.Red
                     )
                 }
+                if (!isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onReportClass,
+                        icon = Outlined.Report,
+                        title = "Report Class"
+                    )
+                }
             }
         }
     }

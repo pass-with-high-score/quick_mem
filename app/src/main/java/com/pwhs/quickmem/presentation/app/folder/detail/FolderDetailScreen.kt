@@ -289,7 +289,6 @@ fun FolderDetail(
             val shareIntent = Intent.createChooser(sendIntent, null)
             context.startActivity(shareIntent)
         },
-        onReportFolder = {},
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false },

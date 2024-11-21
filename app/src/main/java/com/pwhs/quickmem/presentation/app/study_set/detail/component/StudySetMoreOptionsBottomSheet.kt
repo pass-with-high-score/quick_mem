@@ -80,17 +80,19 @@ fun StudySetMoreOptionsBottomSheet(
                     icon = Outlined.Info,
                     title = stringResource(R.string.txt_study_set_info)
                 )
-                ItemMenuBottomSheet(
-                    onClick = onReportClick,
-                    icon = Outlined.Report,
-                    title = stringResource(R.string.txt_report_study_set)
-                )
                 if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onDeleteStudySet,
                         icon = Default.DeleteOutline,
                         title = stringResource(R.string.txt_delete_study_set),
                         color = Color.Red
+                    )
+                }
+                if (!isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onReportClick,
+                        icon = Outlined.Report,
+                        title = stringResource(R.string.txt_report_study_set)
                     )
                 }
             }
