@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.library.study_set.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,9 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.CardDefaults.elevatedCardElevation
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -42,88 +46,86 @@ import com.pwhs.quickmem.util.toColor
 @Composable
 fun StudySetItem(
     modifier: Modifier = Modifier,
+    isOwner: Boolean = false,
     studySet: GetStudySetResponseModel?,
-    onStudySetClick: (String) -> Unit = {}
+    onStudySetClick: (String) -> Unit = {},
+    onDeleteClick: ((String) -> Unit)? = null
 ) {
+    val borderColor = studySet?.color?.hexValue?.toColor()
+        ?: ColorModel.defaultColors[0].hexValue.toColor()
+
+    val titleColor = borderColor.copy(alpha = 0.8f)
+
     Card(
         onClick = { onStudySetClick(studySet?.id ?: "") },
-        colors = cardColors(
-            containerColor = Color.White,
-        ),
+        colors = cardColors(containerColor = Color.White),
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        elevation = elevatedCardElevation(
-            defaultElevation = 4.dp
-        ),
-        border = BorderStroke(
-            width = 1.dp,
-            color = studySet?.color?.hexValue?.toColor()
-                ?: ColorModel.defaultColors[0].hexValue.toColor()
-        )
+        elevation = elevatedCardElevation(defaultElevation = 4.dp),
+        border = BorderStroke(width = 1.dp, color = borderColor)
     ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .background(Color.Transparent)
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "${studySet?.title}",
-                style = typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                color = studySet?.color?.hexValue?.toColor()
-                    ?.copy(alpha = 0.8f)
-                    ?: ColorModel.defaultColors[0].hexValue.toColor()
-                        .copy(alpha = 0.8f),
-            )
-            Text(
-                buildAnnotatedString {
-                    withStyle(
-                        style = typography.bodySmall.toSpanStyle()
-                            .copy(
-                                fontWeight = FontWeight.Bold
-                            )
-                    ) {
-                        append("${studySet?.flashcardCount}")
-                        withStyle(
-                            style = typography.bodySmall.toSpanStyle()
-                                .copy(
-                                    fontWeight = FontWeight.Normal
-                                )
-                        ) {
-                            append(" Flashcards")
-                        }
-                    }
-                }
-            )
-            Text(
-                text = studySet?.subject?.name
-                    ?: SubjectModel.defaultSubjects[0].name,
-                style = typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onSurface.copy(
-                        alpha = 0.6f
-                    )
-                )
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(top = 8.dp)
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                AsyncImage(
-                    model = studySet?.owner?.avatarUrl,
-                    contentDescription = stringResource(R.string.txt_user_avatar),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .clip(CircleShape)
+                Text(
+                    text = studySet?.title.orEmpty(),
+                    style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = titleColor
                 )
                 Text(
-                    text = "${studySet?.owner?.username}",
-                    style = typography.bodySmall
+                    buildAnnotatedString {
+                        withStyle(
+                            style = typography.bodySmall.toSpanStyle().copy(fontWeight = FontWeight.Bold)
+                        ) {
+                            append(studySet?.flashcardCount.toString())
+                            withStyle(
+                                style = typography.bodySmall.toSpanStyle().copy(fontWeight = FontWeight.Normal)
+                            ) {
+                                append(" Flashcards")
+                            }
+                        }
+                    }
+                )
+                Text(
+                    text = studySet?.subject?.name ?: SubjectModel.defaultSubjects[0].name,
+                    style = typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    AsyncImage(
+                        model = studySet?.owner?.avatarUrl,
+                        contentDescription = stringResource(R.string.txt_user_avatar),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clip(CircleShape)
+                    )
+                    Text(
+                        text = studySet?.owner?.username.orEmpty(),
+                        style = typography.bodySmall
+                    )
+                }
+            }
+            if (isOwner && onDeleteClick != null) {
+                Icon(
+                    imageVector = Icons.Rounded.Clear,
+                    contentDescription = stringResource(R.string.txt_delete),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { onDeleteClick(studySet?.id ?: "") }
                 )
             }
         }
@@ -140,31 +142,28 @@ private fun StudySetItemPreview() {
                     .padding(it)
                     .padding(horizontal = 16.dp)
             ) {
-                item {
-                    repeat(10) {
-                        StudySetItem(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            studySet = GetStudySetResponseModel(
+                items(10) {
+                    StudySetItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        studySet = GetStudySetResponseModel(
+                            id = "1",
+                            title = "Study Set Title",
+                            flashcardCount = 10,
+                            color = ColorModel.defaultColors[0],
+                            subject = SubjectModel.defaultSubjects[0],
+                            owner = UserResponseModel(
                                 id = "1",
-                                title = "Study Set Title",
-                                flashcardCount = 10,
-                                color = ColorModel.defaultColors[0],
-                                subject = SubjectModel.defaultSubjects[0],
-                                owner = UserResponseModel(
-                                    id = "1",
-                                    username = "User",
-                                    avatarUrl = "https://www.example.com/avatar.jpg"
-                                ),
-                                description = "Study Set Description",
-                                isPublic = true,
-                                createdAt = "2021-01-01T00:00:00Z",
-                                updatedAt = "2021-01-01T00:00:00Z",
-                                flashcards = emptyList(),
-                                isAIGenerated = false
-                            )
+                                username = "User",
+                                avatarUrl = "https://www.example.com/avatar.jpg"
+                            ),
+                            description = "Study Set Description",
+                            isPublic = true,
+                            createdAt = "2021-01-01T00:00:00Z",
+                            updatedAt = "2021-01-01T00:00:00Z",
+                            flashcards = emptyList(),
+                            isAIGenerated = false
                         )
-                    }
+                    )
                 }
             }
         }

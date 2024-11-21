@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
@@ -103,6 +104,10 @@ class ClassDetailViewModel @Inject constructor(
 
             ClassDetailUiAction.OnJoinClass -> {
                 joinClassByToken()
+            }
+
+            is ClassDetailUiAction.OnDeleteStudySetInClass -> {
+                deleteStudySetInClass(event.studySetId)
             }
         }
     }
@@ -298,6 +303,44 @@ class ClassDetailViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+
+    private fun deleteStudySetInClass(studySetId: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            classRepository.deleteStudySetInClass(
+                token,
+                DeleteStudySetsRequestModel(userId, classId, studySetId)
+            ).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success ->
+                        resource.data?.let {
+                            getClassByID()
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                )
+                            }
+                        }
+                }
+            }
         }
     }
 }

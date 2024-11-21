@@ -6,6 +6,7 @@ sealed class ClassDetailUiAction {
     data object Refresh : ClassDetailUiAction()
     data object EditClass : ClassDetailUiAction()
     data object DeleteClass : ClassDetailUiAction()
+    data class OnDeleteStudySetInClass(val studySetId: String) : ClassDetailUiAction()
     data class OnDeleteMember(val memberId: String) : ClassDetailUiAction()
     data object OnNavigateToAddFolder : ClassDetailUiAction()
     data object OnNavigateToAddStudySets : ClassDetailUiAction()
