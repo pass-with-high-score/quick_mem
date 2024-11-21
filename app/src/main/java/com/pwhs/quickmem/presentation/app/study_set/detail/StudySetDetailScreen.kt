@@ -38,6 +38,7 @@ import com.pwhs.quickmem.core.data.enums.FlipCardStatus
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.StudySetDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.StudySetMoreOptionsBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.detail.material.MaterialTabScreen
@@ -55,6 +56,7 @@ import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScre
 import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetInfoScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -316,6 +318,15 @@ fun StudySetDetailScreen(
         isOwner = uiState.isOwner,
         onCopyStudySet = {
             viewModel.onEvent(StudySetDetailUiAction.OnMakeCopyClicked)
+        },
+        onReportClick = {
+            navigator.navigate(
+                ReportScreenDestination(
+                    reportType = ReportTypeEnum.STUDY_SET,
+                    studySetId = uiState.id,
+                    username = uiState.user.username
+                )
+            )
         }
     )
 }
@@ -350,7 +361,8 @@ fun StudySetDetail(
     onNavigateToFlip: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onNavigateToUserDetail: () -> Unit = {},
-    onCopyStudySet: () -> Unit = {}
+    onCopyStudySet: () -> Unit = {},
+    onReportClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -505,6 +517,10 @@ fun StudySetDetail(
         isOwner = isOwner,
         onCopyStudySet = {
             onCopyStudySet()
+            showMoreBottomSheet = false
+        },
+        onReportClick = {
+            onReportClick()
             showMoreBottomSheet = false
         }
     )
