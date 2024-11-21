@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.CreateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.CreateClassResponseModel
+import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
@@ -68,4 +69,9 @@ interface ClassRepository {
         token: String,
         removeMembersRequestModel: RemoveMembersRequestModel
     ): Flow<Resources<Unit>>
+
+    suspend fun deleteStudySetInClass(
+        token: String,
+        deleteStudySetsRequestModel: DeleteStudySetsRequestModel
+    ):Flow<Resources<Unit>>
 }
