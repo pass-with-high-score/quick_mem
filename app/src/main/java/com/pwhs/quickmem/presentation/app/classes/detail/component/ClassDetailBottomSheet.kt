@@ -8,8 +8,9 @@ import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.IosShare
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,33 +51,27 @@ fun ClassDetailBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (isOwner) {
+                if (isOwner || isMember) {
                     ItemMenuBottomSheet(
                         onClick = onAddStudySetToClass,
-                        icon = Outlined.Add,
+                        icon = Outlined.ContentCopy,
                         title = "Add study set to class"
                     )
                     ItemMenuBottomSheet(
                         onClick = onAddFolderToClass,
-                        icon = Outlined.Add,
+                        icon = Outlined.Folder,
                         title = "Add folder to class"
                     )
+                }
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onEditClass,
                         icon = Outlined.Edit,
                         title = "Edit Class"
                     )
                 }
-                if (!isOwner && isMember) {
-                    ItemMenuBottomSheet(
-                        onClick = onExitClass,
-                        icon = Icons.AutoMirrored.Filled.ExitToApp,
-                        title = "Exit Class",
-                        color = Color.Red
-                    )
-                }
 
-                if(!isMember && isAllowMember){
+                if (!isMember && isAllowMember) {
                     ItemMenuBottomSheet(
                         onClick = onJoinClass,
                         icon = Outlined.GroupAdd,
@@ -93,6 +88,13 @@ fun ClassDetailBottomSheet(
                     icon = Outlined.Report,
                     title = "Report Class"
                 )
+                if (!isOwner && isMember) {
+                    ItemMenuBottomSheet(
+                        onClick = onExitClass,
+                        icon = Icons.AutoMirrored.Filled.ExitToApp,
+                        title = "Exit Class",
+                    )
+                }
                 if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onDeleteClass,
@@ -101,7 +103,6 @@ fun ClassDetailBottomSheet(
                         color = Color.Red
                     )
                 }
-
             }
         }
     }

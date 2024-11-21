@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.presentation.auth.social
 
-import com.pwhs.quickmem.core.data.UserRole
+import com.pwhs.quickmem.core.data.enums.UserRole
 
 sealed class AuthSocialUiAction {
     data class OnEmailChanged(val email: String) : AuthSocialUiAction()

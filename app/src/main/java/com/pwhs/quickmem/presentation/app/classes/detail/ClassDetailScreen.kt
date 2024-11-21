@@ -459,7 +459,7 @@ fun ClassDetail(
         onJoinClass = {
             onJoinClass()
             showMoreBottomSheet = false
-        }
+        },
     )
 }
 

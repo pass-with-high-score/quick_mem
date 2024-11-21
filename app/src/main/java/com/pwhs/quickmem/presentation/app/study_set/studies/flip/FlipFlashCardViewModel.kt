@@ -6,9 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.FlipCardStatus
-import com.pwhs.quickmem.core.data.LearnMode
-import com.pwhs.quickmem.core.data.ResetType
+import com.pwhs.quickmem.core.data.enums.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.LearnMode
+import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
@@ -172,7 +172,7 @@ class FlipFlashCardViewModel @Inject constructor(
             flashCardRepository.getFlashCardsByStudySetId(
                 token = token,
                 studySetId = _uiState.value.studySetId,
-                learnMode = LearnMode.flip
+                learnMode = LearnMode.FLIP
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
@@ -237,7 +237,7 @@ class FlipFlashCardViewModel @Inject constructor(
             studySetRepository.resetProgress(
                 token,
                 _uiState.value.studySetId,
-                resetType = ResetType.flipStatus.name
+                resetType = ResetType.FLIP_STATUS.type
             )
                 .collect { resource ->
                     when (resource) {
