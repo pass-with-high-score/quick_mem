@@ -23,8 +23,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.ModalBottomSheet
@@ -47,17 +49,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.toColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MaterialTabScreen(
     modifier: Modifier = Modifier,
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
-    isOwner:Boolean,
+    isOwner: Boolean,
     onFlashCardClick: (String) -> Unit = {},
     onDeleteFlashCardClick: () -> Unit = {},
     onEditFlashCardClick: () -> Unit = {},
@@ -67,6 +71,8 @@ fun MaterialTabScreen(
     onNavigateToTrueFalse: () -> Unit = {},
     onNavigateToWrite: () -> Unit = {},
     onNavigateToFlip: () -> Unit = {},
+    onMakeCopyClick: () -> Unit = {},
+    studySetColor: Color = ColorModel.defaultColors.first().hexValue.toColor(),
 ) {
     val menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
@@ -107,7 +113,7 @@ fun MaterialTabScreen(
                                 color = colorScheme.onSurface,
                             ),
                         )
-                        if (isOwner){
+                        if (isOwner) {
                             Button(
                                 onClick = onAddFlashCardClick,
                                 modifier = Modifier.padding(16.dp)
@@ -140,58 +146,93 @@ fun MaterialTabScreen(
                         horizontalAlignment = CenterHorizontally,
                         verticalArrangement = Arrangement.Top,
                     ) {
-                        item {
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                            ) {
-                                items(flashCards) { flashCard ->
-                                    StudySetFlipCard(
-                                        frontText = flashCard.term,
-                                        backText = flashCard.definition,
-                                        backgroundColor = colorScheme.background,
-                                        backImage = flashCard.definitionImageURL,
+                        if (!isOwner) {
+                            item {
+                                Column(
+                                    horizontalAlignment = CenterHorizontally,
+                                ) {
+                                    Button(
+                                        onClick = onMakeCopyClick,
+                                        modifier = Modifier.padding(16.dp),
+                                        shape = MaterialTheme.shapes.medium,
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = studySetColor
+                                        )
+                                    ) {
+                                        Text(
+                                            text = "Make a copy",
+                                            style = typography.titleMedium.copy(
+                                                color = colorScheme.background
+                                            )
+                                        )
+                                    }
+
+                                    Text(
+                                        text = "You can now edit this study set,just create a copy of it.",
+                                        style = typography.bodyMedium.copy(
+                                            color = colorScheme.onSurface
+                                        ),
+                                        textAlign = TextAlign.Center,
                                     )
                                 }
                             }
                         }
-                        item {
-                            Text(
-                                text = stringResource(R.string.txt_choose_your_way_to_study),
-                                style = typography.titleMedium.copy(
-                                    color = colorScheme.onSurface,
-                                    fontWeight = Bold
-                                ),
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
 
-                        item {
-                            LearnModeCard(
-                                title = stringResource(R.string.txt_flip_flashcards),
-                                icon = R.drawable.ic_flipcard,
-                                onClick = onNavigateToFlip
-                            )
-                        }
-                        item {
-                            LearnModeCard(
-                                title = stringResource(R.string.txt_quiz),
-                                icon = R.drawable.ic_quiz,
-                                onClick = onNavigateToQuiz
-                            )
-                        }
-                        item {
-                            LearnModeCard(
-                                title = stringResource(R.string.txt_true_false),
-                                icon = R.drawable.ic_tf,
-                                onClick = onNavigateToTrueFalse
-                            )
-                        }
-                        item {
-                            LearnModeCard(
-                                title = stringResource(R.string.txt_write),
-                                icon = R.drawable.ic_write,
-                                onClick = onNavigateToWrite
-                            )
+                        if (isOwner) {
+                            item {
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    items(flashCards) { flashCard ->
+                                        StudySetFlipCard(
+                                            frontText = flashCard.term,
+                                            backText = flashCard.definition,
+                                            backgroundColor = colorScheme.background,
+                                            backImage = flashCard.definitionImageURL,
+                                        )
+                                    }
+                                }
+                            }
+
+                            item {
+                                Text(
+                                    text = stringResource(R.string.txt_choose_your_way_to_study),
+                                    style = typography.titleMedium.copy(
+                                        color = colorScheme.onSurface,
+                                        fontWeight = Bold
+                                    ),
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                            }
+
+                            item {
+                                LearnModeCard(
+                                    title = stringResource(R.string.txt_flip_flashcards),
+                                    icon = R.drawable.ic_flipcard,
+                                    onClick = onNavigateToFlip
+                                )
+                            }
+                            item {
+                                LearnModeCard(
+                                    title = stringResource(R.string.txt_quiz),
+                                    icon = R.drawable.ic_quiz,
+                                    onClick = onNavigateToQuiz
+                                )
+                            }
+                            item {
+                                LearnModeCard(
+                                    title = stringResource(R.string.txt_true_false),
+                                    icon = R.drawable.ic_tf,
+                                    onClick = onNavigateToTrueFalse
+                                )
+                            }
+                            item {
+                                LearnModeCard(
+                                    title = stringResource(R.string.txt_write),
+                                    icon = R.drawable.ic_write,
+                                    onClick = onNavigateToWrite
+                                )
+                            }
                         }
 
                         item {
@@ -228,6 +269,7 @@ fun MaterialTabScreen(
 
                         items(flashCards) { flashCards ->
                             CardDetail(
+                                isOwner = isOwner,
                                 front = flashCards.term,
                                 back = flashCards.definition,
                                 isStarred = flashCards.isStarred,
@@ -275,23 +317,25 @@ fun MaterialTabScreen(
                         icon = Filled.HelpOutline,
                         title = stringResource(R.string.txt_explanation)
                     )
-                    ItemMenuBottomSheet(
-                        onClick = {
-                            onEditFlashCardClick()
-                            showMenu = false
-                        },
-                        icon = Outlined.Edit,
-                        title = stringResource(R.string.txt_edit)
-                    )
-                    ItemMenuBottomSheet(
-                        onClick = {
-                            showAlertDialog = true
-                            showMenu = false
-                        },
-                        icon = Default.DeleteOutline,
-                        title = stringResource(R.string.txt_delete),
-                        color = Color.Red,
-                    )
+                    if (isOwner) {
+                        ItemMenuBottomSheet(
+                            onClick = {
+                                onEditFlashCardClick()
+                                showMenu = false
+                            },
+                            icon = Outlined.Edit,
+                            title = stringResource(R.string.txt_edit)
+                        )
+                        ItemMenuBottomSheet(
+                            onClick = {
+                                showAlertDialog = true
+                                showMenu = false
+                            },
+                            icon = Default.DeleteOutline,
+                            title = stringResource(R.string.txt_delete),
+                            color = Color.Red,
+                        )
+                    }
                 }
             }
         }

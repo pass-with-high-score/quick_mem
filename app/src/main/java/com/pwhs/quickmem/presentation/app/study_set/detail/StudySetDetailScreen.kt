@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.FlipCardStatus
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
@@ -279,7 +279,13 @@ fun StudySetDetailScreen(
         },
         onNavigateToTrueFalse = {
             navigator.navigate(
-                LearnByTrueFalseScreenDestination
+                LearnByTrueFalseScreenDestination(
+                    studySetId = uiState.id,
+                    studySetTitle = uiState.title,
+                    studySetDescription = uiState.description,
+                    studySetColorId = uiState.colorModel.id,
+                    studySetSubjectId = uiState.subject.id,
+                )
             )
         },
         onNavigateToWrite = {
@@ -363,10 +369,16 @@ fun StudySetDetail(
 ) {
     val context = LocalContext.current
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabTitles = listOf(
-        stringResource(R.string.txt_material),
-        stringResource(R.string.txt_progress)
-    )
+    val tabTitles = if (isOwner) {
+        listOf(
+            stringResource(R.string.txt_material),
+            stringResource(R.string.txt_progress)
+        )
+    } else {
+        listOf(
+            stringResource(R.string.txt_material)
+        )
+    }
     var showMoreBottomSheet by remember { mutableStateOf(false) }
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
@@ -410,53 +422,76 @@ fun StudySetDetail(
                 state = refreshState
             ) {
                 Column {
-                    TabRow(
-                        selectedTabIndex = tabIndex,
-                        indicator = { tabPositions ->
-                            SecondaryIndicator(
-                                Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                                color = color,
-                            )
-                        },
-                        contentColor = colorScheme.onSurface,
-                    ) {
-                        tabTitles.forEachIndexed { index, title ->
-                            Tab(
-                                text = {
-                                    Text(
-                                        title, style = typography.titleMedium.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            color = if (tabIndex == index) Color.Black else Color.Gray
+                    if (isOwner) {
+                        TabRow(
+                            selectedTabIndex = tabIndex,
+                            indicator = { tabPositions ->
+                                SecondaryIndicator(
+                                    Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                                    color = color,
+                                )
+                            },
+                            contentColor = colorScheme.onSurface,
+                        ) {
+                            tabTitles.forEachIndexed { index, title ->
+                                Tab(
+                                    text = {
+                                        Text(
+                                            title, style = typography.titleMedium.copy(
+                                                fontWeight = FontWeight.Bold,
+                                                color = if (tabIndex == index) Color.Black else Color.Gray
+                                            )
                                         )
-                                    )
-                                },
-                                selected = tabIndex == index,
-                                onClick = { tabIndex = index },
-                            )
+                                    },
+                                    selected = tabIndex == index,
+                                    onClick = { tabIndex = index },
+                                )
+                            }
                         }
                     }
-                    when (tabIndex) {
-                        StudySetDetailEnum.MATERIAL.index -> MaterialTabScreen(
-                            flashCards = flashCards,
-                            onFlashCardClick = onFlashCardClick,
-                            onDeleteFlashCardClick = onDeleteFlashCard,
-                            onToggleStarClick = onToggleStarredFlashCard,
-                            onEditFlashCardClick = onEditFlashCard,
-                            onAddFlashCardClick = onAddFlashcard,
-                            onNavigateToQuiz = onNavigateToQuiz,
-                            onNavigateToTrueFalse = onNavigateToTrueFalse,
-                            onNavigateToWrite = onNavigateToWrite,
-                            onNavigateToFlip = onNavigateToFlip,
-                            isOwner = isOwner
-                        )
+                    if (isOwner) {
+                        when (tabIndex) {
+                            StudySetDetailEnum.MATERIAL.index -> MaterialTabScreen(
+                                flashCards = flashCards,
+                                onFlashCardClick = onFlashCardClick,
+                                onDeleteFlashCardClick = onDeleteFlashCard,
+                                onToggleStarClick = onToggleStarredFlashCard,
+                                onEditFlashCardClick = onEditFlashCard,
+                                onAddFlashCardClick = onAddFlashcard,
+                                onNavigateToQuiz = onNavigateToQuiz,
+                                onNavigateToTrueFalse = onNavigateToTrueFalse,
+                                onNavigateToWrite = onNavigateToWrite,
+                                onNavigateToFlip = onNavigateToFlip,
+                                isOwner = true,
+                                onMakeCopyClick = onCopyStudySet
+                            )
 
-                        StudySetDetailEnum.PROGRESS.index -> ProgressTabScreen(
-                            totalStudySet = flashCardCount,
-                            color = color,
-                            studySetsNotLearnCount = flashCards.count { it.flipStatus == FlipCardStatus.NONE.name },
-                            studySetsStillLearningCount = flashCards.count { it.flipStatus == FlipCardStatus.STILL_LEARNING.name },
-                            studySetsKnowCount = flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name },
-                        )
+                            StudySetDetailEnum.PROGRESS.index -> ProgressTabScreen(
+                                totalStudySet = flashCardCount,
+                                color = color,
+                                studySetsNotLearnCount = flashCards.count { it.flipStatus == FlipCardStatus.NONE.name },
+                                studySetsStillLearningCount = flashCards.count { it.flipStatus == FlipCardStatus.STILL_LEARNING.name },
+                                studySetsKnowCount = flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name },
+                            )
+                        }
+                    } else {
+                        when (tabIndex) {
+                            StudySetDetailEnum.MATERIAL.index -> MaterialTabScreen(
+                                flashCards = flashCards,
+                                onFlashCardClick = onFlashCardClick,
+                                onDeleteFlashCardClick = onDeleteFlashCard,
+                                onToggleStarClick = onToggleStarredFlashCard,
+                                onEditFlashCardClick = onEditFlashCard,
+                                onAddFlashCardClick = onAddFlashcard,
+                                onNavigateToQuiz = onNavigateToQuiz,
+                                onNavigateToTrueFalse = onNavigateToTrueFalse,
+                                onNavigateToWrite = onNavigateToWrite,
+                                onNavigateToFlip = onNavigateToFlip,
+                                isOwner = false,
+                                onMakeCopyClick = onCopyStudySet,
+                                studySetColor = color
+                            )
+                        }
                     }
 
                 }

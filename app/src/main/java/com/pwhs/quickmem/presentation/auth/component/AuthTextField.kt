@@ -22,6 +22,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -31,7 +33,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.TextFieldType
+import com.pwhs.quickmem.core.data.enums.TextFieldType
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.upperCaseFirstLetter
 
@@ -52,6 +54,8 @@ fun AuthTextField(
     onDone: () -> Unit = {}
 ) {
     var showPassword by rememberSaveable { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     Column {
         TextField(
             value = value,
@@ -79,6 +83,8 @@ fun AuthTextField(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
                     onDone()
                 }
             ),

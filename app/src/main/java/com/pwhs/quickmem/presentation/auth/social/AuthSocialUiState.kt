@@ -1,7 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.social
 
-import com.pwhs.quickmem.core.data.AuthProvider
-import com.pwhs.quickmem.core.data.UserRole
+import com.pwhs.quickmem.core.data.enums.AuthProvider
+import com.pwhs.quickmem.core.data.enums.UserRole
 
 data class AuthSocialUiState(
     val isLoading: Boolean = false,
