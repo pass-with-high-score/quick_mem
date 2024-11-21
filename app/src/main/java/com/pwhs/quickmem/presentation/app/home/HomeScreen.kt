@@ -122,10 +122,8 @@ fun HomeScreen(
         onNotificationClicked = { notificationId ->
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
         },
-        onSearchStudySetBySubject = {
-            navigator.navigate(
-                SearchStudySetBySubjectScreenDestination(it)
-            )
+        onSearchStudySetBySubject = { id, name ->
+            navigator.navigate(SearchStudySetBySubjectScreenDestination(id = id, name = name))
         }
     )
 }
@@ -146,7 +144,7 @@ private fun Home(
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
     onNotificationClicked: (String) -> Unit = {},
     notifications: List<GetNotificationResponseModel> = emptyList(),
-    onSearchStudySetBySubject: (Int) -> Unit = {},
+    onSearchStudySetBySubject: (id: Int, name: String) -> Unit = { _, _ -> },
 ) {
 
     var showNotificationBottomSheet by remember { mutableStateOf(false) }

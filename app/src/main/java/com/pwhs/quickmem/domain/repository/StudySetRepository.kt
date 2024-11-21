@@ -96,4 +96,10 @@ interface StudySetRepository {
     suspend fun getTop5Subject(
         token: String
     ): Flow<Resources<List<GetTop5SubjectResponseModel>>>
+
+    suspend fun getStudySetBySubjectId(
+        token: String,
+        subjectId: Int,
+        page: Int
+    ): Flow<PagingData<GetStudySetResponseModel>>
 }

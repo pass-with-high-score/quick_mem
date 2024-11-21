@@ -2,11 +2,13 @@ package com.pwhs.quickmem.core.di
 
 import com.pwhs.quickmem.data.datasource.ClassRemoteDataSourceImpl
 import com.pwhs.quickmem.data.datasource.FolderRemoteDataSourceImpl
+import com.pwhs.quickmem.data.datasource.SearchStudySetBySubjectDataSourceImpl
 import com.pwhs.quickmem.data.datasource.StudySetRemoteDataSourceImpl
 import com.pwhs.quickmem.data.datasource.UserRemoteDataSourceImpl
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.datasource.ClassRemoteDataSource
 import com.pwhs.quickmem.domain.datasource.FolderRemoteDataSource
+import com.pwhs.quickmem.domain.datasource.SearchStudySetBySubjectRemoteDataSource
 import com.pwhs.quickmem.domain.datasource.StudySetRemoteDataSource
 import com.pwhs.quickmem.domain.datasource.UserRemoteDataResource
 import dagger.Module
@@ -48,5 +50,13 @@ object DataSourceModule {
         apiService: ApiService
     ): UserRemoteDataResource {
         return UserRemoteDataSourceImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchStudySetBySubjectRemoteDataSource(
+        apiService: ApiService
+    ): SearchStudySetBySubjectRemoteDataSource {
+        return SearchStudySetBySubjectDataSourceImpl(apiService)
     }
 }

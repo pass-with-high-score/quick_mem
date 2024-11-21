@@ -52,13 +52,13 @@ import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
-import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFoldersRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
+import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.subject.GetTop5SubjectResponseDto
@@ -246,6 +246,13 @@ interface ApiService {
     suspend fun getTop5Subject(
         @Header("Authorization") token: String
     ): List<GetTop5SubjectResponseDto>
+
+    @GET("study-set/subject/{subjectId}")
+    suspend fun getStudySetBySubjectId(
+        @Header("Authorization") token: String,
+        @Path("subjectId") subjectId: Int,
+        @Query("page") page: Int
+    ): List<GetStudySetResponseDto>
 
     // Flashcard
     @POST("study-set/duplicate")

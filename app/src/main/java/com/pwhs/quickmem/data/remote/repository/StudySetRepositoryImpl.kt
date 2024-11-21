@@ -9,8 +9,10 @@ import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.mapper.subject.toModel
+import com.pwhs.quickmem.data.paging.StudySetBySubjectPagingSource
 import com.pwhs.quickmem.data.paging.StudySetPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.datasource.SearchStudySetBySubjectRemoteDataSource
 import com.pwhs.quickmem.domain.datasource.StudySetRemoteDataSource
 import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
@@ -32,7 +34,8 @@ import javax.inject.Inject
 
 class StudySetRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
-    private val studySetRemoteDataSource: StudySetRemoteDataSource
+    private val studySetRemoteDataSource: StudySetRemoteDataSource,
+    private val searchStudySetBySubjectRemoteDataSource: SearchStudySetBySubjectRemoteDataSource
 ) : StudySetRepository {
     override suspend fun createStudySet(
         token: String,
@@ -276,5 +279,25 @@ class StudySetRepositoryImpl @Inject constructor(
                 emit(Resources.Error(e.toString()))
             }
         }
+    }
+
+    override suspend fun getStudySetBySubjectId(
+        token: String,
+        subjectId: Int,
+        page: Int
+    ): Flow<PagingData<GetStudySetResponseModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                StudySetBySubjectPagingSource(
+                    searchStudySetBySubjectRemoteDataSource,
+                    token,
+                    subjectId,
+                )
+            }
+        ).flow
     }
 }

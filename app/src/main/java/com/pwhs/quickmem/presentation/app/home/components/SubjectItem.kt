@@ -23,14 +23,14 @@ import com.pwhs.quickmem.domain.model.subject.SubjectModel
 @Composable
 fun SubjectItem(
     modifier: Modifier = Modifier,
-    onSearchStudySetBySubject: (Int) -> Unit,
+    onSearchStudySetBySubject: (id: Int, name: String) -> Unit,
     subject: SubjectModel
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        onClick = { onSearchStudySetBySubject(subject.id) },
+        onClick = { onSearchStudySetBySubject(subject.id, subject.name ) },
         border = BorderStroke(
             width = 1.dp,
             color = colorScheme.onSurface.copy(alpha = 0.12f)
