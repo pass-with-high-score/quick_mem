@@ -24,7 +24,6 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,14 +44,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.LanguageCode
+import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.welcome.component.WelcomeScrollingText
 import com.pwhs.quickmem.ui.theme.premiumColor
+import com.pwhs.quickmem.util.changeLanguage
+import com.pwhs.quickmem.util.getLanguageCode
 import com.pwhs.quickmem.util.gradientBackground
-import com.pwhs.quickmem.util.updateLocale
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
@@ -65,19 +64,15 @@ import kotlinx.coroutines.launch
 @Destination<RootGraph>
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: WelcomeViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    LaunchedEffect(uiState.languageCode) {
-        context.updateLocale(uiState.languageCode.name.lowercase())
-    }
+    val languageCode = context.getLanguageCode()
     WelCome(
         modifier = modifier,
-        language = uiState.languageCode,
-        onLanguageChange = { languageCode ->
-            viewModel.onEvent(WelcomeUiAction.ChangeLanguage(languageCode))
+        language = languageCode,
+        onLanguageChange = { code ->
+            context.changeLanguage(code)
         },
         onNavigateToLogin = {
             navigator.navigate(LoginScreenDestination)
@@ -92,8 +87,8 @@ fun WelcomeScreen(
 @Composable
 private fun WelCome(
     modifier: Modifier = Modifier,
-    language: LanguageCode,
-    onLanguageChange: (LanguageCode) -> Unit,
+    language: String,
+    onLanguageChange: (String) -> Unit,
     onNavigateToLogin: () -> Unit,
     onNavigateToSignup: () -> Unit
 ) {
@@ -152,8 +147,9 @@ private fun WelCome(
                         ) {
                             Text(
                                 when (language) {
-                                    LanguageCode.VI -> stringResource(R.string.txt_vietnamese)
-                                    LanguageCode.EN -> stringResource(R.string.txt_english_us)
+                                    LanguageCode.VI.code -> stringResource(R.string.txt_vietnamese)
+                                    LanguageCode.EN.code -> stringResource(R.string.txt_english_us)
+                                    else -> stringResource(R.string.txt_english_us)
                                 },
                                 style = typography.bodyMedium.copy(
                                     color = Color.White,
@@ -242,7 +238,13 @@ private fun WelCome(
                         .fillMaxWidth()
                         .padding(top = 10.dp)
                         .clickable {
-                            onLanguageChange(LanguageCode.VI)
+                            onLanguageChange(
+                                if (language == LanguageCode.VI.code) {
+                                    LanguageCode.EN.code
+                                } else {
+                                    LanguageCode.VI.code
+                                }
+                            )
                             showBottomSheetLanguage = false
                         },
                     verticalAlignment = Alignment.CenterVertically,
@@ -269,7 +271,7 @@ private fun WelCome(
                                 .padding(start = 10.dp)
                         )
                     }
-                    if (language == LanguageCode.VI) {
+                    if (language == LanguageCode.VI.code) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = "Check",
@@ -282,7 +284,7 @@ private fun WelCome(
                         .fillMaxWidth()
                         .padding(top = 10.dp)
                         .clickable {
-                            onLanguageChange(LanguageCode.EN)
+                            onLanguageChange(LanguageCode.EN.code)
                             showBottomSheetLanguage = false
                         },
                     verticalAlignment = Alignment.CenterVertically,
@@ -310,7 +312,7 @@ private fun WelCome(
                         )
                     }
 
-                    if (language == LanguageCode.EN) {
+                    if (language == LanguageCode.EN.code) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = "Check",

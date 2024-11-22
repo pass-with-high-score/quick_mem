@@ -49,7 +49,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.LanguageCode
+import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.presentation.app.settings.component.SettingCard
 import com.pwhs.quickmem.presentation.app.settings.component.SettingItem
 import com.pwhs.quickmem.presentation.app.settings.component.SettingSwitch
@@ -58,6 +58,7 @@ import com.pwhs.quickmem.presentation.app.settings.component.SettingValidatePass
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.getLanguageCode
 import com.pwhs.quickmem.util.toFormattedString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -145,6 +146,7 @@ fun SettingsScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    val languageCode = context.getLanguageCode()
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -195,11 +197,11 @@ fun SettingsScreen(
         username = uiState.username,
         email = uiState.email,
         password = uiState.password,
+        languageCode = languageCode,
         isLoading = uiState.isLoading,
         errorMessage = uiState.errorMessage,
         isPushNotificationsEnabled = uiState.isPushNotificationsEnabled,
         isAppPushNotificationsEnabled = uiState.isAppPushNotificationsEnabled,
-        languageCode = uiState.languageCode,
         onChangePassword = {
             viewModel.onEvent(SettingUiAction.OnChangePassword(it))
         },
@@ -280,7 +282,7 @@ fun Setting(
     isLoading: Boolean = false,
     isPushNotificationsEnabled: Boolean = false,
     isAppPushNotificationsEnabled: Boolean = false,
-    languageCode: LanguageCode = LanguageCode.EN,
+    languageCode: String = "",
     onChangePassword: (String) -> Unit = {},
     onChangeType: (SettingChangeValueEnum) -> Unit = {},
     onSubmitClick: () -> Unit = {},
@@ -463,8 +465,9 @@ fun Setting(
                             SettingItem(
                                 title = stringResource(R.string.txt_language),
                                 subtitle = when (languageCode) {
-                                    LanguageCode.EN -> stringResource(id = R.string.txt_english_us)
-                                    LanguageCode.VI -> stringResource(id = R.string.txt_vietnamese)
+                                    LanguageCode.EN.name.lowercase() -> stringResource(id = R.string.txt_english_us)
+                                    LanguageCode.VI.name.lowercase() -> stringResource(id = R.string.txt_vietnamese)
+                                    else -> stringResource(id = R.string.txt_english_us)
                                 },
                                 onClick = {
                                     onNavigateToChangeLanguage()

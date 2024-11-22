@@ -42,6 +42,7 @@ import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTo
 import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.study_sets.StudySetsTabScreen
+import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -51,6 +52,7 @@ import com.ramcosta.composedestinations.generated.destinations.AddFolderToClassS
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
@@ -160,7 +162,8 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.OnJoinClass -> {
-
+                    Toast.makeText(context, "You are member in this class", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 is ClassDetailUiEvent.ShowError -> {
@@ -193,8 +196,8 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.ExitClass -> {
+                    viewModel.onEvent(ClassDetailUiAction.Refresh)
                     Toast.makeText(context, "Exit Class", Toast.LENGTH_SHORT).show()
-                    navigator.navigateUp()
                 }
 
                 ClassDetailUiEvent.OnNavigateToRemoveMembers -> {
@@ -217,6 +220,7 @@ fun ClassDetailScreen(
         },
         title = uiState.title,
         isLoading = uiState.isLoading,
+        isAllowMember = uiState.allowMember,
         userResponseModel = uiState.userResponseModel,
         studySets = uiState.studySets,
         folders = uiState.folders,
@@ -262,6 +266,18 @@ fun ClassDetailScreen(
         },
         onRemoveMembers = {
             viewModel.onEvent(ClassDetailUiAction.OnDeleteMember(it))
+        },
+        onJoinClass = {
+            viewModel.onEvent(ClassDetailUiAction.OnJoinClass)
+        },
+        onReportClass = {
+            navigator.navigate(
+                ReportScreenDestination(
+                    reportType = ReportTypeEnum.CLASS,
+                    classId = uiState.id,
+                    username = uiState.userResponseModel.username
+                )
+            )
         }
     )
 }
@@ -274,6 +290,7 @@ fun ClassDetail(
     title: String = "",
     isLoading: Boolean = false,
     isMember: Boolean = false,
+    isAllowMember: Boolean = false,
     linkShareCode: String = "",
     userResponseModel: UserResponseModel = UserResponseModel(),
     studySets: List<GetStudySetResponseModel> = emptyList(),
@@ -285,11 +302,13 @@ fun ClassDetail(
     onNavigateToUserDetail: (String) -> Unit = {},
     onEditClass: () -> Unit = {},
     onExitClass: () -> Unit = {},
+    onJoinClass: () -> Unit = {},
     onRemoveMembers: (String) -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onStudySetItemClicked: (GetStudySetResponseModel) -> Unit = {},
     onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
+    onReportClass: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Study sets", "Folders", "Members")
@@ -442,12 +461,20 @@ fun ClassDetail(
             showMoreBottomSheet = false
         },
         onShareClass = {},
-        onReportClass = {},
+        onReportClass = {
+            onReportClass()
+            showMoreBottomSheet = false
+        },
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false },
         isOwner = isOwner,
-        isMember = isMember
+        isMember = isMember,
+        isAllowMember = isAllowMember,
+        onJoinClass = {
+            onJoinClass()
+            showMoreBottomSheet = false
+        },
     )
 }
 

@@ -9,6 +9,7 @@ fun UpdateFlashCardResponseDto.toModel() = UpdateFlashCardResponseModel(
     isStarred = isStarred,
     rating = rating,
     flipStatus = flipStatus,
+    quizStatus = quizStatus,
 )
 
 fun UpdateFlashCardResponseModel.toDto() = UpdateFlashCardResponseDto(
@@ -17,4 +18,5 @@ fun UpdateFlashCardResponseModel.toDto() = UpdateFlashCardResponseDto(
     isStarred = isStarred,
     rating = rating,
     flipStatus = flipStatus,
+    quizStatus = quizStatus,
 )

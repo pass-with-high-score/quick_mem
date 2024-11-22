@@ -50,6 +50,7 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
+import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
@@ -58,6 +59,7 @@ import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreen
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import timber.log.Timber
@@ -165,6 +167,15 @@ fun UserDetailScreen(
         },
         onRefresh = {
             viewModel.onEvent(UserDetailUiAction.Refresh)
+        },
+        onReportClick = {
+            navigator.navigate(
+                ReportScreenDestination(
+                    reportType = ReportTypeEnum.USER_DETAIL,
+                    username = uiState.userName,
+                    userId = uiState.userId
+                )
+            )
         }
     )
 }
@@ -185,7 +196,8 @@ private fun UserDetail(
     onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
     onClassClick: (GetClassByOwnerResponseModel) -> Unit = {},
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    onReportClick: () -> Unit = {}
 ) {
     var tabIndex by remember { mutableIntStateOf(UserDetailTabEnum.STUDY_SET.index) }
     val tabTitles = listOf(
@@ -210,9 +222,7 @@ private fun UserDetail(
                 actions = {
                     if (!isOwner) {
                         IconButton(
-                            onClick = {
-                                //TODO: Report user
-                            }
+                            onClick = { onReportClick() }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Report,

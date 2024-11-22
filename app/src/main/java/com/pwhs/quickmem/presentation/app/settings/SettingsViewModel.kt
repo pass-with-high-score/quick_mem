@@ -2,7 +2,7 @@ package com.pwhs.quickmem.presentation.app.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.data.LanguageCode
+import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -105,7 +105,6 @@ class SettingsViewModel @Inject constructor(
                 val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
                 val isAppPushNotificationsEnabled =
                     appManager.appPushNotifications.firstOrNull() ?: false
-                val languageCode = appManager.languageCode.firstOrNull() ?: "en"
                 _uiState.update {
                     it.copy(
                         userId = userId,
@@ -114,11 +113,6 @@ class SettingsViewModel @Inject constructor(
                         email = email,
                         isPushNotificationsEnabled = isPushNotificationsEnabled,
                         isAppPushNotificationsEnabled = isAppPushNotificationsEnabled,
-                        languageCode = when (languageCode) {
-                            "en" -> LanguageCode.EN
-                            "vi" -> LanguageCode.VI
-                            else -> LanguageCode.EN
-                        }
                     )
                 }
                 getCustomerInfo()

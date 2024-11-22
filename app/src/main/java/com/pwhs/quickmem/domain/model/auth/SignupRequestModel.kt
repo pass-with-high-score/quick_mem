@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.domain.model.auth
 
-import com.pwhs.quickmem.core.data.UserRole
+import com.pwhs.quickmem.core.data.enums.UserRole
 
 data class SignupRequestModel(
     val avatarUrl: String?,

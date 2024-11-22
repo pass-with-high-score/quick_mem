@@ -5,7 +5,7 @@ import android.util.Patterns
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.pwhs.quickmem.core.data.LanguageCode
+import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,7 +22,6 @@ class AppManager(private val context: Context) {
         val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
-        val LANGUAGE_CODE = stringPreferencesKey("LANGUAGE_CODE")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -60,10 +59,6 @@ class AppManager(private val context: Context) {
     val appPushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
             preferences[APP_PUSH_NOTIFICATIONS] ?: false
-        }
-    val languageCode: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[LANGUAGE_CODE] ?: LanguageCode.EN.name.lowercase()
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -127,13 +122,6 @@ class AppManager(private val context: Context) {
         Timber.d("Saving app push notifications: $appPushNotifications")
         context.dataStore.edit { preferences ->
             preferences[APP_PUSH_NOTIFICATIONS] = appPushNotifications
-        }
-    }
-
-    suspend fun saveLanguageCode(languageCode: String) {
-        Timber.d("Saving language code: $languageCode")
-        context.dataStore.edit { preferences ->
-            preferences[LANGUAGE_CODE] = languageCode
         }
     }
 

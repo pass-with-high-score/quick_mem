@@ -1,7 +1,7 @@
 package com.pwhs.quickmem.data.dto.auth
 
 import com.google.gson.annotations.SerializedName
-import com.pwhs.quickmem.core.data.UserRole
+import com.pwhs.quickmem.core.data.enums.UserRole
 
 data class SignupRequestDto(
     @SerializedName("avatarUrl")
