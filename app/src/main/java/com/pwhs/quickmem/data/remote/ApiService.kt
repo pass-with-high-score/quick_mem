@@ -37,6 +37,7 @@ import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.EditFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.FlashCardResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.QuizStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
@@ -300,6 +301,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body ratingFlashCardDto: RatingFlashCardDto
+    ): UpdateFlashCardResponseDto
+
+    @PATCH("flashcard/{id}/quiz-status")
+    suspend fun updateQuizStatus(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body quizStatusDto: QuizStatusFlashCardDto
     ): UpdateFlashCardResponseDto
 
     // Folder

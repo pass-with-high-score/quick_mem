@@ -53,10 +53,10 @@ import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextField
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextFieldContainer
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTopAppBar
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.ImageCompressor
 import com.pwhs.quickmem.util.bitmapToUri
-import com.pwhs.quickmem.util.loadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -113,7 +113,7 @@ fun EditFlashCardScreen(
         showHint = uiState.showHint,
         explanation = uiState.explanation ?: "",
         showExplanation = uiState.showExplanation,
-        isLoaded = uiState.isLoading,
+        isLoading = uiState.isLoading,
         onTermChanged = { viewModel.onEvent(EditFlashCardUiAction.FlashCardTermChanged(it)) },
         onDefinitionChanged = {
             viewModel.onEvent(
@@ -185,7 +185,7 @@ fun CreateFlashCard(
     definition: String = "",
     definitionImageUri: Uri? = null,
     definitionImageURL: String = "",
-    isLoaded: Boolean = false,
+    isLoading: Boolean = false,
     hint: String = "",
     showHint: Boolean = false,
     explanation: String = "",
@@ -254,7 +254,6 @@ fun CreateFlashCard(
         },
         modifier = modifier
             .fillMaxSize()
-            .loadingOverlay(isLoaded)
     ) { innerPadding ->
         Box(contentAlignment = Alignment.TopCenter) {
             LazyColumn(
@@ -393,7 +392,7 @@ fun CreateFlashCard(
                 }
 
             }
-
+            LoadingOverlay(isLoading = isLoading)
         }
 
         if (showBottomSheetSetting) {

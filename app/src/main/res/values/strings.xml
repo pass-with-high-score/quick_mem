@@ -75,9 +75,9 @@
     <string name="txt_study_sets">Study Sets</string>
     <string name="txt_ai_tools">AI Tools</string>
     <string name="txt_bear">Bear</string>
-    <string name="txt_english_us">English (US)</string>
+    <string name="txt_english_us" translatable="false">English (US)</string>
     <string name="txt_get_started_for_free">Get started for free</string>
-    <string name="txt_vietnamese">Vietnamese</string>
+    <string name="txt_vietnamese" translatable="false">Tiếng việt</string>
     <string name="txt_change_language">Change Language</string>
     <string name="txt_back">Back</string>
     <string name="txt_settings">Settings</string>

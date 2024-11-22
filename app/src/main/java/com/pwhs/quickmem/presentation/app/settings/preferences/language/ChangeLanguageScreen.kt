@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.settings.preferences.language
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -18,9 +19,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,11 +26,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.LanguageCode
+import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
-import com.pwhs.quickmem.util.updateLocale
+import com.pwhs.quickmem.util.changeLanguage
+import com.pwhs.quickmem.util.getLanguageCode
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -41,15 +39,15 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 @Composable
 fun ChangeLanguageScreen(
     modifier: Modifier = Modifier,
-    viewModel: ChangeLanguageViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val languageCode = context.getLanguageCode()
     ChangeLanguage(
         modifier = modifier,
-        languageCode = uiState.languageCode,
-        onLanguageCodeChanged = { languageCode ->
-            viewModel.onEvent(ChangeLanguageUiAction.ChangeLanguage(languageCode))
+        languageCode = languageCode,
+        onLanguageCodeChanged = { code ->
+            context.changeLanguage(code)
         },
         onNavigateUp = {
             resultNavigator.navigateBack(true)
@@ -61,14 +59,10 @@ fun ChangeLanguageScreen(
 @Composable
 private fun ChangeLanguage(
     modifier: Modifier = Modifier,
-    languageCode: LanguageCode,
-    onLanguageCodeChanged: (LanguageCode) -> Unit,
+    languageCode: String,
+    onLanguageCodeChanged: (String) -> Unit,
     onNavigateUp: () -> Unit = {}
 ) {
-    val context = LocalContext.current
-    LaunchedEffect(languageCode) {
-        context.updateLocale(languageCode.name.lowercase())
-    }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -99,11 +93,14 @@ private fun ChangeLanguage(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable {
+                        onLanguageCodeChanged(LanguageCode.EN.code)
+                    }
                 ) {
                     RadioButton(
-                        selected = languageCode == LanguageCode.EN,
-                        onClick = { onLanguageCodeChanged(LanguageCode.EN) }
+                        selected = languageCode == LanguageCode.EN.code,
+                        onClick = { onLanguageCodeChanged(LanguageCode.EN.code) }
                     )
                     Text(
                         text = stringResource(R.string.txt_english_us),
@@ -119,11 +116,14 @@ private fun ChangeLanguage(
                 }
                 HorizontalDivider()
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable {
+                        onLanguageCodeChanged(LanguageCode.VI.code)
+                    }
                 ) {
                     RadioButton(
-                        selected = languageCode == LanguageCode.VI,
-                        onClick = { onLanguageCodeChanged(LanguageCode.VI) }
+                        selected = languageCode == LanguageCode.VI.code,
+                        onClick = { onLanguageCodeChanged(LanguageCode.VI.code) }
                     )
                     Text(
                         text = stringResource(R.string.txt_vietnamese),
@@ -146,7 +146,7 @@ private fun ChangeLanguage(
 private fun ChangeLanguageScreenPreview() {
     QuickMemTheme {
         ChangeLanguage(
-            languageCode = LanguageCode.EN,
+            languageCode = LanguageCode.EN.code,
             onLanguageCodeChanged = {}
         )
     }

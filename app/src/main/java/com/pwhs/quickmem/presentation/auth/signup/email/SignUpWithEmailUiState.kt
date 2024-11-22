@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.presentation.auth.signup.email
 
-import com.pwhs.quickmem.core.data.UserRole
+import com.pwhs.quickmem.core.data.enums.UserRole
 
 data class SignUpWithEmailUiState(
     val email: String = "",

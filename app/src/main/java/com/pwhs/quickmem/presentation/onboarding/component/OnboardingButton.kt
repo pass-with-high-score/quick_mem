@@ -1,10 +1,10 @@
 package com.pwhs.quickmem.presentation.onboarding.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
@@ -43,7 +43,6 @@ fun OnboardingButton(
             containerColor = backgroundColor,
         ),
         modifier = modifier
-            .width(150.dp)
             .height(50.dp),
         shape = buttonShape,
         border = BorderStroke(1.dp, borderColor),
@@ -57,7 +56,7 @@ fun OnboardingButton(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = text,
@@ -66,13 +65,13 @@ fun OnboardingButton(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )
             if (showIcon) {
                 Icon(
                     imageVector = AutoMirrored.Filled.ArrowForwardIos,
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }

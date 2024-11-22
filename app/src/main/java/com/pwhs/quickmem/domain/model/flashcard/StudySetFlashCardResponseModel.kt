@@ -1,7 +1,7 @@
 package com.pwhs.quickmem.domain.model.flashcard
 
-import com.pwhs.quickmem.core.data.FlipCardStatus
-import com.pwhs.quickmem.core.data.Rating
+import com.pwhs.quickmem.core.data.enums.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.Rating
 
 data class StudySetFlashCardResponseModel(
     val id: String,

@@ -1,8 +1,8 @@
 package com.pwhs.quickmem.data.dto.flashcard
 
 import com.google.gson.annotations.SerializedName
-import com.pwhs.quickmem.core.data.FlipCardStatus
-import com.pwhs.quickmem.core.data.Rating
+import com.pwhs.quickmem.core.data.enums.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.Rating
 
 data class StudySetFlashCardResponseDto(
     @SerializedName("id")
