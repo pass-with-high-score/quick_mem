@@ -107,7 +107,8 @@ fun ListAllResultScreen(
                                 title = folder?.title ?: "",
                                 numOfStudySets = folder?.studySetCount ?: 0,
                                 onClick = { onFolderClick(folder) },
-                                userResponseModel = folder?.owner ?: UserResponseModel()
+                                userResponseModel = folder?.owner ?: UserResponseModel(),
+                                folder = folder
                             )
                         }
                     }

@@ -34,7 +34,6 @@ import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListResultFolderScreen(
     modifier: Modifier = Modifier,
@@ -58,7 +57,8 @@ fun ListResultFolderScreen(
                     title = folder?.title ?: "",
                     numOfStudySets = folder?.studySetCount ?: 0,
                     onClick = { onFolderClick(folder) },
-                    userResponseModel = folder?.owner ?: UserResponseModel()
+                    userResponseModel = folder?.owner ?: UserResponseModel(),
+                    folder = folder
                 )
             }
             item {

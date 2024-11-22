@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -33,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -42,7 +46,10 @@ fun FolderItem(
     title: String = "",
     numOfStudySets: Int = 0,
     userResponseModel: UserResponseModel = UserResponseModel(),
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    isOwner: Boolean = false,
+    folder: GetFolderResponseModel? = null,
+    onDeleteClick: ((String) -> Unit)? = null
 ) {
     Card(
         modifier = modifier
@@ -57,65 +64,87 @@ fun FolderItem(
             containerColor = Color.White,
         )
     ) {
-        Column(
+        Row(
             modifier = Modifier
-                .padding(16.dp)
-                .background(Color.Transparent)
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .weight(1f)
+                    .background(Color.Transparent),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    imageVector = Outlined.Folder,
-                    contentDescription = "Folder Icon"
-                )
-                Text(
-                    text = title,
-                    style = typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Outlined.Folder,
+                        contentDescription = "Folder Icon",
                     )
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = when (numOfStudySets) {
-                        0 -> stringResource(R.string.txt_no_study_sets)
-                        1 -> stringResource(R.string.txt_one_study_set)
-                        else -> stringResource(R.string.txt_study_sets_library, numOfStudySets)
-                    },
-                    style = typography.bodyMedium
-                )
-                VerticalDivider(
-                    modifier = Modifier
-                        .height(16.dp)
-                        .padding(horizontal = 8.dp),
-                    thickness = 1.dp,
-                    color = colorScheme.onSurface.copy(alpha = 0.12f)
-                )
+                    Text(
+                        text = title,
+                        style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = colorScheme.onSurface
+                    )
+                }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    AsyncImage(
-                        model = userResponseModel.avatarUrl,
-                        contentDescription = stringResource(R.string.txt_user_avatar),
+                    Text(
+                        text = when (numOfStudySets) {
+                            0 -> stringResource(R.string.txt_no_study_sets)
+                            1 -> stringResource(R.string.txt_one_study_set)
+                            else -> stringResource(R.string.txt_study_sets_library, numOfStudySets)
+                        },
+                        style = typography.bodyMedium,
+                        color = colorScheme.onSurfaceVariant
+                    )
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(16.dp)
+                            .padding(horizontal = 8.dp),
+                        thickness = 1.dp,
+                        color = colorScheme.onSurface.copy(alpha = 0.12f)
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        AsyncImage(
+                            model = userResponseModel.avatarUrl,
+                            contentDescription = stringResource(R.string.txt_user_avatar),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .background(colorScheme.primary.copy(alpha = 0.1f)),
+                            contentScale = ContentScale.Crop
+                        )
+                        Text(
+                            text = userResponseModel.username,
+                            style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                            color = colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+
+            if (isOwner && onDeleteClick != null && folder != null) {
+                IconButton(
+                    onClick = {
+                        onDeleteClick(folder.id)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Clear,
+                        contentDescription = stringResource(R.string.txt_delete),
                         modifier = Modifier
                             .size(24.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                    Text(
-                        text = userResponseModel.username,
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
                     )
                 }
             }
@@ -123,29 +152,34 @@ fun FolderItem(
     }
 }
 
+
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun FolderItemPreview() {
     QuickMemTheme {
         Scaffold {
             LazyColumn(
-                modifier = Modifier
-                    .padding(it)
-//                    .padding(horizontal = 16.dp)
+                modifier = Modifier.padding(it)
             ) {
-                item {
-                    repeat(10) {
-                        FolderItem(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            title = "Folder 1",
-                            numOfStudySets = 3,
-                            userResponseModel = UserResponseModel(
-                                username = "User 1",
-                                avatarUrl = "https://avatars.githubusercontent.com/u/1"
-                            )
-                        )
-                    }
+                items(10) {
+                    FolderItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        folder = GetFolderResponseModel(
+                            id = "folder_$it",
+                            title = "Folder $it",
+                            description = "Description for folder $it",
+                            isPublic = true,
+                            studySetCount = it,
+                            owner = UserResponseModel(
+                                username = "User $it",
+                                avatarUrl = "https://avatars.githubusercontent.com/u/$it"
+                            ),
+                            createdAt = "2024-01-01T00:00:00Z",
+                            updatedAt = "2024-01-01T00:00:00Z"
+                        ),
+                        isOwner = true,
+                        onDeleteClick = {}
+                    )
                 }
             }
         }
