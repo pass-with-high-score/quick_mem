@@ -52,6 +52,7 @@ import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
 import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
 import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
+import com.pwhs.quickmem.data.dto.auth.GetUserProfileResponseDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
@@ -142,6 +143,12 @@ interface ApiService {
         @Path("id") userId: String,
         @Query("isOwner") isOwner: Boolean
     ): UserDetailResponseDto
+
+    @GET("auth/profile/{id}")
+    suspend fun getUserProfile(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String
+    ): GetUserProfileResponseDto
 
     //Update Avatar
     @PATCH("auth/user/avatar/{id}")
