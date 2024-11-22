@@ -13,7 +13,6 @@ data class SettingUiState(
     val fullName: String = "",
     val username: String = "",
     val email: String = "",
-    val languageCode: LanguageCode = LanguageCode.EN,
     val changeType: SettingChangeValueEnum = SettingChangeValueEnum.NONE,
     val isPushNotificationsEnabled: Boolean = false,
     val isAppPushNotificationsEnabled: Boolean = false,
