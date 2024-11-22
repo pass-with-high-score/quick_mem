@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.folders
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +24,7 @@ fun FoldersTabScreen(
     folder: List<GetFolderResponseModel> = emptyList(),
     onAddFoldersClicked: () -> Unit = {},
     onFolderItemClicked: (GetFolderResponseModel) -> Unit = {},
+    onDeleteFolderClicked: (String) -> Unit = {}
 ) {
     Scaffold { innerPadding ->
         Box(
@@ -47,7 +47,6 @@ fun FoldersTabScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(folder) { folders ->
                             FolderItem(
@@ -55,7 +54,12 @@ fun FoldersTabScreen(
                                 title = folders.title,
                                 onClick = { onFolderItemClicked(folders) },
                                 numOfStudySets = folders.studySetCount,
-                                userResponseModel = folders.owner
+                                userResponseModel = folders.owner,
+                                onDeleteClick = {folderId ->
+                                    onDeleteFolderClicked(folderId)
+                                },
+                                folder = folders,
+                                isOwner = isOwner
                             )
                         }
                     }
