@@ -47,7 +47,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
-import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -262,9 +261,6 @@ fun Profile(
                 onPaywallDismissed = {
                     isPaywallVisible = false
                 },
-            )
-            LoadingOverlay(
-                isLoading = isLoading
             )
         }
     }

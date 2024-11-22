@@ -15,7 +15,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -54,7 +56,8 @@ class ProfileViewModel @Inject constructor(
             }
 
             ProfileUiAction.Refresh -> {
-                loadProfile()
+                getUserProfile()
+                getCustomerInfo()
             }
         }
     }
@@ -85,6 +88,7 @@ class ProfileViewModel @Inject constructor(
                     is Resources.Loading -> {
                         _uiState.update { it.copy(isLoading = true) }
                     }
+
                     is Resources.Success -> {
                         resource.data?.let { data ->
                             _uiState.update {
@@ -98,6 +102,7 @@ class ProfileViewModel @Inject constructor(
                             appManager.saveUserAvatar(data.avatarUrl)
                         }
                     }
+
                     is Resources.Error -> {
                         _uiState.update { it.copy(isLoading = false) }
                         Timber.e("Error fetching profile: ${resource.message}")
@@ -113,17 +118,15 @@ class ProfileViewModel @Inject constructor(
         }
         viewModelScope.launch {
             try {
-                launch {
-                    appManager.userName.collectLatest { username ->
-                        _uiState.update { it.copy(username = username) }
+                appManager.userName.combine(appManager.userAvatar) { username, avatar ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            username = username,
+                            userAvatar = avatar
+                        )
                     }
-                }
-
-                launch {
-                    appManager.userAvatar.collectLatest { avatarUrl ->
-                        _uiState.update { it.copy(userAvatar = avatarUrl) }
-                    }
-                }
+                }.collect()
             } catch (e: Exception) {
                 Timber.e(e, "Error observing DataStore")
             }
