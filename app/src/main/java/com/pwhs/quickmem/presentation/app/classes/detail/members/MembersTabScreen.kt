@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.members
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -46,7 +45,6 @@ fun MembersTabScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(member) { member ->
                             ClassMemberItem(
