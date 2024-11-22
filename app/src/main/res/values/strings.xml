@@ -249,6 +249,7 @@
     <string name="txt_recent">Recent Search</string>
     <string name="txt_clear_all">Clear all</string>
     <string name="txt_deleted_successfully">Deleted Successfully</string>
-    <string name="txt_achievements">Achievements</string>
     <string name="txt_viewall">View all</string>
+    <string name="txt_day_streak">day streak</string>
+    <string name="txt_days_streak">days streak</string>
 </resources>

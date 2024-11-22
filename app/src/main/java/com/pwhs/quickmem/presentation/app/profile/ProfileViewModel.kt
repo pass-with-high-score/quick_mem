@@ -30,7 +30,6 @@ class ProfileViewModel @Inject constructor(
     private val appManager: AppManager,
     private val tokenManager: TokenManager,
     private val authRepository: AuthRepository
-
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -46,7 +45,6 @@ class ProfileViewModel @Inject constructor(
 
     fun onEvent(event: ProfileUiAction) {
         when (event) {
-            is ProfileUiAction.LoadProfile -> loadProfile()
             is ProfileUiAction.OnChangeCustomerInfo -> {
                 _uiState.update {
                     it.copy(
@@ -58,33 +56,6 @@ class ProfileViewModel @Inject constructor(
             ProfileUiAction.Refresh -> {
                 getUserProfile()
                 getCustomerInfo()
-                loadProfile()
-            }
-
-            ProfileUiAction.OnNavigateToViewAllAchievements -> {
-                _uiEvent.trySend(ProfileUiEvent.OnNavigateToViewAllAchievements)
-            }
-        }
-    }
-
-    private fun loadProfile() {
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
-        try {
-            viewModelScope.launch {
-                val username = appManager.userName.firstOrNull() ?: ""
-                val avatar = appManager.userAvatar.firstOrNull() ?: ""
-                _uiState.value = _uiState.value.copy(
-                    username = username,
-                    userAvatar = avatar,
-                    isLoading = false
-                )
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-            _uiState.update {
-                it.copy(isLoading = false)
             }
         }
     }

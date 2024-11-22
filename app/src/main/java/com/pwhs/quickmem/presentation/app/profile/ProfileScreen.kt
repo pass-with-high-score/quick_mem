@@ -6,13 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -30,7 +28,6 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -43,23 +40,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.home.HomeViewModel
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
@@ -67,6 +59,8 @@ import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
+import com.pwhs.quickmem.ui.theme.streakTextColor
+import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ChoosePictureScreenDestination
@@ -137,7 +131,6 @@ fun Profile(
     navigateToSettings: () -> Unit = {},
     onCustomerInfoChanged: (customerInfo: CustomerInfo) -> Unit = {},
     customerInfo: CustomerInfo? = null,
-    onViewAllAchievement: () -> Unit = {},
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),
     currentDate: LocalDate = LocalDate.now(),
@@ -280,62 +273,64 @@ fun Profile(
                 }
 
                 item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 15.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = stringResource(R.string.txt_achievements),
-                            style = typography.bodyLarge.copy(
-                                fontWeight = FontWeight.ExtraBold,
-                                fontSize = 24.sp
-                            )
+                    Text(
+                        text = "Look at your streak!",
+                        style = typography.bodyLarge.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 20.sp
                         )
-                    }
+                    )
                 }
 
                 item {
                     Card(
                         modifier = Modifier
                             .fillMaxSize(),
-                        onClick = onViewAllAchievement,
                         colors = CardDefaults.cardColors(
                             containerColor = colorScheme.surface
+                        ),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = colorScheme.onSurface
                         )
                     ) {
                         Column(
                             modifier = Modifier
-                                .fillMaxHeight(0.65f)
                                 .padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.ic_fire),
-                                modifier = modifier.size(150.dp),
-                                contentDescription = "streak fire"
+                                modifier = modifier.size(100.dp),
+                                contentDescription = "streak fire",
+                                contentScale = ContentScale.Crop
                             )
                             Text(
                                 text = streakCount.toString(),
                                 style = typography.titleLarge.copy(
-                                    color = Color(0xFFf2ac40),
+                                    color = streakTitleColor,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 52.sp
                                 )
                             )
                             Text(
-                                text = "day streak",
+                                text = when (streakCount) {
+                                    1 -> stringResource(R.string.txt_day_streak)
+                                    else -> stringResource(R.string.txt_days_streak)
+                                },
                                 style = typography.titleLarge.copy(
-                                    color = Color(0xFFf2ac40),
+                                    color = streakTextColor,
                                     fontWeight = FontWeight.Bold
                                 ),
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
                             Text(
                                 text = "Practice every day so you don't lose your streak!",
-                                modifier.padding(top = 16.dp)
+                                style = typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 16.dp)
                             )
                             StreakCalendar(
                                 currentDate = currentDate,
@@ -343,6 +338,9 @@ fun Profile(
                             )
                         }
                     }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 100.dp))
                 }
             }
             Paywall(
