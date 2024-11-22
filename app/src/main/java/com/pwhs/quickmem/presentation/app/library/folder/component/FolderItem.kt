@@ -2,7 +2,6 @@ package com.pwhs.quickmem.presentation.app.library.folder.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -39,7 +39,6 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
-import timber.log.Timber
 
 @Composable
 fun FolderItem(
@@ -55,7 +54,7 @@ fun FolderItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(vertical = 8.dp),
         onClick = onClick,
         border = BorderStroke(
             width = 1.dp,
@@ -68,7 +67,7 @@ fun FolderItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -85,7 +84,6 @@ fun FolderItem(
                     Icon(
                         imageVector = Outlined.Folder,
                         contentDescription = "Folder Icon",
-                        tint = colorScheme.primary
                     )
                     Text(
                         text = title,
@@ -137,16 +135,18 @@ fun FolderItem(
             }
 
             if (isOwner && onDeleteClick != null && folder != null) {
-                Icon(
-                    imageVector = Icons.Rounded.Clear,
-                    contentDescription = stringResource(R.string.txt_delete),
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            Timber.e("Delete clicked for folder id: ${folder.id}")
-                            onDeleteClick(folder.id)
-                        }
-                )
+                IconButton(
+                    onClick = {
+                        onDeleteClick(folder.id)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Clear,
+                        contentDescription = stringResource(R.string.txt_delete),
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
             }
         }
     }

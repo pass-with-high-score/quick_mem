@@ -337,10 +337,12 @@ class ClassDetailViewModel @Inject constructor(
 
                     is Resources.Success ->
                         resource.data?.let {
-                            getClassByID()
+                            val studySets = _uiState.value.studySets.toMutableList()
+                            studySets.removeAll { it.id == studySetId }
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
+                                    studySets = studySets
                                 )
                             }
                         }
@@ -374,10 +376,12 @@ class ClassDetailViewModel @Inject constructor(
 
                     is Resources.Success ->
                         resource.data?.let {
-                            getClassByID()
+                            val folders = _uiState.value.folders.toMutableList()
+                            folders.removeAll { it.id == folderId }
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
+                                    folders = folders
                                 )
                             }
                         }

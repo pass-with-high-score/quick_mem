@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.study_sets
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -47,7 +46,6 @@ fun StudySetsTabScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(studySets) { studySet ->
                             StudySetItem(
