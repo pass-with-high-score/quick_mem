@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.classes.DeleteFolderRequestModel
+import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
@@ -103,6 +105,14 @@ class ClassDetailViewModel @Inject constructor(
 
             ClassDetailUiAction.OnJoinClass -> {
                 joinClassByToken()
+            }
+
+            is ClassDetailUiAction.OnDeleteStudySetInClass -> {
+                deleteStudySetInClass(event.studySetId)
+            }
+
+            is ClassDetailUiAction.OnDeleteFolderInClass -> {
+                deleteFolderInClass(event.folderId)
             }
         }
     }
@@ -298,6 +308,85 @@ class ClassDetailViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+
+    private fun deleteStudySetInClass(studySetId: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            classRepository.deleteStudySetInClass(
+                token,
+                DeleteStudySetsRequestModel(userId, classId, studySetId)
+            ).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success ->
+                        resource.data?.let {
+                            val studySets = _uiState.value.studySets.toMutableList()
+                            studySets.removeAll { it.id == studySetId }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    studySets = studySets
+                                )
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    private fun deleteFolderInClass(folderId: String) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            classRepository.deleteFolderInClass(
+                token,
+                DeleteFolderRequestModel(userId, classId, folderId)
+            ).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success ->
+                        resource.data?.let {
+                            val folders = _uiState.value.folders.toMutableList()
+                            folders.removeAll { it.id == folderId }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    folders = folders
+                                )
+                            }
+                        }
+                }
+            }
         }
     }
 }

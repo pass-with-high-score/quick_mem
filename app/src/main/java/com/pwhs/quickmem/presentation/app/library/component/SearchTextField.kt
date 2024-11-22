@@ -39,7 +39,6 @@ fun SearchTextField(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 20.dp)
     ) {
         TextField(
             value = searchQuery,
