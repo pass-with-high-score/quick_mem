@@ -332,8 +332,8 @@ class AuthRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<GetUserProfileResponseModel>> {
         return flow {
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
                 val response = apiService.getUserProfile(token, userId)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
