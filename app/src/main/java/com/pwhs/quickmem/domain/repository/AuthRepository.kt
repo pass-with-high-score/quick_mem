@@ -5,6 +5,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
+import com.pwhs.quickmem.domain.model.auth.GetUserProfileResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
 import com.pwhs.quickmem.domain.model.auth.ResendEmailRequestModel
@@ -96,4 +97,9 @@ interface AuthRepository {
         username: String,
         page: Int?
     ): Flow<PagingData<SearchUserResponseModel>>
+
+    suspend fun getUserProfile(
+        token: String,
+        userId: String
+    ): Flow<Resources<GetUserProfileResponseModel>>
 }
