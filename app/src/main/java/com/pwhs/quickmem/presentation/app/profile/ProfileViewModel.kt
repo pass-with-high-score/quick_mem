@@ -30,7 +30,6 @@ class ProfileViewModel @Inject constructor(
     private val appManager: AppManager,
     private val tokenManager: TokenManager,
     private val authRepository: AuthRepository
-
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -46,7 +45,6 @@ class ProfileViewModel @Inject constructor(
 
     fun onEvent(event: ProfileUiAction) {
         when (event) {
-            is ProfileUiAction.LoadProfile -> loadProfile()
             is ProfileUiAction.OnChangeCustomerInfo -> {
                 _uiState.update {
                     it.copy(

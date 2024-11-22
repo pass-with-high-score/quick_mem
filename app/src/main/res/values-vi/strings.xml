@@ -246,4 +246,7 @@
     <string name="txt_recent">Lịch sử tìm kiếm</string>
     <string name="txt_clear_all">Xóa tất cả</string>
     <string name="txt_deleted_successfully">Đã xóa thành công</string>
+    <string name="txt_viewall">Xem tất cả</string>
+    <string name="txt_day_streak">day streak</string>
+    <string name="txt_days_streak">days streak</string>
 </resources>
