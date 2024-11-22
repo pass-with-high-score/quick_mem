@@ -1,19 +1,22 @@
 package com.pwhs.quickmem.util
 
+import android.app.LocaleManager
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
+import android.os.LocaleList
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.Locale
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth")
 
@@ -43,11 +46,19 @@ fun Context.uriToBitmap(uri: Uri): Bitmap {
     }
 }
 
-fun Context.updateLocale(languageCode: String) {
-    val locale = Locale(languageCode)
-    Locale.setDefault(locale)
+fun Context.changeLanguage(languageCode: String) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        this.getSystemService(LocaleManager::class.java).applicationLocales =
+            LocaleList.forLanguageTags(languageCode)
+    } else {
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
+    }
+}
 
-    val config = Configuration(resources.configuration)
-    config.setLocale(locale)
-    resources.updateConfiguration(config, resources.displayMetrics)
+fun Context.getLanguageCode(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        this.getSystemService(LocaleManager::class.java).applicationLocales[0]?.toLanguageTag()?.split("-")?.first() ?: "en"
+    } else {
+        AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag()?.split("-")?.first() ?: "en"
+    }
 }

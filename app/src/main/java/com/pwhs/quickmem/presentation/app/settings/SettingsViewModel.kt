@@ -105,7 +105,6 @@ class SettingsViewModel @Inject constructor(
                 val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
                 val isAppPushNotificationsEnabled =
                     appManager.appPushNotifications.firstOrNull() ?: false
-                val languageCode = appManager.languageCode.firstOrNull() ?: "en"
                 _uiState.update {
                     it.copy(
                         userId = userId,
@@ -114,11 +113,6 @@ class SettingsViewModel @Inject constructor(
                         email = email,
                         isPushNotificationsEnabled = isPushNotificationsEnabled,
                         isAppPushNotificationsEnabled = isAppPushNotificationsEnabled,
-                        languageCode = when (languageCode) {
-                            "en" -> LanguageCode.EN
-                            "vi" -> LanguageCode.VI
-                            else -> LanguageCode.EN
-                        }
                     )
                 }
                 getCustomerInfo()

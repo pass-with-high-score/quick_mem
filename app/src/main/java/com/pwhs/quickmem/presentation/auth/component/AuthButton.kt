@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,8 +41,14 @@ fun AuthButton(
     isEnable: Boolean = true,
     @DrawableRes icon: Int? = null
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     ElevatedButton(
-        onClick = onClick,
+        onClick = {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+            onClick()
+        },
         enabled = isEnable,
         modifier = modifier
             .fillMaxWidth()

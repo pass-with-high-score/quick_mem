@@ -8,7 +8,6 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.remote.ApiService
-import com.pwhs.quickmem.util.updateLocale
 import com.revenuecat.purchases.LogLevel as RevenueCatLogLevel
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
@@ -51,10 +50,6 @@ class App : Application() {
         Purchases.sharedInstance.setOnesignalID(OneSignal.User.onesignalId)
         // Get FCM token
         getFCMToken()
-        CoroutineScope(Dispatchers.IO).launch {
-            val languageCode = appManager.languageCode.firstOrNull() ?: "en"
-            updateLocale(languageCode)
-        }
     }
 
     private fun getFCMToken() {

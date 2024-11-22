@@ -83,11 +83,6 @@ fun ClassDetailBottomSheet(
                     icon = Default.IosShare,
                     title = "Share Class"
                 )
-                ItemMenuBottomSheet(
-                    onClick = onReportClass,
-                    icon = Outlined.Report,
-                    title = "Report Class"
-                )
                 if (!isOwner && isMember) {
                     ItemMenuBottomSheet(
                         onClick = onExitClass,
@@ -101,6 +96,13 @@ fun ClassDetailBottomSheet(
                         icon = Default.DeleteOutline,
                         title = "Delete Class",
                         color = Color.Red
+                    )
+                }
+                if (!isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onReportClass,
+                        icon = Outlined.Report,
+                        title = "Report Class"
                     )
                 }
             }
