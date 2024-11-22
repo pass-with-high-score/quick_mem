@@ -445,7 +445,7 @@ interface ApiService {
     @POST("class/remove-folder")
     suspend fun deleteFolderInClass(
         @Header("Authorization") token: String,
-        @Body deleteFolderResponseDto: DeleteFolderRequestDto
+        @Body deleteFolderRequestDto: DeleteFolderRequestDto
     )
 
     // Streak
