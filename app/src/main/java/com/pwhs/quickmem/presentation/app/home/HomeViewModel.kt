@@ -250,7 +250,8 @@ class HomeViewModel @Inject constructor(
                     is Resources.Success -> {
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            top5Subjects = getTopSubjects(resource.data ?: emptyList())
+                            top5Subjects = resource.data ?: emptyList(),
+                            subjects = getTopSubjects(resource.data ?: emptyList())
                         )
                         Timber.d("SubjectModels: ${getTopSubjects(resource.data ?: emptyList())}")
                         Timber.d("Top 5 subjects: ${resource.data}")

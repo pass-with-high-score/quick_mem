@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -42,8 +43,8 @@ class SearchStudySetBySubjectViewModel @Inject constructor(
     init {
         val id = savedStateHandle.get<Int>("id") ?: 0
         _uiState.update { it.copy(id = id) }
-        val name = savedStateHandle.get<String>("name") ?: ""
-        _uiState.update { it.copy(name = name) }
+        val subject = SubjectModel.defaultSubjects.find { it.id == id }
+        _uiState.update { it.copy(subject = subject) }
 
         searchStudySetBySubject()
     }

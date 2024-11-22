@@ -104,7 +104,7 @@ fun HomeScreen(
     }
     Home(
         modifier = modifier,
-        top5Subjects = uiState.top5Subjects,
+        subjects = uiState.subjects,
         streakCount = uiState.streakCount,
         streakDates = uiState.streakDates,
         notificationCount = uiState.notificationCount,
@@ -122,8 +122,8 @@ fun HomeScreen(
         onNotificationClicked = { notificationId ->
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
         },
-        onSearchStudySetBySubject = { id, name ->
-            navigator.navigate(SearchStudySetBySubjectScreenDestination(id = id, name = name))
+        onSearchStudySetBySubject = { subjectId ->
+            navigator.navigate(SearchStudySetBySubjectScreenDestination(subjectId))
         }
     )
 }
@@ -133,7 +133,7 @@ fun HomeScreen(
 @Composable
 private fun Home(
     modifier: Modifier = Modifier,
-    top5Subjects: List<SubjectModel> = emptyList(),
+    subjects: List<SubjectModel> = emptyList(),
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),
     currentDate: LocalDate = LocalDate.now(),
@@ -144,7 +144,7 @@ private fun Home(
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
     onNotificationClicked: (String) -> Unit = {},
     notifications: List<GetNotificationResponseModel> = emptyList(),
-    onSearchStudySetBySubject: (id: Int, name: String) -> Unit = { _, _ -> },
+    onSearchStudySetBySubject: (Int) -> Unit = {},
 ) {
 
     var showNotificationBottomSheet by remember { mutableStateOf(false) }
@@ -337,8 +337,8 @@ private fun Home(
 
             // Search by subject
             Text(
-                text = "Browser by subject",
-                style = typography.titleLarge.copy(
+                text = "Top 5 subjects have study sets",
+                style = typography.titleMedium.copy(
                     color = colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 ),
@@ -349,10 +349,10 @@ private fun Home(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(top5Subjects) { subject ->
+                items(subjects) { subject ->
                     SubjectItem(
                         subject = subject,
-                        onSearchStudySetBySubject = onSearchStudySetBySubject
+                        onSearchStudySetBySubject = onSearchStudySetBySubject,
                     )
                 }
             }

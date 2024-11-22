@@ -22,8 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +40,7 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.home.search_by_subject.component.SearchStudySetBySubjectTopAppBar
+import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -43,6 +48,7 @@ import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScr
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import kotlin.collections.filter
 
 @Destination<RootGraph>(
     navArgs = SearchStudySetBySubjectArgs::class
@@ -80,7 +86,9 @@ fun SearchStudySetBySubjectScreen(
                 )
             )
         },
-        name = uiState.name,
+        nameSubject = uiState.subject?.name ?: "",
+        colorSubject = uiState.subject?.color ?: Color.Blue,
+        descriptionSubject = uiState.subject?.description ?: "",
         studySets = studySetItems,
         onNavigateBack = {
             resultBackNavigator.navigateBack(true)
@@ -96,21 +104,32 @@ fun SearchStudySetBySubject(
     modifier: Modifier = Modifier,
     studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
-    name : String = "",
+    nameSubject: String = "",
+    colorSubject: Color,
+    descriptionSubject: String = "",
     onNavigateBack: () -> Unit,
     onStudySetRefresh: () -> Unit = {}
 ) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredStudySets = studySets?.itemSnapshotList?.items?.filter {
+        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
+            it.title.contains(query, ignoreCase = true)
+        } ?: true
+    }
+
     Scaffold(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
             SearchStudySetBySubjectTopAppBar(
                 onNavigateBack = onNavigateBack,
-                title = "Subject \"${name}\"",
+                name = "Subject \"${nameSubject}\"",
+                color = colorSubject,
+                description = descriptionSubject
             )
         }
     ) { innerPadding ->
-
         Box {
             Column(
                 modifier = Modifier
@@ -119,12 +138,19 @@ fun SearchStudySetBySubject(
             ) {
                 LazyColumn {
                     item {
+                        SearchTextField(
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { searchQuery = it },
+                            placeholder = stringResource(R.string.txt_search_study_sets)
+                        )
+                    }
+                    item {
                         BannerAds(
                             modifier = Modifier.padding(8.dp)
                         )
                     }
-                    items(studySets?.itemCount ?: 0) {
-                        val studySet = studySets?.get(it)
+                    items(filteredStudySets?.size ?: 0) { index ->
+                        val studySet = filteredStudySets?.get(index)
                         StudySetItem(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             studySet = studySet,
@@ -132,7 +158,7 @@ fun SearchStudySetBySubject(
                         )
                     }
                     item {
-                        if (studySets?.itemCount == 0) {
+                        if (filteredStudySets?.isEmpty() == true) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -162,13 +188,11 @@ fun SearchStudySetBySubject(
                                         verticalArrangement = Arrangement.spacedBy(10.dp)
                                     ) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .size(36.dp),
+                                            modifier = Modifier.size(36.dp),
                                             color = colorScheme.primary
                                         )
                                     }
                                 }
-
                                 loadState.refresh is LoadState.Error -> {
                                     Column(
                                         modifier = Modifier
@@ -196,7 +220,6 @@ fun SearchStudySetBySubject(
                                         }
                                     }
                                 }
-
                                 loadState.append is LoadState.Loading -> {
                                     Column(
                                         modifier = Modifier
@@ -208,13 +231,11 @@ fun SearchStudySetBySubject(
                                         verticalArrangement = Arrangement.spacedBy(10.dp)
                                     ) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .size(36.dp),
+                                            modifier = Modifier.size(36.dp),
                                             color = colorScheme.primary
                                         )
                                     }
                                 }
-
                                 loadState.append is LoadState.Error -> {
                                     Column(
                                         modifier = Modifier
