@@ -1,9 +1,12 @@
 package com.pwhs.quickmem.presentation.app.profile
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +18,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,8 +42,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,11 +53,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.app.home.HomeViewModel
+import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
-import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
+import com.pwhs.quickmem.ui.theme.streakTextColor
+import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ChoosePictureScreenDestination
@@ -59,12 +69,14 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.revenuecat.purchases.CustomerInfo
+import java.time.LocalDate
 
 @Composable
 @Destination<RootGraph>
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     resultBackNavigator: ResultRecipient<ChoosePictureScreenDestination, Boolean>
 ) {
@@ -83,7 +95,7 @@ fun ProfileScreen(
         }
     }
     val uiState by viewModel.uiState.collectAsState()
-
+    val homeState by homeViewModel.uiState.collectAsState()
     Profile(
         modifier = modifier,
         name = uiState.username,
@@ -101,7 +113,9 @@ fun ProfileScreen(
         onCustomerInfoChanged = { customerInfo ->
             viewModel.onEvent(ProfileUiAction.OnChangeCustomerInfo(customerInfo))
         },
-        customerInfo = uiState.customerInfo
+        customerInfo = uiState.customerInfo,
+        streakCount = homeState.streakCount,
+        streakDates = homeState.streakDates
     )
 }
 
@@ -116,11 +130,15 @@ fun Profile(
     onAvatarClick: () -> Unit = {},
     navigateToSettings: () -> Unit = {},
     onCustomerInfoChanged: (customerInfo: CustomerInfo) -> Unit = {},
-    customerInfo: CustomerInfo? = null
+    customerInfo: CustomerInfo? = null,
+    streakCount: Int = 0,
+    streakDates: List<LocalDate> = emptyList(),
+    currentDate: LocalDate = LocalDate.now(),
 ) {
     var isPaywallVisible by remember {
         mutableStateOf(false)
     }
+
     val refreshState = rememberPullToRefreshState()
     Scaffold(
         modifier = modifier,
@@ -253,6 +271,77 @@ fun Profile(
                         }
                     }
                 }
+
+                item {
+                    Text(
+                        text = "Look at your streak!",
+                        style = typography.bodyLarge.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 20.sp
+                        )
+                    )
+                }
+
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorScheme.surface
+                        ),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = colorScheme.onSurface
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_fire),
+                                modifier = modifier.size(100.dp),
+                                contentDescription = "streak fire",
+                                contentScale = ContentScale.Crop
+                            )
+                            Text(
+                                text = streakCount.toString(),
+                                style = typography.titleLarge.copy(
+                                    color = streakTitleColor,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 52.sp
+                                )
+                            )
+                            Text(
+                                text = when (streakCount) {
+                                    1 -> stringResource(R.string.txt_day_streak)
+                                    else -> stringResource(R.string.txt_days_streak)
+                                },
+                                style = typography.titleLarge.copy(
+                                    color = streakTextColor,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                            Text(
+                                text = "Practice every day so you don't lose your streak!",
+                                style = typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                            StreakCalendar(
+                                currentDate = currentDate,
+                                streakDates = streakDates
+                            )
+                        }
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 100.dp))
+                }
             }
             Paywall(
                 isPaywallVisible = isPaywallVisible,
@@ -262,9 +351,6 @@ fun Profile(
                 onPaywallDismissed = {
                     isPaywallVisible = false
                 },
-            )
-            LoadingOverlay(
-                isLoading = isLoading
             )
         }
     }

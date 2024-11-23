@@ -77,6 +77,8 @@ import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
+import com.pwhs.quickmem.ui.theme.streakTextColor
+import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
@@ -391,15 +393,18 @@ private fun Home(
                 Text(
                     text = streakCount.toString(),
                     style = typography.titleLarge.copy(
-                        color = Color(0xFFf2ac40),
+                        color = streakTitleColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 52.sp
                     )
                 )
                 Text(
-                    text = "day streak",
+                    text =  when (streakCount) {
+                        1 -> stringResource(R.string.txt_day_streak)
+                        else -> stringResource(R.string.txt_days_streak)
+                    },
                     style = typography.titleLarge.copy(
-                        color = Color(0xFFf2ac40),
+                        color = streakTextColor,
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.padding(bottom = 16.dp)
