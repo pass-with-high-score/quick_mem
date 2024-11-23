@@ -1,11 +1,16 @@
 package com.pwhs.quickmem.presentation.app.home.search_by_subject.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,7 +43,10 @@ fun SearchStudySetBySubjectTopAppBar(
     name: String = "",
     description: String = "",
     color: Color,
+    studySetCount: Int = 0,
+    @DrawableRes icon: Int = R.drawable.ic_all,
     onNavigateBack: () -> Unit,
+    onAddStudySet: () -> Unit = {}
 ) {
     LargeTopAppBar(
         modifier = modifier.background(color.gradientBackground()),
@@ -47,9 +56,18 @@ fun SearchStudySetBySubjectTopAppBar(
         title = {
             Column {
                 Row(
-                    modifier = modifier,
-                    verticalAlignment = Alignment.Bottom
+                    modifier = modifier.padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = null,
+                        tint = colorScheme.onSurface,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(end = 8.dp)
+                    )
                     Text(
                         text = name,
                         style = typography.titleMedium.copy(
@@ -62,15 +80,24 @@ fun SearchStudySetBySubjectTopAppBar(
                     )
                 }
                 Text(
+                    text = "$studySetCount sets",
+                    style = typography.bodyMedium.copy(
+                        color = colorScheme.secondary
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
                     text = description,
                     style = typography.bodyMedium.copy(
                         color = colorScheme.secondary
                     ),
-                    maxLines = 2
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         },
-        expandedHeight = 100.dp,
+        expandedHeight = 150.dp,
         collapsedHeight = 56.dp,
         navigationIcon = {
             IconButton(
@@ -82,6 +109,16 @@ fun SearchStudySetBySubjectTopAppBar(
                 Icon(
                     imageVector = AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.txt_back),
+                )
+            }
+        },
+        actions = {
+            IconButton(
+                onClick = onAddStudySet,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.txt_add_study_set),
                 )
             }
         }
@@ -102,9 +139,9 @@ fun TopBarSearchPreview() {
                 )
             }
         ) {
-            Column (
+            Column(
                 modifier = Modifier.padding(it)
-            ){  }
+            ) { }
         }
     }
 }

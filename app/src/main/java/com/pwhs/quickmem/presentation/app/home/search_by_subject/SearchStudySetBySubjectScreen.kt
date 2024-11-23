@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.home.search_by_subject
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,8 +45,8 @@ import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
@@ -85,6 +86,9 @@ fun SearchStudySetBySubjectScreen(
                 )
             )
         },
+        icon = uiState.icon,
+        studySetCount = uiState.studySetCount,
+        isLoading = uiState.isLoading,
         nameSubject = uiState.subject?.name ?: "",
         colorSubject = uiState.subject?.color ?: Color.Blue,
         descriptionSubject = uiState.subject?.description ?: "",
@@ -94,6 +98,9 @@ fun SearchStudySetBySubjectScreen(
         },
         onStudySetRefresh = {
             viewModel.onEvent(SearchStudySetBySubjectUiAction.RefreshStudySets)
+        },
+        onAddStudySet = {
+            navigator.navigate(CreateStudySetScreenDestination())
         }
     )
 }
@@ -105,9 +112,13 @@ fun SearchStudySetBySubject(
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
     nameSubject: String = "",
     colorSubject: Color,
+    @DrawableRes icon: Int = R.drawable.ic_all,
+    studySetCount: Int = 0,
     descriptionSubject: String = "",
+    isLoading: Boolean = false,
     onNavigateBack: () -> Unit,
-    onStudySetRefresh: () -> Unit = {}
+    onStudySetRefresh: () -> Unit = {},
+    onAddStudySet: () -> Unit = {}
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
@@ -117,9 +128,12 @@ fun SearchStudySetBySubject(
         topBar = {
             SearchStudySetBySubjectTopAppBar(
                 onNavigateBack = onNavigateBack,
-                name = "Subject \"${nameSubject}\"",
+                name = nameSubject,
                 color = colorSubject,
-                description = descriptionSubject
+                icon = icon,
+                studySetCount = studySetCount,
+                description = descriptionSubject,
+                onAddStudySet = onAddStudySet
             )
         }
     ) { innerPadding ->
@@ -144,7 +158,11 @@ fun SearchStudySetBySubject(
                     }
                     items(studySets?.itemCount ?: 0) { index ->
                         val studySet = studySets?.get(index)
-                        if (studySet != null && studySet.title.contains(searchQuery, ignoreCase = true)) {
+                        if (studySet != null && studySet.title.contains(
+                                searchQuery,
+                                ignoreCase = true
+                            )
+                        ) {
                             StudySetItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 studySet = studySet,
@@ -153,7 +171,7 @@ fun SearchStudySetBySubject(
                         }
                     }
                     item {
-                        if (studySets?.itemCount == 0) {
+                        if (studySets?.itemCount == 0 && !isLoading) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -177,7 +195,6 @@ fun SearchStudySetBySubject(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(innerPadding)
-                                            .padding(top = 40.dp)
                                             .padding(horizontal = 16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -188,12 +205,12 @@ fun SearchStudySetBySubject(
                                         )
                                     }
                                 }
+
                                 loadState.refresh is LoadState.Error -> {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(innerPadding)
-                                            .padding(top = 40.dp)
                                             .padding(horizontal = 16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -215,12 +232,12 @@ fun SearchStudySetBySubject(
                                         }
                                     }
                                 }
+
                                 loadState.append is LoadState.Loading -> {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(innerPadding)
-                                            .padding(top = 40.dp)
                                             .padding(horizontal = 16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -231,12 +248,12 @@ fun SearchStudySetBySubject(
                                         )
                                     }
                                 }
+
                                 loadState.append is LoadState.Error -> {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(innerPadding)
-                                            .padding(top = 40.dp)
                                             .padding(horizontal = 16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(10.dp)

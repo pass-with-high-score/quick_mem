@@ -42,7 +42,15 @@ class SearchStudySetBySubjectViewModel @Inject constructor(
 
     init {
         val id = savedStateHandle.get<Int>("id") ?: 0
-        _uiState.update { it.copy(id = id) }
+        val studySetCount = savedStateHandle.get<Int>("studySetCount") ?: 0
+        val icon = savedStateHandle.get<Int>("icon") ?: 0
+        _uiState.update {
+            it.copy(
+                id = id,
+                studySetCount = studySetCount,
+                icon = icon
+            )
+        }
         val subject = SubjectModel.defaultSubjects.find { it.id == id }
         _uiState.update { it.copy(subject = subject) }
 
@@ -83,7 +91,11 @@ class SearchStudySetBySubjectViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false) }
-                _uiEvent.send(SearchStudySetBySubjectUiEvent.Error(e.message ?: "An error occurred"))
+                _uiEvent.send(
+                    SearchStudySetBySubjectUiEvent.Error(
+                        e.message ?: "An error occurred"
+                    )
+                )
             }
         }
     }

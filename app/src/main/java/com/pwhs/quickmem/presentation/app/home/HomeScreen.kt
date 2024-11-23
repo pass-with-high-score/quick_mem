@@ -124,8 +124,12 @@ fun HomeScreen(
         onNotificationClicked = { notificationId ->
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
         },
-        onSearchStudySetBySubject = { subjectId ->
-            navigator.navigate(SearchStudySetBySubjectScreenDestination(subjectId))
+        onSearchStudySetBySubject = { subject ->
+            navigator.navigate(SearchStudySetBySubjectScreenDestination(
+                id = subject.id,
+                studySetCount = subject.studySetCount,
+                icon = subject.iconRes ?: R.drawable.ic_all
+            ))
         }
     )
 }
@@ -146,7 +150,7 @@ private fun Home(
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
     onNotificationClicked: (String) -> Unit = {},
     notifications: List<GetNotificationResponseModel> = emptyList(),
-    onSearchStudySetBySubject: (Int) -> Unit = {},
+    onSearchStudySetBySubject: (SubjectModel) -> Unit = {},
 ) {
 
     var showNotificationBottomSheet by remember { mutableStateOf(false) }
@@ -354,7 +358,9 @@ private fun Home(
                 items(subjects) { subject ->
                     SubjectItem(
                         subject = subject,
-                        onSearchStudySetBySubject = onSearchStudySetBySubject,
+                        onSearchStudySetBySubject = {
+                            onSearchStudySetBySubject(subject)
+                        },
                     )
                 }
             }
@@ -399,7 +405,7 @@ private fun Home(
                     )
                 )
                 Text(
-                    text =  when (streakCount) {
+                    text = when (streakCount) {
                         1 -> stringResource(R.string.txt_day_streak)
                         else -> stringResource(R.string.txt_days_streak)
                     },

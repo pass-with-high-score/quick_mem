@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -34,10 +35,6 @@ fun SubjectItem(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         onClick = { onSearchStudySetBySubject(subject.id) },
-        border = BorderStroke(
-            width = 1.dp,
-            color = colorScheme.onSurface.copy(alpha = 0.12f)
-        ),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         )
@@ -52,34 +49,40 @@ fun SubjectItem(
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
 
-            ) {
+                ) {
                 Icon(
                     painter = painterResource(id = subject.iconRes!!),
                     contentDescription = subject.name,
                     tint = subject.color!!,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(50.dp)
                 )
 
                 Text(
                     text = subject.name,
+                    style = typography.titleMedium.copy(
+                        color = colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .padding(start = 10.dp)
+                        .weight(1f)
+                )
+
+                Text(
+                    text = when (subject.studySetCount) {
+                        1 -> "${subject.studySetCount} Study Set"
+                        else -> "${subject.studySetCount} Study Sets"
+                    },
                     style = typography.bodyMedium.copy(
                         color = colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .padding(start = 10.dp)
                 )
             }
-//            Text(
-//                text = studySetCount.toString(),
-//                style = typography.bodyLarge.copy(
-//                    color = colorScheme.onSurface.copy(alpha = 0.6f)
-//                ),
-//                modifier = Modifier
-//                    .padding(16.dp)
-//            )
         }
     }
 }
