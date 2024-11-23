@@ -6,6 +6,8 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.streak.StreakModel
+import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
@@ -54,6 +56,7 @@ class HomeViewModel @Inject constructor(
             updateStreak()
             getCustomerInfo()
             loadNotifications()
+            getTop5Subjects()
         }
     }
 
@@ -157,19 +160,24 @@ class HomeViewModel @Inject constructor(
             streakRepository.updateStreak(token, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
-                        _uiState.value = _uiState.value.copy(isLoading = true)
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
                     }
 
                     is Resources.Success -> {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            streakCount = resource.data?.streakCount ?: 0
-                        )
-                        Timber.d("Streak count: ${resource.data?.streakCount}")
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                streakCount = resource.data?.streakCount ?: 0
+                            )
+                        }
                     }
 
                     is Resources.Error -> {
-                        _uiState.value = _uiState.value.copy(isLoading = false)
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
                     }
                 }
             }
@@ -232,6 +240,44 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun getTop5Subjects() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            studySetRepository.getTop5Subject(token).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            top5Subjects = resource.data ?: emptyList(),
+                            subjects = getTopSubjects(resource.data ?: emptyList())
+                        )
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getTopSubjects(
+        top5Subjects: List<GetTop5SubjectResponseModel>,
+        subjectModels: List<SubjectModel> = SubjectModel.defaultSubjects
+    ): List<SubjectModel> {
+        return top5Subjects.map { top5Subject ->
+            subjectModels.find { it.id == top5Subject.id }
+                ?.copy(studySetCount = top5Subject.studySetCount)
+                ?: SubjectModel.defaultSubjects.find { it.id == top5Subject.id }
+                    ?.copy(studySetCount = top5Subject.studySetCount)
+                ?: SubjectModel.defaultSubjects.first()
         }
     }
 }

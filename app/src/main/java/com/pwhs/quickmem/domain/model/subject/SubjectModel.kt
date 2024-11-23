@@ -8,6 +8,7 @@ data class SubjectModel(
     val id: Int = 0,
     val name: String = "",
     @DrawableRes val iconRes: Int? = null,
+    var studySetCount: Int = 0,
     val color: Color? = null,
     val description: String? = null,
     val createdAt: String? = null,

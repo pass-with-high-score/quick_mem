@@ -8,8 +8,11 @@ import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toDto
 import com.pwhs.quickmem.data.mapper.study_set.toModel
+import com.pwhs.quickmem.data.mapper.subject.toModel
+import com.pwhs.quickmem.data.paging.StudySetBySubjectPagingSource
 import com.pwhs.quickmem.data.paging.StudySetPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
+import com.pwhs.quickmem.domain.datasource.SearchStudySetBySubjectRemoteDataSource
 import com.pwhs.quickmem.domain.datasource.StudySetRemoteDataSource
 import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
@@ -20,6 +23,7 @@ import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
+import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
@@ -30,7 +34,8 @@ import javax.inject.Inject
 
 class StudySetRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
-    private val studySetRemoteDataSource: StudySetRemoteDataSource
+    private val studySetRemoteDataSource: StudySetRemoteDataSource,
+    private val searchStudySetBySubjectRemoteDataSource: SearchStudySetBySubjectRemoteDataSource
 ) : StudySetRepository {
     override suspend fun createStudySet(
         token: String,
@@ -259,5 +264,40 @@ class StudySetRepositoryImpl @Inject constructor(
                 emit(Resources.Error(e.toString()))
             }
         }
+    }
+
+    override suspend fun getTop5Subject(
+        token: String
+    ): Flow<Resources<List<GetTop5SubjectResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getTop5Subject(token)
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getStudySetBySubjectId(
+        token: String,
+        subjectId: Int,
+        page: Int
+    ): Flow<PagingData<GetStudySetResponseModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                StudySetBySubjectPagingSource(
+                    searchStudySetBySubjectRemoteDataSource,
+                    token,
+                    subjectId,
+                )
+            }
+        ).flow
     }
 }

@@ -11,6 +11,7 @@ import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
+import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import kotlinx.coroutines.flow.Flow
@@ -91,4 +92,14 @@ interface StudySetRepository {
         studySetId: String,
         newOwnerId: String
     ): Flow<Resources<CreateStudySetResponseModel>>
+
+    suspend fun getTop5Subject(
+        token: String
+    ): Flow<Resources<List<GetTop5SubjectResponseModel>>>
+
+    suspend fun getStudySetBySubjectId(
+        token: String,
+        subjectId: Int,
+        page: Int
+    ): Flow<PagingData<GetStudySetResponseModel>>
 }

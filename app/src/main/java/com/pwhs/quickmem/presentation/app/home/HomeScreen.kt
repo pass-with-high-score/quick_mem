@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
@@ -52,6 +54,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,8 +69,10 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
+import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
+import com.pwhs.quickmem.presentation.app.home.components.SubjectItem
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -77,6 +82,7 @@ import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SearchStudySetBySubjectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
 import java.time.LocalDate
@@ -100,6 +106,7 @@ fun HomeScreen(
     }
     Home(
         modifier = modifier,
+        subjects = uiState.subjects,
         streakCount = uiState.streakCount,
         streakDates = uiState.streakDates,
         notificationCount = uiState.notificationCount,
@@ -117,6 +124,15 @@ fun HomeScreen(
         onNotificationClicked = { notificationId ->
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
         },
+        onSearchStudySetBySubject = { subject ->
+            navigator.navigate(
+                SearchStudySetBySubjectScreenDestination(
+                    id = subject.id,
+                    studySetCount = subject.studySetCount,
+                    icon = subject.iconRes ?: R.drawable.ic_all
+                )
+            )
+        }
     )
 }
 
@@ -125,6 +141,7 @@ fun HomeScreen(
 @Composable
 private fun Home(
     modifier: Modifier = Modifier,
+    subjects: List<SubjectModel> = emptyList(),
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),
     currentDate: LocalDate = LocalDate.now(),
@@ -135,6 +152,7 @@ private fun Home(
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
     onNotificationClicked: (String) -> Unit = {},
     notifications: List<GetNotificationResponseModel> = emptyList(),
+    onSearchStudySetBySubject: (SubjectModel) -> Unit = {},
 ) {
 
     var showNotificationBottomSheet by remember { mutableStateOf(false) }
@@ -317,11 +335,36 @@ private fun Home(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
         ) {
             Text(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
+
+            Text(
+                text = "Top 5 subjects have study sets",
+                style = typography.titleLarge.copy(
+                    color = colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                ),
+                textAlign = TextAlign.Center
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(subjects, key = { it.id }) { subject ->
+                    SubjectItem(
+                        subject = subject,
+                        onSearchStudySetBySubject = {
+                            onSearchStudySetBySubject(subject)
+                        },
+                    )
+                }
+            }
         }
     }
     Paywall(
@@ -363,7 +406,7 @@ private fun Home(
                     )
                 )
                 Text(
-                    text =  when (streakCount) {
+                    text = when (streakCount) {
                         1 -> stringResource(R.string.txt_day_streak)
                         else -> stringResource(R.string.txt_days_streak)
                     },
