@@ -48,7 +48,6 @@ import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScr
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import kotlin.collections.filter
 
 @Destination<RootGraph>(
     navArgs = SearchStudySetBySubjectArgs::class
@@ -112,12 +111,6 @@ fun SearchStudySetBySubject(
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
-    val filteredStudySets = studySets?.itemSnapshotList?.items?.filter {
-        searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
-            it.title.contains(query, ignoreCase = true)
-        } ?: true
-    }
-
     Scaffold(
         containerColor = colorScheme.background,
         modifier = modifier,
@@ -149,16 +142,18 @@ fun SearchStudySetBySubject(
                             modifier = Modifier.padding(8.dp)
                         )
                     }
-                    items(filteredStudySets?.size ?: 0) { index ->
-                        val studySet = filteredStudySets?.get(index)
-                        StudySetItem(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            studySet = studySet,
-                            onStudySetClick = { onStudySetClick(studySet) }
-                        )
+                    items(studySets?.itemCount ?: 0) { index ->
+                        val studySet = studySets?.get(index)
+                        if (studySet != null && studySet.title.contains(searchQuery, ignoreCase = true)) {
+                            StudySetItem(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                studySet = studySet,
+                                onStudySetClick = { onStudySetClick(studySet) }
+                            )
+                        }
                     }
                     item {
-                        if (filteredStudySets?.isEmpty() == true) {
+                        if (studySets?.itemCount == 0) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
