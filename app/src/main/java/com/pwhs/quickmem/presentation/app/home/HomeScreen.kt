@@ -125,11 +125,13 @@ fun HomeScreen(
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
         },
         onSearchStudySetBySubject = { subject ->
-            navigator.navigate(SearchStudySetBySubjectScreenDestination(
-                id = subject.id,
-                studySetCount = subject.studySetCount,
-                icon = subject.iconRes ?: R.drawable.ic_all
-            ))
+            navigator.navigate(
+                SearchStudySetBySubjectScreenDestination(
+                    id = subject.id,
+                    studySetCount = subject.studySetCount,
+                    icon = subject.iconRes ?: R.drawable.ic_all
+                )
+            )
         }
     )
 }
@@ -341,11 +343,10 @@ private fun Home(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
 
-            // Search by subject
             Text(
                 text = "Top 5 subjects have study sets",
-                style = typography.titleMedium.copy(
-                    color = colorScheme.onSurface,
+                style = typography.titleLarge.copy(
+                    color = colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 ),
                 textAlign = TextAlign.Center
@@ -355,7 +356,7 @@ private fun Home(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(subjects) { subject ->
+                items(subjects, key = { it.id }) { subject ->
                     SubjectItem(
                         subject = subject,
                         onSearchStudySetBySubject = {

@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -137,151 +136,134 @@ fun SearchStudySetBySubject(
             )
         }
     ) { innerPadding ->
-        Box {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-            ) {
-                LazyColumn {
-                    item {
-                        SearchTextField(
-                            searchQuery = searchQuery,
-                            onSearchQueryChange = { searchQuery = it },
-                            placeholder = stringResource(R.string.txt_search_study_sets)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                SearchTextField(
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = { searchQuery = it },
+                    placeholder = stringResource(R.string.txt_search_study_sets)
+                )
+            }
+            item {
+                BannerAds(
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            items(studySets?.itemCount ?: 0, key = { it }) { index ->
+                val studySet = studySets?.get(index)
+                if (studySet != null && studySet.title.contains(
+                        searchQuery,
+                        ignoreCase = true
+                    )
+                ) {
+                    StudySetItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        studySet = studySet,
+                        onStudySetClick = { onStudySetClick(studySet) }
+                    )
+                }
+            }
+            item {
+                if (studySets?.itemCount == 0 && !isLoading) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(innerPadding)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.txt_no_study_sets_found),
+                            style = typography.bodyLarge,
+                            textAlign = TextAlign.Center
                         )
                     }
-                    item {
-                        BannerAds(
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                    items(studySets?.itemCount ?: 0) { index ->
-                        val studySet = studySets?.get(index)
-                        if (studySet != null && studySet.title.contains(
-                                searchQuery,
-                                ignoreCase = true
-                            )
-                        ) {
-                            StudySetItem(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                studySet = studySet,
-                                onStudySetClick = { onStudySetClick(studySet) }
+                }
+            }
+            item {
+                studySets?.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .padding(innerPadding),
+                                color = colorScheme.primary
                             )
                         }
-                    }
-                    item {
-                        if (studySets?.itemCount == 0 && !isLoading) {
+
+                        loadState.refresh is LoadState.Error -> {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(innerPadding)
-                                    .padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                    .padding(horizontal = 16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
+                                Image(
+                                    imageVector = Icons.Default.Error,
+                                    contentDescription = stringResource(R.string.txt_error),
+                                )
                                 Text(
-                                    text = stringResource(R.string.txt_no_study_sets_found),
-                                    style = typography.bodyLarge,
+                                    text = stringResource(R.string.txt_error_occurred),
+                                    style = typography.titleLarge,
                                     textAlign = TextAlign.Center
                                 )
-                            }
-                        }
-                    }
-                    item {
-                        studySets?.apply {
-                            when {
-                                loadState.refresh is LoadState.Loading -> {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(innerPadding)
-                                            .padding(horizontal = 16.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                                    ) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier.size(36.dp),
-                                            color = colorScheme.primary
-                                        )
-                                    }
-                                }
-
-                                loadState.refresh is LoadState.Error -> {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(innerPadding)
-                                            .padding(horizontal = 16.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                                    ) {
-                                        Image(
-                                            imageVector = Icons.Default.Error,
-                                            contentDescription = stringResource(R.string.txt_error),
-                                        )
-                                        Text(
-                                            text = stringResource(R.string.txt_error_occurred),
-                                            style = typography.titleLarge,
-                                            textAlign = TextAlign.Center
-                                        )
-                                        Button(
-                                            onClick = onStudySetRefresh,
-                                            modifier = Modifier.padding(top = 16.dp)
-                                        ) {
-                                            Text(text = "Retry")
-                                        }
-                                    }
-                                }
-
-                                loadState.append is LoadState.Loading -> {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(innerPadding)
-                                            .padding(horizontal = 16.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                                    ) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier.size(36.dp),
-                                            color = colorScheme.primary
-                                        )
-                                    }
-                                }
-
-                                loadState.append is LoadState.Error -> {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(innerPadding)
-                                            .padding(horizontal = 16.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                                    ) {
-                                        Image(
-                                            imageVector = Icons.Default.Error,
-                                            contentDescription = stringResource(R.string.txt_error),
-                                        )
-                                        Text(
-                                            text = stringResource(R.string.txt_error_occurred),
-                                            style = typography.titleLarge,
-                                            textAlign = TextAlign.Center
-                                        )
-                                        Button(
-                                            onClick = { retry() },
-                                            modifier = Modifier.padding(top = 16.dp)
-                                        ) {
-                                            Text(text = "Retry")
-                                        }
-                                    }
+                                Button(
+                                    onClick = onStudySetRefresh,
+                                    modifier = Modifier.padding(top = 16.dp)
+                                ) {
+                                    Text(text = "Retry")
                                 }
                             }
                         }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.padding(60.dp))
+
+                        loadState.append is LoadState.Loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .padding(top = 16.dp),
+                                color = colorScheme.primary
+                            )
+                        }
+
+                        loadState.append is LoadState.Error -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(innerPadding)
+                                    .padding(horizontal = 16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Image(
+                                    imageVector = Icons.Default.Error,
+                                    contentDescription = stringResource(R.string.txt_error),
+                                )
+                                Text(
+                                    text = stringResource(R.string.txt_error_occurred),
+                                    style = typography.titleLarge,
+                                    textAlign = TextAlign.Center
+                                )
+                                Button(
+                                    onClick = { retry() },
+                                    modifier = Modifier.padding(top = 16.dp)
+                                ) {
+                                    Text(text = "Retry")
+                                }
+                            }
+                        }
                     }
                 }
+            }
+            item {
+                Spacer(modifier = Modifier.padding(60.dp))
             }
         }
     }

@@ -56,7 +56,7 @@ fun SearchStudySetBySubjectTopAppBar(
         title = {
             Column {
                 Row(
-                    modifier = modifier.padding(vertical = 8.dp),
+                    modifier = Modifier.padding(vertical = 8.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
