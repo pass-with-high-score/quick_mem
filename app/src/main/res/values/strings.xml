@@ -21,7 +21,7 @@
     <string name="txt_confirm_password">Confirm Password</string>
     <string name="tx_log_in">Log in</string>
     <string name="txt_log_in_with_email">Log in with email</string>
-    <string name="txt_or">OR</string>
+    <string name="txt_or">or</string>
     <string name="tx_continue_with_google">Continue with Google</string>
     <string name="txt_continue_with_facebook">Continue with Facebook</string>
     <string name="txt_don_t_have_an_account">Don\'t have an account?</string>
@@ -257,4 +257,6 @@
     <string name="txt_role_updated_success">Role updated successfully!</string>
     <string name="dialog_title_not_eligible">Not Eligible</string>
     <string name="dialog_message_underage">You must be at least 20 years old to change role. Please come back on %1$s.</string>
+    <string name="txt_signup_description">Hello there! Let\'s get started.</string>
+    <string name="txt_login_description">Welcome back! Log in to your account</string>
 </resources>

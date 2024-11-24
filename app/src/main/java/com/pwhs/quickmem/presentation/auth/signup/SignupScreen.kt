@@ -1,16 +1,12 @@
 package com.pwhs.quickmem.presentation.auth.signup
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -20,20 +16,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -117,7 +113,10 @@ fun Signup(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
         topBar = {
-            AuthTopAppBar(onClick = onNavigationIconClick)
+            AuthTopAppBar(
+                onClick = onNavigationIconClick,
+                showLogo = true
+            )
         }
     ) { innerPadding ->
         Column(
@@ -126,16 +125,8 @@ fun Signup(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.log_in),
-                contentDescription = stringResource(R.string.txt_login),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(200.dp)
-            )
 
             Text(
                 text = stringResource(R.string.txt_sign_up),
@@ -143,6 +134,16 @@ fun Signup(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.primary
                 )
+            )
+
+            Text(
+                text = stringResource(R.string.txt_signup_description),
+                style = typography.bodyMedium.copy(
+                    color = colorScheme.onSurface
+                ),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .padding(bottom = 30.dp)
             )
 
             AuthButton(
@@ -159,23 +160,17 @@ fun Signup(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                        .height(1.dp)
-                        .background(colorScheme.onSurface)
+                HorizontalDivider(
+                    color = colorScheme.onSurface,
+                    modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = "OR",
+                    text = stringResource(R.string.txt_or),
                     style = typography.bodyMedium.copy(color = colorScheme.onSurface)
                 )
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                        .height(1.dp)
-                        .background(colorScheme.onSurface)
+                HorizontalDivider(
+                    color = colorScheme.onSurface,
+                    modifier = Modifier.weight(1f)
                 )
             }
 
@@ -257,5 +252,13 @@ fun Signup(
                     }
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun SignupScreenPreview() {
+    QuickMemTheme {
+        Signup()
     }
 }

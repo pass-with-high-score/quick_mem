@@ -254,4 +254,6 @@
     <string name="dialog_message_underage">Bạn phải ít nhất 20 tuổi để thay đổi vai trò. Vui lòng quay lại vào ngày %1$s.</string>
     <string name="txt_role_updated_success">Đã cập nhật vai trò thành công!</string>
     <string name="txt_teacher">Giáo viên</string>
+    <string name="txt_signup_description">Xin chào! Hãy bắt đầu nào.</string>
+    <string name="txt_login_description">Chào mừng trở lại! Đăng nhập vào tài khoản của bạn</string>
 </resources>
