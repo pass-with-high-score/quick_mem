@@ -1,7 +1,5 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.true_false
 
-import com.pwhs.quickmem.core.data.states.RandomAnswer
-import com.pwhs.quickmem.core.data.states.WrongAnswer
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
@@ -20,8 +18,18 @@ data class LearnByTrueFalseUiState(
     val startTime: Long = 0,
     val isEndOfList: Boolean = false,
     val wrongAnswerCount: Int = 0,
-    val listWrongAnswer: List<WrongAnswer> = emptyList(),
-    val randomAnswers: List<RandomAnswer> = emptyList(),
+    val listWrongAnswer: List<TrueFalseQuestion> = emptyList(),
+    val randomQuestion: TrueFalseQuestion? = null,
     val nextFlashCard: FlashCardResponseModel? = null,
     val currentFlashCard: FlashCardResponseModel? = null,
+)
+
+data class TrueFalseQuestion(
+    val id: String = "",
+    val term: String = "",
+    val definition: String = "",
+    val definitionImageUrl: String = "",
+    val originalDefinition: String = "",
+    val originalDefinitionImageUrl: String = "",
+    val isRandom: Boolean = false,
 )

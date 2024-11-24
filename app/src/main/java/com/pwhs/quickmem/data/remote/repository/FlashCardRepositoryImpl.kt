@@ -6,6 +6,7 @@ import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.QuizStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.TrueFalseStatusFlashCardDto
 import com.pwhs.quickmem.data.mapper.flashcard.toDto
 import com.pwhs.quickmem.data.mapper.flashcard.toModel
 import com.pwhs.quickmem.data.remote.ApiService
@@ -31,8 +32,10 @@ class FlashCardRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading(true))
             try {
-                val response = apiService.createFlashCard(token, createFlashCardModel.toDto())
-                Timber.d("createFlashCard: $response")
+                val response = apiService.createFlashCard(
+                    token = token,
+                    createFlashCardDto = createFlashCardModel.toDto()
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -48,9 +51,8 @@ class FlashCardRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading(true))
             try {
-                val response = apiService.deleteFlashCard(token, id)
-                Timber.d("deleteFlashCard: $response")
-                emit(Resources.Success(null))
+                val response = apiService.deleteFlashCard(token = token, id = id)
+                emit(Resources.Success(response))
             } catch (e: HttpException) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
@@ -70,8 +72,9 @@ class FlashCardRepositoryImpl @Inject constructor(
             emit(Resources.Loading(true))
             try {
                 val response = apiService.toggleStarredFlashCard(
-                    token, id,
-                    ToggleStarredFlashCardDto(isStarred)
+                    token = token,
+                    id = id,
+                    toggleStarredFlashCardDto = ToggleStarredFlashCardDto(isStarred)
                 )
                 Timber.d("toggleStarredFlashCard: $response")
                 emit(Resources.Success(response.toModel()))
@@ -95,9 +98,9 @@ class FlashCardRepositoryImpl @Inject constructor(
             Timber.d("updateFlashCard: $editFlashCardModel")
             try {
                 val response = apiService.updateFlashCard(
-                    token,
-                    id,
-                    editFlashCardModel.toDto()
+                    token = token,
+                    id = id,
+                    editFlashCardDto = editFlashCardModel.toDto()
                 )
                 Timber.d("updateFlashCard: $response")
                 emit(Resources.Success(response.toModel()))
@@ -119,7 +122,11 @@ class FlashCardRepositoryImpl @Inject constructor(
         return flow {
             try {
                 val response =
-                    apiService.updateFlipFlashCard(token, id, FlipFlashCardDto(flipStatus))
+                    apiService.updateFlipFlashCard(
+                        token = token,
+                        id = id,
+                        flipFlashCardDto = FlipFlashCardDto(flipStatus)
+                    )
                 Timber.d("updateFlipFlashCard: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
@@ -140,7 +147,11 @@ class FlashCardRepositoryImpl @Inject constructor(
         return flow {
             try {
                 val response =
-                    apiService.updateRatingFlashCard(token, id, RatingFlashCardDto(rating))
+                    apiService.updateRatingFlashCard(
+                        token = token,
+                        id = id,
+                        ratingFlashCardDto = RatingFlashCardDto(rating)
+                    )
                 Timber.d("updateFlashCardRating: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
@@ -161,8 +172,36 @@ class FlashCardRepositoryImpl @Inject constructor(
         return flow {
             try {
                 val response =
-                    apiService.updateQuizStatus(token, id, QuizStatusFlashCardDto(quizStatus))
+                    apiService.updateQuizStatus(
+                        token = token,
+                        id = id,
+                        quizStatusDto = QuizStatusFlashCardDto(quizStatus)
+                    )
                 Timber.d("updateQuizStatus: $response")
+                emit(Resources.Success(response.toModel()))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateTrueFalseStatus(
+        token: String,
+        id: String,
+        trueFalseStatus: String
+    ): Flow<Resources<UpdateFlashCardResponseModel>> {
+        return flow {
+            try {
+                val response = apiService.updateTrueFalseStatus(
+                    token = token,
+                    id = id,
+                    trueFalseStatusDto = TrueFalseStatusFlashCardDto(trueFalseStatus)
+                )
+                Timber.d("updateTrueFalseStatus: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)

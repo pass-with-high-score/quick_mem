@@ -342,20 +342,21 @@ private fun Home(
             Text(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
-
-            Text(
-                text = "Top 5 subjects have study sets",
-                style = typography.titleLarge.copy(
-                    color = colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                ),
-                textAlign = TextAlign.Center
-            )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                item {
+                    Text(
+                        text = "Top 5 subjects have study sets",
+                        style = typography.titleLarge.copy(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+                }
                 items(subjects, key = { it.id }) { subject ->
                     SubjectItem(
                         subject = subject,
