@@ -361,172 +361,178 @@ private fun Home(
             }
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            Text(
-                text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
-            )
-
             if (studySets.isEmpty() && folders.isEmpty() && classes.isEmpty()) {
-                Text(
-                    text = "Here's how to get started",
-                    style = typography.titleLarge.copy(
-                        color = colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    textAlign = TextAlign.Center
-                )
-                Card(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    onClick = onClickToCreateStudySet,
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
+                item {
+                    Text(
+                        text = "Here's how to get started",
+                        style = typography.titleLarge.copy(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
                     )
-                ) {
-                    Row(
+                    Card(
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(vertical = 8.dp),
+                        onClick = onClickToCreateStudySet,
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White,
+                        )
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_three_cards),
-                            contentDescription = "Create a flashcard",
-                            tint = Color.Blue,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
+                        Row(
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_three_cards),
+                                contentDescription = "Create a flashcard",
+                                tint = Color.Blue,
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
 
-                        Text(
-                            text = "Create your own flashcards",
-                            style = typography.titleMedium.copy(
-                                color = colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .padding(vertical = 10.dp)
-                                .padding(start = 10.dp)
-                                .weight(1f)
-                        )
+                            Text(
+                                text = "Create your own flashcards",
+                                style = typography.titleMedium.copy(
+                                    color = colorScheme.onSurface,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .padding(vertical = 10.dp)
+                                    .padding(start = 10.dp)
+                                    .weight(1f)
+                            )
+                        }
                     }
                 }
             } else {
                 // Row study sets
-                Text(
-                    text = "Study sets",
-                    style = typography.titleLarge.copy(
-                        color = colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    textAlign = TextAlign.Center
-                )
-
-                if (studySets.size == 1) {
-                    StudySetItem(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        studySet = studySets[0],
-                        onStudySetClick = { onStudySetClick(studySets[0]) }
+                item {
+                    Text(
+                        text = "Study sets",
+                        style = typography.titleLarge.copy(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
                     )
-                } else {
-                    LazyRow {
-                        items(studySets) { studySet ->
-                            StudySetHomeItem(
-                                studySet = studySet,
-                                onStudySetClick = { onStudySetClick(studySet) }
-                            )
+                }
+
+                item {
+                    if (studySets.size == 1) {
+                        StudySetItem(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            studySet = studySets[0],
+                            onStudySetClick = { onStudySetClick(studySets[0]) }
+                        )
+                    } else {
+                        LazyRow {
+                            items(studySets) { studySet ->
+                                StudySetHomeItem(
+                                    studySet = studySet,
+                                    onStudySetClick = { onStudySetClick(studySet) }
+                                )
+                            }
+                        }
+                    }
+                }
+                item {
+                    // Row folders
+                    Text(
+                        text = "Folders",
+                        style = typography.titleLarge.copy(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                item {
+                    if (folders.size == 1) {
+                        FolderItem(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            title = folders[0].title,
+                            numOfStudySets = folders[0].studySetCount,
+                            onClick = { onFolderClick(folders[0]) },
+                            userResponseModel = folders[0].owner,
+                            folder = folders[0]
+                        )
+                    } else {
+                        LazyRow {
+                            items(folders) { folder ->
+                                FolderHomeItem(
+                                    title = folder.title,
+                                    numOfStudySets = folder.studySetCount,
+                                    onClick = { onFolderClick(folder) },
+                                    userResponseModel = folder.owner,
+                                )
+                            }
                         }
                     }
                 }
 
-                // Row folders
-                Text(
-                    text = "Folders",
-                    style = typography.titleLarge.copy(
-                        color = colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    textAlign = TextAlign.Center
-                )
-
-                if (folders.size == 1) {
-                    FolderItem(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        title = folders[0].title,
-                        numOfStudySets = folders[0].studySetCount,
-                        onClick = { onFolderClick(folders[0]) },
-                        userResponseModel = folders[0].owner,
-                        folder = folders[0]
+                item {
+                    Text(
+                        text = "Classes",
+                        style = typography.titleLarge.copy(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
                     )
-                } else {
-                    LazyRow {
-                        items(folders) { folder ->
-                            FolderHomeItem(
-                                title = folder.title,
-                                numOfStudySets = folder.studySetCount,
-                                onClick = { onFolderClick(folder) },
-                                userResponseModel = folder.owner,
-                            )
-                        }
-                    }
                 }
 
-                // Row classes
-                Text(
-                    text = "Classes",
-                    style = typography.titleLarge.copy(
-                        color = colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    textAlign = TextAlign.Center
-                )
-
-                if (classes.size == 1) {
-                    ClassItem(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        classItem = classes[0],
-                        onClick = { onClassClicked(classes[0]) }
-                    )
-                } else {
-                    LazyRow {
-                        items(classes) { classItem ->
-                            ClassItem(
-                                classItem = classItem,
-                                onClick = { onClassClicked(classItem) }
-                            )
+                item {
+                    if (classes.size == 1) {
+                        ClassItem(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            classItem = classes[0],
+                            onClick = { onClassClicked(classes[0]) }
+                        )
+                    } else {
+                        LazyRow {
+                            items(classes) { classItem ->
+                                ClassItem(
+                                    classItem = classItem,
+                                    onClick = { onClassClicked(classItem) }
+                                )
+                            }
                         }
                     }
                 }
             }
-            // Top 5 subjects have study sets
-            Text(
-                text = "Top 5 subjects have study sets",
-                style = typography.titleLarge.copy(
-                    color = colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                ),
-                textAlign = TextAlign.Center
-            )
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(subjects, key = { it.id }) { subject ->
-                    SubjectItem(
-                        subject = subject,
-                        onSearchStudySetBySubject = {
-                            onSearchStudySetBySubject(subject)
-                        },
-                    )
-                }
+            item {
+                Text(
+                    text = "Top 5 subjects have study sets",
+                    style = typography.titleLarge.copy(
+                        color = colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    textAlign = TextAlign.Center
+                )
+            }
+            items(subjects, key = { it.id }) { subject ->
+                SubjectItem(
+                    subject = subject,
+                    onSearchStudySetBySubject = {
+                        onSearchStudySetBySubject(subject)
+                    },
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }
