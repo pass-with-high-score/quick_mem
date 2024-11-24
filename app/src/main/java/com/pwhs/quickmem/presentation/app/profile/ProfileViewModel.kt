@@ -97,7 +97,6 @@ class ProfileViewModel @Inject constructor(
                                     userAvatar = data.avatarUrl
                                 )
                             }
-                            appManager.saveUserRole(data.role)
                             appManager.saveUserName(data.username)
                             appManager.saveUserAvatar(data.avatarUrl)
                         }
