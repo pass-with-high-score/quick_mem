@@ -129,6 +129,7 @@ class VerifyEmailViewModel @Inject constructor(
                             appManager.saveUserFullName(resource.data?.fullName ?: "")
                             appManager.saveUserName(resource.data?.username ?: "")
                             appManager.saveUserId(resource.data?.id ?: "")
+                            appManager.saveUserRole(resource.data?.role ?: "")
                             appManager.saveIsLoggedIn(true)
                             _uiState.update { it.copy(isLoading = false) }
                             Timber.d("Navigate to verify success")

@@ -60,11 +60,13 @@ import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.getLanguageCode
 import com.pwhs.quickmem.util.toFormattedString
+import com.pwhs.quickmem.util.upperCaseFirstLetter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.ChangeLanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ChangePasswordSettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ChangeRoleScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.OpenSourceScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateEmailSettingScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UpdateFullNameSettingScreenDestination
@@ -86,7 +88,8 @@ fun SettingsScreen(
     resultUpdateEmail: ResultRecipient<UpdateEmailSettingScreenDestination, Boolean>,
     resultChangePassword: ResultRecipient<ChangePasswordSettingScreenDestination, Boolean>,
     resultChangeLanguage: ResultRecipient<ChangeLanguageScreenDestination, Boolean>,
-    resultUpdateUsername: ResultRecipient<UpdateUsernameSettingScreenDestination, Boolean>
+    resultUpdateUsername: ResultRecipient<UpdateUsernameSettingScreenDestination, Boolean>,
+    resultChangeRole: ResultRecipient<ChangeRoleScreenDestination, Boolean>
 ) {
     val context = LocalContext.current
 
@@ -145,6 +148,17 @@ fun SettingsScreen(
         }
     }
 
+    resultChangeRole.onNavResult { result ->
+        when (result) {
+            NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(SettingUiAction.Refresh)
+                }
+            }
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsState()
     val languageCode = context.getLanguageCode()
     LaunchedEffect(key1 = true) {
@@ -186,8 +200,16 @@ fun SettingsScreen(
                         )
                     )
                 }
-            }
 
+                SettingUiEvent.NavigateToChangeRole -> {
+                    navigator.navigate(
+                        ChangeRoleScreenDestination(
+                            userId = uiState.userId,
+                            role = uiState.role.uppercase()
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -196,6 +218,7 @@ fun SettingsScreen(
         fullName = uiState.fullName,
         username = uiState.username,
         email = uiState.email,
+        role = uiState.role,
         password = uiState.password,
         languageCode = languageCode,
         isLoading = uiState.isLoading,
@@ -277,6 +300,7 @@ fun Setting(
     fullName: String = "",
     username: String = "",
     email: String = "",
+    role: String = "",
     password: String = "",
     errorMessage: String = "",
     isLoading: Boolean = false,
@@ -420,6 +444,15 @@ fun Setting(
                                 onClick = {
                                     showVerifyPasswordBottomSheet = true
                                     onChangeType(SettingChangeValueEnum.EMAIL)
+                                }
+                            )
+                            HorizontalDivider()
+                            SettingItem(
+                                title = stringResource(R.string.txt_role),
+                                subtitle = role.lowercase().upperCaseFirstLetter(),
+                                onClick = {
+                                    showVerifyPasswordBottomSheet = true
+                                    onChangeType(SettingChangeValueEnum.ROLE)
                                 }
                             )
                             HorizontalDivider()

@@ -99,6 +99,7 @@ class ProfileViewModel @Inject constructor(
                             }
                             appManager.saveUserName(data.username)
                             appManager.saveUserAvatar(data.avatarUrl)
+                            appManager.saveUserRole(data.role)
                         }
                     }
 
@@ -122,10 +123,17 @@ class ProfileViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             username = username,
-                            userAvatar = avatar
+                            userAvatar = avatar,
                         )
                     }
                 }.collect()
+                appManager.userRole.collect { role ->
+                    _uiState.update {
+                        it.copy(
+                            role = role
+                        )
+                    }
+                }
             } catch (e: Exception) {
                 Timber.e(e, "Error observing DataStore")
             }
