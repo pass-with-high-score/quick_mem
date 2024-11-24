@@ -5,7 +5,6 @@ import android.util.Patterns
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -60,6 +59,7 @@ class AppManager(private val context: Context) {
         .map { preferences ->
             preferences[APP_PUSH_NOTIFICATIONS] ?: false
         }
+
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
         Timber.d("Saving is first run: $isFirstRun")

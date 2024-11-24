@@ -18,12 +18,13 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.outlinedButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -99,6 +100,7 @@ fun ProfileScreen(
     Profile(
         modifier = modifier,
         name = uiState.username,
+        role = uiState.role,
         avatarUrl = uiState.userAvatar,
         isLoading = uiState.isLoading,
         onRefresh = {
@@ -124,6 +126,7 @@ fun ProfileScreen(
 fun Profile(
     modifier: Modifier = Modifier,
     name: String = "",
+    role: String = "",
     onRefresh: () -> Unit = {},
     isLoading: Boolean = false,
     avatarUrl: String = "",
@@ -173,7 +176,7 @@ fun Profile(
                                 containerColor = premiumColor
                             ),
                             modifier = Modifier.padding(end = 8.dp),
-                            shape = MaterialTheme.shapes.extraLarge,
+                            shape = shapes.extraLarge,
                         ) {
                             Text(
                                 text = stringResource(R.string.txt_upgrade),
@@ -219,11 +222,21 @@ fun Profile(
                 item {
                     Text(
                         text = name,
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Black,
-                            fontSize = 24.sp
+                        style = typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
                         )
                     )
+
+                    if (role == "TEACHER") {
+                       Text(
+                           text = stringResource(R.string.txt_teacher),
+                           style = typography.bodySmall.copy(
+                               fontWeight = FontWeight.Bold
+                           ),
+                           color = colorScheme.secondary,
+                           modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                       )
+                    }
                 }
                 item {
                     OutlinedButton(
@@ -231,12 +244,12 @@ fun Profile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 10.dp),
-                        shape = MaterialTheme.shapes.large,
+                        shape = shapes.large,
                         border = BorderStroke(
                             width = 1.dp,
                             color = colorScheme.onSurface
                         ),
-                        colors = ButtonDefaults.outlinedButtonColors(
+                        colors = outlinedButtonColors(
                             contentColor = colorScheme.onSurface
                         )
                     ) {
@@ -362,6 +375,7 @@ fun ProfilePreview() {
     QuickMemTheme {
         Profile(
             name = "John Doe",
+            role = "TEACHER",
             avatarUrl = "https://www.example.com/avatar.jpg"
         )
     }

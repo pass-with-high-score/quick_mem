@@ -52,7 +52,7 @@ fun MembersTabScreen(
                                 classMemberModel = member,
                                 onClicked = onMembersItemClicked,
                                 canDelete = isOwner,
-                                onDeleteClicked = onDeletedClicked
+                                onDeleteClicked = onDeletedClicked,
                             )
                         }
                     }

@@ -7,6 +7,7 @@ import java.time.LocalDate
 data class ProfileUiState(
     val userAvatar: String = "",
     val username: String = "",
+    val role : String = "",
     val customerInfo: CustomerInfo? = null,
     val isLoading: Boolean = false,
     val streakCount: Int = 0,

@@ -93,6 +93,7 @@ class ProfileViewModel @Inject constructor(
                                 it.copy(
                                     isLoading = false,
                                     username = data.username,
+                                    role = data.role,
                                     userAvatar = data.avatarUrl
                                 )
                             }
