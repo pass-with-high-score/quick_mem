@@ -1,13 +1,10 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.true_false
 
-import com.pwhs.quickmem.core.data.enums.QuizStatus
-
 sealed class LearnByTrueFalseUiAction {
     data object LoadNextFlashCard : LearnByTrueFalseUiAction()
-    data class SubmitCorrectAnswer(
-        val flashCardId: String,
-        val quizStatus: QuizStatus,
-        val userAnswer: String
+    data class OnAnswer(
+        val flashcardId: String,
+        val isCorrect: Boolean,
     ) : LearnByTrueFalseUiAction()
 
     data object ContinueLearnWrongAnswer : LearnByTrueFalseUiAction()

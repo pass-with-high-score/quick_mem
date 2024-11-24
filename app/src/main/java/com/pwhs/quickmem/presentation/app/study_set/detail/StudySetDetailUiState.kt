@@ -3,7 +3,6 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 import androidx.compose.ui.graphics.Color
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
-import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 

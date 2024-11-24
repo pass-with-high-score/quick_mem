@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.pwhs.quickmem.core.data.enums.FlipCardStatus
 import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.enums.Rating
+import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 
 data class UpdateFlashCardResponseDto(
     @SerializedName("id")
@@ -18,4 +19,6 @@ data class UpdateFlashCardResponseDto(
     val flipStatus: String? = FlipCardStatus.NONE.name,
     @SerializedName("quizStatus")
     val quizStatus: String? = QuizStatus.NONE.name,
+    @SerializedName("trueFalseStatus")
+    val trueFalseStatus: TrueFalseStatus? = TrueFalseStatus.NONE
 )
