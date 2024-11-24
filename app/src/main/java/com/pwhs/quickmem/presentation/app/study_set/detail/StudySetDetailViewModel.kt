@@ -7,7 +7,9 @@ import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.study_set.StudySetModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
+import com.pwhs.quickmem.domain.repository.StudySetLocalRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StudySetDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val studySetLocalRepository: StudySetLocalRepository,
     private val studySetRepository: StudySetRepository,
     private val flashCardRepository: FlashCardRepository,
     private val tokenManager: TokenManager,
@@ -111,6 +114,19 @@ class StudySetDetailViewModel @Inject constructor(
                                 isOwner = isOwner,
                             )
                         }
+                        val data = StudySetModel(
+                            id = resource.data.id,
+                            title = resource.data.title,
+                            description = resource.data.description ?: "",
+                            flashcardCount = resource.data.flashcardCount,
+                            colorHex = resource.data.color!!.hexValue,
+                            subjectName = resource.data.subject!!.name,
+                            ownerId = resource.data.owner.id,
+                            ownerUsername = resource.data.owner.username,
+                            ownerAvatarUrl = resource.data.owner.avatarUrl,
+                            isPublic = resource.data.isPublic
+                        )
+                        studySetLocalRepository.addStudySet(data)
                     }
 
                     is Resources.Error -> {
@@ -184,6 +200,8 @@ class StudySetDetailViewModel @Inject constructor(
 
                         is Resources.Success -> {
                             _uiEvent.send(StudySetDetailUiEvent.StudySetDeleted)
+
+                            studySetLocalRepository.deleteStudySet(_uiState.value.id)
                         }
 
                         is Resources.Error -> {

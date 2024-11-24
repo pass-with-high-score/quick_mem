@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.home.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +32,8 @@ fun SubjectItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .padding(horizontal = 16.dp),
         onClick = { onSearchStudySetBySubject(subject.id) },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,

@@ -32,19 +32,18 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
-import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.StudySetModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
-import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 
 @Composable
 fun StudySetHomeItem(
     modifier: Modifier = Modifier,
-    studySet: GetStudySetResponseModel?,
+    studySet: StudySetModel?,
     onStudySetClick: (String) -> Unit = {},
 ) {
-    val borderColor = studySet?.color?.hexValue?.toColor()
+    val borderColor = studySet?.colorHex?.toColor()
         ?: ColorModel.defaultColors[0].hexValue.toColor()
 
     val titleColor = borderColor.copy(alpha = 0.8f)
@@ -91,7 +90,7 @@ fun StudySetHomeItem(
                     }
                 )
                 Text(
-                    text = studySet?.subject?.name ?: SubjectModel.defaultSubjects[0].name,
+                    text = studySet?.subjectName ?: SubjectModel.defaultSubjects[0].name,
                     style = typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
@@ -102,7 +101,7 @@ fun StudySetHomeItem(
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
                     AsyncImage(
-                        model = studySet?.owner?.avatarUrl,
+                        model = studySet?.ownerAvatarUrl,
                         contentDescription = stringResource(R.string.txt_user_avatar),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -110,7 +109,7 @@ fun StudySetHomeItem(
                             .clip(CircleShape)
                     )
                     Text(
-                        text = studySet?.owner?.username.orEmpty(),
+                        text = studySet?.ownerUsername.orEmpty(),
                         style = typography.bodySmall
                     )
                 }
@@ -131,23 +130,17 @@ private fun StudySetItemPreview() {
             ) {
                 items(2) {
                     StudySetHomeItem(
-                        studySet = GetStudySetResponseModel(
+                        studySet = StudySetModel(
                             id = "1",
                             title = "Study Set Title",
-                            flashcardCount = 10,
-                            color = ColorModel.defaultColors[0],
-                            subject = SubjectModel.defaultSubjects[0],
-                            owner = UserResponseModel(
-                                id = "1",
-                                username = "User",
-                                avatarUrl = "https://www.example.com/avatar.jpg"
-                            ),
                             description = "Study Set Description",
-                            isPublic = true,
-                            createdAt = "2021-01-01T00:00:00Z",
-                            updatedAt = "2021-01-01T00:00:00Z",
-                            flashcards = emptyList(),
-                            isAIGenerated = false
+                            flashcardCount = 10,
+                            colorHex = "#FF0000",
+                            subjectName = "Subject Name",
+                            ownerId = "1",
+                            ownerUsername = "Owner Username",
+                            ownerAvatarUrl = "https://example.com/avatar.jpg",
+                            isPublic = true
                         ),
                     )
                 }

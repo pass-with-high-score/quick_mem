@@ -13,6 +13,7 @@ import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
+import com.pwhs.quickmem.domain.repository.StudySetLocalRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
@@ -20,6 +21,7 @@ import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -35,6 +37,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val streakRepository: StreakRepository,
     private val studySetRepository: StudySetRepository,
+    private val studySetLocalRepository: StudySetLocalRepository,
     private val folderRepository: FolderRepository,
     private val classRepository: ClassRepository,
     private val authRepository: AuthRepository,
@@ -54,18 +57,13 @@ class HomeViewModel @Inject constructor(
             val userId = appManager.userId.firstOrNull() ?: ""
             _uiState.value = HomeUiState(userId = userId)
             updateStreak()
+            getStreaksByUserId()
             getCustomerInfo()
             loadNotifications()
             getTop5Subjects()
+            loadStudySets()
         }
     }
-
-    init {
-        updateStreak()
-        getCustomerInfo()
-        getStreaksByUserId()
-    }
-
 
     fun onEvent(event: HomeUiAction) {
         when (event) {
@@ -95,6 +93,12 @@ class HomeViewModel @Inject constructor(
                 loadNotifications()
             }
 
+            HomeUiAction.RefreshHome -> {
+                viewModelScope.launch {
+                    delay(500)
+                    loadStudySets()
+                }
+            }
         }
     }
 
@@ -280,4 +284,22 @@ class HomeViewModel @Inject constructor(
                 ?: SubjectModel.defaultSubjects.first()
         }
     }
+
+    private fun loadStudySets() {
+        viewModelScope.launch {
+            try {
+                val studySets = studySetLocalRepository.getStudySet()
+                Timber.d("Loaded study sets: $studySets")
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        studySets = studySets
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
 }
