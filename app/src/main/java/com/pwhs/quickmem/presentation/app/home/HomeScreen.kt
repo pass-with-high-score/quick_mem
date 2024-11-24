@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -55,6 +56,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,11 +70,21 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
+import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.home.components.FolderHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
+import com.pwhs.quickmem.presentation.app.home.components.StudySetHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.SubjectItem
+import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
+import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
+import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -81,6 +93,8 @@ import com.pwhs.quickmem.ui.theme.streakTextColor
 import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchStudySetBySubjectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -107,6 +121,9 @@ fun HomeScreen(
     Home(
         modifier = modifier,
         subjects = uiState.subjects,
+        studySets = uiState.studySets,
+        folders = uiState.folders,
+        classes = uiState.classes,
         streakCount = uiState.streakCount,
         streakDates = uiState.streakDates,
         notificationCount = uiState.notificationCount,
@@ -132,6 +149,9 @@ fun HomeScreen(
                     icon = subject.iconRes ?: R.drawable.ic_all
                 )
             )
+        },
+        onClickToCreateStudySet = {
+            navigator.navigate(CreateStudySetScreenDestination())
         }
     )
 }
@@ -142,12 +162,19 @@ fun HomeScreen(
 private fun Home(
     modifier: Modifier = Modifier,
     subjects: List<SubjectModel> = emptyList(),
+    studySets: List<GetStudySetResponseModel> = emptyList(),
+    folders: List<GetFolderResponseModel> = emptyList(),
+    classes: List<GetClassByOwnerResponseModel> = emptyList(),
+    onClassClicked: (GetClassByOwnerResponseModel) -> Unit = {},
+    onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
+    onFolderClick: (GetFolderResponseModel) -> Unit = {},
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),
     currentDate: LocalDate = LocalDate.now(),
     notificationCount: Int = 0,
     onNavigateToSearch: () -> Unit = {},
     onNotificationEnabled: (Boolean) -> Unit = {},
+    onClickToCreateStudySet: () -> Unit = {},
     customer: CustomerInfo? = null,
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
     onNotificationClicked: (String) -> Unit = {},
@@ -343,6 +370,142 @@ private fun Home(
                 text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
             )
 
+            if (studySets.isEmpty() && folders.isEmpty() && classes.isEmpty()) {
+                Text(
+                    text = "Here's how to get started",
+                    style = typography.titleLarge.copy(
+                        color = colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Card(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    onClick = onClickToCreateStudySet,
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White,
+                    )
+                ) {
+                    Row(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_three_cards),
+                            contentDescription = "Create a flashcard",
+                            tint = Color.Blue,
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+
+                        Text(
+                            text = "Create your own flashcards",
+                            style = typography.titleMedium.copy(
+                                color = colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .padding(vertical = 10.dp)
+                                .padding(start = 10.dp)
+                                .weight(1f)
+                        )
+                    }
+                }
+            } else {
+                // Row study sets
+                Text(
+                    text = "Study sets",
+                    style = typography.titleLarge.copy(
+                        color = colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                if (studySets.size == 1) {
+                    StudySetItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        studySet = studySets[0],
+                        onStudySetClick = { onStudySetClick(studySets[0]) }
+                    )
+                } else {
+                    LazyRow {
+                        items(studySets) { studySet ->
+                            StudySetHomeItem(
+                                studySet = studySet,
+                                onStudySetClick = { onStudySetClick(studySet) }
+                            )
+                        }
+                    }
+                }
+
+                // Row folders
+                Text(
+                    text = "Folders",
+                    style = typography.titleLarge.copy(
+                        color = colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                if (folders.size == 1) {
+                    FolderItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        title = folders[0].title,
+                        numOfStudySets = folders[0].studySetCount,
+                        onClick = { onFolderClick(folders[0]) },
+                        userResponseModel = folders[0].owner,
+                        folder = folders[0]
+                    )
+                } else {
+                    LazyRow {
+                        items(folders) { folder ->
+                            FolderHomeItem(
+                                title = folder.title,
+                                numOfStudySets = folder.studySetCount,
+                                onClick = { onFolderClick(folder) },
+                                userResponseModel = folder.owner,
+                            )
+                        }
+                    }
+                }
+
+                // Row classes
+                Text(
+                    text = "Classes",
+                    style = typography.titleLarge.copy(
+                        color = colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                if (classes.size == 1) {
+                    ClassItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        classItem = classes[0],
+                        onClick = { onClassClicked(classes[0]) }
+                    )
+                } else {
+                    LazyRow {
+                        items(classes) { classItem ->
+                            ClassItem(
+                                classItem = classItem,
+                                onClick = { onClassClicked(classItem) }
+                            )
+                        }
+                    }
+                }
+            }
+            // Top 5 subjects have study sets
             Text(
                 text = "Top 5 subjects have study sets",
                 style = typography.titleLarge.copy(
@@ -454,12 +617,52 @@ private fun Home(
 private fun HomeScreenPreview() {
     QuickMemTheme {
         Home(
-            streakCount = 5,
-            currentDate = LocalDate.now(),
-            streakDates = listOf(
-                LocalDate.now().plusDays(1),
-                LocalDate.now().plusDays(2),
-                LocalDate.now().plusDays(3)
+            subjects = listOf(
+                SubjectModel(
+                    1,
+                    "All",
+                    iconRes = R.drawable.ic_all,
+                    color = Color(0xFF7f60f9),
+                    studySetCount = 1
+                ),
+            ),
+            studySets = listOf(
+                GetStudySetResponseModel(
+                    id = "1",
+                    title = "Study Set Title",
+                    flashcardCount = 10,
+                    color = ColorModel.defaultColors[0],
+                    subject = SubjectModel.defaultSubjects[0],
+                    owner = UserResponseModel(
+                        id = "1",
+                        username = "User",
+                        avatarUrl = "https://www.example.com/avatar.jpg"
+                    ),
+                    description = "Study Set Description",
+                    isPublic = true,
+                    createdAt = "2021-01-01T00:00:00Z",
+                    updatedAt = "2021-01-01T00:00:00Z",
+                    flashcards = emptyList(),
+                    isAIGenerated = false
+                ),
+                GetStudySetResponseModel(
+                    id = "2",
+                    title = "Study Set Title",
+                    flashcardCount = 10,
+                    color = ColorModel.defaultColors[0],
+                    subject = SubjectModel.defaultSubjects[0],
+                    owner = UserResponseModel(
+                        id = "1",
+                        username = "User",
+                        avatarUrl = "https://www.example.com/avatar.jpg"
+                    ),
+                    description = "Study Set Description",
+                    isPublic = true,
+                    createdAt = "2021-01-01T00:00:00Z",
+                    updatedAt = "2021-01-01T00:00:00Z",
+                    flashcards = emptyList(),
+                    isAIGenerated = false
+                ),
             )
         )
     }
