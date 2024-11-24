@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.profile.component
+package com.pwhs.quickmem.presentation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
