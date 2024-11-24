@@ -3,11 +3,14 @@ package com.pwhs.quickmem.presentation.app.settings.user_info.change_role
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.enums.UserRole
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.ChangeRoleRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.util.isDateSmallerThan
+import com.pwhs.quickmem.util.toTimestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +19,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -39,10 +42,15 @@ class ChangeRoleViewModel @Inject constructor(
     init {
         val userId = savedStateHandle.get<String>("userId") ?: ""
         val role = savedStateHandle.get<String>("role") ?: ""
+        Timber.d("userId: $userId, role: $role")
         _uiState.update {
             it.copy(
                 userId = userId,
-                role = role
+                role = when (role) {
+                    "STUDENT" -> UserRole.STUDENT
+                    "TEACHER" -> UserRole.TEACHER
+                    else -> UserRole.STUDENT
+                }
             )
         }
     }
@@ -62,13 +70,15 @@ class ChangeRoleViewModel @Inject constructor(
     private fun changeRole() {
         viewModelScope.launch {
             val birthday = appManager.userBirthday.firstOrNull() ?: ""
-            if (!isUserOver20(birthday)) {
-                val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val eligibleDate = calculateEligibleDate(birthday)
-                val eligibleDateString = dateFormatter.format(eligibleDate)
+            Timber.d("Birthday: $birthday")
+            val dateLong = birthday.toTimestamp()
+            val isUserOver20 = dateLong?.isDateSmallerThan() ?: false
+            if (!isUserOver20) {
                 _uiEvent.send(
                     ChangeRoleUiEvent.ShowUnderageDialog(
-                        eligibleDateString
+                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
+                            Date(dateLong!!)
+                        )
                     )
                 )
                 return@launch
@@ -80,7 +90,7 @@ class ChangeRoleViewModel @Inject constructor(
                 token = token,
                 changeRoleRequestModel = ChangeRoleRequestModel(
                     userId = userId,
-                    role = role
+                    role = role.name
                 )
             ).collect { resource ->
                 when (resource) {
@@ -89,36 +99,26 @@ class ChangeRoleViewModel @Inject constructor(
                     }
 
                     is Resources.Error -> {
-                        _uiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
-                        _uiEvent.send(ChangeRoleUiEvent.ShowError(resource.message ?: "An error occurred"))
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = resource.message
+                            )
+                        }
+                        _uiEvent.send(
+                            ChangeRoleUiEvent.ShowError(
+                                resource.message ?: "An error occurred"
+                            )
+                        )
                     }
 
                     is Resources.Success -> {
-                        appManager.saveUserRole(role)
+                        appManager.saveUserRole(role.name)
                         _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(ChangeRoleUiEvent.RoleChangedSuccessfully)
                     }
                 }
             }
         }
-    }
-
-    private fun isUserOver20(birthday: String): Boolean {
-        if (birthday.isEmpty()) return false
-        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val birthdayDate = dateFormatter.parse(birthday) ?: return false
-        val calendar = Calendar.getInstance()
-        calendar.time = birthdayDate
-        calendar.add(Calendar.YEAR, 20)
-        return calendar.time.before(Date())
-    }
-
-    private fun calculateEligibleDate(birthday: String): Date {
-        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val birthdayDate = dateFormatter.parse(birthday) ?: return Date()
-        val calendar = Calendar.getInstance()
-        calendar.time = birthdayDate
-        calendar.add(Calendar.YEAR, 20)
-        return calendar.time
     }
 }

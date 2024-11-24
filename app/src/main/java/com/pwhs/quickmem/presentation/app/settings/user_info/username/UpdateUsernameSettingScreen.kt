@@ -50,7 +50,7 @@ fun UpdateUsernameSettingScreen(
     }
     UpdateUsernameSetting(
         modifier = modifier,
-        username = uiState.username,
+        username = uiState.newUsername,
         errorMessage = uiState.errorMessage,
         isLoading = uiState.isLoading,
         onUsernameChanged = { username ->

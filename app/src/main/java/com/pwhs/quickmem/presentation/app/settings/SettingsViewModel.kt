@@ -100,7 +100,6 @@ class SettingsViewModel @Inject constructor(
                 val fullName = appManager.userFullName.firstOrNull() ?: ""
                 val username = appManager.userName.firstOrNull() ?: ""
                 val role = appManager.userRole.firstOrNull() ?: ""
-                Timber.d("Username: $username")
                 val email = appManager.userEmail.firstOrNull() ?: ""
                 val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
                 val isAppPushNotificationsEnabled =

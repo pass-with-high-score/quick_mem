@@ -60,6 +60,7 @@ import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.getLanguageCode
 import com.pwhs.quickmem.util.toFormattedString
+import com.pwhs.quickmem.util.upperCaseFirstLetter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
@@ -204,7 +205,7 @@ fun SettingsScreen(
                     navigator.navigate(
                         ChangeRoleScreenDestination(
                             userId = uiState.userId,
-                            role = uiState.role
+                            role = uiState.role.uppercase()
                         )
                     )
                 }
@@ -447,18 +448,18 @@ fun Setting(
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = stringResource(R.string.txt_change_password),
+                                title = stringResource(R.string.txt_role),
+                                subtitle = role.lowercase().upperCaseFirstLetter(),
                                 onClick = {
-                                    onNavigateToChangePassword()
+                                    showVerifyPasswordBottomSheet = true
+                                    onChangeType(SettingChangeValueEnum.ROLE)
                                 }
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = stringResource(R.string.txt_change_role),
-                                subtitle = role,
+                                title = stringResource(R.string.txt_change_password),
                                 onClick = {
-                                    showVerifyPasswordBottomSheet = true
-                                    onChangeType(SettingChangeValueEnum.ROLE)
+                                    onNavigateToChangePassword()
                                 }
                             )
                         }
