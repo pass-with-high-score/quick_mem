@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.data.remote
 
-import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordResponseDto
@@ -155,13 +154,18 @@ interface ApiService {
         @Path("id") userId: String
     ): GetUserProfileResponseDto
 
-    //Update Avatar
     @PATCH("auth/user/avatar/{id}")
     suspend fun updateAvatar(
         @Header("Authorization") authorization: String,
         @Path("id") userId: String,
         @Body updateAvatarRequestDto: UpdateAvatarRequestDto
     ): UpdateAvatarResponseDto
+
+    @PATCH("auth/user/role")
+    suspend fun changeRole(
+        @Header("Authorization") token: String,
+        @Body request: ChangeRoleRequestDto
+    ): ChangeRoleResponseDto
 
     @GET("auth/user/search")
     suspend fun searchUser(
@@ -519,10 +523,4 @@ interface ApiService {
         @Path("id") notificationId: String
     )
 
-    //Change role
-    @PATCH("auth/user/role")
-    suspend fun changeRole(
-        @Header("Authorization") token: String,
-        @Body request: ChangeRoleRequestDto
-    ): ChangeRoleResponseDto
 }
