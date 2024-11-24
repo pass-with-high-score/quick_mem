@@ -253,4 +253,8 @@
     <string name="txt_day_streak">day streak</string>
     <string name="txt_days_streak">days streak</string>
     <string name="txt_teacher">Teacher</string>
+    <string name="txt_change_role">Change Role</string>
+    <string name="txt_role_updated_success">Role updated successfully!</string>
+    <string name="dialog_title_not_eligible">Not Eligible</string>
+    <string name="dialog_message_underage">You must be at least 20 years old to change role. Please come back on %1$s.</string>
 </resources>

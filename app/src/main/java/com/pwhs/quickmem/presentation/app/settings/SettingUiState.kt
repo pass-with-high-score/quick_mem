@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.settings
 
-import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.revenuecat.purchases.CustomerInfo
 
 data class SettingUiState(
@@ -13,6 +12,7 @@ data class SettingUiState(
     val fullName: String = "",
     val username: String = "",
     val email: String = "",
+    val role: String = "",
     val changeType: SettingChangeValueEnum = SettingChangeValueEnum.NONE,
     val isPushNotificationsEnabled: Boolean = false,
     val isAppPushNotificationsEnabled: Boolean = false,

@@ -4,6 +4,8 @@ import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordResponseDto
+import com.pwhs.quickmem.data.dto.auth.ChangeRoleRequestDto
+import com.pwhs.quickmem.data.dto.auth.ChangeRoleResponseDto
 import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
@@ -517,4 +519,10 @@ interface ApiService {
         @Path("id") notificationId: String
     )
 
+    //Change role
+    @PATCH("auth/user/role")
+    suspend fun changeRole(
+        @Header("Authorization") token: String,
+        @Body request: ChangeRoleRequestDto
+    ): ChangeRoleResponseDto
 }
