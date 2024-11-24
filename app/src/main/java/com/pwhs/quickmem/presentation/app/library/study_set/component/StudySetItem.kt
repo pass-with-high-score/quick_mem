@@ -39,6 +39,7 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 
@@ -114,10 +115,14 @@ fun StudySetItem(
                             .size(18.dp)
                             .clip(CircleShape)
                     )
-                    Text(
-                        text = studySet?.owner?.username.orEmpty(),
-                        style = typography.bodySmall
-                    )
+
+                    if (studySet != null) {
+                        TeacherTextField(
+                            title = studySet.owner.username,
+                            role = studySet.owner.role,
+                            textStyle = typography.bodySmall
+                        )
+                    }
                 }
             }
             if (isOwner && onDeleteClick != null) {

@@ -38,6 +38,7 @@ import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
@@ -125,10 +126,10 @@ fun FolderItem(
                                 .background(colorScheme.primary.copy(alpha = 0.1f)),
                             contentScale = ContentScale.Crop
                         )
-                        Text(
-                            text = userResponseModel.username,
-                            style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                            color = colorScheme.onSurface
+                        TeacherTextField(
+                            title = userResponseModel.username,
+                            role = userResponseModel.role,
+                            textStyle = typography.bodySmall
                         )
                     }
                 }

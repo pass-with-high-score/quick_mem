@@ -34,6 +34,7 @@ import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
@@ -107,12 +108,15 @@ fun ClassItem(
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
-                    Text(
-                        text = classItem?.owner?.username ?: "",
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
+                    if (classItem != null) {
+                        TeacherTextField(
+                            title = classItem.owner.username,
+                            role = classItem.owner.role,
+                            textStyle = typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
@@ -139,6 +143,7 @@ private fun ClassItemPreview() {
                                 studySetCount = 10,
                                 owner = UserResponseModel(
                                     username = "User",
+                                    role = "TEACHER",
                                     avatarUrl = "https://example.com/avatar.jpg"
                                 ),
                                 createdAt = "2021-01-01T00:00:00Z",

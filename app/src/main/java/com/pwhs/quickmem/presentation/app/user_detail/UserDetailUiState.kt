@@ -8,6 +8,7 @@ data class UserDetailUiState(
     val isLoading: Boolean = false,
     val isOwner: Boolean = false,
     val userId: String = "",
+    val role: String = "",
     val userName: String = "",
     val userEmail: String = "",
     val avatarUrl: String = "",

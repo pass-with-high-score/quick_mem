@@ -56,6 +56,7 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.home.HomeViewModel
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
+import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -99,6 +100,7 @@ fun ProfileScreen(
     Profile(
         modifier = modifier,
         name = uiState.username,
+        role = uiState.role,
         avatarUrl = uiState.userAvatar,
         isLoading = uiState.isLoading,
         onRefresh = {
@@ -124,6 +126,7 @@ fun ProfileScreen(
 fun Profile(
     modifier: Modifier = Modifier,
     name: String = "",
+    role: String = "",
     onRefresh: () -> Unit = {},
     isLoading: Boolean = false,
     avatarUrl: String = "",
@@ -217,11 +220,12 @@ fun Profile(
                 }
 
                 item {
-                    Text(
-                        text = name,
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Black,
-                            fontSize = 24.sp
+                    TeacherTextField(
+                        title = name,
+                        role = role,
+                        textStyle = typography.bodyLarge.copy(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     )
                 }
@@ -362,6 +366,7 @@ fun ProfilePreview() {
     QuickMemTheme {
         Profile(
             name = "John Doe",
+            role = "TEACHER",
             avatarUrl = "https://www.example.com/avatar.jpg"
         )
     }

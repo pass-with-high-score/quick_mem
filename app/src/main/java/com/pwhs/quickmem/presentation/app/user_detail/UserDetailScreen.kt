@@ -40,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -50,6 +51,7 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
+import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
 import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -133,6 +135,7 @@ fun UserDetailScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         isOwner = uiState.isOwner,
+        role = uiState.role,
         userName = uiState.userName,
         avatarUrl = uiState.avatarUrl,
         studySets = uiState.studySets,
@@ -188,6 +191,7 @@ private fun UserDetail(
     isLoading: Boolean = false,
     isOwner: Boolean = false,
     userName: String = "",
+    role: String = "",
     avatarUrl: String = "",
     studySets: List<GetStudySetResponseModel> = emptyList(),
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
@@ -256,10 +260,14 @@ private fun UserDetail(
                     contentScale = ContentScale.Crop
                 )
 
-                Text(
-                    text = userName,
-                    style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(top = 8.dp)
+                TeacherTextField(
+                    title = userName,
+                    role = role,
+                    textStyle = typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    ),
+                    modifier = Modifier.padding(top = 12.dp)
                 )
 
 
@@ -336,7 +344,8 @@ private fun UserDetailPreview() {
         UserDetail(
             userName = "John Doe",
             avatarUrl = "https://example.com/avatar.jpg",
-            onBackClick = {}
+            onBackClick = {},
+            role = "TEACHER"
         )
     }
 }

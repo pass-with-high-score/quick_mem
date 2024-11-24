@@ -22,6 +22,7 @@ class AppManager(private val context: Context) {
         val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
+        val USER_ROLE = stringPreferencesKey("USER_ROLE")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -59,6 +60,11 @@ class AppManager(private val context: Context) {
     val appPushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
             preferences[APP_PUSH_NOTIFICATIONS] ?: false
+        }
+
+    val userRole: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_ROLE] ?: ""
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -122,6 +128,13 @@ class AppManager(private val context: Context) {
         Timber.d("Saving app push notifications: $appPushNotifications")
         context.dataStore.edit { preferences ->
             preferences[APP_PUSH_NOTIFICATIONS] = appPushNotifications
+        }
+    }
+
+    suspend fun saveUserRole(userRole: String) {
+        Timber.d("Saving user full name: $userRole")
+        context.dataStore.edit { preferences ->
+            preferences[USER_ROLE] = userRole
         }
     }
 
