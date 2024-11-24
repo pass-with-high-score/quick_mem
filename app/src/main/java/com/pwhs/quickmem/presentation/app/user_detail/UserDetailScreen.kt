@@ -51,7 +51,7 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.library.classes.ListClassesScreen
 import com.pwhs.quickmem.presentation.app.library.folder.ListFolderScreen
 import com.pwhs.quickmem.presentation.app.library.study_set.ListStudySetScreen
-import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
+import com.pwhs.quickmem.presentation.app.profile.component.RoleUserText
 import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -260,15 +260,22 @@ private fun UserDetail(
                     contentScale = ContentScale.Crop
                 )
 
-                TeacherTextField(
-                    title = userName,
-                    role = role,
-                    textStyle = typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp
-                    ),
-                    modifier = Modifier.padding(top = 12.dp)
+                Text(
+                    text = userName,
+                    style = typography.titleMedium.copy(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
+                if (role == "TEACHER") {
+                    Text(
+                        text = "Teacher",
+                        style = typography.bodySmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                    )
+                }
 
 
                 TabRow(

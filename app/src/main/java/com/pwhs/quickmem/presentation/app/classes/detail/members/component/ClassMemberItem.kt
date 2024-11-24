@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.members.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,7 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.users.ClassMemberModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.upperCaseFirstLetter
 
 @Composable
 fun ClassMemberItem(
@@ -57,7 +58,7 @@ fun ClassMemberItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -87,7 +88,7 @@ fun ClassMemberItem(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = classMemberModel.role,
+                            text = classMemberModel.role.lowercase().upperCaseFirstLetter(),
                             style = typography.bodySmall.copy(color = colorScheme.onSurfaceVariant),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -105,15 +106,18 @@ fun ClassMemberItem(
                 }
 
                 if (canDelete && !classMemberModel.isOwner) {
-                    Icon(
-                        imageVector = Icons.Rounded.Clear,
-                        contentDescription = "delete",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable {
-                                onDeleteClicked(classMemberModel.id)
-                            }
-                    )
+                    IconButton(
+                        onClick = {
+                            onDeleteClicked(classMemberModel.id)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "delete",
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                    }
                 }
             }
         }

@@ -18,12 +18,13 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.outlinedButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -56,7 +57,6 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.home.HomeViewModel
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
-import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -176,7 +176,7 @@ fun Profile(
                                 containerColor = premiumColor
                             ),
                             modifier = Modifier.padding(end = 8.dp),
-                            shape = MaterialTheme.shapes.extraLarge,
+                            shape = shapes.extraLarge,
                         ) {
                             Text(
                                 text = stringResource(R.string.txt_upgrade),
@@ -220,14 +220,23 @@ fun Profile(
                 }
 
                 item {
-                    TeacherTextField(
-                        title = name,
-                        role = role,
-                        textStyle = typography.bodyLarge.copy(
-                            fontSize = 24.sp,
+                    Text(
+                        text = name,
+                        style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
+
+                    if (role == "TEACHER") {
+                       Text(
+                           text = stringResource(R.string.txt_teacher),
+                           style = typography.bodySmall.copy(
+                               fontWeight = FontWeight.Bold
+                           ),
+                           color = colorScheme.secondary,
+                           modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                       )
+                    }
                 }
                 item {
                     OutlinedButton(
@@ -235,12 +244,12 @@ fun Profile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 10.dp),
-                        shape = MaterialTheme.shapes.large,
+                        shape = shapes.large,
                         border = BorderStroke(
                             width = 1.dp,
                             color = colorScheme.onSurface
                         ),
-                        colors = ButtonDefaults.outlinedButtonColors(
+                        colors = outlinedButtonColors(
                             contentColor = colorScheme.onSurface
                         )
                     ) {

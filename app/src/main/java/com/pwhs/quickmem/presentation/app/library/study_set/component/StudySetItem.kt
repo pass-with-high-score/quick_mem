@@ -39,7 +39,7 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
-import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
+import com.pwhs.quickmem.presentation.app.profile.component.RoleUserText
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 
@@ -117,10 +117,9 @@ fun StudySetItem(
                     )
 
                     if (studySet != null) {
-                        TeacherTextField(
-                            title = studySet.owner.username,
+                        RoleUserText(
+                            username = studySet.owner.username,
                             role = studySet.owner.role,
-                            textStyle = typography.bodySmall
                         )
                     }
                 }

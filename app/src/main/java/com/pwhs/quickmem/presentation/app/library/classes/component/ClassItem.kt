@@ -34,7 +34,7 @@ import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
-import com.pwhs.quickmem.presentation.app.profile.component.TeacherTextField
+import com.pwhs.quickmem.presentation.app.profile.component.RoleUserText
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
@@ -109,12 +109,9 @@ fun ClassItem(
                         contentScale = ContentScale.Crop
                     )
                     if (classItem != null) {
-                        TeacherTextField(
-                            title = classItem.owner.username,
+                        RoleUserText(
+                            username = classItem.owner.username,
                             role = classItem.owner.role,
-                            textStyle = typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            )
                         )
                     }
                 }
