@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun OnboardingIndicator(isSelected: Boolean) {
@@ -22,9 +23,7 @@ fun OnboardingIndicator(isSelected: Boolean) {
         label = "Indicator"
     )
     val color =
-        if (isSelected) colorScheme.primary else colorScheme.onSurface.copy(
-            alpha = 0.5f
-        )
+        if (isSelected) colorScheme.primary else colorScheme.inversePrimary
 
     Box(
         modifier = Modifier
@@ -34,12 +33,14 @@ fun OnboardingIndicator(isSelected: Boolean) {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun OnboardingIndicatorPreview() {
-    Row {
-        OnboardingIndicator(isSelected = true)
-        OnboardingIndicator(isSelected = false)
-        OnboardingIndicator(isSelected = false)
+    QuickMemTheme {
+        Row {
+            OnboardingIndicator(isSelected = true)
+            OnboardingIndicator(isSelected = false)
+            OnboardingIndicator(isSelected = false)
+        }
     }
 }

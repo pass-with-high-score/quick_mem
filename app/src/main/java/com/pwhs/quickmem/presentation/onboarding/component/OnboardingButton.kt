@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun OnboardingButton(
@@ -81,9 +82,11 @@ fun OnboardingButton(
 @Preview
 @Composable
 fun OnboardingButtonPreview() {
-    OnboardingButton(
-        text = "Next",
-        onClick = {},
-        showIcon = true
-    )
+    QuickMemTheme {
+        OnboardingButton(
+            text = "Next",
+            onClick = {},
+            showIcon = true
+        )
+    }
 }

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
@@ -30,6 +31,7 @@ import com.pwhs.quickmem.presentation.onboarding.component.OnboardingButton
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingIndicator
 import com.pwhs.quickmem.presentation.onboarding.component.OnboardingPageView
 import com.pwhs.quickmem.presentation.onboarding.data.onboardingPagesList
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -45,7 +47,37 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+    Onboarding(
+        modifier = modifier,
+        onSkipClick = {
+            viewModel.saveIsFirstRun(false)
+            navigator.navigate(WelcomeScreenDestination) {
+                popUpTo(NavGraphs.root) {
+                    saveState = false
+                }
+                launchSingleTop = true
+                restoreState = false
+            }
+        },
+        onGetStartedClick = {
+            viewModel.saveIsFirstRun(false)
+            navigator.navigate(WelcomeScreenDestination) {
+                popUpTo(NavGraphs.root) {
+                    saveState = false
+                }
+                launchSingleTop = true
+                restoreState = false
+            }
+        }
+    )
+}
 
+@Composable
+private fun Onboarding(
+    modifier: Modifier = Modifier,
+    onSkipClick: () -> Unit = { },
+    onGetStartedClick: () -> Unit = { }
+) {
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -76,16 +108,7 @@ fun OnboardingScreen(
 
                 OnboardingButton(
                     text = stringResource(R.string.txt_skip),
-                    onClick = {
-                        viewModel.saveIsFirstRun(false)
-                        navigator.navigate(WelcomeScreenDestination) {
-                            popUpTo(NavGraphs.root) {
-                                saveState = false
-                            }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
-                    },
+                    onClick = onSkipClick,
                     backgroundColor = Color.White,
                     borderColor = MaterialTheme.colorScheme.primary,
                     textColor = MaterialTheme.colorScheme.primary,
@@ -130,19 +153,18 @@ fun OnboardingScreen(
                 } else {
                     OnboardingButton(
                         text = stringResource(R.string.txt_get_started),
-                        onClick = {
-                            viewModel.saveIsFirstRun(false)
-                            navigator.navigate(WelcomeScreenDestination) {
-                                popUpTo(NavGraphs.root) {
-                                    saveState = false
-                                }
-                                launchSingleTop = true
-                                restoreState = false
-                            }
-                        }
+                        onClick = onGetStartedClick,
                     )
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun OnboardingScreenPreview() {
+    QuickMemTheme {
+        Onboarding()
     }
 }
