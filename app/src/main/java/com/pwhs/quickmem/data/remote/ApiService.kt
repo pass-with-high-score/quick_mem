@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.data.remote
 
+import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordResponseDto
