@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.util
 
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -25,7 +24,6 @@ fun Long.isDateSmallerThan(): Boolean {
 }
 
 fun Long.toStringTime(): String {
-    Timber.d("toStringTime: $this")
     val totalSeconds = this / 1000
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60

@@ -5,7 +5,6 @@ import android.util.Patterns
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -20,6 +19,8 @@ class AppManager(private val context: Context) {
         val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
+        val USER_ROLE = stringPreferencesKey("USER_ROLE")
+        val USER_BIRTHDAY = stringPreferencesKey("USER_BIRTHDAY")
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
     }
@@ -59,6 +60,16 @@ class AppManager(private val context: Context) {
     val appPushNotifications: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
             preferences[APP_PUSH_NOTIFICATIONS] ?: false
+        }
+
+    val userRole: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_ROLE] ?: ""
+        }
+
+    val userBirthday: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_BIRTHDAY] ?: ""
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -122,6 +133,20 @@ class AppManager(private val context: Context) {
         Timber.d("Saving app push notifications: $appPushNotifications")
         context.dataStore.edit { preferences ->
             preferences[APP_PUSH_NOTIFICATIONS] = appPushNotifications
+        }
+    }
+
+    suspend fun saveUserRole(userRole: String) {
+        Timber.d("Saving user role: $userRole")
+        context.dataStore.edit { preferences ->
+            preferences[USER_ROLE] = userRole
+        }
+    }
+
+    suspend fun saveUserBirthday(birthday: String) {
+        Timber.d("Saving user birthday: $birthday")
+        context.dataStore.edit { preferences ->
+            preferences[USER_BIRTHDAY] = birthday
         }
     }
 

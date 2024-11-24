@@ -4,15 +4,11 @@ import android.app.Application
 import android.media.MediaPlayer
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.LearnMode
-import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.enums.ResetType
-import com.pwhs.quickmem.core.data.states.RandomAnswer
-import com.pwhs.quickmem.core.data.states.WrongAnswer
-import com.pwhs.quickmem.core.datastore.AppManager
+import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
@@ -20,9 +16,6 @@ import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
-import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.LearnByQuizUiAction
-import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.LearnByQuizUiEvent
-import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.LearnFlashCardUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,25 +30,12 @@ import javax.inject.Inject
 @HiltViewModel
 class LearnByTrueFalseViewModel @Inject constructor(
     private val tokenManager: TokenManager,
-    private val appManager: AppManager,
     savedStateHandle: SavedStateHandle,
     private val flashCardRepository: FlashCardRepository,
     private val studySetRepository: StudySetRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
-    // true false
-    /**
-     * Step 1: Get data from api
-     * Step 2: Randomize answers(1 term, 1 definition - correct or not)
-     * Step 3: Show the question
-     * Step 4: User select answer
-     * Step 5: Submit answer
-     * Step 6: Show feedback
-     * Step 7: Load next question
-     * Step 8: Repeat
-     * It is maybe hard bu I believe you can do it
-     */
 
     private val _uiState = MutableStateFlow(LearnByTrueFalseUiState())
     val uiState = _uiState.asStateFlow()
@@ -91,11 +71,12 @@ class LearnByTrueFalseViewModel @Inject constructor(
                 )
             }
 
-            is LearnByTrueFalseUiAction.SubmitCorrectAnswer -> submitCorrectAnswer(
-                event.flashCardId,
-                event.quizStatus,
-                event.userAnswer
-            )
+            is LearnByTrueFalseUiAction.OnAnswer -> {
+                submitCorrectAnswer(
+                    event.flashcardId,
+                    event.isCorrect
+                )
+            }
 
             is LearnByTrueFalseUiAction.ContinueLearnWrongAnswer -> {
                 // reset all state
@@ -119,7 +100,7 @@ class LearnByTrueFalseViewModel @Inject constructor(
                     studySetRepository.resetProgress(
                         token,
                         studySetId,
-                        ResetType.QUIZ_STATUS.type
+                        ResetType.TRUE_FALSE_STATUS.type
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {
@@ -128,7 +109,6 @@ class LearnByTrueFalseViewModel @Inject constructor(
                             }
 
                             is Resources.Loading -> {
-                                Timber.d("Loading")
                                 _uiState.update { it.copy(isLoading = true) }
                             }
 
@@ -159,7 +139,7 @@ class LearnByTrueFalseViewModel @Inject constructor(
             flashCardRepository.getFlashCardsByStudySetId(
                 token = token,
                 studySetId = _uiState.value.studySetId,
-                learnMode = LearnMode.QUIZ
+                learnMode = LearnMode.TRUE_FALSE
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
@@ -186,12 +166,12 @@ class LearnByTrueFalseViewModel @Inject constructor(
 
                         val flashCards = resource.data
                         val currentCard = flashCards.firstOrNull()
-                        val randomAnswers = generateRandomAnswers(flashCards, currentCard)
+                        val question = generateQuestion(flashCards, currentCard)
 
                         _uiState.update {
                             it.copy(
                                 flashCardList = flashCards,
-                                randomAnswers = randomAnswers,
+                                randomQuestion = question,
                                 isLoading = false,
                                 currentFlashCard = currentCard,
                                 nextFlashCard = flashCards.getOrNull(1)
@@ -204,25 +184,24 @@ class LearnByTrueFalseViewModel @Inject constructor(
         }
     }
 
-
     private fun submitCorrectAnswer(
         flashCardId: String,
-        quizStatus: QuizStatus,
-        userAnswer: String = ""
+        isCorrect: Boolean,
     ) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            when (quizStatus) {
-                QuizStatus.CORRECT -> playCorrectSound()
-                QuizStatus.WRONG -> playIncorrectSound()
-                else -> {
-                }
+            when (isCorrect) {
+                true -> playCorrectSound()
+                false -> playIncorrectSound()
             }
             try {
-                flashCardRepository.updateQuizStatus(
+                flashCardRepository.updateTrueFalseStatus(
                     token = token,
                     id = flashCardId,
-                    quizStatus = quizStatus.status
+                    trueFalseStatus = when (isCorrect) {
+                        true -> TrueFalseStatus.CORRECT.status
+                        false -> TrueFalseStatus.WRONG.status
+                    }
                 ).collect { resource ->
                     when (resource) {
                         is Resources.Error -> {
@@ -247,66 +226,79 @@ class LearnByTrueFalseViewModel @Inject constructor(
                             // get the next flash card (one that is not answered)
                             val nextFlashCard = flashCardList.firstOrNull { !it.isAnswered }
 
+                            // update listWrongAnswer based on the correctness of the answer
+                            val updatedListWrongAnswer = if (isCorrect) {
+                                _uiState.value.listWrongAnswer.filter { it.id != flashCardId }
+                            } else {
+                                _uiState.value.listWrongAnswer + _uiState.value.randomQuestion!!
+                            }
+
                             _uiState.update {
                                 it.copy(
                                     flashCardList = flashCardList,
                                     nextFlashCard = nextFlashCard,
-                                    wrongAnswerCount = if (quizStatus == QuizStatus.WRONG || quizStatus == QuizStatus.SKIPPED) it.wrongAnswerCount + 1 else it.wrongAnswerCount,
-                                    listWrongAnswer = if (quizStatus == QuizStatus.WRONG) it.listWrongAnswer + WrongAnswer(
-                                        flashCard = it.currentFlashCard!!,
-                                        userAnswer = userAnswer
-                                    ) else it.listWrongAnswer
+                                    wrongAnswerCount = if (!isCorrect) it.wrongAnswerCount + 1 else it.wrongAnswerCount,
+                                    listWrongAnswer = updatedListWrongAnswer
                                 )
                             }
                         }
                     }
 
                 }
+                loadNextFlashCard(_uiState.value.nextFlashCard)
             } catch (e: Exception) {
                 Timber.e(e)
             }
         }
     }
 
-    private fun generateRandomAnswers(
+    private fun generateQuestion(
         flashCards: List<FlashCardResponseModel>,
         currentCard: FlashCardResponseModel?
-    ): List<RandomAnswer> {
-        if (currentCard == null) return emptyList()
+    ): TrueFalseQuestion? {
+        if (currentCard == null) return null
 
-        val answers = flashCards
-            .filter { it.id != currentCard.id }
-            .distinctBy { it.definition }
-            .shuffled()
-            .take(3)
-            .map {
-                RandomAnswer(
-                    answer = it.definition,
-                    isCorrect = false,
-                    imageURL = it.definitionImageURL ?: ""
-                )
-            }
-            .toMutableList()
+        val random = (0..1).random() == 1
+        val filteredFlashCards = flashCards.filter { it.id != currentCard.id }
 
-        answers.add(
-            RandomAnswer(
-                answer = currentCard.definition,
-                isCorrect = true,
-                imageURL = currentCard.definitionImageURL ?: ""
+        if (filteredFlashCards.isEmpty()) {
+            // Handle the case where there are no other flashcards to choose from
+            return TrueFalseQuestion(
+                id = currentCard.id,
+                term = currentCard.term,
+                definition = currentCard.definition,
+                definitionImageUrl = currentCard.definitionImageURL ?: "",
+                isRandom = false,
+                originalDefinition = currentCard.definition,
+                originalDefinitionImageUrl = currentCard.definitionImageURL ?: ""
             )
+        }
+
+        val randomFlashCard = filteredFlashCards.random()
+        Timber.d("Random: $random")
+        Timber.d("Definition: ${randomFlashCard.definition}")
+        Timber.d("Definition Image Url: ${randomFlashCard.definitionImageURL}")
+
+        return TrueFalseQuestion(
+            id = currentCard.id,
+            term = currentCard.term,
+            definition = if (random) randomFlashCard.definition else currentCard.definition,
+            definitionImageUrl = if (random) randomFlashCard.definitionImageURL ?: "" else currentCard.definitionImageURL ?: "",
+            isRandom = random,
+            originalDefinition = currentCard.definition,
+            originalDefinitionImageUrl = currentCard.definitionImageURL ?: ""
         )
-        return answers.shuffled()
     }
 
     private fun loadNextFlashCard(
         nextFlashCard: FlashCardResponseModel?,
     ) {
         if (nextFlashCard != null && _uiState.value.currentCardIndex < _uiState.value.flashCardList.size - 1) {
-            val randomAnswers = generateRandomAnswers(_uiState.value.flashCardList, nextFlashCard)
+            val randomAnswers = generateQuestion(_uiState.value.flashCardList, nextFlashCard)
             _uiState.update {
                 it.copy(
                     currentCardIndex = it.currentCardIndex + 1,
-                    randomAnswers = randomAnswers,
+                    randomQuestion = randomAnswers,
                     currentFlashCard = nextFlashCard,
                     nextFlashCard = it.flashCardList.getOrNull(it.currentCardIndex + 2)
                 )

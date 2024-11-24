@@ -3,9 +3,6 @@ package com.pwhs.quickmem.util
 import java.util.Date
 
 fun Date.toFormattedString(): String {
-    // format like when I only have 1 day left, 2 days left, etc.
-    // it will be 1 day left, 2 days left, etc.
-    // apply the same logic for hours, minutes, and seconds
     val now = Date()
     val diff = this.time - now.time
     val seconds = diff / 1000

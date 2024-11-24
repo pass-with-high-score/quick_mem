@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +51,9 @@ import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Destination<RootGraph>(
     navArgs = LearnByQuizArgs::class
@@ -132,6 +136,8 @@ fun LearnByQuiz(
     val showHintBottomSheet = remember { mutableStateOf(false) }
     val hintBottomSheetState = rememberModalBottomSheetState()
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
+    var debounceJob: Job? = null
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -186,12 +192,16 @@ fun LearnByQuiz(
             if (!isEndOfList) {
                 FloatingActionButton(
                     onClick = {
-                        canResetState = !canResetState
-                        if (selectedAnswer == null) {
-                            onCorrectAnswer(flashCard?.id ?: "", QuizStatus.SKIPPED, "")
+                        debounceJob?.cancel()
+                        debounceJob = scope.launch {
+                            delay(500)
+                            canResetState = !canResetState
+                            if (selectedAnswer == null) {
+                                onCorrectAnswer(flashCard?.id ?: "", QuizStatus.SKIPPED, "")
+                            }
+                            onLoadNextFlashCard()
+                            selectedAnswer = null
                         }
-                        onLoadNextFlashCard()
-                        selectedAnswer = null
                     },
                     shape = MaterialTheme.shapes.extraLarge,
                 ) {
@@ -246,7 +256,7 @@ fun LearnByQuiz(
                     true -> {
                         QuizFlashCardFinish(
                             modifier = Modifier.fillMaxSize(),
-                            isEndOfList = isEndOfList,
+                            isEndOfList = true,
                             wrongAnswerCount = wrongAnswerCount,
                             correctAnswerCount = flashCardList.size - wrongAnswerCount,
                             studySetColor = studySetColor,

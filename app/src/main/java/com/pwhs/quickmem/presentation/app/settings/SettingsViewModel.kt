@@ -2,7 +2,6 @@ package com.pwhs.quickmem.presentation.app.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -100,7 +99,7 @@ class SettingsViewModel @Inject constructor(
                 val userId = appManager.userId.firstOrNull() ?: ""
                 val fullName = appManager.userFullName.firstOrNull() ?: ""
                 val username = appManager.userName.firstOrNull() ?: ""
-                Timber.d("Username: $username")
+                val role = appManager.userRole.firstOrNull() ?: ""
                 val email = appManager.userEmail.firstOrNull() ?: ""
                 val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
                 val isAppPushNotificationsEnabled =
@@ -111,6 +110,7 @@ class SettingsViewModel @Inject constructor(
                         fullName = fullName,
                         username = username,
                         email = email,
+                        role = role,
                         isPushNotificationsEnabled = isPushNotificationsEnabled,
                         isAppPushNotificationsEnabled = isAppPushNotificationsEnabled,
                     )
@@ -170,6 +170,10 @@ class SettingsViewModel @Inject constructor(
 
                                 SettingChangeValueEnum.EMAIL -> {
                                     _uiEvent.send(SettingUiEvent.NavigateToChangeEmail)
+                                }
+
+                                SettingChangeValueEnum.ROLE -> {
+                                    _uiEvent.send(SettingUiEvent.NavigateToChangeRole)
                                 }
 
                                 SettingChangeValueEnum.NONE -> {

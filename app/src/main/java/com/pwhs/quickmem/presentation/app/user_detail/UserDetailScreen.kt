@@ -40,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -133,6 +134,7 @@ fun UserDetailScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         isOwner = uiState.isOwner,
+        role = uiState.role,
         userName = uiState.userName,
         avatarUrl = uiState.avatarUrl,
         studySets = uiState.studySets,
@@ -188,6 +190,7 @@ private fun UserDetail(
     isLoading: Boolean = false,
     isOwner: Boolean = false,
     userName: String = "",
+    role: String = "",
     avatarUrl: String = "",
     studySets: List<GetStudySetResponseModel> = emptyList(),
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
@@ -258,9 +261,20 @@ private fun UserDetail(
 
                 Text(
                     text = userName,
-                    style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(top = 8.dp)
+                    style = typography.titleMedium.copy(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
+                if (role == "TEACHER") {
+                    Text(
+                        text = "Teacher",
+                        style = typography.bodySmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                    )
+                }
 
 
                 TabRow(
@@ -336,7 +350,8 @@ private fun UserDetailPreview() {
         UserDetail(
             userName = "John Doe",
             avatarUrl = "https://example.com/avatar.jpg",
-            onBackClick = {}
+            onBackClick = {},
+            role = "TEACHER"
         )
     }
 }

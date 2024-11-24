@@ -5,6 +5,8 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordResponseModel
+import com.pwhs.quickmem.domain.model.auth.ChangeRoleRequestModel
+import com.pwhs.quickmem.domain.model.auth.ChangeRoleResponseModel
 import com.pwhs.quickmem.domain.model.auth.GetUserProfileResponseModel
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 import com.pwhs.quickmem.domain.model.auth.OtpResponseModel
@@ -102,4 +104,10 @@ interface AuthRepository {
         token: String,
         userId: String
     ): Flow<Resources<GetUserProfileResponseModel>>
+
+    suspend fun changeRole(
+        token: String,
+        changeRoleRequestModel: ChangeRoleRequestModel
+    ): Flow<Resources<ChangeRoleResponseModel>>
+
 }

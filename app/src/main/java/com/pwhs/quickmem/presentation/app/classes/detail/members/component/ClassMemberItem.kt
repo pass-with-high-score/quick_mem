@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.members.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,8 +14,9 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.users.ClassMemberModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.upperCaseFirstLetter
 
 @Composable
 fun ClassMemberItem(
@@ -57,7 +58,7 @@ fun ClassMemberItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -78,31 +79,45 @@ fun ClassMemberItem(
                             .size(30.dp)
                             .clip(CircleShape)
                     )
-                    Text(
-                        classMemberModel.username,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                    )
+
+                    Column {
+                        Text(
+                            text = classMemberModel.username,
+                            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = classMemberModel.role.lowercase().upperCaseFirstLetter(),
+                            style = typography.bodySmall.copy(color = colorScheme.onSurfaceVariant),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
+
                 if (classMemberModel.isOwner) {
                     Text(
                         text = "Owner",
-                        style = MaterialTheme.typography.bodySmall.copy(
+                        style = typography.bodySmall.copy(
                             color = colorScheme.primary
                         ),
                     )
                 }
 
                 if (canDelete && !classMemberModel.isOwner) {
-                    Icon(
-                        imageVector = Icons.Rounded.Clear,
-                        contentDescription = "delete",
-                        modifier = Modifier.size(24.dp)
-                            .clickable {
-                                onDeleteClicked(classMemberModel.id)
-                            }
-                    )
+                    IconButton(
+                        onClick = {
+                            onDeleteClicked(classMemberModel.id)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "delete",
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                    }
                 }
             }
         }
@@ -125,7 +140,7 @@ private fun ClassMemberItemPreview() {
                             username = "username",
                             avatarUrl = "",
                             isOwner = true,
-                            role = "student",
+                            role = "TEACHER",
                         ),
                         canDelete = false
                     )
@@ -138,7 +153,7 @@ private fun ClassMemberItemPreview() {
                             username = "username",
                             avatarUrl = "",
                             isOwner = false,
-                            role = "student",
+                            role = "STUDENT",
                         ),
                         canDelete = true
                     )

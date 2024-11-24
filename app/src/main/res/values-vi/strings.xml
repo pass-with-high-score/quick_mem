@@ -249,4 +249,9 @@
     <string name="txt_viewall">Xem tất cả</string>
     <string name="txt_day_streak">day streak</string>
     <string name="txt_days_streak">days streak</string>
+    <string name="txt_role">Loại tài khoản</string>
+    <string name="dialog_title_not_eligible">Không đủ điều kiện</string>
+    <string name="dialog_message_underage">Bạn phải ít nhất 20 tuổi để thay đổi vai trò. Vui lòng quay lại vào ngày %1$s.</string>
+    <string name="txt_role_updated_success">Đã cập nhật vai trò thành công!</string>
+    <string name="txt_teacher">Giáo viên</string>
 </resources>
