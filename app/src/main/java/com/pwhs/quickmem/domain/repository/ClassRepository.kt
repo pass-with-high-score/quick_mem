@@ -11,6 +11,7 @@ import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
+import com.pwhs.quickmem.domain.model.classes.SaveRecentAccessClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import kotlinx.coroutines.flow.Flow
@@ -80,4 +81,14 @@ interface ClassRepository {
         token: String,
         deleteFolderRequestModel: DeleteFolderRequestModel
     ):Flow<Resources<Unit>>
+
+    suspend fun saveRecentAccessClass(
+        token: String,
+        saveRecentAccessClassRequestModel: SaveRecentAccessClassRequestModel
+    ): Flow<Resources<Unit>>
+
+    suspend fun getRecentAccessClass(
+        token: String,
+        userId: String
+    ): Flow<Resources<List<GetClassByOwnerResponseModel>>>
 }

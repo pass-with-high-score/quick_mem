@@ -11,6 +11,7 @@ import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
+import com.pwhs.quickmem.domain.model.classes.SaveRecentAccessClassRequestModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -157,6 +158,7 @@ class ClassDetailViewModel @Inject constructor(
                         } ?: run {
                             _uiEvent.send(ClassDetailUiEvent.ShowError("Class not found"))
                         }
+                        saveRecentAccessClass()
                     }
                 }
             }
@@ -387,6 +389,32 @@ class ClassDetailViewModel @Inject constructor(
                         }
                 }
             }
+        }
+    }
+
+    private fun saveRecentAccessClass() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            val saveRecentAccessClassRequestModel =
+                SaveRecentAccessClassRequestModel(userId, classId)
+            classRepository.saveRecentAccessClass(token, saveRecentAccessClassRequestModel)
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                        }
+
+                        is Resources.Success -> {
+                            Timber.d("Success")
+                        }
+
+                        is Resources.Error -> {
+                            Timber.d("Error")
+                        }
+                    }
+                }
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.folder.SaveRecentAccessFolderRequestModel
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -45,18 +46,18 @@ class FolderDetailViewModel @Inject constructor(
             }
 
             FolderDetailUiAction.DeleteFolder -> {
-                if (_uiState.value.isOwner){
+                if (_uiState.value.isOwner) {
                     _uiState.update { it.copy(isLoading = true) }
                     deleteFolder()
-                }else{
+                } else {
                     _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't delete this folder"))
                 }
             }
 
             FolderDetailUiAction.EditFolder -> {
-                if (_uiState.value.isOwner){
+                if (_uiState.value.isOwner) {
                     _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
-                }else{
+                } else {
                     _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't edit this folder"))
                 }
             }
@@ -93,6 +94,7 @@ class FolderDetailViewModel @Inject constructor(
                         } ?: run {
                             _uiEvent.send(FolderDetailUiEvent.ShowError("Folder not found"))
                         }
+                        saveRecentAccessFolder()
                     }
 
                     is Resources.Error -> {
@@ -133,6 +135,34 @@ class FolderDetailViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun saveRecentAccessFolder() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val folderId = _uiState.value.id
+            val saveRecentAccessFolderRequestModel = SaveRecentAccessFolderRequestModel(
+                userId = userId,
+                folderId = folderId
+            )
+            folderRepository.saveRecentAccessFolder(token, saveRecentAccessFolderRequestModel)
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                        }
+
+                        is Resources.Success -> {
+                            Timber.d("Recent access folder saved")
+                        }
+
+                        is Resources.Error -> {
+                            Timber.e(resource.message)
+                        }
+                    }
+                }
         }
     }
 }

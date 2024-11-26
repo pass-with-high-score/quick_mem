@@ -7,6 +7,7 @@ import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.study_set.SaveRecentAccessStudySetRequestModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.util.toColor
@@ -111,6 +112,7 @@ class StudySetDetailViewModel @Inject constructor(
                                 isOwner = isOwner,
                             )
                         }
+                        saveRecentAccessStudySet()
                     }
 
                     is Resources.Error -> {
@@ -118,8 +120,35 @@ class StudySetDetailViewModel @Inject constructor(
                         _uiState.update { it.copy(isLoading = false) }
                     }
                 }
-
             }
+        }
+    }
+
+    private fun saveRecentAccessStudySet() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val studySetId = _uiState.value.id
+            val saveRecentAccessStudySetRequestModel = SaveRecentAccessStudySetRequestModel(
+                userId = userId,
+                studySetId = studySetId
+            )
+            studySetRepository.saveRecentAccessStudySet(token, saveRecentAccessStudySetRequestModel)
+                .collect { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                        }
+
+                        is Resources.Success -> {
+                            Timber.d("Success")
+                        }
+
+                        is Resources.Error -> {
+                            Timber.d("Error")
+                        }
+                    }
+                }
         }
     }
 
