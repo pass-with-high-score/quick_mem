@@ -94,8 +94,12 @@ import com.pwhs.quickmem.ui.theme.streakTextColor
 import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination.invoke
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchStudySetBySubjectScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
@@ -134,6 +138,24 @@ fun HomeScreen(
         onStudySetClick = {
             navigator.navigate(
                 StudySetDetailScreenDestination(
+                    id = it.id,
+                    code = ""
+                )
+            )
+        },
+        onClassClicked = {
+            navigator.navigate(
+                ClassDetailScreenDestination(
+                    id = it.id,
+                    code = it.joinToken ?: "",
+                    title = it.title,
+                    description = it.description
+                )
+            )
+        },
+        onFolderClick = {
+            navigator.navigate(
+                FolderDetailScreenDestination(
                     id = it.id,
                     code = ""
                 )
