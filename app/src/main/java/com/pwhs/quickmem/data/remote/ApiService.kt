@@ -57,6 +57,7 @@ import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.dto.auth.GetUserProfileResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.TrueFalseStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
+import com.pwhs.quickmem.data.dto.streak.GetTopStreakResponseDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
@@ -496,6 +497,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body increaseStreakDto: IncreaseStreakDto
     ): StreakDto
+
+    @GET("streak/top")
+    suspend fun getTopStreaks(
+        @Header("Authorization") token: String,
+        @Query("limit") limit: Int?
+    ): List<GetTopStreakResponseDto>
 
     // Notification
     @POST("notifications/register")
