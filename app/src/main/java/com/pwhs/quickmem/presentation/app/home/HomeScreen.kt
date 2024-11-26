@@ -77,12 +77,15 @@ import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.presentation.app.home.components.ClassHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.FolderHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.home.components.StudySetHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.SubjectItem
 import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
+import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
+import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
@@ -445,7 +448,6 @@ private fun Home(
                     }
                 }
                 if (studySets.isNotEmpty()) {
-                    // Row study sets
                     item {
                         Text(
                             text = "Study sets",
@@ -458,20 +460,33 @@ private fun Home(
                         )
                     }
 
-                    item {
-                        LazyRow {
-                            items(studySets) { studySet ->
-                                StudySetHomeItem(
-                                    studySet = studySet,
-                                    onStudySetClick = { onStudySetClick(studySet) }
-                                )
+                    if (studySets.size == 1) {
+                        item {
+                            Column {
+                                studySets.forEach { studySet ->
+                                    StudySetItem(
+                                        studySet = studySet,
+                                        onStudySetClick = { onStudySetClick(studySet) }
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        item {
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                items(studySets) { studySet ->
+                                    StudySetHomeItem(
+                                        studySet = studySet,
+                                        onStudySetClick = { onStudySetClick(studySet) }
+                                    )
+                                }
                             }
                         }
                     }
                 }
+
                 if (folders.isNotEmpty()) {
                     item {
-                        // Row folders
                         Text(
                             text = "Folders",
                             style = typography.titleLarge.copy(
@@ -483,22 +498,37 @@ private fun Home(
                         )
                     }
 
-                    item {
-                        LazyRow {
-                            items(folders) { folder ->
-                                FolderHomeItem(
-                                    title = folder.title,
-                                    numOfStudySets = folder.studySetCount,
-                                    onClick = { onFolderClick(folder) },
-                                    userResponseModel = folder.owner,
-                                )
+                    if (folders.size == 1) {
+                        item {
+                            Column {
+                                folders.forEach { folder ->
+                                    FolderItem(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        title = folder.title,
+                                        numOfStudySets = folder.studySetCount,
+                                        onClick = { onFolderClick(folder) },
+                                        userResponseModel = folder.owner,
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        item {
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                items(folders) { folder ->
+                                    FolderHomeItem(
+                                        title = folder.title,
+                                        numOfStudySets = folder.studySetCount,
+                                        onClick = { onFolderClick(folder) },
+                                        userResponseModel = folder.owner,
+                                    )
+                                }
                             }
                         }
                     }
                 }
 
                 if (classes.isNotEmpty()) {
-                    // Row classes
                     item {
                         Text(
                             text = "Classes",
@@ -511,13 +541,27 @@ private fun Home(
                         )
                     }
 
-                    item {
-                        LazyRow {
-                            items(classes) { classItem ->
-                                ClassItem(
-                                    classItem = classItem,
-                                    onClick = { onClassClicked(classItem) }
-                                )
+                    if (classes.size == 1) {
+                        item {
+                            Column {
+                                classes.forEach { classItem ->
+                                    ClassItem(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        classItem = classItem,
+                                        onClick = { onClassClicked(classItem) }
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        item {
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                items(classes) { classItem ->
+                                    ClassHomeItem(
+                                        classItem = classItem,
+                                        onClick = { onClassClicked(classItem) }
+                                    )
+                                }
                             }
                         }
                     }

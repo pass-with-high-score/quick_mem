@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.pwhs.quickmem.core.utils.Resources
-import com.pwhs.quickmem.data.dto.classes.DeleteStudySetsRequestDto
 import com.pwhs.quickmem.data.mapper.classes.toDto
 import com.pwhs.quickmem.data.mapper.classes.toModel
 import com.pwhs.quickmem.data.paging.ClassPagingSource
@@ -19,6 +18,7 @@ import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
+import com.pwhs.quickmem.domain.model.classes.SaveRecentAccessClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
@@ -241,6 +241,38 @@ class ClassRepositoryImpl @Inject constructor(
             try {
                 apiService.deleteFolderInClass(token, deleteFolderRequestModel.toDto())
                 emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun saveRecentAccessClass(
+        token: String,
+        saveRecentAccessClassRequestModel: SaveRecentAccessClassRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.saveRecentClass(token, saveRecentAccessClassRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getRecentAccessClass(
+        token: String,
+        userId: String
+    ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getRecentClass(token, userId)
+                emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

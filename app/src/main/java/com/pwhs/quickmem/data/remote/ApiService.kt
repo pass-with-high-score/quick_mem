@@ -36,6 +36,7 @@ import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
 import com.pwhs.quickmem.data.dto.classes.JoinClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.RemoveMembersRequestDto
+import com.pwhs.quickmem.data.dto.classes.SaveRecentAccessClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.UpdateClassResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
@@ -509,6 +510,18 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body deleteFolderRequestDto: DeleteFolderRequestDto
     )
+
+    @POST("class/recent")
+    suspend fun saveRecentClass(
+        @Header("Authorization") token: String,
+        @Body saveRecentAccessClassRequestDto: SaveRecentAccessClassRequestDto
+    )
+
+    @GET("class/recent/{userId}")
+    suspend fun getRecentClass(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): List<GetClassByOwnerResponseDto>
 
     // Streak
     @GET("streak/{userId}")

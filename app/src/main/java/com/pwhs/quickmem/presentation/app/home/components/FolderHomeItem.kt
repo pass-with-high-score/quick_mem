@@ -48,6 +48,7 @@ fun FolderHomeItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .padding(vertical = 8.dp)
             .padding(start = 16.dp)
             .width(width = 290.dp),
         onClick = onClick,

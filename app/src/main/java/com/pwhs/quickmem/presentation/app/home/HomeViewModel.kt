@@ -61,6 +61,7 @@ class HomeViewModel @Inject constructor(
             getTop5Subjects()
             getRecentAccessStudySets()
             getRecentAccessFolders()
+            getRecentAccessClasses()
         }
     }
 
@@ -97,6 +98,7 @@ class HomeViewModel @Inject constructor(
                     delay(500)
                     getRecentAccessStudySets()
                     getRecentAccessFolders()
+                    getRecentAccessClasses()
                 }
             }
         }
@@ -324,6 +326,31 @@ class HomeViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             folders = resource.data ?: emptyList()
+                        )
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getRecentAccessClasses() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            classRepository.getRecentAccessClass(token, userId).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            classes = resource.data ?: emptyList()
                         )
                     }
 
