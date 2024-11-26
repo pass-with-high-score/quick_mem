@@ -290,7 +290,13 @@ fun StudySetDetailScreen(
         },
         onNavigateToWrite = {
             navigator.navigate(
-                LearnByWriteScreenDestination
+                LearnByWriteScreenDestination(
+                    studySetId = uiState.id,
+                    studySetTitle = uiState.title,
+                    studySetDescription = uiState.description,
+                    studySetColorId = uiState.colorModel.id,
+                    studySetSubjectId = uiState.subject.id,
+                )
             )
         },
         onNavigateToFlip = {

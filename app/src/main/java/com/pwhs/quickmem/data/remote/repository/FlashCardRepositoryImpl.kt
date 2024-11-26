@@ -7,6 +7,7 @@ import com.pwhs.quickmem.data.dto.flashcard.QuizStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.TrueFalseStatusFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.WriteStatusFlashCardDto
 import com.pwhs.quickmem.data.mapper.flashcard.toDto
 import com.pwhs.quickmem.data.mapper.flashcard.toModel
 import com.pwhs.quickmem.data.remote.ApiService
@@ -202,6 +203,30 @@ class FlashCardRepositoryImpl @Inject constructor(
                     trueFalseStatusDto = TrueFalseStatusFlashCardDto(trueFalseStatus)
                 )
                 Timber.d("updateTrueFalseStatus: $response")
+                emit(Resources.Success(response.toModel()))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateWriteStatus(
+        token: String,
+        id: String,
+        writeStatus: String
+    ): Flow<Resources<UpdateFlashCardResponseModel>> {
+        return flow {
+            try {
+                val response = apiService.updateWriteStatus(
+                    token = token,
+                    id = id,
+                    writeStatusDto = WriteStatusFlashCardDto(writeStatus)
+                )
+                Timber.d("updateWriteStatus: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)

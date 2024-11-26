@@ -36,7 +36,6 @@ class LearnByTrueFalseViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-
     private val _uiState = MutableStateFlow(LearnByTrueFalseUiState())
     val uiState = _uiState.asStateFlow()
 
