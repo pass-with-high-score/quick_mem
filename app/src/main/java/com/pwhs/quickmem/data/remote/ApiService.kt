@@ -58,8 +58,6 @@ import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
 import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
 import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
-import com.pwhs.quickmem.data.dto.auth.GetUserProfileResponseDto
-import com.pwhs.quickmem.data.dto.flashcard.TrueFalseStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.WriteStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
