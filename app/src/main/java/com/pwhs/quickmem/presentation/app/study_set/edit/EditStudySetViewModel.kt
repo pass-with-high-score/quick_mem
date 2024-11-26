@@ -9,7 +9,6 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
-import com.pwhs.quickmem.domain.repository.StudySetLocalRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -25,7 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class EditStudySetViewModel @Inject constructor(
     private val studySetRepository: StudySetRepository,
-    private val studySetLocalRepository: StudySetLocalRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     savedStateHandle: SavedStateHandle
@@ -132,15 +130,6 @@ class EditStudySetViewModel @Inject constructor(
                             it.copy(isLoading = false)
                         }
                         _uiEvent.send(EditStudySetUiEvent.StudySetEdited)
-
-                        studySetLocalRepository.updateStudySet(
-                            id = uiState.value.id,
-                            title = uiState.value.title,
-                            description = uiState.value.description,
-                            colorHex = uiState.value.colorModel.hexValue,
-                            subjectName = uiState.value.subjectModel.name,
-                            isPublic = uiState.value.isPublic
-                        )
                     }
 
                     is Resources.Error -> {

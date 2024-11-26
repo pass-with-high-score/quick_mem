@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.pwhs.quickmem.data.local.AppDatabase
 import com.pwhs.quickmem.data.local.dao.SearchQueryDao
-import com.pwhs.quickmem.data.local.dao.StudySetDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,10 +25,5 @@ object DatabaseModule {
     @Provides
     fun provideSearchDao(database: AppDatabase): SearchQueryDao {
         return database.searchQueryDao()
-    }
-
-    @Provides
-    fun provideStudySetDao(database: AppDatabase): StudySetDao {
-        return database.studySetDao()
     }
 }

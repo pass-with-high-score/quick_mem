@@ -1,11 +1,11 @@
 package com.pwhs.quickmem.data.remote
 
-import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 import com.pwhs.quickmem.data.dto.auth.AuthResponseDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordRequestDto
 import com.pwhs.quickmem.data.dto.auth.ChangePasswordResponseDto
 import com.pwhs.quickmem.data.dto.auth.ChangeRoleRequestDto
 import com.pwhs.quickmem.data.dto.auth.ChangeRoleResponseDto
+import com.pwhs.quickmem.data.dto.auth.GetUserProfileResponseDto
 import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.data.dto.auth.OtpResponseDto
 import com.pwhs.quickmem.data.dto.auth.ResendEmailRequestDto
@@ -45,6 +45,7 @@ import com.pwhs.quickmem.data.dto.flashcard.FlipFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.QuizStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.RatingFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.ToggleStarredFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.TrueFalseStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.flashcard.UpdateFlashCardResponseDto
 import com.pwhs.quickmem.data.dto.folder.AddFolderToClassRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
@@ -55,8 +56,6 @@ import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
 import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
 import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
-import com.pwhs.quickmem.data.dto.auth.GetUserProfileResponseDto
-import com.pwhs.quickmem.data.dto.flashcard.TrueFalseStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
 import com.pwhs.quickmem.data.dto.streak.StreakDto
@@ -67,6 +66,7 @@ import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
+import com.pwhs.quickmem.data.dto.study_set.SaveRecentAccessStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.subject.GetTop5SubjectResponseDto
@@ -259,6 +259,18 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("code") code: String
     ): GetStudySetResponseDto
+
+    @POST("study-set/recent")
+    suspend fun saveRecentStudySet(
+        @Header("Authorization") token: String,
+        @Body saveRecentAccessStudySetRequestDto: SaveRecentAccessStudySetRequestDto
+    )
+
+    @GET("study-set/recent/{userId}")
+    suspend fun getRecentStudySet(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): List<GetStudySetResponseDto>
 
     // subject
     @GET("study-set/top-subject")

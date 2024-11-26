@@ -75,7 +75,7 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
-import com.pwhs.quickmem.domain.model.study_set.StudySetModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.app.home.components.FolderHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
@@ -119,6 +119,7 @@ fun HomeScreen(
         }
     }
     Home(
+        isLoading = uiState.isLoading,
         modifier = modifier,
         subjects = uiState.subjects,
         studySets = uiState.studySets,
@@ -175,11 +176,11 @@ private fun Home(
     isLoading: Boolean = false,
     onHomeRefresh: () -> Unit = {},
     subjects: List<SubjectModel> = emptyList(),
-    studySets: List<StudySetModel> = emptyList(),
+    studySets: List<GetStudySetResponseModel> = emptyList(),
     folders: List<GetFolderResponseModel> = emptyList(),
     classes: List<GetClassByOwnerResponseModel> = emptyList(),
     onClassClicked: (GetClassByOwnerResponseModel) -> Unit = {},
-    onStudySetClick: (StudySetModel) -> Unit = {},
+    onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
     onFolderClick: (GetFolderResponseModel) -> Unit = {},
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),

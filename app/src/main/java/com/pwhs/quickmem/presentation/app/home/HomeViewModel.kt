@@ -13,7 +13,6 @@ import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
-import com.pwhs.quickmem.domain.repository.StudySetLocalRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
@@ -37,7 +36,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val streakRepository: StreakRepository,
     private val studySetRepository: StudySetRepository,
-    private val studySetLocalRepository: StudySetLocalRepository,
     private val folderRepository: FolderRepository,
     private val classRepository: ClassRepository,
     private val authRepository: AuthRepository,
@@ -61,7 +59,7 @@ class HomeViewModel @Inject constructor(
             getCustomerInfo()
             loadNotifications()
             getTop5Subjects()
-            loadStudySets()
+            getRecentAccessStudySets()
         }
     }
 
@@ -96,7 +94,7 @@ class HomeViewModel @Inject constructor(
             HomeUiAction.RefreshHome -> {
                 viewModelScope.launch {
                     delay(500)
-                    loadStudySets()
+                    getRecentAccessStudySets()
                 }
             }
         }
@@ -285,21 +283,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun loadStudySets() {
+    private fun getRecentAccessStudySets() {
         viewModelScope.launch {
-            try {
-                val studySets = studySetLocalRepository.getStudySet()
-                Timber.d("Loaded study sets: $studySets")
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        studySets = studySets
-                    )
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            studySetRepository.getRecentAccessStudySet(token,userId).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            studySets = resource.data ?: emptyList()
+                        )
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
                 }
-            } catch (e: Exception) {
-                Timber.e(e)
             }
         }
     }
-
 }

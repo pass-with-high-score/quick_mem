@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -32,18 +33,20 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
-import com.pwhs.quickmem.domain.model.study_set.StudySetModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.domain.model.users.UserResponseModel
+import com.pwhs.quickmem.presentation.component.RoleUserText
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 
 @Composable
 fun StudySetHomeItem(
     modifier: Modifier = Modifier,
-    studySet: StudySetModel?,
+    studySet: GetStudySetResponseModel?,
     onStudySetClick: (String) -> Unit = {},
 ) {
-    val borderColor = studySet?.colorHex?.toColor()
+    val borderColor = studySet?.color?.hexValue?.toColor()
         ?: ColorModel.defaultColors[0].hexValue.toColor()
 
     val titleColor = borderColor.copy(alpha = 0.8f)
@@ -90,7 +93,7 @@ fun StudySetHomeItem(
                     }
                 )
                 Text(
-                    text = studySet?.subjectName ?: SubjectModel.defaultSubjects[0].name,
+                    text = studySet?.subject?.name ?: SubjectModel.defaultSubjects[0].name,
                     style = typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
@@ -101,17 +104,20 @@ fun StudySetHomeItem(
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
                     AsyncImage(
-                        model = studySet?.ownerAvatarUrl,
+                        model = studySet?.owner?.avatarUrl,
                         contentDescription = stringResource(R.string.txt_user_avatar),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(18.dp)
                             .clip(CircleShape)
                     )
-                    Text(
-                        text = studySet?.ownerUsername.orEmpty(),
-                        style = typography.bodySmall
-                    )
+
+                    if (studySet != null) {
+                        RoleUserText(
+                            username = studySet.owner.username,
+                            role = studySet.owner.role,
+                        )
+                    }
                 }
             }
         }
@@ -130,17 +136,24 @@ private fun StudySetItemPreview() {
             ) {
                 items(2) {
                     StudySetHomeItem(
-                        studySet = StudySetModel(
+                        modifier = Modifier.fillMaxWidth(),
+                        studySet = GetStudySetResponseModel(
                             id = "1",
                             title = "Study Set Title",
-                            description = "Study Set Description",
                             flashcardCount = 10,
-                            colorHex = "#FF0000",
-                            subjectName = "Subject Name",
-                            ownerId = "1",
-                            ownerUsername = "Owner Username",
-                            ownerAvatarUrl = "https://example.com/avatar.jpg",
-                            isPublic = true
+                            color = ColorModel.defaultColors[0],
+                            subject = SubjectModel.defaultSubjects[0],
+                            owner = UserResponseModel(
+                                id = "1",
+                                username = "User",
+                                avatarUrl = "https://www.example.com/avatar.jpg"
+                            ),
+                            description = "Study Set Description",
+                            isPublic = true,
+                            createdAt = "2021-01-01T00:00:00Z",
+                            updatedAt = "2021-01-01T00:00:00Z",
+                            flashcards = emptyList(),
+                            isAIGenerated = false
                         ),
                     )
                 }
