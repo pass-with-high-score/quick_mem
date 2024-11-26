@@ -46,8 +46,8 @@ fun ClassHomeItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .padding(end = 16.dp)
             .padding(vertical = 8.dp)
-            .padding(start = 16.dp)
             .width(width = 290.dp),
         onClick = onClick,
         border = BorderStroke(

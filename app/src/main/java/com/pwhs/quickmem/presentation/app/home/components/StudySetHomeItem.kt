@@ -56,7 +56,7 @@ fun StudySetHomeItem(
         colors = cardColors(containerColor = Color.White),
         modifier = modifier
             .padding(vertical = 8.dp)
-            .padding(start = 16.dp)
+            .padding(end = 16.dp)
             .width(width = 290.dp),
         elevation = elevatedCardElevation(defaultElevation = 4.dp),
         border = BorderStroke(width = 1.dp, color = borderColor)

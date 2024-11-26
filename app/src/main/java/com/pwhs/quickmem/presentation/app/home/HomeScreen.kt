@@ -83,10 +83,8 @@ import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottom
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.home.components.StudySetHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.SubjectItem
-import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
-import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
-import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -95,15 +93,11 @@ import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchStudySetBySubjectScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
 import java.time.LocalDate
@@ -269,21 +263,21 @@ private fun Home(
                             fontFamily = firasansExtraboldFont,
                             color = when (customer?.activeSubscriptions?.isNotEmpty()) {
                                 true -> premiumColor
-                                false -> colorScheme.primary
+                                false -> Color.White
                                 null -> colorScheme.secondary
                             }
                         ),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 },
-                expandedHeight = 140.dp,
+                expandedHeight = 180.dp,
                 collapsedHeight = 56.dp,
                 title = {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp)
-                            .padding(end = 16.dp, bottom = 8.dp),
+                            .height(70.dp)
+                            .padding(end = 16.dp, bottom = 20.dp),
                         shape = CircleShape,
                         onClick = onNavigateToSearch,
                         colors = CardDefaults.cardColors(
@@ -368,7 +362,7 @@ private fun Home(
                 }
             )
         },
-        floatingActionButtonPosition = FabPosition.Start,
+        floatingActionButtonPosition = FabPosition.End,
         bottomBar = {
             Spacer(modifier = Modifier.height(100.dp))
         },
@@ -404,7 +398,7 @@ private fun Home(
         }
     ) { innerPadding ->
         PullToRefreshBox(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             state = refreshState,
             isRefreshing = isLoading,
             onRefresh = {
@@ -414,24 +408,23 @@ private fun Home(
             LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .padding(vertical = 16.dp)
+                    .padding(horizontal = 16.dp)
             ) {
                 if (studySets.isEmpty() && classes.isEmpty()) {
                     item {
                         Text(
                             text = "Here's how to get started",
-                            style = typography.titleLarge.copy(
+                            style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                            modifier = Modifier.padding(top = 16.dp)
                         )
                         Card(
                             modifier = modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                                .padding(horizontal = 16.dp),
+                                .padding(vertical = 8.dp),
                             onClick = onClickToCreateStudySet,
                             colors = CardDefaults.cardColors(
                                 containerColor = Color.White,
@@ -473,35 +466,24 @@ private fun Home(
                     item {
                         Text(
                             text = "Study sets",
-                            style = typography.titleLarge.copy(
+                            style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 16.dp)
                         )
                     }
 
-                    if (studySets.size == 1) {
-                        item {
-                            Column {
-                                studySets.forEach { studySet ->
-                                    StudySetItem(
-                                        studySet = studySet,
-                                        onStudySetClick = { onStudySetClick(studySet) }
-                                    )
-                                }
-                            }
-                        }
-                    } else {
-                        item {
-                            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                                items(studySets) { studySet ->
-                                    StudySetHomeItem(
-                                        studySet = studySet,
-                                        onStudySetClick = { onStudySetClick(studySet) }
-                                    )
-                                }
+                    item {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(studySets) { studySet ->
+                                StudySetHomeItem(
+                                    studySet = studySet,
+                                    onStudySetClick = { onStudySetClick(studySet) }
+                                )
                             }
                         }
                     }
@@ -511,40 +493,27 @@ private fun Home(
                     item {
                         Text(
                             text = "Folders",
-                            style = typography.titleLarge.copy(
+                            style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                            modifier = Modifier.padding(top = 16.dp)
                         )
                     }
 
-                    if (folders.size == 1) {
-                        item {
-                            Column {
-                                folders.forEach { folder ->
-                                    FolderItem(
-                                        modifier = Modifier.padding(horizontal = 16.dp),
-                                        title = folder.title,
-                                        numOfStudySets = folder.studySetCount,
-                                        onClick = { onFolderClick(folder) },
-                                        userResponseModel = folder.owner,
-                                    )
-                                }
-                            }
-                        }
-                    } else {
-                        item {
-                            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                                items(folders) { folder ->
-                                    FolderHomeItem(
-                                        title = folder.title,
-                                        numOfStudySets = folder.studySetCount,
-                                        onClick = { onFolderClick(folder) },
-                                        userResponseModel = folder.owner,
-                                    )
-                                }
+                    item {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(folders) { folder ->
+                                FolderHomeItem(
+                                    title = folder.title,
+                                    numOfStudySets = folder.studySetCount,
+                                    onClick = { onFolderClick(folder) },
+                                    userResponseModel = folder.owner,
+                                )
                             }
                         }
                     }
@@ -554,36 +523,25 @@ private fun Home(
                     item {
                         Text(
                             text = "Classes",
-                            style = typography.titleLarge.copy(
+                            style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                            modifier = Modifier.padding(top = 16.dp)
                         )
                     }
 
-                    if (classes.size == 1) {
-                        item {
-                            Column {
-                                classes.forEach { classItem ->
-                                    ClassItem(
-                                        modifier = Modifier.padding(horizontal = 16.dp),
-                                        classItem = classItem,
-                                        onClick = { onClassClicked(classItem) }
-                                    )
-                                }
-                            }
-                        }
-                    } else {
-                        item {
-                            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                                items(classes) { classItem ->
-                                    ClassHomeItem(
-                                        classItem = classItem,
-                                        onClick = { onClassClicked(classItem) }
-                                    )
-                                }
+                    item {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(classes) { classItem ->
+                                ClassHomeItem(
+                                    classItem = classItem,
+                                    onClick = { onClassClicked(classItem) }
+                                )
                             }
                         }
                     }
@@ -592,12 +550,12 @@ private fun Home(
                 item {
                     Text(
                         text = "Top 5 subjects have study sets",
-                        style = typography.titleLarge.copy(
+                        style = typography.titleMedium.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold
                         ),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(start = 16.dp, top = 24.dp)
+                        modifier = Modifier.padding(top = 24.dp)
                     )
                 }
                 items(subjects, key = { it.id }) { subject ->
@@ -614,16 +572,8 @@ private fun Home(
             }
         }
 
+
     }
-    Paywall(
-        isPaywallVisible = isPaywallVisible,
-        onCustomerInfoChanged = { customerInfo ->
-            onCustomerInfoChanged(customerInfo)
-        },
-        onPaywallDismissed = {
-            isPaywallVisible = false
-        },
-    )
     if (showStreakBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -694,6 +644,7 @@ private fun Home(
             isPaywallVisible = false
         },
     )
+    LoadingOverlay(isLoading = isLoading)
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

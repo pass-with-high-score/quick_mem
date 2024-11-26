@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.home.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,30 +31,27 @@ fun SubjectItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .padding(horizontal = 16.dp),
+            .padding(vertical = 8.dp),
         onClick = { onSearchStudySetBySubject(subject.id) },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         )
     ) {
         Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                modifier = modifier
-                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-
-                ) {
+            ) {
                 Icon(
                     painter = painterResource(id = subject.iconRes!!),
                     contentDescription = subject.name,
                     tint = subject.color!!,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(35.dp)
                 )
 
                 Text(
@@ -67,8 +63,7 @@ fun SubjectItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .padding(start = 10.dp)
+                        .padding(horizontal = 8.dp)
                         .weight(1f)
                 )
 
@@ -93,8 +88,8 @@ fun SubjectItemPreview() {
     SubjectItem(
         onSearchStudySetBySubject = {},
         subject = SubjectModel(
-            1,
-            "All",
+            id = 1,
+            name = "All",
             iconRes = R.drawable.ic_all,
             color = Color(0xFF7f60f9),
             description = "Agriculture is the study of farming and cultivation of land."
