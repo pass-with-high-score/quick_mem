@@ -8,7 +8,6 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.streak.StreakModel
 import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
-import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
@@ -19,8 +18,9 @@ import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -38,7 +38,6 @@ class HomeViewModel @Inject constructor(
     private val studySetRepository: StudySetRepository,
     private val folderRepository: FolderRepository,
     private val classRepository: ClassRepository,
-    private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager
@@ -49,19 +48,35 @@ class HomeViewModel @Inject constructor(
     private val _uiEvent = Channel<HomeUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    private var job: Job? = null
 
     init {
         viewModelScope.launch {
             val userId = appManager.userId.firstOrNull() ?: ""
             _uiState.value = HomeUiState(userId = userId)
+            initData()
             updateStreak()
-            getStreaksByUserId()
-            getCustomerInfo()
-            loadNotifications()
-            getTop5Subjects()
-            getRecentAccessStudySets()
-            getRecentAccessFolders()
-            getRecentAccessClasses()
+        }
+    }
+
+    private fun initData() {
+        job?.cancel()
+        job = viewModelScope.launch {
+            val studySetsDeferred = async { getRecentAccessStudySets() }
+            val foldersDeferred = async { getRecentAccessFolders() }
+            val classesDeferred = async { getRecentAccessClasses() }
+            val top5SubjectsDeferred = async { getTop5Subjects() }
+            val streaksDeferred = async { getStreaksByUserId() }
+            val customerInfoDeferred = async { getCustomerInfo() }
+            val notificationsDeferred = async { loadNotifications() }
+
+            studySetsDeferred.await()
+            foldersDeferred.await()
+            classesDeferred.await()
+            top5SubjectsDeferred.await()
+            streaksDeferred.await()
+            customerInfoDeferred.await()
+            notificationsDeferred.await()
         }
     }
 
@@ -94,12 +109,7 @@ class HomeViewModel @Inject constructor(
             }
 
             HomeUiAction.RefreshHome -> {
-                viewModelScope.launch {
-                    delay(500)
-                    getRecentAccessStudySets()
-                    getRecentAccessFolders()
-                    getRecentAccessClasses()
-                }
+                initData()
             }
         }
     }
@@ -291,7 +301,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            studySetRepository.getRecentAccessStudySet(token,userId).collect { resource ->
+            studySetRepository.getRecentAccessStudySet(token, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
                         _uiState.value = _uiState.value.copy(isLoading = true)
