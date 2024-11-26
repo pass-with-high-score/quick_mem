@@ -422,7 +422,7 @@ private fun Home(
                             modifier = Modifier.padding(top = 16.dp)
                         )
                         Card(
-                            modifier = modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp),
                             onClick = onClickToCreateStudySet,
@@ -431,7 +431,7 @@ private fun Home(
                             )
                         ) {
                             Row(
-                                modifier = modifier
+                                modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(16.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
