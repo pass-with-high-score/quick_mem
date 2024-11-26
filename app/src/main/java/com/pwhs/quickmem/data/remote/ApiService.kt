@@ -51,6 +51,7 @@ import com.pwhs.quickmem.data.dto.folder.AddFolderToClassRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.CreateFolderResponseDto
 import com.pwhs.quickmem.data.dto.folder.GetFolderResponseDto
+import com.pwhs.quickmem.data.dto.folder.SaveRecentAccessFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
 import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
@@ -406,6 +407,18 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("code") code: String
     ): CreateFolderResponseDto
+
+    @POST("folder/recent")
+    suspend fun saveRecentFolder(
+        @Header("Authorization") token: String,
+        @Body saveRecentAccessFolderRequestDto: SaveRecentAccessFolderRequestDto
+    )
+
+    @GET("folder/recent/{userId}")
+    suspend fun getRecentFolder(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): List<GetFolderResponseDto>
 
     // Class
     @POST("class")

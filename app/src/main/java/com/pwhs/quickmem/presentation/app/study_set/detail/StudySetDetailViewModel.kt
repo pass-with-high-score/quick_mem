@@ -135,20 +135,20 @@ class StudySetDetailViewModel @Inject constructor(
             )
             studySetRepository.saveRecentAccessStudySet(token, saveRecentAccessStudySetRequestModel)
                 .collect { resource ->
-                when (resource) {
-                    is Resources.Loading -> {
-                        Timber.d("Loading")
-                    }
+                    when (resource) {
+                        is Resources.Loading -> {
+                            Timber.d("Loading")
+                        }
 
-                    is Resources.Success -> {
-                        Timber.d("Success")
-                    }
+                        is Resources.Success -> {
+                            Timber.d("Success")
+                        }
 
-                    is Resources.Error -> {
-                        Timber.d("Error")
+                        is Resources.Error -> {
+                            Timber.d("Error")
+                        }
                     }
                 }
-            }
         }
     }
 
