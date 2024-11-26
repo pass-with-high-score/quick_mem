@@ -56,6 +56,7 @@ import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
 import com.pwhs.quickmem.data.dto.auth.GetUserProfileResponseDto
 import com.pwhs.quickmem.data.dto.flashcard.TrueFalseStatusFlashCardDto
+import com.pwhs.quickmem.data.dto.flashcard.WriteStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.GetTopStreakResponseDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
@@ -340,6 +341,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body trueFalseStatusDto: TrueFalseStatusFlashCardDto
+    ): UpdateFlashCardResponseDto
+
+    @PATCH("flashcard/{id}/write-status")
+    suspend fun updateWriteStatus(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body writeStatusDto: WriteStatusFlashCardDto
     ): UpdateFlashCardResponseDto
 
     // Folder

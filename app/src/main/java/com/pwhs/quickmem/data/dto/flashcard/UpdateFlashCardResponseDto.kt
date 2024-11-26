@@ -5,6 +5,7 @@ import com.pwhs.quickmem.core.data.enums.FlipCardStatus
 import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.enums.Rating
 import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
+import com.pwhs.quickmem.core.data.enums.WriteStatus
 
 data class UpdateFlashCardResponseDto(
     @SerializedName("id")
@@ -20,5 +21,7 @@ data class UpdateFlashCardResponseDto(
     @SerializedName("quizStatus")
     val quizStatus: String? = QuizStatus.NONE.name,
     @SerializedName("trueFalseStatus")
-    val trueFalseStatus: TrueFalseStatus? = TrueFalseStatus.NONE
+    val trueFalseStatus: TrueFalseStatus? = TrueFalseStatus.NONE,
+    @SerializedName("writeStatus")
+    val writeStatus: WriteStatus? = WriteStatus.NONE,
 )
