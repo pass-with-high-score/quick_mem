@@ -17,4 +17,5 @@ sealed class FlipFlashCardUiAction {
     data class OnUpdateCardIndex(val index: Int) : FlipFlashCardUiAction()
     data object OnRestartClicked : FlipFlashCardUiAction()
     data object OnContinueLearningClicked : FlipFlashCardUiAction()
+    data object OnBackClicked : FlipFlashCardUiAction()
 }

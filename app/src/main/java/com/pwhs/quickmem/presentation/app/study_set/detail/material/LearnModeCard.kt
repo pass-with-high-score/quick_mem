@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -31,7 +30,9 @@ fun LearnModeCard(
     modifier: Modifier = Modifier,
     title: String = "",
     @DrawableRes icon: Int,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    color: Color = colorScheme.primary,
+    learningPercentage: Int = 0
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -60,7 +61,7 @@ fun LearnModeCard(
                 modifier = Modifier
                     .size(30.dp),
                 contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(colorScheme.primary)
+                colorFilter = ColorFilter.tint(color)
             )
             Text(
                 text = title,
@@ -68,6 +69,14 @@ fun LearnModeCard(
                     color = colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 ),
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = "$learningPercentage%",
+                style = typography.bodyMedium.copy(
+                    color = colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
     }

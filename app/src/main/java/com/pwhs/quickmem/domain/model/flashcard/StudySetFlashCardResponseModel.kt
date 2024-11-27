@@ -1,7 +1,10 @@
 package com.pwhs.quickmem.domain.model.flashcard
 
 import com.pwhs.quickmem.core.data.enums.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.enums.Rating
+import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
+import com.pwhs.quickmem.core.data.enums.WriteStatus
 
 data class StudySetFlashCardResponseModel(
     val id: String,
@@ -12,6 +15,9 @@ data class StudySetFlashCardResponseModel(
     val explanation: String? = null,
     val rating: String = Rating.NOT_STUDIED.name,
     val flipStatus: String = FlipCardStatus.NONE.name,
+    val quizStatus: String = QuizStatus.NONE.status,
+    val trueFalseStatus: String = TrueFalseStatus.NONE.status,
+    val writeStatus: String = WriteStatus.NONE.status,
     val isStarred: Boolean = false,
     val createdAt: String = "",
     val updatedAt: String = ""

@@ -10,6 +10,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.study_set.SaveRecentAccessStudySetRequestModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
+import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import com.pwhs.quickmem.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -24,11 +25,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StudySetDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val studySetRepository: StudySetRepository,
     private val flashCardRepository: FlashCardRepository,
+    private val studyTimeRepository: StudyTimeRepository,
     private val tokenManager: TokenManager,
-    private val appManager: AppManager
+    private val appManager: AppManager,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(StudySetDetailUiState())
     val uiState = _uiState.asStateFlow()
@@ -39,13 +41,18 @@ class StudySetDetailViewModel @Inject constructor(
     init {
         val id: String = savedStateHandle["id"] ?: ""
         _uiState.update { it.copy(id = id) }
+        initData()
+    }
+
+    private fun initData() {
         getStudySetById()
+        getStudyTimeByStudySetId()
     }
 
     fun onEvent(event: StudySetDetailUiAction) {
         when (event) {
             is StudySetDetailUiAction.Refresh -> {
-                getStudySetById()
+                initData()
             }
 
             is StudySetDetailUiAction.OnIdOfFlashCardSelectedChanged -> {
@@ -181,23 +188,22 @@ class StudySetDetailViewModel @Inject constructor(
                 token,
                 id,
                 isStarred
-            )
-                .collect { resource ->
-                    when (resource) {
-                        is Resources.Loading -> {
-                            Timber.d("Loading")
-                        }
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        Timber.d("Loading")
+                    }
 
-                        is Resources.Success -> {
-                            Timber.d(resource.data?.message)
-                            _uiEvent.send(StudySetDetailUiEvent.FlashCardStarred)
-                        }
+                    is Resources.Success -> {
+                        Timber.d(resource.data?.message)
+                        _uiEvent.send(StudySetDetailUiEvent.FlashCardStarred)
+                    }
 
-                        is Resources.Error -> {
-                            Timber.d("Error")
-                        }
+                    is Resources.Error -> {
+                        Timber.d("Error")
                     }
                 }
+            }
         }
     }
 
@@ -266,6 +272,29 @@ class StudySetDetailViewModel @Inject constructor(
 
                     is Resources.Error -> {
                         _uiState.update { it.copy(isLoading = false) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getStudyTimeByStudySetId() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val studySetId = _uiState.value.id
+
+            studyTimeRepository.getStudyTimeByStudySet(token, studySetId).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        Timber.d("Loading")
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.update { it.copy(studyTime = resource.data) }
+                    }
+
+                    is Resources.Error -> {
+                        Timber.d("Error")
                     }
                 }
             }

@@ -107,7 +107,6 @@ fun JoinClassScreen(
             navigator.navigate(
                 UserDetailScreenDestination(
                     userId = uiState.classDetailResponseModel?.owner?.id ?: "",
-                    isOwner = false
                 )
             )
         },

@@ -72,6 +72,10 @@ fun LearnByQuizScreen(
                 LearnByQuizUiEvent.Finished -> {
                     Toast.makeText(context, "Finished", Toast.LENGTH_SHORT).show()
                 }
+
+                LearnByQuizUiEvent.Back -> {
+                    resultNavigator.navigateBack(true)
+                }
             }
 
         }

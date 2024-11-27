@@ -12,4 +12,5 @@ sealed class LearnByWriteUiAction {
 
     data object ContinueLearnWrongAnswer : LearnByWriteUiAction()
     data object RestartLearn : LearnByWriteUiAction()
+    data object OnBackClicked : LearnByWriteUiAction()
 }
