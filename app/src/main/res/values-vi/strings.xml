@@ -256,4 +256,6 @@
     <string name="txt_teacher">Giáo viên</string>
     <string name="txt_signup_description">Xin chào! Hãy bắt đầu nào.</string>
     <string name="txt_login_description">Chào mừng trở lại! Đăng nhập vào tài khoản của bạn</string>
+    <string name="txt_ai_generated">Được tạo bởi AI</string>
+    <string name="txt_yes">Đúng</string>
 </resources>

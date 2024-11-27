@@ -15,6 +15,7 @@ data class StudySetDetailUiState(
     val colorModel: ColorModel = ColorModel(),
     val subject: SubjectModel = SubjectModel(),
     val flashCardCount: Int = 0,
+    val isAIGenerated: Boolean = false,
     val flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     val idOfFlashCardSelected: String = "",
     val isPublic: Boolean = false,

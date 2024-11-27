@@ -130,6 +130,7 @@ fun ListFolderScreen(
                         item {
                             if (folders.isNotEmpty()) {
                                 SearchTextField(
+                                    modifier = Modifier.padding(horizontal = 16.dp),
                                     searchQuery = searchQuery,
                                     onSearchQueryChange = { searchQuery = it },
                                     placeholder = stringResource(R.string.txt_search_folders),

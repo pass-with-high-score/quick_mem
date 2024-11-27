@@ -130,6 +130,7 @@ fun ListClassesScreen(
                         item {
                             if (classes.isNotEmpty()) {
                                 SearchTextField(
+                                    modifier = Modifier.padding(horizontal = 16.dp),
                                     searchQuery = searchQuery,
                                     onSearchQueryChange = { searchQuery = it },
                                     placeholder = stringResource(R.string.txt_search_classes),

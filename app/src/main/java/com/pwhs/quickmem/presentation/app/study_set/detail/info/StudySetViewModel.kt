@@ -20,6 +20,7 @@ class StudySetViewModel @Inject constructor(
         val authorUsername = savedStateHandle.get<String>("authorUsername") ?: ""
         val authorAvatarUrl = savedStateHandle.get<String>("authorAvatarUrl") ?: ""
         val creationDate = savedStateHandle.get<String>("creationDate") ?: ""
+        val isAIGenerated = savedStateHandle.get<Boolean>("isAIGenerated") ?: false
 
         _uiState.value = StudySetInfoUiState(
             title = title,
@@ -27,7 +28,8 @@ class StudySetViewModel @Inject constructor(
             isPublic = isPublic,
             authorUsername = authorUsername,
             authorAvatarUrl = authorAvatarUrl,
-            creationDate = creationDate
+            creationDate = creationDate,
+            isAIGenerated = isAIGenerated
         )
     }
 }

@@ -259,4 +259,6 @@
     <string name="dialog_message_underage">You must be at least 20 years old to change role. Please come back on %1$s.</string>
     <string name="txt_signup_description">Hello there! Let\'s get started.</string>
     <string name="txt_login_description">Welcome back! Log in to your account</string>
+    <string name="txt_ai_generated">AI Generated</string>
+    <string name="txt_yes">Yes</string>
 </resources>

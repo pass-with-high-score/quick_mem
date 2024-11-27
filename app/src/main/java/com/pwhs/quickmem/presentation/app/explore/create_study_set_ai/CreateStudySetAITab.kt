@@ -31,6 +31,7 @@ import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,11 @@ import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.core.data.enums.QuestionType
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.ads.AdsUtil
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,13 +82,32 @@ fun CreateStudySetAITab(
         mutableStateOf(false)
     }
     val context = LocalContext.current
+    var customer: CustomerInfo? by remember { mutableStateOf(null) }
+    LaunchedEffect(key1 = true) {
+        Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
+            override fun onError(error: PurchasesError) {
+                Timber.e("Error getting customer info: $error")
+            }
+
+            override fun onReceived(customerInfo: CustomerInfo) {
+                Timber.d("Customer info: $customerInfo")
+                customer = customerInfo
+            }
+
+        })
+    }
     Scaffold(
         floatingActionButton = {
             if (title.isNotEmpty()) {
                 FloatingActionButton(
                     onClick = {
-                        AdsUtil.rewardedAd(context) {
+                        val isSubscribed = customer?.activeSubscriptions?.isNotEmpty() == true
+                        if (isSubscribed) {
                             onCreateStudySet()
+                        } else {
+                            AdsUtil.rewardedAd(context) {
+                                onCreateStudySet()
+                            }
                         }
                     },
                 ) {

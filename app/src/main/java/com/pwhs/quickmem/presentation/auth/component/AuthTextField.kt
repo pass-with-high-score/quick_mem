@@ -73,6 +73,7 @@ fun AuthTextField(
             readOnly = readOnly,
             enabled = enabled,
             maxLines = 1,
+            singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = imeAction,
                 keyboardType = when (type) {

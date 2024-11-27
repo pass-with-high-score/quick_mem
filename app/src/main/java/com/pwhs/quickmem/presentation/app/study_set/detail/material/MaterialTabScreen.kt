@@ -282,10 +282,12 @@ fun MaterialTabScreen(
                         items(flashCards) { flashCards ->
                             CardDetail(
                                 isOwner = isOwner,
+                                color = studySetColor,
                                 front = flashCards.term,
                                 back = flashCards.definition,
                                 isStarred = flashCards.isStarred,
                                 imageURL = flashCards.definitionImageURL,
+                                isAIGenerated = flashCards.isAIGenerated,
                                 onToggleStarClick = { isStarred ->
                                     onToggleStarClick(flashCards.id, isStarred)
                                 },

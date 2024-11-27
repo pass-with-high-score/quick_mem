@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.detail.material
 import android.speech.tts.TextToSpeech
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -26,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
@@ -50,7 +54,9 @@ fun CardDetail(
     onToggleStarClick: (Boolean) -> Unit = { },
     onMenuClick: () -> Unit = {},
     imageURL: String? = null,
-    isOwner: Boolean = false
+    isOwner: Boolean = false,
+    isAIGenerated: Boolean = false,
+    color: Color = colorScheme.primary
 ) {
     // TextToSpeech state
     val context = LocalContext.current
@@ -164,6 +170,14 @@ fun CardDetail(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             Row {
+                if (isAIGenerated) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_generative_ai),
+                        contentDescription = stringResource(R.string.txt_ai_generated),
+                        modifier = Modifier.size(30.dp),
+                        tint = color
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(
                     onClick = {}

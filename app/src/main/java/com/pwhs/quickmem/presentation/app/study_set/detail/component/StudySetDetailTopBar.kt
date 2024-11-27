@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,6 +45,7 @@ fun StudySetDetailTopAppBar(
     modifier: Modifier = Modifier,
     isOwner: Boolean,
     title: String,
+    isAIGenerated: Boolean,
     color: Color,
     userResponse: UserResponseModel,
     flashCardCount: Int,
@@ -64,6 +66,28 @@ fun StudySetDetailTopAppBar(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                if (isAIGenerated) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
+                        Text(
+                            stringResource(R.string.txt_ai_generated),
+                            style = typography.bodyMedium.copy(
+                                color = colorScheme.secondary
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.ic_generative_ai),
+                            contentDescription = stringResource(R.string.txt_ai_generated),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
@@ -105,7 +129,7 @@ fun StudySetDetailTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
         ),
-        expandedHeight = 120.dp,
+        expandedHeight = if(isAIGenerated) 165.dp else 120.dp,
         collapsedHeight = 56.dp,
         navigationIcon = {
             IconButton(
@@ -129,7 +153,7 @@ fun StudySetDetailTopAppBar(
                     contentDescription = stringResource(R.string.txt_share)
                 )
             }
-            if (isOwner){
+            if (isOwner) {
                 IconButton(
                     onClick = onAddFlashcard
                 ) {

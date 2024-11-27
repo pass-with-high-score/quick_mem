@@ -13,6 +13,7 @@ data class StudySetFlashCardResponseModel(
     val definitionImageURL: String? = null,
     val hint: String? = null,
     val explanation: String? = null,
+    val isAIGenerated: Boolean = false,
     val rating: String = Rating.NOT_STUDIED.name,
     val flipStatus: String = FlipCardStatus.NONE.name,
     val quizStatus: String = QuizStatus.NONE.status,

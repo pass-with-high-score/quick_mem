@@ -17,7 +17,8 @@ fun StudySetFlashCardResponseDto.toModel() = StudySetFlashCardResponseModel(
     writeStatus = writeStatus,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    isStarred = isStarred
+    isStarred = isStarred,
+    isAIGenerated = isAIGenerated
 )
 
 fun StudySetFlashCardResponseModel.toDto() = StudySetFlashCardResponseDto(
@@ -34,5 +35,6 @@ fun StudySetFlashCardResponseModel.toDto() = StudySetFlashCardResponseDto(
     writeStatus = writeStatus,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    isStarred = isStarred
+    isStarred = isStarred,
+    isAIGenerated = isAIGenerated
 )

@@ -280,6 +280,7 @@ fun StudySetDetailScreen(
             navigator.navigate(
                 StudySetInfoScreenDestination(
                     title = uiState.title,
+                    isAIGenerated = uiState.isAIGenerated,
                     description = uiState.description,
                     isPublic = uiState.isPublic,
                     authorUsername = uiState.user.username,
@@ -295,6 +296,7 @@ fun StudySetDetailScreen(
         onResetProgress = {
             viewModel.onEvent(StudySetDetailUiAction.OnResetProgressClicked(uiState.id))
         },
+        isAIGenerated = uiState.isAIGenerated,
         onNavigateToQuiz = {
             navigator.navigate(
                 LearnByQuizScreenDestination(
@@ -377,6 +379,7 @@ fun StudySetDetail(
     linkShareCode: String = "",
     color: Color = Color.Blue,
     flashCardCount: Int = 0,
+    isAIGenerated: Boolean = false,
     studyTime: GetStudyTimeByStudySetResponseModel? = null,
     userResponse: UserResponseModel = UserResponseModel(),
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
@@ -439,7 +442,8 @@ fun StudySetDetail(
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     context.startActivity(shareIntent)
                 },
-                isOwner = isOwner
+                isOwner = isOwner,
+                isAIGenerated = isAIGenerated
             )
         }
     ) { innerPadding ->

@@ -32,6 +32,8 @@ data class StudySetFlashCardResponseDto(
     val writeStatus: String = WriteStatus.NONE.status,
     @SerializedName("isStarred")
     val isStarred: Boolean,
+    @SerializedName("isAIGenerated")
+    val isAIGenerated: Boolean,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

@@ -95,7 +95,7 @@ fun SearchScreen(
     Search(
         modifier = modifier,
         query = uiState.query,
-        listResult = uiState.listResult,
+        listSearchQuery = uiState.listResult,
         errorMessage = uiState.error,
         onQueryChange = { viewModel.onEvent(SearchUiAction.OnQueryChanged(it)) },
         onNavigateBack = { navigator.navigateUp() },
@@ -117,7 +117,7 @@ fun SearchScreen(
 private fun Search(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    listResult: List<SearchQueryModel> = emptyList(),
+    listSearchQuery: List<SearchQueryModel> = emptyList(),
     query: String = "",
     errorMessage: String = "",
     onClearAll: () -> Unit = {},
@@ -133,6 +133,7 @@ private fun Search(
             LargeTopAppBar(
                 title = {
                     SearchTextField(
+                        modifier = Modifier.padding(horizontal = 8.dp),
                         searchQuery = query,
                         onSearchQueryChange = onQueryChange,
                         errorMessage = errorMessage,
@@ -159,7 +160,7 @@ private fun Search(
                 .padding(innerPadding),
             contentAlignment = Alignment.TopCenter
         ) {
-            if (listResult.isEmpty()) {
+            if (listSearchQuery.isEmpty()) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -182,7 +183,7 @@ private fun Search(
                 }
             } else {
                 SearchRecentList(
-                    listResult = listResult,
+                    listResult = listSearchQuery,
                     onSearchRecent = { query -> onSearchRecentClick(query) },
                     onDelete = { query -> onDeleteQuery(query) },
                     onClearAll = onClearAll
@@ -198,7 +199,7 @@ private fun SearchScreenPreview() {
     QuickMemTheme {
         Search(
             query = "",
-            listResult = emptyList(),
+            listSearchQuery = emptyList(),
             onQueryChange = {},
             onSearch = {},
             onClearAll = {},

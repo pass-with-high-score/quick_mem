@@ -116,6 +116,7 @@ class StudySetDetailViewModel @Inject constructor(
                                 colorModel = resource.data.color,
                                 linkShareCode = resource.data.linkShareCode ?: "",
                                 isLoading = false,
+                                isAIGenerated = resource.data.isAIGenerated ?: false,
                                 isOwner = isOwner,
                             )
                         }

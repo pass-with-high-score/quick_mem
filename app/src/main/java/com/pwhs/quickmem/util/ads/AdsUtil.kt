@@ -75,20 +75,15 @@ object AdsUtil {
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
-                    // The interstitial ad is loaded
-                    Toast.makeText(context, "Ad Loaded", Toast.LENGTH_SHORT).show()
                     if (context is MainActivity) {
                         rewardedAd.show(context) {
-                            // The user earned the reward
                             onAdWatched()
                         }
                     }
-                    Toast.makeText(context, rewardedAd.rewardItem.type, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError) {
-                    // The interstitial ad failed to load
-                    Toast.makeText(context, adError.message, Toast.LENGTH_SHORT).show()
+                    onAdWatched()
                 }
             }
         )

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -22,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -57,6 +59,7 @@ fun StudySetInfoScreen(
         creationDate = uiState.creationDate,
         description = uiState.description,
         isPublic = uiState.isPublic,
+        isAIGenerated = uiState.isAIGenerated,
         onNavigateUp = { navigator.navigateUp() }
     )
 }
@@ -70,7 +73,8 @@ fun StudySetInfo(
     creationDate: String,
     description: String,
     isPublic: Boolean,
-    onNavigateUp: () -> Unit = {}
+    onNavigateUp: () -> Unit = {},
+    isAIGenerated: Boolean = false
 ) {
     Scaffold(
         modifier = modifier,
@@ -125,7 +129,9 @@ fun StudySetInfo(
                         AsyncImage(
                             model = authorAvatarUrl,
                             contentDescription = stringResource(R.string.txt_user_avatar),
-                            modifier = Modifier.size(30.dp),
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
 
@@ -210,6 +216,30 @@ fun StudySetInfo(
                             R.string.txt_private
                         ), style = typography.bodyLarge, modifier = Modifier.padding(10.dp)
                     )
+                }
+            }
+
+            if (isAIGenerated) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.txt_ai_generated),
+                        style = typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        ),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.txt_yes),
+                            style = typography.bodyLarge,
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
                 }
             }
         }

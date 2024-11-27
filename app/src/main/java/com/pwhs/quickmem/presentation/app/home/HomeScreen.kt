@@ -29,7 +29,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -269,7 +268,7 @@ private fun Home(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 },
-                expandedHeight = 180.dp,
+                expandedHeight = 160.dp,
                 collapsedHeight = 56.dp,
                 title = {
                     Card(
