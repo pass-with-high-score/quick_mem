@@ -18,6 +18,7 @@ import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
+import com.pwhs.quickmem.domain.model.study_set.CreateStudySetByAIRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -257,9 +258,10 @@ class StudySetRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val request = MakeACopyStudySetRequestDto(studySetId = studySetId, newOwnerId = newOwnerId)
+                val request =
+                    MakeACopyStudySetRequestDto(studySetId = studySetId, newOwnerId = newOwnerId)
                 val response = apiService.duplicateStudySet(token, request)
-                emit(Resources.Success( response.toModel()))
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
@@ -327,6 +329,23 @@ class StudySetRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.getRecentStudySet(token, userId)
                 emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun createStudySetByAI(
+        token: String,
+        createStudySetByAIRequestModel: CreateStudySetByAIRequestModel
+    ): Flow<Resources<CreateStudySetResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response =
+                    apiService.createStudySetByAI(token, createStudySetByAIRequestModel.toDto())
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

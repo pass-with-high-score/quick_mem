@@ -6,6 +6,7 @@ import com.pwhs.quickmem.domain.model.classes.AddStudySetToClassesRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToClassRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFolderRequestModel
 import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
+import com.pwhs.quickmem.domain.model.study_set.CreateStudySetByAIRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -113,4 +114,9 @@ interface StudySetRepository {
         token: String,
         userId: String
     ): Flow<Resources<List<GetStudySetResponseModel>>>
+
+    suspend fun createStudySetByAI(
+        token: String,
+        createStudySetByAIRequestModel: CreateStudySetByAIRequestModel
+    ): Flow<Resources<CreateStudySetResponseModel>>
 }

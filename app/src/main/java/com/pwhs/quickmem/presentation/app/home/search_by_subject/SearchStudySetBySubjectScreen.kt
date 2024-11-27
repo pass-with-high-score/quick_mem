@@ -80,8 +80,7 @@ fun SearchStudySetBySubjectScreen(
         onStudySetClick = { studySet ->
             navigator.navigate(
                 StudySetDetailScreenDestination(
-                    id = (studySet?.id ?: 0).toString(),
-                    code = ""
+                    id = studySet?.id ?: ""
                 )
             )
         },

@@ -66,6 +66,7 @@ import com.pwhs.quickmem.data.dto.streak.StreakDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToClassRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFolderRequestDto
 import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFoldersRequestDto
+import com.pwhs.quickmem.data.dto.study_set.CreateStudySetByAIRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
@@ -279,6 +280,12 @@ interface ApiService {
         @Path("userId") userId: String
     ): List<GetStudySetResponseDto>
 
+    @POST("study-set/ai")
+    suspend fun createStudySetByAI(
+        @Header("Authorization") token: String,
+        @Body createStudySetRequestDto: CreateStudySetByAIRequestDto
+    ): CreateStudySetResponseDto
+
     // subject
     @GET("study-set/top-subject")
     suspend fun getTop5Subject(
@@ -299,7 +306,6 @@ interface ApiService {
         @Body request: MakeACopyStudySetRequestDto
     ): CreateStudySetResponseDto
 
-    // Flash Card
     @GET("/flashcard/study-set/{id}")
     suspend fun getFlashCardsByStudySetId(
         @Header("Authorization") token: String,

@@ -15,6 +15,8 @@ data class CreateStudySetResponseDto(
     val subjectId: Long,
     @SerializedName("title")
     val title: String,
+    @SerializedName("isAIGenerated")
+    val isAIGenerated: Boolean,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")

@@ -11,6 +11,7 @@ fun CreateStudySetResponseModel.toDto() = CreateStudySetResponseDto(
     title = title,
     createdAt = createdAt,
     updatedAt = updatedAt,
+    isAIGenerated = isAIGenerated,
     id = id
 )
 
@@ -22,5 +23,6 @@ fun CreateStudySetResponseDto.toModel() = CreateStudySetResponseModel(
     title = title,
     createdAt = createdAt,
     updatedAt = updatedAt,
+    isAIGenerated = isAIGenerated,
     id = id
 )

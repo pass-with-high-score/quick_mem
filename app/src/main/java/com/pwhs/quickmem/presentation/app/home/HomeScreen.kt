@@ -133,7 +133,6 @@ fun HomeScreen(
             navigator.navigate(
                 StudySetDetailScreenDestination(
                     id = it.id,
-                    code = ""
                 )
             )
         },
@@ -362,7 +361,6 @@ private fun Home(
                 }
             )
         },
-        floatingActionButtonPosition = FabPosition.End,
         bottomBar = {
             Spacer(modifier = Modifier.height(100.dp))
         },
@@ -410,7 +408,7 @@ private fun Home(
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
             ) {
-                if (studySets.isEmpty() && classes.isEmpty()) {
+                if (studySets.isEmpty() && classes.isEmpty() && folders.isEmpty() && !isLoading) {
                     item {
                         Text(
                             text = "Here's how to get started",
@@ -471,6 +469,7 @@ private fun Home(
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 16.dp)
                         )
                     }
 

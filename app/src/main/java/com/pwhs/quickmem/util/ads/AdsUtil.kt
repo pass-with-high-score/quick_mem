@@ -67,7 +67,7 @@ object AdsUtil {
         }
     }
 
-    fun rewardedTestAd(context: Context, onAdWatched: () -> Unit) {
+    fun rewardedAd(context: Context, onAdWatched: () -> Unit) {
         // Load an ad
         RewardedAd.load(
             context,

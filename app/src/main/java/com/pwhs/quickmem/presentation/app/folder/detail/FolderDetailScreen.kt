@@ -141,7 +141,6 @@ fun FolderDetailScreen(
             navigator.navigate(
                 StudySetDetailScreenDestination(
                     id = it,
-                    code = ""
                 )
             )
         },

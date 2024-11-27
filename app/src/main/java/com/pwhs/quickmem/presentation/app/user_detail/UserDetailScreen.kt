@@ -155,7 +155,6 @@ fun UserDetailScreen(
             navigator.navigate(
                 StudySetDetailScreenDestination(
                     id = it.id,
-                    code = it.linkShareCode ?: "",
                 )
             )
         },

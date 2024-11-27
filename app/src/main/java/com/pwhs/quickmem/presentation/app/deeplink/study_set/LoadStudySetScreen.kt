@@ -35,7 +35,6 @@ fun LoadStudySetScreen(
                     navigator.navigate(
                         StudySetDetailScreenDestination(
                             id = event.studySetId,
-                            code = uiState.studySetCode,
                         )
                     ) {
                         popUpTo(NavGraphs.root) {

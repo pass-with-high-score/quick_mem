@@ -38,7 +38,8 @@ class UpdateUsernameSettingViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 id = userId,
-                username = username
+                username = username,
+                newUsername = username
             )
         }
     }

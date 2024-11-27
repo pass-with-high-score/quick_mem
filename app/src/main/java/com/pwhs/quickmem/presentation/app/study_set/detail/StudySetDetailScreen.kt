@@ -220,7 +220,6 @@ fun StudySetDetailScreen(
                     navigator.navigate(
                         StudySetDetailScreenDestination(
                             id = event.newStudySetId,
-                            code = ""
                         )
                     )
                 }
@@ -497,10 +496,10 @@ fun StudySetDetail(
                                 onNavigateToFlip = onNavigateToFlip,
                                 isOwner = true,
                                 studySetColor = color,
-                                learningPercentQuiz = flashCards.count { it.quizStatus == QuizStatus.CORRECT.status } * 100 / flashCardCount,
-                                learningPercentFlipped = flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name } * 100 / flashCardCount,
-                                learningPercentWrite = flashCards.count { it.writeStatus == WriteStatus.CORRECT.status } * 100 / flashCardCount,
-                                learningPercentTrueFalse = flashCards.count { it.trueFalseStatus == TrueFalseStatus.CORRECT.status } * 100 / flashCardCount,
+                                learningPercentQuiz = if (flashCardCount > 0) (flashCards.count { it.quizStatus == QuizStatus.CORRECT.status } * 100 / flashCardCount) else 0,
+                                learningPercentFlipped = if (flashCardCount > 0) (flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name } * 100 / flashCardCount) else 0,
+                                learningPercentWrite = if (flashCardCount > 0) (flashCards.count { it.writeStatus == WriteStatus.CORRECT.status } * 100 / flashCardCount) else 0,
+                                learningPercentTrueFalse = if (flashCardCount > 0) (flashCards.count { it.trueFalseStatus == TrueFalseStatus.CORRECT.status } * 100 / flashCardCount) else 0,
                                 onMakeCopyClick = onCopyStudySet
                             )
 

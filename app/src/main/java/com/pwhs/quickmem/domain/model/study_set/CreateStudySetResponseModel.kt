@@ -6,6 +6,7 @@ data class CreateStudySetResponseModel(
     val description: String,
     val isPublic: Boolean,
     val subjectId: Long,
+    val isAIGenerated: Boolean,
     val title: String,
     val updatedAt: String,
     val createdAt: String

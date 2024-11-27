@@ -54,11 +54,11 @@ fun TopStreakScreen(
     val density = LocalDensity.current
 
     LaunchedEffect(Unit) {
+        bronzeSize.animateTo(256f, animationSpec = tween(durationMillis = 800))
+        delay(200)
         silverSize.animateTo(256f, animationSpec = tween(durationMillis = 800))
         delay(200)
         goldSize.animateTo(320f, animationSpec = tween(durationMillis = 800))
-        delay(200)
-        bronzeSize.animateTo(256f, animationSpec = tween(durationMillis = 800))
     }
 
     PullToRefreshBox(
@@ -102,10 +102,9 @@ fun TopStreakScreen(
             }
 
             val message = when (rankOwner) {
-                null -> "Bảng xếp hạng top 10 chuỗi streak cao nhất"
-                in 1..3 -> "Bạn đã đạt vị trí top #$rankOwner trên bảng Top Streak!"
-                in 4..10 -> "Tiếp tục giữ chuỗi để đua top nhé!"
-                else -> ""
+                in 1..3 -> "You have reached the top #$rankOwner on the Top Streak leaderboard!"
+                in 4..10 -> "Keep up the streak to climb the leaderboard!"
+                else -> "Top 10 highest streak leaderboard"
             }
 
             Text(

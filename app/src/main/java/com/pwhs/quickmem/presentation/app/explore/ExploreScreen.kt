@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.explore
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -26,12 +27,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.core.data.enums.DifficultyLevel
+import com.pwhs.quickmem.core.data.enums.QuestionType
 import com.pwhs.quickmem.domain.model.streak.GetTopStreakResponseModel
-import com.pwhs.quickmem.presentation.app.explore.ai_chat.AIChatScreen
+import com.pwhs.quickmem.presentation.app.explore.create_study_set_ai.CreateStudySetAITab
 import com.pwhs.quickmem.presentation.app.explore.top_streak.TopStreakScreen
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -51,6 +57,14 @@ fun ExploreScreen(
                 is ExploreUiEvent.Error -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
+
+                is ExploreUiEvent.CreatedStudySet -> {
+                    navigator.navigate(
+                        StudySetDetailScreenDestination(
+                            id = event.studySetId,
+                        )
+                    )
+                }
             }
         }
     }
@@ -61,6 +75,24 @@ fun ExploreScreen(
         topStreaks = uiState.topStreaks,
         rankOwner = uiState.rankOwner,
         streakOwner = uiState.streakOwner,
+        title = uiState.title,
+        description = uiState.description,
+        numberOfFlashcards = uiState.numberOfFlashcards,
+        language = uiState.language,
+        questionType = uiState.questionType,
+        difficultyLevel = uiState.difficulty,
+        onTitleChange = { viewModel.onEvent(ExploreUiAction.OnTitleChanged(it)) },
+        onDescriptionChange = { viewModel.onEvent(ExploreUiAction.OnDescriptionChanged(it)) },
+        onNumberOfFlashcardsChange = {
+            viewModel.onEvent(
+                ExploreUiAction.OnNumberOfFlashcardsChange(
+                    it
+                )
+            )
+        },
+        onLanguageChange = { viewModel.onEvent(ExploreUiAction.OnLanguageChanged(it)) },
+        onQuestionTypeChange = { viewModel.onEvent(ExploreUiAction.OnQuestionTypeChanged(it)) },
+        onDifficultyLevelChange = { viewModel.onEvent(ExploreUiAction.OnDifficultyLevelChanged(it)) },
         onTopStreakRefresh = { viewModel.onEvent(ExploreUiAction.RefreshTopStreaks) },
         onClickToUserDetail = {
             navigator.navigate(
@@ -68,7 +100,11 @@ fun ExploreScreen(
                     userId = it,
                 )
             )
-        }
+        },
+        onCreateStudySet = {
+            viewModel.onEvent(ExploreUiAction.OnCreateStudySet)
+        },
+        errorMessage = uiState.errorMessage
     )
 }
 
@@ -81,12 +117,26 @@ fun Explore(
     streakOwner: GetTopStreakResponseModel? = null,
     topStreaks: List<GetTopStreakResponseModel> = emptyList(),
     onClickToUserDetail: (String) -> Unit = {},
-    onTopStreakRefresh: () -> Unit = {}
+    onTopStreakRefresh: () -> Unit = {},
+    title: String = "",
+    description: String = "",
+    numberOfFlashcards: Int = 0,
+    language: String = "",
+    questionType: QuestionType = QuestionType.MULTIPLE_CHOICE,
+    difficultyLevel: DifficultyLevel = DifficultyLevel.EASY,
+    onTitleChange: (String) -> Unit = {},
+    onDescriptionChange: (String) -> Unit = {},
+    onNumberOfFlashcardsChange: (Int) -> Unit = {},
+    onLanguageChange: (String) -> Unit = {},
+    onQuestionTypeChange: (QuestionType) -> Unit = {},
+    onDifficultyLevelChange: (DifficultyLevel) -> Unit = {},
+    onCreateStudySet: () -> Unit = {},
+    errorMessage: String = ""
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf(
+        "Create Study Set AI",
         "Top Streak",
-        "AI Chat"
     )
 
     Scaffold(
@@ -107,48 +157,66 @@ fun Explore(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier.padding(innerPadding),
-        ) {
-            TabRow(
-                selectedTabIndex = tabIndex,
-                indicator = { tabPositions ->
-                    SecondaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                        color = colorScheme.primary,
-                    )
-                },
-                contentColor = colorScheme.onSurface,
+        Box {
+            Column(
+                modifier = modifier.padding(innerPadding),
             ) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        text = {
-                            Text(
-                                title, style = typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (tabIndex == index) Color.Black else Color.Gray
+                TabRow(
+                    selectedTabIndex = tabIndex,
+                    indicator = { tabPositions ->
+                        SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                            color = colorScheme.primary,
+                        )
+                    },
+                    contentColor = colorScheme.onSurface,
+                ) {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            text = {
+                                Text(
+                                    title, style = typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (tabIndex == index) Color.Black else Color.Gray
+                                    )
                                 )
-                            )
+                            },
+                            selected = tabIndex == index,
+                            onClick = { tabIndex = index },
+                        )
+                    }
+                }
+                when (tabIndex) {
+                    ExploreTabEnum.CREATE_STUDY_SET.index -> CreateStudySetAITab(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        title = title,
+                        description = description,
+                        numberOfFlashcards = numberOfFlashcards,
+                        language = language,
+                        questionType = questionType,
+                        difficultyLevel = difficultyLevel,
+                        onTitleChange = onTitleChange,
+                        onDescriptionChange = onDescriptionChange,
+                        onNumberOfFlashcardsChange = onNumberOfFlashcardsChange,
+                        onLanguageChange = onLanguageChange,
+                        onQuestionTypeChange = onQuestionTypeChange,
+                        onDifficultyLevelChange = onDifficultyLevelChange,
+                        onCreateStudySet = onCreateStudySet
+                    )
+
+                    ExploreTabEnum.TOP_STREAK.index -> TopStreakScreen(
+                        isLoading = isLoading,
+                        rankOwner = rankOwner,
+                        topStreaks = topStreaks,
+                        streakOwner = streakOwner,
+                        onClickToUserDetail = {
+                            onClickToUserDetail(it.userId)
                         },
-                        selected = tabIndex == index,
-                        onClick = { tabIndex = index },
+                        onTopStreakRefresh = onTopStreakRefresh,
                     )
                 }
             }
-            when (tabIndex) {
-                ExploreTabEnum.TOP_STREAK.index -> TopStreakScreen(
-                    isLoading = isLoading,
-                    rankOwner = rankOwner,
-                    topStreaks = topStreaks,
-                    streakOwner = streakOwner,
-                    onClickToUserDetail = {
-                        onClickToUserDetail(it.userId)
-                    },
-                    onTopStreakRefresh = onTopStreakRefresh,
-                )
-
-                ExploreTabEnum.AI_CHAT.index -> AIChatScreen()
-            }
+            LoadingOverlay(isLoading = isLoading)
         }
     }
 }

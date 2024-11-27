@@ -60,7 +60,6 @@ fun CreateStudySetScreen(
                     navigator.navigate(
                         StudySetDetailScreenDestination(
                             id = event.id,
-                            code = ""
                         )
                     )
                 }
