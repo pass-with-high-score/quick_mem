@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.data.mapper.study_time.toStudyTimeModel
 import com.pwhs.quickmem.domain.model.study_time.GetStudyTimeByStudySetResponseModel
 import com.pwhs.quickmem.presentation.component.LearningBars
 
@@ -108,7 +109,7 @@ fun ProgressTabScreen(
                 item {
                     if (studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.flip != 0) {
                         LearningBars(
-                            studyTime = studyTime,
+                            studyTime = studyTime?.toStudyTimeModel(),
                             color = color,
                             modifier = Modifier
                                 .height(300.dp)

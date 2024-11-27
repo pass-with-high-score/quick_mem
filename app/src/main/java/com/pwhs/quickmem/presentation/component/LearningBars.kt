@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.domain.model.study_time.GetStudyTimeByStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_time.StudyTimeModel
 import ir.ehsannarmani.compose_charts.ColumnChart
 import ir.ehsannarmani.compose_charts.models.Bars
 import ir.ehsannarmani.compose_charts.models.DividerProperties
@@ -29,7 +29,7 @@ import ir.ehsannarmani.compose_charts.models.LineProperties
 @Composable
 fun LearningBars(
     modifier: Modifier = Modifier,
-    studyTime: GetStudyTimeByStudySetResponseModel? = null,
+    studyTime: StudyTimeModel? = null,
     color: Color
 ) {
     Column(

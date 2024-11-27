@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,9 +55,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.data.mapper.study_time.toStudyTimeModel
+import com.pwhs.quickmem.domain.model.study_time.GetStudyTimeByUserResponseModel
 import com.pwhs.quickmem.presentation.app.home.HomeViewModel
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
+import com.pwhs.quickmem.presentation.component.LearningBars
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -117,7 +121,8 @@ fun ProfileScreen(
         },
         customerInfo = uiState.customerInfo,
         streakCount = homeState.streakCount,
-        streakDates = homeState.streakDates
+        streakDates = homeState.streakDates,
+        studyTime = uiState.studyTime
     )
 }
 
@@ -137,6 +142,7 @@ fun Profile(
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),
     currentDate: LocalDate = LocalDate.now(),
+    studyTime: GetStudyTimeByUserResponseModel? = null
 ) {
     var isPaywallVisible by remember {
         mutableStateOf(false)
@@ -228,14 +234,14 @@ fun Profile(
                     )
 
                     if (role == "TEACHER") {
-                       Text(
-                           text = stringResource(R.string.txt_teacher),
-                           style = typography.bodySmall.copy(
-                               fontWeight = FontWeight.Bold
-                           ),
-                           color = colorScheme.secondary,
-                           modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-                       )
+                        Text(
+                            text = stringResource(R.string.txt_teacher),
+                            style = typography.bodySmall.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = colorScheme.secondary,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
                     }
                 }
                 item {
@@ -350,6 +356,16 @@ fun Profile(
                                 streakDates = streakDates
                             )
                         }
+                    }
+                }
+                item {
+                    if (studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.flip != 0) {
+                        LearningBars(
+                            studyTime = studyTime?.toStudyTimeModel(),
+                            color = colorScheme.primary,
+                            modifier = Modifier
+                                .height(300.dp)
+                        )
                     }
                 }
                 item {

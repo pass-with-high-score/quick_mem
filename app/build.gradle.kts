@@ -99,7 +99,7 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.bundles.roomdb)
     ksp(libs.androidx.room.compiler)
-    implementation("io.github.ehsannarmani:compose-charts:0.0.18")
+    implementation(libs.compose.charts)
 
 
     implementation(libs.play.services.ads)

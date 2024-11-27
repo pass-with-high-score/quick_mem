@@ -74,6 +74,7 @@ import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.UpdateStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_time.CreateStudyTimeDto
 import com.pwhs.quickmem.data.dto.study_time.GetStudyTimeByStudySetResponseDto
+import com.pwhs.quickmem.data.dto.study_time.GetStudyTimeByUserResponseDto
 import com.pwhs.quickmem.data.dto.subject.GetTop5SubjectResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
@@ -578,6 +579,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("studySetId") studySetId: String
     ): GetStudyTimeByStudySetResponseDto
+
+    @GET("study-time/user/{userId}")
+    suspend fun getStudyTimeByUser(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): GetStudyTimeByUserResponseDto
 
     @POST("study-time")
     suspend fun createStudyTime(
