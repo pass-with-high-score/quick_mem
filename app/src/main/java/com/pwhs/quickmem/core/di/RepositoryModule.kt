@@ -8,6 +8,7 @@ import com.pwhs.quickmem.data.remote.repository.FolderRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.NotificationRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StreakRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StudySetRepositoryImpl
+import com.pwhs.quickmem.data.remote.repository.StudyTimeRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.UploadImageRepositoryImpl
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
@@ -17,6 +18,7 @@ import com.pwhs.quickmem.domain.repository.NotificationRepository
 import com.pwhs.quickmem.domain.repository.SearchQueryRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
+import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import com.pwhs.quickmem.domain.repository.UploadImageRepository
 import dagger.Binds
 import dagger.Module
@@ -70,4 +72,9 @@ abstract class RepositoryModule {
     abstract fun bindSearchQueryRepository(
         searchQueryRepositoryImpl: SearchQueryRepositoryImpl
     ): SearchQueryRepository
+
+    @Binds
+    abstract fun bindStudyTimeRepository(
+        studyTimeRepositoryImpl: StudyTimeRepositoryImpl
+    ): StudyTimeRepository
 }

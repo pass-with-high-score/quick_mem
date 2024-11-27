@@ -9,17 +9,21 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.FlipCardStatus
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.ResetType
+import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
+import com.pwhs.quickmem.domain.model.study_time.CreateStudyTimeModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
+import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -31,7 +35,9 @@ import javax.inject.Inject
 class FlipFlashCardViewModel @Inject constructor(
     private val flashCardRepository: FlashCardRepository,
     private val studySetRepository: StudySetRepository,
+    private val studyTimeRepository: StudyTimeRepository,
     private val tokenManager: TokenManager,
+    private val appManager: AppManager,
     savedStateHandle: SavedStateHandle,
     application: Application
 ) : AndroidViewModel(application) {
@@ -88,6 +94,7 @@ class FlipFlashCardViewModel @Inject constructor(
                         )
                     }
                     playCompleteSound()
+                    sendCompletedStudyTime()
                     return
                 }
             }
@@ -162,6 +169,16 @@ class FlipFlashCardViewModel @Inject constructor(
                 }
 
                 getFlashCard()
+            }
+
+            is FlipFlashCardUiAction.OnBackClicked -> {
+                _uiState.update {
+                    it.copy(
+                        learningTime = System.currentTimeMillis() - it.startTime
+                    )
+                }
+                sendCompletedStudyTime()
+                _uiEvent.trySend(FlipFlashCardUiEvent.Back)
             }
         }
     }
@@ -277,5 +294,20 @@ class FlipFlashCardViewModel @Inject constructor(
     private fun playCompleteSound() {
         val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.study_complete)
         mediaPlayer.start()
+    }
+
+    private fun sendCompletedStudyTime() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val createStudyTimeModel = CreateStudyTimeModel(
+                learnMode = LearnMode.FLIP.mode,
+                studySetId = _uiState.value.studySetId,
+                timeSpent = _uiState.value.learningTime.toInt(),
+                userId = userId
+            )
+            studyTimeRepository.createStudyTime(token, createStudyTimeModel)
+                .collect()
+        }
     }
 }

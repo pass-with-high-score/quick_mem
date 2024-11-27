@@ -11,4 +11,5 @@ sealed class LearnByQuizUiAction {
     ) : LearnByQuizUiAction()
     data object ContinueLearnWrongAnswer : LearnByQuizUiAction()
     data object RestartLearn : LearnByQuizUiAction()
+    data object OnBackClicked : LearnByQuizUiAction()
 }

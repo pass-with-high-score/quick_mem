@@ -9,4 +9,5 @@ sealed class LearnByTrueFalseUiAction {
 
     data object ContinueLearnWrongAnswer : LearnByTrueFalseUiAction()
     data object RestartLearn : LearnByTrueFalseUiAction()
+    data object OnBackClicked : LearnByTrueFalseUiAction()
 }

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -35,8 +36,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.QuizStatus
+import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
+import com.pwhs.quickmem.core.data.enums.WriteStatus
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
+import com.pwhs.quickmem.domain.model.study_time.GetStudyTimeByStudySetResponseModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.StudySetDetailTopAppBar
@@ -79,6 +84,8 @@ fun StudySetDetailScreen(
     resultEditFlashCard: ResultRecipient<EditFlashCardScreenDestination, Boolean>,
     resultFlipFlashCard: ResultRecipient<FlipFlashCardScreenDestination, Boolean>,
     resultQuiz: ResultRecipient<LearnByQuizScreenDestination, Boolean>,
+    resultWrite: ResultRecipient<LearnByWriteScreenDestination, Boolean>,
+    resultTrueFalse: ResultRecipient<LearnByTrueFalseScreenDestination, Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -127,6 +134,28 @@ fun StudySetDetailScreen(
     }
 
     resultQuiz.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultWrite.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {}
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(StudySetDetailUiAction.Refresh)
+                }
+            }
+        }
+    }
+
+    resultTrueFalse.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {}
             is NavResult.Value -> {
@@ -218,6 +247,7 @@ fun StudySetDetailScreen(
         flashCardCount = uiState.flashCardCount,
         flashCards = uiState.flashCards,
         userResponse = uiState.user,
+        studyTime = uiState.studyTime,
         onFlashCardClick = { id ->
             viewModel.onEvent(StudySetDetailUiAction.OnIdOfFlashCardSelectedChanged(id))
         },
@@ -349,6 +379,7 @@ fun StudySetDetail(
     linkShareCode: String = "",
     color: Color = Color.Blue,
     flashCardCount: Int = 0,
+    studyTime: GetStudyTimeByStudySetResponseModel? = null,
     userResponse: UserResponseModel = UserResponseModel(),
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     onFlashCardClick: (String) -> Unit = {},
@@ -466,12 +497,19 @@ fun StudySetDetail(
                                 onNavigateToWrite = onNavigateToWrite,
                                 onNavigateToFlip = onNavigateToFlip,
                                 isOwner = true,
+                                studySetColor = color,
+                                learningPercentQuiz = flashCards.count { it.quizStatus == QuizStatus.CORRECT.status } * 100 / flashCardCount,
+                                learningPercentFlipped = flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name } * 100 / flashCardCount,
+                                learningPercentWrite = flashCards.count { it.writeStatus == WriteStatus.CORRECT.status } * 100 / flashCardCount,
+                                learningPercentTrueFalse = flashCards.count { it.trueFalseStatus == TrueFalseStatus.CORRECT.status } * 100 / flashCardCount,
                                 onMakeCopyClick = onCopyStudySet
                             )
 
                             StudySetDetailEnum.PROGRESS.index -> ProgressTabScreen(
+                                modifier = Modifier.fillMaxSize(),
                                 totalStudySet = flashCardCount,
                                 color = color,
+                                studyTime = studyTime,
                                 studySetsNotLearnCount = flashCards.count { it.flipStatus == FlipCardStatus.NONE.name },
                                 studySetsStillLearningCount = flashCards.count { it.flipStatus == FlipCardStatus.STILL_LEARNING.name },
                                 studySetsKnowCount = flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name },

@@ -9,17 +9,21 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.data.enums.WriteStatus
+import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.domain.model.study_time.CreateStudyTimeModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
+import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -29,10 +33,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LearnByWriteViewModel @Inject constructor(
-    private val tokenManager: TokenManager,
-    savedStateHandle: SavedStateHandle,
     private val flashCardRepository: FlashCardRepository,
     private val studySetRepository: StudySetRepository,
+    private val studyTimeRepository: StudyTimeRepository,
+    private val tokenManager: TokenManager,
+    private val appManager: AppManager,
+    savedStateHandle: SavedStateHandle,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -94,42 +100,16 @@ class LearnByWriteViewModel @Inject constructor(
             }
 
             is LearnByWriteUiAction.RestartLearn -> {
-                viewModelScope.launch {
-                    val token = tokenManager.accessToken.firstOrNull() ?: ""
-                    val studySetId = _uiState.value.studySetId
-                    studySetRepository.resetProgress(
-                        token,
-                        studySetId,
-                        ResetType.WRITE_STATUS.type
-                    ).collect { resource ->
-                        when (resource) {
-                            is Resources.Error -> {
-                                Timber.e(resource.message)
-                                _uiState.update { it.copy(isLoading = false) }
-                            }
-
-                            is Resources.Loading -> {
-                                _uiState.update { it.copy(isLoading = true) }
-                            }
-
-                            is Resources.Success -> {
-                                // reset all state
-                                _uiState.update {
-                                    it.copy(
-                                        currentCardIndex = 0,
-                                        learningTime = 0,
-                                        startTime = System.currentTimeMillis(),
-                                        isEndOfList = false,
-                                        wrongAnswerCount = 0,
-                                        listWrongAnswer = emptyList()
-                                    )
-                                }
-                                getFlashCard()
-                            }
-                        }
-                    }
-                }
+                onRestart()
             }
+
+           is LearnByWriteUiAction.OnBackClicked -> {
+               _uiState.update {
+                   it.copy(learningTime = System.currentTimeMillis() - it.startTime)
+               }
+               sendCompletedStudyTime()
+               _uiEvent.trySend(LearnByWriteUiEvent.Back)
+           }
         }
     }
 
@@ -271,6 +251,7 @@ class LearnByWriteViewModel @Inject constructor(
                 )
             }
             playCompleteSound()
+            sendCompletedStudyTime()
             _uiEvent.trySend(LearnByWriteUiEvent.Finished)
         }
     }
@@ -288,6 +269,59 @@ class LearnByWriteViewModel @Inject constructor(
             definitionImageUrl = currentCard.definitionImageURL ?: "",
             userAnswer = ""
         )
+    }
+
+    private fun sendCompletedStudyTime() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val createStudyTimeModel = CreateStudyTimeModel(
+                learnMode = LearnMode.WRITE.mode,
+                studySetId = _uiState.value.studySetId,
+                timeSpent = _uiState.value.learningTime.toInt(),
+                userId = userId
+            )
+            studyTimeRepository.createStudyTime(token, createStudyTimeModel)
+                .collect()
+        }
+    }
+
+    private fun onRestart() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val studySetId = _uiState.value.studySetId
+            studySetRepository.resetProgress(
+                token,
+                studySetId,
+                ResetType.WRITE_STATUS.type
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is Resources.Success -> {
+                        // reset all state
+                        _uiState.update {
+                            it.copy(
+                                currentCardIndex = 0,
+                                learningTime = 0,
+                                startTime = System.currentTimeMillis(),
+                                isEndOfList = false,
+                                wrongAnswerCount = 0,
+                                listWrongAnswer = emptyList()
+                            )
+                        }
+                        getFlashCard()
+                    }
+                }
+            }
+        }
     }
 
     private fun playCompleteSound() {
