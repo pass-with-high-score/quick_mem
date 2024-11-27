@@ -6,6 +6,7 @@ import com.pwhs.quickmem.domain.model.folder.AddFolderToClassRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
+import com.pwhs.quickmem.domain.model.folder.SaveRecentAccessFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.UpdateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.UpdateFolderResponseModel
 import kotlinx.coroutines.flow.Flow
@@ -54,4 +55,14 @@ interface FolderRepository {
         token: String,
         code: String
     ): Flow<Resources<CreateFolderResponseModel>>
+
+    suspend fun saveRecentAccessFolder(
+        token: String,
+        saveRecentAccessFolderRequestModel: SaveRecentAccessFolderRequestModel
+    ): Flow<Resources<Unit>>
+
+    suspend fun getRecentAccessFolders(
+        token: String,
+        userId: String
+    ): Flow<Resources<List<GetFolderResponseModel>>>
 }

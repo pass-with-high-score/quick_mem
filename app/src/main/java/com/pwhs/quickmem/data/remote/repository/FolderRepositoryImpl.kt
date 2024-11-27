@@ -13,6 +13,7 @@ import com.pwhs.quickmem.domain.model.folder.AddFolderToClassRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.CreateFolderResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
+import com.pwhs.quickmem.domain.model.folder.SaveRecentAccessFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.UpdateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.UpdateFolderResponseModel
 import com.pwhs.quickmem.domain.repository.FolderRepository
@@ -150,6 +151,38 @@ class FolderRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.getFolderByLinkCode(token, code)
                 emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun saveRecentAccessFolder(
+        token: String,
+        saveRecentAccessFolderRequestModel: SaveRecentAccessFolderRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.saveRecentFolder(token, saveRecentAccessFolderRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getRecentAccessFolders(
+        token: String,
+        userId: String
+    ): Flow<Resources<List<GetFolderResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getRecentFolder(token, userId)
+                emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
