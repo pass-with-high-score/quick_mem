@@ -122,7 +122,6 @@ fun Explore(
             }
             when (tabIndex) {
                 ExploreTabEnum.TOP_STREAK.index -> TopStreakScreen(
-                    modifier = Modifier.padding(16.dp),
                     isLoading = isLoading,
                     topStreaks = topStreaks,
                     onTopStreakRefresh = onTopStreakRefresh

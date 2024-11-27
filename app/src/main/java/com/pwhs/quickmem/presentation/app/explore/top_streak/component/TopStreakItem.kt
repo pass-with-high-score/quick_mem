@@ -1,13 +1,17 @@
 package com.pwhs.quickmem.presentation.app.explore.top_streak.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -35,10 +40,12 @@ fun StreakItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .clip(RoundedCornerShape(12.dp))
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Rank
         Box(
             modifier = Modifier.size(40.dp),
             contentAlignment = Alignment.Center
@@ -47,23 +54,28 @@ fun StreakItem(
                 1 -> Image(
                     painter = painterResource(id = R.drawable.top1),
                     contentDescription = "Gold Medal",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(32.dp)
                 )
+
                 2 -> Image(
                     painter = painterResource(id = R.drawable.top2),
                     contentDescription = "Silver Medal",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(32.dp)
                 )
+
                 3 -> Image(
                     painter = painterResource(id = R.drawable.top3),
                     contentDescription = "Bronze Medal",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(32.dp)
                 )
+
                 else -> Text(
                     text = rank.toString(),
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray
+                    ),
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
                     fontSize = 16.sp
                 )
             }
@@ -72,29 +84,48 @@ fun StreakItem(
         // Avatar
         AsyncImage(
             model = avatarUrl,
-            contentDescription = stringResource(R.string.txt_user_avatar),
+            contentDescription = "User Avatar",
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(18.dp)
+                .size(40.dp)
                 .clip(CircleShape)
         )
 
         // Username
         Text(
             text = username,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp),
             fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
 
         // Streak Count
-        Text(
-            text = "$streakCount ST",
-            style = MaterialTheme.typography.bodyMedium,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.primary
-        )
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "$streakCount ",
+                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Column(
+                modifier = Modifier.padding(bottom = 6.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_fire),
+                    contentDescription = stringResource(R.string.txt_streak),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(20.dp)
+                )
+            }
+        }
     }
 }

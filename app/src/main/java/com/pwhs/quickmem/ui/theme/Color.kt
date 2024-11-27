@@ -7,6 +7,7 @@ val incorrectColor = Color(0xFF860010)
 val correctColor = Color(0xFF6c9184)
 val streakTextColor = Color(0xFFf2ac40)
 val streakTitleColor = Color(0xFFf2ac40)
+val borderTopStreakTextColor = Color(0xFFf2ac40)
 
 val primaryLight = Color(0xFF2BB3CD)
 val onPrimaryLight = Color(0xFFFFFFFF)
