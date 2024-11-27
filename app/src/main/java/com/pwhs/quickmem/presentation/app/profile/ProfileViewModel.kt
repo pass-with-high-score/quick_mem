@@ -6,6 +6,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
@@ -29,7 +30,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val appManager: AppManager,
     private val tokenManager: TokenManager,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val studyTimeRepository: StudyTimeRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -41,6 +43,7 @@ class ProfileViewModel @Inject constructor(
         loadProfile()
         getUserProfile()
         getCustomerInfo()
+        getStudyTime()
     }
 
     fun onEvent(event: ProfileUiAction) {
@@ -55,7 +58,9 @@ class ProfileViewModel @Inject constructor(
 
             ProfileUiAction.Refresh -> {
                 getUserProfile()
+                getUserProfile()
                 getCustomerInfo()
+                getStudyTime()
             }
         }
     }
@@ -136,6 +141,37 @@ class ProfileViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Error observing DataStore")
+            }
+        }
+    }
+
+    private fun getStudyTime() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+
+            studyTimeRepository.getStudyTimeByUser(token, userId).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is Resources.Success -> {
+                        resource.data?.let { data ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    studyTime = data
+                                )
+                            }
+                        }
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                        Timber.e("Error fetching study time: ${resource.message}")
+                    }
+                }
             }
         }
     }

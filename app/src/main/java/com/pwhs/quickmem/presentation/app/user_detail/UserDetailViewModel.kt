@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.user_detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class UserDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val authRepository: AuthRepository,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val appManager: AppManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UserDetailUiState())
@@ -31,16 +33,18 @@ class UserDetailViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val userId = savedStateHandle.get<String>("userId") ?: ""
-        val isOwner = savedStateHandle.get<Boolean>("isOwner") ?: false
-        Timber.d("isOwnerr: $isOwner")
-        _uiState.update {
-            it.copy(
-                userId = userId,
-                isOwner = isOwner
-            )
+        viewModelScope.launch {
+            val userId = savedStateHandle.get<String>("userId") ?: ""
+            val localUserId = appManager.userId.firstOrNull() ?: ""
+            val isOwner = userId == localUserId
+            _uiState.update {
+                it.copy(
+                    userId = userId,
+                    isOwner = isOwner
+                )
+            }
+            loadUserDetails()
         }
-        loadUserDetails()
     }
 
     fun onEvent(event: UserDetailUiAction) {

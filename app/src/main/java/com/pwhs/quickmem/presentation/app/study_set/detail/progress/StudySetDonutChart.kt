@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -41,13 +42,14 @@ fun StudySetDonutChart(
     color: Color = Color(0xFF4CAF50),
     studySetsNotLearn: Int = 0,
     studySetsStillLearn: Int = 0,
-    studySetsMastered: Int = 0
+    studySetsMastered: Int = 0,
+    donutChartSize: Dp = 220.dp
 ) {
-    val total = studySetsNotLearn + studySetsStillLearn + studySetsMastered
+    val total = (studySetsNotLearn + studySetsStillLearn + studySetsMastered).coerceAtLeast(0)
     val percentages = listOf(
-        studySetsNotLearn.toFloat() / total,
-        studySetsStillLearn.toFloat() / total,
-        studySetsMastered.toFloat() / total
+        studySetsNotLearn.coerceAtLeast(0).toFloat() / total,
+        studySetsStillLearn.coerceAtLeast(0).toFloat() / total,
+        studySetsMastered.coerceAtLeast(0).toFloat() / total
     )
 
     val colors = listOf(
@@ -65,7 +67,7 @@ fun StudySetDonutChart(
 
     Surface(
         modifier = modifier
-            .size(220.dp)
+            .size(donutChartSize)
             .padding(16.dp)
             .shadow(8.dp, shape = CircleShape),
         shape = CircleShape,

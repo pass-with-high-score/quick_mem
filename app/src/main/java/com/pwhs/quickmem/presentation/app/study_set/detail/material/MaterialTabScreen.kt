@@ -73,6 +73,10 @@ fun MaterialTabScreen(
     onNavigateToFlip: () -> Unit = {},
     onMakeCopyClick: () -> Unit = {},
     studySetColor: Color = ColorModel.defaultColors.first().hexValue.toColor(),
+    learningPercentFlipped: Int = 0,
+    learningPercentQuiz: Int = 0,
+    learningPercentTrueFalse: Int = 0,
+    learningPercentWrite: Int = 0,
 ) {
     val menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
@@ -209,28 +213,36 @@ fun MaterialTabScreen(
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_flip_flashcards),
                                     icon = R.drawable.ic_flipcard,
-                                    onClick = onNavigateToFlip
+                                    onClick = onNavigateToFlip,
+                                    color = studySetColor,
+                                    learningPercentage = learningPercentFlipped
                                 )
                             }
                             item {
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_quiz),
                                     icon = R.drawable.ic_quiz,
-                                    onClick = onNavigateToQuiz
+                                    onClick = onNavigateToQuiz,
+                                    color = studySetColor,
+                                    learningPercentage = learningPercentQuiz
                                 )
                             }
                             item {
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_true_false),
                                     icon = R.drawable.ic_tf,
-                                    onClick = onNavigateToTrueFalse
+                                    onClick = onNavigateToTrueFalse,
+                                    color = studySetColor,
+                                    learningPercentage = learningPercentTrueFalse
                                 )
                             }
                             item {
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_write),
                                     icon = R.drawable.ic_write,
-                                    onClick = onNavigateToWrite
+                                    onClick = onNavigateToWrite,
+                                    color = studySetColor,
+                                    learningPercentage = learningPercentWrite
                                 )
                             }
                         }

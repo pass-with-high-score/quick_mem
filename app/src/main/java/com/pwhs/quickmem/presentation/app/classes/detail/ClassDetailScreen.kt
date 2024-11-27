@@ -241,7 +241,6 @@ fun ClassDetailScreen(
             navigator.navigate(
                 UserDetailScreenDestination(
                     userId = it,
-                    isOwner = uiState.userResponseModel.id == it
                 )
             )
         },

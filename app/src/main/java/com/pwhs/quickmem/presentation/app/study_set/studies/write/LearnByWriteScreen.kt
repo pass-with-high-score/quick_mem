@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.write
 
+import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +50,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.core.data.enums.WriteStatus
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.LearnByTrueFalseUiEvent
 import com.pwhs.quickmem.presentation.app.study_set.studies.write.component.WriteFlashcardFinish
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.ViewImageDialog
@@ -66,6 +69,7 @@ import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -77,13 +81,27 @@ import kotlinx.coroutines.launch
 fun LearnByWriteScreen(
     modifier: Modifier = Modifier,
     viewModel: LearnByWriteViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    resultBackNavigator: ResultBackNavigator<Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                LearnByWriteUiEvent.Back -> {
+                    resultBackNavigator.navigateBack(true)
+                }
+
+                LearnByWriteUiEvent.Finished -> {
+                    Toast.makeText(context, "Finished", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     LearnByWrite(
         modifier = modifier,
         onNavigateBack = {
-            navigator.navigateUp()
+            viewModel.onEvent(LearnByWriteUiAction.OnBackClicked)
         },
         isLoading = uiState.isLoading,
         isEndOfList = uiState.isEndOfList,
@@ -284,27 +302,27 @@ fun LearnByWrite(
                                             )
                                         },
                                         trailingIcon = {
-                                           TextButton(
-                                               onClick = {
-                                                   debounceJob?.cancel()
-                                                   debounceJob = scope.launch {
-                                                       delay(500)
-                                                       onSubmitAnswer(
-                                                           writeQuestion?.id ?: "",
-                                                           WriteStatus.SKIPPED,
-                                                           ""
-                                                       )
-                                                   }
-                                               }
-                                           ) {
-                                               Text(
-                                                   text = "Don't know",
-                                                   style = MaterialTheme.typography.bodyMedium.copy(
-                                                       color = studySetColor,
-                                                       fontWeight = FontWeight.Bold
-                                                   )
-                                               )
-                                           }
+                                            TextButton(
+                                                onClick = {
+                                                    debounceJob?.cancel()
+                                                    debounceJob = scope.launch {
+                                                        delay(500)
+                                                        onSubmitAnswer(
+                                                            writeQuestion?.id ?: "",
+                                                            WriteStatus.SKIPPED,
+                                                            ""
+                                                        )
+                                                    }
+                                                }
+                                            ) {
+                                                Text(
+                                                    text = "Don't know",
+                                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                                        color = studySetColor,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                )
+                                            }
                                         },
                                         onValueChange = {
                                             userAnswer = it

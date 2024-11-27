@@ -1,6 +1,7 @@
 [versions]
 # default versions
 compileSdk = "35"
+composeCharts = "0.0.18"
 minSdk = "29"
 onesignal = "5.1.25"
 pagingRuntimeKtx = "3.3.4"
@@ -76,6 +77,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
 drawbox = { module = "io.ak1:drawbox", version.ref = "drawbox" }
 easycrop = { module = "io.github.mr0xf00:easycrop", version.ref = "easycrop" }
 easyvalidation-core = { module = "com.wajahatkarim:easyvalidation-core", version.ref = "easyvalidationCore" }

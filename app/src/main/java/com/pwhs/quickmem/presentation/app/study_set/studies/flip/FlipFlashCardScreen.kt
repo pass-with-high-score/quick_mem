@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.flip
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +54,6 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -63,15 +64,21 @@ import timber.log.Timber
 @Composable
 fun FlipFlashCardScreen(
     modifier: Modifier = Modifier,
-    navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Boolean>,
     viewModel: FlipFlashCardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                FlipFlashCardUiEvent.Finished -> TODO()
+                FlipFlashCardUiEvent.Finished -> {
+                    Toast.makeText(context, "Finished", Toast.LENGTH_SHORT).show()
+                }
+
+                FlipFlashCardUiEvent.Back -> {
+                    resultNavigator.navigateBack(true)
+                }
             }
 
         }
@@ -85,8 +92,7 @@ fun FlipFlashCardScreen(
         isEndOfList = uiState.isEndOfList,
         learningTime = uiState.learningTime,
         onBackClicked = {
-            resultNavigator.setResult(true)
-            navigator.navigateUp()
+            viewModel.onEvent(FlipFlashCardUiAction.OnBackClicked)
         },
         currentCardIndex = uiState.currentCardIndex,
         countKnown = uiState.countKnown,
