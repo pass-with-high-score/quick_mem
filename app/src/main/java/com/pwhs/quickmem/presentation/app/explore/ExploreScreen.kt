@@ -32,11 +32,15 @@ import com.pwhs.quickmem.presentation.app.explore.ai_chat.AIChatScreen
 import com.pwhs.quickmem.presentation.app.explore.top_streak.TopStreakScreen
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination.invoke
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>
 fun ExploreScreen(
     modifier: Modifier = Modifier,
+    navigator: DestinationsNavigator,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -57,7 +61,14 @@ fun ExploreScreen(
         topStreaks = uiState.topStreaks,
         rankOwner = uiState.rankOwner,
         streakOwner = uiState.streakOwner,
-        onTopStreakRefresh = { viewModel.onEvent(ExploreUiAction.RefreshTopStreaks) }
+        onTopStreakRefresh = { viewModel.onEvent(ExploreUiAction.RefreshTopStreaks) },
+        onClickToUserDetail = {
+            navigator.navigate(
+                UserDetailScreenDestination(
+                    userId = it,
+                )
+            )
+        }
     )
 }
 
@@ -69,6 +80,7 @@ fun Explore(
     rankOwner: Int? = null,
     streakOwner: GetTopStreakResponseModel? = null,
     topStreaks: List<GetTopStreakResponseModel> = emptyList(),
+    onClickToUserDetail: (String) -> Unit = {},
     onTopStreakRefresh: () -> Unit = {}
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -129,6 +141,9 @@ fun Explore(
                     rankOwner = rankOwner,
                     topStreaks = topStreaks,
                     streakOwner = streakOwner,
+                    onClickToUserDetail = {
+                        onClickToUserDetail(it.userId)
+                    },
                     onTopStreakRefresh = onTopStreakRefresh,
                 )
 

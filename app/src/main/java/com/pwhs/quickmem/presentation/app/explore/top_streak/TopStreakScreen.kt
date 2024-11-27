@@ -43,6 +43,7 @@ fun TopStreakScreen(
     rankOwner: Int? = null,
     streakOwner: GetTopStreakResponseModel? = null,
     topStreaks: List<GetTopStreakResponseModel> = emptyList(),
+    onClickToUserDetail: (GetTopStreakResponseModel) -> Unit = {},
     onTopStreakRefresh: () -> Unit = {}
 ) {
     val refreshState = rememberPullToRefreshState()
@@ -130,9 +131,8 @@ fun TopStreakScreen(
                     val topStreak = topStreaks[index]
                     StreakItem(
                         rank = index + 1,
-                        avatarUrl = topStreak.avatarUrl,
-                        username = topStreak.username,
-                        streakCount = topStreak.streakCount,
+                        topStreak = topStreak,
+                        onClickToUserDetail = onClickToUserDetail,
                         isCurrentUser = topStreak.userId == streakOwner?.userId
                     )
                 }

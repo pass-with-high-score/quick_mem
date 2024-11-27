@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.explore.top_streak.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,13 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.streak.GetTopStreakResponseModel
 
 @Composable
 fun StreakItem(
     rank: Int,
-    avatarUrl: String,
-    username: String,
-    streakCount: Int,
+    topStreak : GetTopStreakResponseModel,
+    onClickToUserDetail: (GetTopStreakResponseModel) -> Unit = {},
     isCurrentUser: Boolean = false
 ) {
     Row(
@@ -42,6 +43,7 @@ fun StreakItem(
             .fillMaxWidth()
             .background(if (isCurrentUser) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent)
             .clip(RoundedCornerShape(12.dp))
+            .clickable { onClickToUserDetail(topStreak) }
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -82,7 +84,7 @@ fun StreakItem(
         }
 
         AsyncImage(
-            model = avatarUrl,
+            model = topStreak.avatarUrl,
             contentDescription = "User Avatar",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -91,7 +93,7 @@ fun StreakItem(
         )
 
         Text(
-            text = username,
+            text = topStreak.username,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
             modifier = Modifier
                 .weight(1f)
@@ -106,7 +108,7 @@ fun StreakItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$streakCount ",
+                text = topStreak.streakCount.toString(),
                 style = MaterialTheme.typography.bodyMedium,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,

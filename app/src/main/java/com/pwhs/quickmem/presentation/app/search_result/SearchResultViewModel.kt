@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
@@ -44,7 +43,6 @@ class SearchResultViewModel @Inject constructor(
     private val classRepository: ClassRepository,
     private val folderRepository: FolderRepository,
     private val tokenManager: TokenManager,
-    private val appManager: AppManager,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SearchResultUiState())
@@ -74,16 +72,10 @@ class SearchResultViewModel @Inject constructor(
         _uiState.update { it.copy(query = query) }
 
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: return@launch
-            val ownerId = appManager.userId.firstOrNull() ?: return@launch
-            val userAvatar = appManager.userAvatar.firstOrNull() ?: return@launch
-            val username = appManager.userName.firstOrNull() ?: return@launch
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
             _uiState.update {
                 it.copy(
                     token = token,
-                    userId = ownerId,
-                    userAvatar = userAvatar,
-                    username = username
                 )
             }
             try {

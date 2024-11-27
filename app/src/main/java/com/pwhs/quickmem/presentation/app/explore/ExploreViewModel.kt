@@ -29,6 +29,10 @@ class ExploreViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        viewModelScope.launch {
+            val userId = appManager.userId.firstOrNull() ?: ""
+            _uiState.update { it.copy(ownerId = userId) }
+        }
         getTopStreaks()
     }
 
@@ -43,7 +47,6 @@ class ExploreViewModel @Inject constructor(
     private fun getTopStreaks() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
             streakRepository.getTopStreaks(token, 10).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
@@ -52,8 +55,10 @@ class ExploreViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         val topStreaks = resource.data ?: emptyList()
-                        val streakOwner = topStreaks.find { it.userId == userId }
-                        val rankOwner = topStreaks.indexOfFirst { it.userId == userId }.takeIf { it != -1 }?.plus(1)
+                        val streakOwner = topStreaks.find { it.userId == uiState.value.ownerId }
+                        val rankOwner =
+                            topStreaks.indexOfFirst { it.userId == uiState.value.ownerId }
+                                .takeIf { it != -1 }?.plus(1)
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
