@@ -55,6 +55,8 @@ fun ExploreScreen(
         modifier = modifier,
         isLoading = uiState.isLoading,
         topStreaks = uiState.topStreaks,
+        rankOwner = uiState.rankOwner,
+        streakOwner = uiState.streakOwner,
         onTopStreakRefresh = { viewModel.onEvent(ExploreUiAction.RefreshTopStreaks) }
     )
 }
@@ -64,6 +66,8 @@ fun ExploreScreen(
 fun Explore(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    rankOwner: Int? = null,
+    streakOwner: GetTopStreakResponseModel? = null,
     topStreaks: List<GetTopStreakResponseModel> = emptyList(),
     onTopStreakRefresh: () -> Unit = {}
 ) {
@@ -122,8 +126,10 @@ fun Explore(
             when (tabIndex) {
                 ExploreTabEnum.TOP_STREAK.index -> TopStreakScreen(
                     isLoading = isLoading,
+                    rankOwner = rankOwner,
                     topStreaks = topStreaks,
-                    onTopStreakRefresh = onTopStreakRefresh
+                    streakOwner = streakOwner,
+                    onTopStreakRefresh = onTopStreakRefresh,
                 )
 
                 ExploreTabEnum.AI_CHAT.index -> AIChatScreen()

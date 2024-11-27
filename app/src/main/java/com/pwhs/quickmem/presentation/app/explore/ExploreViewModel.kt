@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.explore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.StreakRepository
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
     private val tokenManager: TokenManager,
+    private val appManager: AppManager,
     private val streakRepository: StreakRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ExploreUiState())
@@ -41,17 +43,23 @@ class ExploreViewModel @Inject constructor(
     private fun getTopStreaks() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            streakRepository.getTopStreaks(token, null).collect { resource ->
+            val userId = appManager.userId.firstOrNull() ?: ""
+            streakRepository.getTopStreaks(token, 10).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
                         _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
+                        val topStreaks = resource.data ?: emptyList()
+                        val streakOwner = topStreaks.find { it.userId == userId }
+                        val rankOwner = topStreaks.indexOfFirst { it.userId == userId }.takeIf { it != -1 }?.plus(1)
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                topStreaks = resource.data ?: emptyList()
+                                topStreaks = topStreaks,
+                                streakOwner = streakOwner,
+                                rankOwner = rankOwner
                             )
                         }
                     }

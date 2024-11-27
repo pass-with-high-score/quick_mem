@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.explore.top_streak.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,17 +34,18 @@ fun StreakItem(
     rank: Int,
     avatarUrl: String,
     username: String,
-    streakCount: Int
+    streakCount: Int,
+    isCurrentUser: Boolean = false
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(if (isCurrentUser) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent)
             .clip(RoundedCornerShape(12.dp))
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Rank
         Box(
             modifier = Modifier.size(40.dp),
             contentAlignment = Alignment.Center
@@ -79,7 +81,6 @@ fun StreakItem(
             }
         }
 
-        // Avatar
         AsyncImage(
             model = avatarUrl,
             contentDescription = "User Avatar",
@@ -89,7 +90,6 @@ fun StreakItem(
                 .clip(CircleShape)
         )
 
-        // Username
         Text(
             text = username,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
@@ -101,7 +101,6 @@ fun StreakItem(
             overflow = TextOverflow.Ellipsis,
         )
 
-        // Streak Count
         Row(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
