@@ -347,7 +347,6 @@ fun StudySetDetailScreen(
             navigator.navigate(
                 UserDetailScreenDestination(
                     userId = uiState.user.id,
-                    isOwner = uiState.isOwner
                 )
             )
         },

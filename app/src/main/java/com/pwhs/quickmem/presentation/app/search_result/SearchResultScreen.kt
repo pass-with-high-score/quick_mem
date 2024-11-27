@@ -162,8 +162,7 @@ fun SearchResultScreen(
         onUserItemClicked = {
             navigator.navigate(
                 UserDetailScreenDestination(
-                    userId = it?.id ?: "",
-                    isOwner = uiState.userResponseModel.id == (it?.id ?: "")
+                    userId = it?.id ?: ""
                 )
             )
         },
