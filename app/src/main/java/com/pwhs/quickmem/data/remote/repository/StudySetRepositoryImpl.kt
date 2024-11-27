@@ -21,6 +21,7 @@ import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.SaveRecentAccessStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
@@ -299,5 +300,37 @@ class StudySetRepositoryImpl @Inject constructor(
                 )
             }
         ).flow
+    }
+
+    override suspend fun saveRecentAccessStudySet(
+        token: String,
+        saveRecentAccessStudySetRequestModel: SaveRecentAccessStudySetRequestModel
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.saveRecentStudySet(token, saveRecentAccessStudySetRequestModel.toDto())
+                emit(Resources.Success(Unit))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun getRecentAccessStudySet(
+        token: String,
+        userId: String
+    ): Flow<Resources<List<GetStudySetResponseModel>>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.getRecentStudySet(token, userId)
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
     }
 }

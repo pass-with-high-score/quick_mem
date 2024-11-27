@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -39,6 +40,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +58,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,12 +72,19 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
+import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.presentation.app.home.components.ClassHomeItem
+import com.pwhs.quickmem.presentation.app.home.components.FolderHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.NotificationListBottomSheet
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
+import com.pwhs.quickmem.presentation.app.home.components.StudySetHomeItem
 import com.pwhs.quickmem.presentation.app.home.components.SubjectItem
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -81,8 +92,12 @@ import com.pwhs.quickmem.ui.theme.streakTextColor
 import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchStudySetBySubjectScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
 import java.time.LocalDate
@@ -105,11 +120,41 @@ fun HomeScreen(
         }
     }
     Home(
+        isLoading = uiState.isLoading,
         modifier = modifier,
         subjects = uiState.subjects,
+        studySets = uiState.studySets,
+        folders = uiState.folders,
+        classes = uiState.classes,
         streakCount = uiState.streakCount,
         streakDates = uiState.streakDates,
         notificationCount = uiState.notificationCount,
+        onStudySetClick = {
+            navigator.navigate(
+                StudySetDetailScreenDestination(
+                    id = it.id,
+                    code = ""
+                )
+            )
+        },
+        onClassClicked = {
+            navigator.navigate(
+                ClassDetailScreenDestination(
+                    id = it.id,
+                    code = it.joinToken ?: "",
+                    title = it.title,
+                    description = it.description
+                )
+            )
+        },
+        onFolderClick = {
+            navigator.navigate(
+                FolderDetailScreenDestination(
+                    id = it.id,
+                    code = ""
+                )
+            )
+        },
         onNavigateToSearch = {
             navigator.navigate(SearchScreenDestination)
         },
@@ -132,6 +177,12 @@ fun HomeScreen(
                     icon = subject.iconRes ?: R.drawable.ic_all
                 )
             )
+        },
+        onClickToCreateStudySet = {
+            navigator.navigate(CreateStudySetScreenDestination())
+        },
+        onHomeRefresh = {
+            viewModel.onEvent(HomeUiAction.RefreshHome)
         }
     )
 }
@@ -141,13 +192,22 @@ fun HomeScreen(
 @Composable
 private fun Home(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    onHomeRefresh: () -> Unit = {},
     subjects: List<SubjectModel> = emptyList(),
+    studySets: List<GetStudySetResponseModel> = emptyList(),
+    folders: List<GetFolderResponseModel> = emptyList(),
+    classes: List<GetClassByOwnerResponseModel> = emptyList(),
+    onClassClicked: (GetClassByOwnerResponseModel) -> Unit = {},
+    onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
+    onFolderClick: (GetFolderResponseModel) -> Unit = {},
     streakCount: Int = 0,
     streakDates: List<LocalDate> = emptyList(),
     currentDate: LocalDate = LocalDate.now(),
     notificationCount: Int = 0,
     onNavigateToSearch: () -> Unit = {},
     onNotificationEnabled: (Boolean) -> Unit = {},
+    onClickToCreateStudySet: () -> Unit = {},
     customer: CustomerInfo? = null,
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
     onNotificationClicked: (String) -> Unit = {},
@@ -182,6 +242,9 @@ private fun Home(
     var isPaywallVisible by remember {
         mutableStateOf(false)
     }
+
+    val refreshState = rememberPullToRefreshState()
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -200,21 +263,21 @@ private fun Home(
                             fontFamily = firasansExtraboldFont,
                             color = when (customer?.activeSubscriptions?.isNotEmpty()) {
                                 true -> premiumColor
-                                false -> colorScheme.primary
+                                false -> Color.White
                                 null -> colorScheme.secondary
                             }
                         ),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 },
-                expandedHeight = 140.dp,
+                expandedHeight = 180.dp,
                 collapsedHeight = 56.dp,
                 title = {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp)
-                            .padding(end = 16.dp, bottom = 8.dp),
+                            .height(70.dp)
+                            .padding(end = 16.dp, bottom = 20.dp),
                         shape = CircleShape,
                         onClick = onNavigateToSearch,
                         colors = CardDefaults.cardColors(
@@ -299,7 +362,7 @@ private fun Home(
                 }
             )
         },
-        floatingActionButtonPosition = FabPosition.Start,
+        floatingActionButtonPosition = FabPosition.End,
         bottomBar = {
             Spacer(modifier = Modifier.height(100.dp))
         },
@@ -334,27 +397,165 @@ private fun Home(
             }
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+        PullToRefreshBox(
+            modifier = Modifier.fillMaxWidth(),
+            state = refreshState,
+            isRefreshing = isLoading,
+            onRefresh = {
+                onHomeRefresh()
+            }
         ) {
-            Text(
-                text = "Has active subscription - ${customer?.activeSubscriptions?.isNotEmpty()}"
-            )
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp)
             ) {
+                if (studySets.isEmpty() && classes.isEmpty()) {
+                    item {
+                        Text(
+                            text = "Here's how to get started",
+                            style = typography.titleMedium.copy(
+                                color = colorScheme.primary,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            onClick = onClickToCreateStudySet,
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White,
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_three_cards),
+                                    contentDescription = "Create a flashcard",
+                                    tint = Color.Blue,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                )
+
+                                Text(
+                                    text = "Create your own flashcards",
+                                    style = typography.titleMedium.copy(
+                                        color = colorScheme.onSurface,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .padding(vertical = 10.dp)
+                                        .padding(start = 10.dp)
+                                        .weight(1f)
+                                )
+                            }
+                        }
+                    }
+                }
+                if (studySets.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Study sets",
+                            style = typography.titleMedium.copy(
+                                color = colorScheme.primary,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
+                    item {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(studySets) { studySet ->
+                                StudySetHomeItem(
+                                    studySet = studySet,
+                                    onStudySetClick = { onStudySetClick(studySet) }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (folders.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Folders",
+                            style = typography.titleMedium.copy(
+                                color = colorScheme.primary,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+
+                    item {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(folders) { folder ->
+                                FolderHomeItem(
+                                    title = folder.title,
+                                    numOfStudySets = folder.studySetCount,
+                                    onClick = { onFolderClick(folder) },
+                                    userResponseModel = folder.owner,
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (classes.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Classes",
+                            style = typography.titleMedium.copy(
+                                color = colorScheme.primary,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+
+                    item {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(classes) { classItem ->
+                                ClassHomeItem(
+                                    classItem = classItem,
+                                    onClick = { onClassClicked(classItem) }
+                                )
+                            }
+                        }
+                    }
+                }
+
                 item {
                     Text(
                         text = "Top 5 subjects have study sets",
-                        style = typography.titleLarge.copy(
+                        style = typography.titleMedium.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold
                         ),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 24.dp)
                     )
                 }
                 items(subjects, key = { it.id }) { subject ->
@@ -365,18 +566,14 @@ private fun Home(
                         },
                     )
                 }
+                item {
+                    Spacer(modifier = Modifier.height(60.dp))
+                }
             }
         }
+
+
     }
-    Paywall(
-        isPaywallVisible = isPaywallVisible,
-        onCustomerInfoChanged = { customerInfo ->
-            onCustomerInfoChanged(customerInfo)
-        },
-        onPaywallDismissed = {
-            isPaywallVisible = false
-        },
-    )
     if (showStreakBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -447,6 +644,7 @@ private fun Home(
             isPaywallVisible = false
         },
     )
+    LoadingOverlay(isLoading = isLoading)
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -455,12 +653,14 @@ private fun Home(
 private fun HomeScreenPreview() {
     QuickMemTheme {
         Home(
-            streakCount = 5,
-            currentDate = LocalDate.now(),
-            streakDates = listOf(
-                LocalDate.now().plusDays(1),
-                LocalDate.now().plusDays(2),
-                LocalDate.now().plusDays(3)
+            subjects = listOf(
+                SubjectModel(
+                    1,
+                    "All",
+                    iconRes = R.drawable.ic_all,
+                    color = Color(0xFF7f60f9),
+                    studySetCount = 1
+                ),
             )
         )
     }
