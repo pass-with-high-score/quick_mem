@@ -12,9 +12,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.CreateTextField
 import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -93,7 +95,7 @@ fun EditFolder(
             CreateTopAppBar(
                 onNavigateBack = onNavigateBack,
                 onDoneClick = onDoneClick,
-                title = "Edit folder"
+                title = stringResource(R.string.txt_edit_folder)
             )
         }
     ) { innerPadding ->
@@ -105,20 +107,20 @@ fun EditFolder(
             ) {
                 CreateTextField(
                     value = title,
-                    title = "Folder Title",
+                    title = stringResource(R.string.txt_folder_title),
                     valueError = titleError,
                     onValueChange = onTitleChange,
-                    placeholder = "Enter Folder Title"
+                    placeholder = stringResource(R.string.txt_enter_folder_title)
                 )
                 CreateTextField(
                     value = description,
-                    title = "Description (Optional)",
+                    title = stringResource(R.string.txt_description_optional),
                     valueError = descriptionError,
                     onValueChange = onDescriptionChange,
-                    placeholder = "Enter Description"
+                    placeholder = stringResource(R.string.txt_enter_description )
                 )
                 SwitchContainer(
-                    text = "When you make a folder public, anyone can see it and use it.",
+                    text = stringResource(R.string.txt_when_you_make_a_folder_public_anyone_can_see_it_and_use_it),
                     checked = isPublic,
                     onCheckedChange = onIsPublicChange
                 )

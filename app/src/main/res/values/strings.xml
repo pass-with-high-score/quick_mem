@@ -346,4 +346,5 @@
     <string name="txt_draw">Draw</string>
     <string name="txt_cancel_and_back">Cancel and back</string>
     <string name="txt_stroke_width">Stroke Width</string>
+    <string name="txt_when_you_make_a_folder_public_anyone_can_see_it_and_use_it">When you make a folder public, anyone can see it and use it.</string>
 </resources>

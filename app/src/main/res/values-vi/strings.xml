@@ -343,4 +343,5 @@
     <string name="txt_draw">Vẽ</string>
     <string name="txt_cancel_and_back">Hủy và quay lại</string>
     <string name="txt_stroke_width">Độ rộng nét vẽ</string>
+    <string name="txt_when_you_make_a_folder_public_anyone_can_see_it_and_use_it">Khi bạn công khai một thư mục, bất kỳ ai cũng có thể xem và sử dụng nó.</string>
 </resources>
