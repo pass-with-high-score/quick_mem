@@ -287,4 +287,12 @@
     <string name="txt_vn_flag">VN Flag</string>
     <string name="txt_check">Check</string>
     <string name="txt_us_flag">US Flag</string>
+    <string name="txt_here_is_how_to_get_started">Here\'s how to get started</string>
+    <string name="txt_create_a_flashcard">Create a flashcard</string>
+    <string name="txt_create_your_own_flashcards">Create your own flashcards</string>
+    <string name="txt_top_5_subjects_have_study_sets">Top 5 subjects have study sets</string>
+    <string name="txt_practice_every_day">Practice every day so you don\'t lose your streak!</string>
+    <string name="txt_retry">Retry</string>
+    <string name="txt_folder_icon">Folder Icon</string>
+    <string name="txt_streak_fire">Streak Fire</string>
 </resources>

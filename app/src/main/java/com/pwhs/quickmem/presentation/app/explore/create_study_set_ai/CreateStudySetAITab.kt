@@ -232,7 +232,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(stringResource(R.string.txt_number_of_flashcards_5))
+                            Text("5")
                             RadioButton(
                                 selected = numberOfFlashcards == 5,
                                 onClick = { onNumberOfFlashcardsChange(5) }
@@ -246,7 +246,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(stringResource(R.string.txt_number_of_flashcards_10))
+                            Text("10")
                             RadioButton(
                                 selected = numberOfFlashcards == 10,
                                 onClick = { onNumberOfFlashcardsChange(10) }
@@ -260,7 +260,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(stringResource(R.string.txt_number_of_flashcards_15))
+                            Text("15")
                             RadioButton(
                                 selected = numberOfFlashcards == 15,
                                 onClick = { onNumberOfFlashcardsChange(15) }
@@ -274,7 +274,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(stringResource(R.string.txt_number_of_flashcards_20))
+                            Text("20")
                             RadioButton(
                                 selected = numberOfFlashcards == 20,
                                 onClick = { onNumberOfFlashcardsChange(20) }

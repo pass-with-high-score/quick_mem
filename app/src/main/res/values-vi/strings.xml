@@ -284,4 +284,12 @@
     <string name="txt_vn_flag">Cờ VN</string>
     <string name="txt_check">Kiểm tra</string>
     <string name="txt_us_flag">Cờ Mỹ</string>
+    <string name="txt_here_is_how_to_get_started">Dưới đây là cách bắt đầu</string>
+    <string name="txt_create_a_flashcard">Tạo một flashcard</string>
+    <string name="txt_create_your_own_flashcards">Tạo flashcard của riêng bạn</string>
+    <string name="txt_top_5_subjects_have_study_sets">Top 5 môn học có bộ học</string>
+    <string name="txt_practice_every_day">Luyện tập mỗi ngày để không mất chuỗi!</string>
+    <string name="txt_retry">Thử lại</string>
+    <string name="txt_folder_icon">Biểu tượng thư mục</string>
+    <string name="txt_streak_fire">Chuỗi lửa</string>
 </resources>
