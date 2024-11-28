@@ -8,8 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.users.ClassMemberModel
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailEmpty
 import com.pwhs.quickmem.presentation.app.classes.detail.members.component.ClassMemberItem
@@ -33,9 +35,9 @@ fun MembersTabScreen(
                 member.isEmpty() -> {
                     ClassDetailEmpty(
                         modifier = Modifier.padding(innerPadding),
-                        title = "This class has no members",
-                        subtitle = "Add members to share them with your class.",
-                        buttonTitle = "Add Members",
+                        title = stringResource(R.string.txt_this_class_has_no_members),
+                        subtitle = stringResource(R.string.txt_add_members_to_share_them_with_your_class),
+                        buttonTitle = stringResource(R.string.txt_add_members),
                         onAddClick = onAddMembersClicked,
                         isOwner = isOwner
                     )

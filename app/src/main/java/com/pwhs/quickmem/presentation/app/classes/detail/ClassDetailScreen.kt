@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,6 +62,7 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import timber.log.Timber
+import com.pwhs.quickmem.R
 
 @Composable
 @Destination<RootGraph>(
@@ -317,7 +319,11 @@ fun ClassDetail(
     onDeleteFolderClick: (String) -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabTitles = listOf("Study sets", "Folders", "Members")
+    val tabTitles = listOf(
+        stringResource(id = R.string.txt_study_sets),
+        stringResource(id = R.string.txt_folders),
+        stringResource(R.string.txt_members)
+    )
 
     val refreshState = rememberPullToRefreshState()
     var showMoreBottomSheet by remember { mutableStateOf(false) }

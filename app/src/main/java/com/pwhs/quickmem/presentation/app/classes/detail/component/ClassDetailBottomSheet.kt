@@ -20,6 +20,8 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,19 +57,19 @@ fun ClassDetailBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onAddStudySetToClass,
                         icon = Outlined.ContentCopy,
-                        title = "Add study set to class"
+                        title = stringResource(R.string.txt_add_study_set_to_class)
                     )
                     ItemMenuBottomSheet(
                         onClick = onAddFolderToClass,
                         icon = Outlined.Folder,
-                        title = "Add folder to class"
+                        title = stringResource(R.string.txt_add_folder_to_class)
                     )
                 }
                 if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onEditClass,
                         icon = Outlined.Edit,
-                        title = "Edit Class"
+                        title = stringResource(R.string.txt_edit_class)
                     )
                 }
 
@@ -75,26 +77,26 @@ fun ClassDetailBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onJoinClass,
                         icon = Outlined.GroupAdd,
-                        title = "Join Class"
+                        title = stringResource(R.string.txt_join_class)
                     )
                 }
                 ItemMenuBottomSheet(
                     onClick = onShareClass,
                     icon = Default.IosShare,
-                    title = "Share Class"
+                    title = stringResource(R.string.txt_share_class)
                 )
                 if (!isOwner && isMember) {
                     ItemMenuBottomSheet(
                         onClick = onExitClass,
                         icon = Icons.AutoMirrored.Filled.ExitToApp,
-                        title = "Exit Class",
+                        title = stringResource(R.string.txt_exit_class),
                     )
                 }
                 if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onDeleteClass,
                         icon = Default.DeleteOutline,
-                        title = "Delete Class",
+                        title = stringResource(R.string.txt_delete_class),
                         color = Color.Red
                     )
                 }
@@ -102,7 +104,7 @@ fun ClassDetailBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onReportClass,
                         icon = Outlined.Report,
-                        title = "Report Class"
+                        title = stringResource(R.string.txt_report_class)
                     )
                 }
             }

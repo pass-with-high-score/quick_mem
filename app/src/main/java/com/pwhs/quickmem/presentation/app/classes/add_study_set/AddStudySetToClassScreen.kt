@@ -16,9 +16,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.classes.add_study_set.component.AddStudySetToClassList
 import com.pwhs.quickmem.presentation.app.classes.add_study_set.component.AddStudySetToClassTopAppBar
@@ -103,7 +105,7 @@ fun AddStudySetToClass(
             AddStudySetToClassTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
-                title = "Add Study Set"
+                title = stringResource(R.string.txt_add_study_set)
             )
         },
         floatingActionButton = {
@@ -114,7 +116,7 @@ fun AddStudySetToClass(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Create Study Set"
+                    contentDescription = stringResource(R.string.txt_create_study_set)
                 )
             }
         }

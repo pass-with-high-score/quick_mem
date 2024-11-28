@@ -14,10 +14,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +52,7 @@ fun AddStudySetToClassTopAppBar(
                 )
             ) {
                 Text(
-                    text = "Done",
+                    text = stringResource(R.string.txt_done),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface,
@@ -67,7 +69,7 @@ fun AddStudySetToClassTopAppBar(
                 )
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.txt_cancel),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.onSurface,

@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -80,7 +79,7 @@ fun AddStudySetToClassItem(
             ) {
                 Text(
                     studySet.title,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     maxLines = 2,
@@ -93,14 +92,14 @@ fun AddStudySetToClassItem(
                 Text(
                     buildAnnotatedString {
                         withStyle(
-                            style = MaterialTheme.typography.bodySmall.toSpanStyle()
+                            style = typography.bodySmall.toSpanStyle()
                                 .copy(
                                     fontWeight = FontWeight.Bold
                                 )
                         ) {
                             append("${studySet.flashcardCount}")
                             withStyle(
-                                style = MaterialTheme.typography.bodySmall.toSpanStyle()
+                                style = typography.bodySmall.toSpanStyle()
                                     .copy(
                                         fontWeight = FontWeight.Normal
                                     )
@@ -115,12 +114,12 @@ fun AddStudySetToClassItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = studySet?.subject?.name ?: SubjectModel.defaultSubjects[0].name,
+                        text = studySet.subject?.name ?: SubjectModel.defaultSubjects[0].name,
                         style = typography.bodySmall.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f)
                         )
                     )
-                    if(studySet?.isAIGenerated == true) {
+                    if(studySet.isAIGenerated == true) {
                         VerticalDivider(
                             modifier = Modifier.height(12.dp)
                         )
@@ -146,7 +145,7 @@ fun AddStudySetToClassItem(
                 ) {
                     AsyncImage(
                         model = studySet.owner.avatarUrl,
-                        contentDescription = "User avatar",
+                        contentDescription = stringResource(R.string.txt_user_avatar),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(18.dp)
@@ -154,7 +153,7 @@ fun AddStudySetToClassItem(
                     )
                     Text(
                         studySet.owner.username,
-                        style = MaterialTheme.typography.bodySmall
+                        style = typography.bodySmall
                     )
                 }
             }
@@ -170,7 +169,9 @@ fun AddStudySetToClassItem(
             ) {
                 Icon(
                     painter = painterResource(if (isAdded) R.drawable.ic_check_circle else R.drawable.ic_add_circle),
-                    contentDescription = if (isAdded) "Check Icon" else "Add Icon",
+                    contentDescription = if (isAdded) stringResource(R.string.txt_check_icon) else stringResource(
+                        R.string.txt_add_icon
+                    ),
                     modifier = Modifier.size(26.dp),
                     tint = colorScheme.onSurface
                 )
