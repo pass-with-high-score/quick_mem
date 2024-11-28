@@ -293,7 +293,7 @@ fun Profile(
 
                 item {
                     Text(
-                        text = "Look at your streak!",
+                        text = stringResource(R.string.txt_look_at_your_streak),
                         style = typography.bodyLarge.copy(
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 20.sp
@@ -344,7 +344,7 @@ fun Profile(
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
                             Text(
-                                text = "Practice every day so you don't lose your streak!",
+                                text = stringResource(R.string.txt_practice_every_day_so_you_don_t_lose_your_streak),
                                 style = typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 ),

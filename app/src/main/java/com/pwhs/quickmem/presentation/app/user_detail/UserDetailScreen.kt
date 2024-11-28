@@ -267,7 +267,7 @@ private fun UserDetail(
                 )
                 if (role == "TEACHER") {
                     Text(
-                        text = "Teacher",
+                        text = stringResource(R.string.txt_teacher),
                         style = typography.bodySmall.copy(
                             fontWeight = FontWeight.Bold
                         ),

@@ -439,7 +439,7 @@ fun Setting(
                             )
                             HorizontalDivider()
                             SettingItem(
-                                title = "Email",
+                                title = stringResource(R.string.txt_email),
                                 subtitle = email,
                                 onClick = {
                                     showVerifyPasswordBottomSheet = true

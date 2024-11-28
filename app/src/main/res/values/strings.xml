@@ -347,4 +347,11 @@
     <string name="txt_cancel_and_back">Cancel and back</string>
     <string name="txt_stroke_width">Stroke Width</string>
     <string name="txt_when_you_make_a_folder_public_anyone_can_see_it_and_use_it">When you make a folder public, anyone can see it and use it.</string>
+    <string name="txt_look_at_your_streak">Look at your streak!</string>
+    <string name="txt_practice_every_day_so_you_don_t_lose_your_streak">Practice every day so you don\'t lose your streak!</string>
+    <string name="txt_continue">Continue</string>
+    <string name="txt_first_verify_your_account">First, verify your account</string>
+    <string name="txt_to_confirm_it_s_really_you_please_enter_your_quickmem_password">To confirm it\'s really you, please enter your QuickMem password</string>
+    <string name="txt_current_password">Current Password</string>
+    <string name="txt_confirm_new_password">Confirm New Password</string>
 </resources>

@@ -9,9 +9,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTextField
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -93,7 +95,7 @@ fun ChangePasswordSetting(
         modifier = modifier,
         topBar = {
             SettingTopAppBar(
-                title = "Change Password",
+                title = stringResource(R.string.txt_change_password),
                 onNavigateBack = onNavigateBack,
                 onSaved = onSaved,
                 enabled = currentPassword.isNotEmpty() && newPassword.isNotEmpty() && confirmPassword.isNotEmpty()
@@ -112,7 +114,7 @@ fun ChangePasswordSetting(
                         .padding(horizontal = 16.dp),
                     value = currentPassword,
                     onValueChange = onCurrentPasswordChanged,
-                    placeholder = "Current Password",
+                    placeholder = stringResource(R.string.txt_current_password),
                     errorMessage = errorCurrentPassword,
                     isSecure = true
                 )
@@ -121,7 +123,7 @@ fun ChangePasswordSetting(
                         .padding(horizontal = 16.dp),
                     value = newPassword,
                     onValueChange = onNewPasswordChanged,
-                    placeholder = "New Password",
+                    placeholder = stringResource(R.string.txt_new_password),
                     errorMessage = errorNewPassword,
                     isSecure = true
                 )
@@ -130,7 +132,7 @@ fun ChangePasswordSetting(
                         .padding(horizontal = 16.dp),
                     value = confirmPassword,
                     onValueChange = onConfirmPasswordChanged,
-                    placeholder = "Confirm New Password",
+                    placeholder = stringResource(R.string.txt_confirm_new_password),
                     errorMessage = errorConfirmPassword,
                     isSecure = true
                 )
