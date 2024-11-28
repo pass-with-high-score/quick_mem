@@ -24,12 +24,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
@@ -228,7 +230,7 @@ fun SearchResult(
         topBar = {
             TopBarSearchResult(
                 onNavigateBack = onNavigateBack,
-                title = "Result \"${query}\"",
+                title = stringResource(R.string.txt_result, query),
                 onClickFilter = {
                     if (tabIndex == SearchResultEnum.STUDY_SET.index) {
                         showFilterBottomSheet = true

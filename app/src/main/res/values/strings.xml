@@ -274,10 +274,6 @@
     <string name="txt_title_required">Title (required)</string>
     <string name="txt_description_optional">Description (optional)</string>
     <string name="txt_number_of_flashcards_optional">Number of flashcards (optional)</string>
-    <string name="txt_number_of_flashcards_5">5</string>
-    <string name="txt_number_of_flashcards_10">10</string>
-    <string name="txt_number_of_flashcards_15">15</string>
-    <string name="txt_number_of_flashcards_20">20</string>
     <string name="txt_question_type">Question type</string>
     <string name="txt_multiple_choice">Multiple choice</string>
     <string name="txt_difficulty_level">Difficulty level</string>
@@ -295,4 +291,13 @@
     <string name="txt_retry">Retry</string>
     <string name="txt_folder_icon">Folder Icon</string>
     <string name="txt_streak_fire">Streak Fire</string>
+    <string name="txt_view_all">View all</string>
+    <string name="txt_no_results_found">No results found</string>
+    <string name="txt_users">Users</string>
+    <string name="txt_filter">Filter</string>
+    <string name="txt_filters">Filters</string>
+    <string name="txt_number_of_terms">Number of terms</string>
+    <string name="txt_apply">Apply</string>
+    <string name="txt_avatar">avatar</string>
+    <string name="txt_result">Result \"%1$s\"</string>
 </resources>

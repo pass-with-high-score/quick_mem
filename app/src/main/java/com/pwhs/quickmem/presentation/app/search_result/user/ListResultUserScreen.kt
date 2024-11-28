@@ -76,7 +76,7 @@ fun ListResultUserScreen(
                                 contentDescription = stringResource(R.string.txt_empty_folder),
                             )
                             Text(
-                                text = "No members",
+                                text = stringResource(R.string.txt_no_members),
                                 style = typography.titleLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -127,7 +127,7 @@ fun ListResultUserScreen(
                                         onClick = onUserRefresh,
                                         modifier = Modifier.padding(top = 16.dp)
                                     ) {
-                                        Text(text = "Retry")
+                                        Text(text = stringResource(R.string.txt_retry))
                                     }
                                 }
                             }
@@ -173,7 +173,7 @@ fun ListResultUserScreen(
                                         onClick = { retry() },
                                         modifier = Modifier.padding(top = 16.dp)
                                     ) {
-                                        Text(text = "Retry")
+                                        Text(text = stringResource(R.string.txt_retry))
                                     }
                                 }
                             }

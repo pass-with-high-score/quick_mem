@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -121,7 +120,7 @@ fun ListResultFolderScreen(
                                     onClick = onFolderRefresh,
                                     modifier = Modifier.padding(top = 16.dp)
                                 ) {
-                                    Text(text = "Retry")
+                                    Text(text = stringResource(R.string.txt_retry))
                                 }
                             }
                         }
@@ -167,7 +166,7 @@ fun ListResultFolderScreen(
                                     onClick = { retry() },
                                     modifier = Modifier.padding(top = 16.dp)
                                 ) {
-                                    Text(text = "Retry")
+                                    Text(text = stringResource(R.string.txt_retry))
                                 }
                             }
                         }
