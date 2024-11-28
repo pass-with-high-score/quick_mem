@@ -332,4 +332,15 @@
     <string name="txt_folder_title">Tiêu đề thư mục</string>
     <string name="txt_enter_folder_title">Nhập tiêu đề thư mục</string>
     <string name="txt_enter_description">Nhập mô tả</string>
+    <string name="txt_class_detail">Chi tiết lớp</string>
+    <string name="txt_title">Tiêu đề</string>
+    <string name="txt_class_image">Hình ảnh lớp</string>
+    <string name="txt_image_for_definition">Hình ảnh cho định nghĩa</string>
+    <string name="add_image_to_definition">Thêm hình ảnh vào định nghĩa</string>
+    <string name="txt_full_image">Hình ảnh đầy đủ</string>
+    <string name="txt_delete_image">Xóa hình ảnh</string>
+    <string name="txt_save">Lưu</string>
+    <string name="txt_draw">Vẽ</string>
+    <string name="txt_cancel_and_back">Hủy và quay lại</string>
+    <string name="txt_stroke_width">Độ rộng nét vẽ</string>
 </resources>

@@ -35,8 +35,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.flashcard.create.draw.component.ControlsBar
 import com.pwhs.quickmem.presentation.app.flashcard.create.draw.component.SeekbarBrushWidth
 import com.pwhs.quickmem.util.convertToOldColor
@@ -51,7 +53,6 @@ import io.ak1.rangvikalp.defaultSelectedColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @Destination<RootGraph>
@@ -111,7 +112,7 @@ fun DrawFlashCard(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Draw", style = typography.titleMedium.copy(
+                        text = stringResource(R.string.txt_draw), style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -122,7 +123,7 @@ fun DrawFlashCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Clear,
-                            contentDescription = "Cancel and back",
+                            contentDescription = stringResource(R.string.txt_cancel_and_back),
                         )
                     }
                 },
@@ -144,7 +145,7 @@ fun DrawFlashCard(
                             tint = colorScheme.primary
                         )
                         Text(
-                            text = "Save",
+                            text = stringResource(R.string.txt_save),
                             style = typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = colorScheme.primary

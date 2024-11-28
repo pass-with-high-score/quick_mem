@@ -335,4 +335,15 @@
     <string name="txt_folder_title">Folder Title</string>
     <string name="txt_enter_folder_title">Enter Folder Title</string>
     <string name="txt_enter_description">Enter Description</string>
+    <string name="txt_class_detail">Class Detail</string>
+    <string name="txt_title">Title</string>
+    <string name="txt_class_image">Class Image</string>
+    <string name="txt_image_for_definition">Image for definition</string>
+    <string name="add_image_to_definition">Add Image to Definition</string>
+    <string name="txt_full_image">Full Image</string>
+    <string name="txt_delete_image">Delete Image</string>
+    <string name="txt_save">Save</string>
+    <string name="txt_draw">Draw</string>
+    <string name="txt_cancel_and_back">Cancel and back</string>
+    <string name="txt_stroke_width">Stroke Width</string>
 </resources>
