@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,25 +87,25 @@ fun TopStreakScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.top2),
-                    contentDescription = "Silver Medal",
+                    contentDescription = stringResource(R.string.txt_silver_medal),
                     modifier = Modifier.size(with(density) { silverSize.value.toDp() })
                 )
                 Image(
                     painter = painterResource(id = R.drawable.top1),
-                    contentDescription = "Gold Medal",
+                    contentDescription = stringResource(R.string.txt_gold_medal),
                     modifier = Modifier.size(with(density) { goldSize.value.toDp() })
                 )
                 Image(
                     painter = painterResource(id = R.drawable.top3),
-                    contentDescription = "Bronze Medal",
+                    contentDescription = stringResource(R.string.txt_bronze_medal),
                     modifier = Modifier.size(with(density) { bronzeSize.value.toDp() })
                 )
             }
 
             val message = when (rankOwner) {
                 in 1..3 -> "You have reached the top #$rankOwner on the Top Streak leaderboard!"
-                in 4..10 -> "Keep up the streak to climb the leaderboard!"
-                else -> "Top 10 highest streak leaderboard"
+                in 4..10 -> stringResource(R.string.txt_keep_up_the_streak_to_climb_the_leaderboard)
+                else -> stringResource(R.string.txt_top_10_highest_streak_leaderboard)
             }
 
             Text(

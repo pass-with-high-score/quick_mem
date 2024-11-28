@@ -117,10 +117,10 @@ fun CreateStudySetAITab(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_sparkling),
-                            contentDescription = "Create",
+                            contentDescription = stringResource(R.string.txt_create),
                         )
                         Text(
-                            text = "Create",
+                            text = stringResource(R.string.txt_create),
                             style = typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Bold
                             )
@@ -141,7 +141,7 @@ fun CreateStudySetAITab(
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     Text(
-                        text = "Warning: AI may not generate accurate or complete flashcards. Please review if unsure.",
+                        text = stringResource(R.string.txt_warning_ai_not_gen),
                         color = Color.Red,
                         style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                         textAlign = TextAlign.Start,
@@ -176,7 +176,7 @@ fun CreateStudySetAITab(
                     onValueChange = onTitleChange,
                     placeholder = {
                         Text(
-                            text = "Title (required)",
+                            text = stringResource(R.string.txt_title_required),
                             style = typography.bodyMedium,
                         )
                     }
@@ -194,7 +194,7 @@ fun CreateStudySetAITab(
                     onValueChange = onDescriptionChange,
                     placeholder = {
                         Text(
-                            text = "Description (optional)",
+                            text = stringResource(R.string.txt_description_optional),
                             style = typography.bodyMedium,
                         )
                     },
@@ -211,7 +211,7 @@ fun CreateStudySetAITab(
             }
             item {
                 Text(
-                    text = "Number of flashcards (optional)",
+                    text = stringResource(R.string.txt_number_of_flashcards_optional),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -232,7 +232,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("5")
+                            Text(stringResource(R.string.txt_number_of_flashcards_5))
                             RadioButton(
                                 selected = numberOfFlashcards == 5,
                                 onClick = { onNumberOfFlashcardsChange(5) }
@@ -246,7 +246,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("10")
+                            Text(stringResource(R.string.txt_number_of_flashcards_10))
                             RadioButton(
                                 selected = numberOfFlashcards == 10,
                                 onClick = { onNumberOfFlashcardsChange(10) }
@@ -260,7 +260,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("15")
+                            Text(stringResource(R.string.txt_number_of_flashcards_15))
                             RadioButton(
                                 selected = numberOfFlashcards == 15,
                                 onClick = { onNumberOfFlashcardsChange(15) }
@@ -274,7 +274,7 @@ fun CreateStudySetAITab(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("20")
+                            Text(stringResource(R.string.txt_number_of_flashcards_20))
                             RadioButton(
                                 selected = numberOfFlashcards == 20,
                                 onClick = { onNumberOfFlashcardsChange(20) }
@@ -310,7 +310,7 @@ fun CreateStudySetAITab(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Language",
+                            text = stringResource(R.string.txt_language),
                             style = typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Bold
                             )
@@ -336,7 +336,7 @@ fun CreateStudySetAITab(
             }
             item {
                 Text(
-                    text = "Question type",
+                    text = stringResource(R.string.txt_question_type),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -363,7 +363,7 @@ fun CreateStudySetAITab(
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp)
                         ) {
-                            Text(text = "Multiple choice")
+                            Text(text = stringResource(R.string.txt_multiple_choice))
                             Spacer(modifier = Modifier.weight(1f))
                             RadioButton(
                                 selected = questionType == QuestionType.MULTIPLE_CHOICE,
@@ -377,7 +377,7 @@ fun CreateStudySetAITab(
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp)
                         ) {
-                            Text(text = "True/False")
+                            Text(text = stringResource(R.string.txt_true_false))
                             Spacer(modifier = Modifier.weight(1f))
                             RadioButton(
                                 selected = questionType == QuestionType.TRUE_FALSE,
@@ -390,7 +390,7 @@ fun CreateStudySetAITab(
 
             item {
                 Text(
-                    text = "Difficulty level",
+                    text = stringResource(R.string.txt_difficulty_level),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -416,7 +416,7 @@ fun CreateStudySetAITab(
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp)
                         ) {
-                            Text(text = "Easy")
+                            Text(text = stringResource(R.string.txt_easy))
                             Spacer(modifier = Modifier.weight(1f))
                             RadioButton(
                                 selected = difficultyLevel == DifficultyLevel.EASY,
@@ -430,7 +430,7 @@ fun CreateStudySetAITab(
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp)
                         ) {
-                            Text(text = "Medium")
+                            Text(text = stringResource(R.string.txt_medium))
                             Spacer(modifier = Modifier.weight(1f))
                             RadioButton(
                                 selected = difficultyLevel == DifficultyLevel.MEDIUM,
@@ -444,7 +444,7 @@ fun CreateStudySetAITab(
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp)
                         ) {
-                            Text(text = "Hard")
+                            Text(text = stringResource(R.string.txt_hard))
                             Spacer(modifier = Modifier.weight(1f))
                             RadioButton(
                                 selected = difficultyLevel == DifficultyLevel.HARD,
@@ -492,7 +492,7 @@ fun CreateStudySetAITab(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_vn_flag),
-                                contentDescription = "VN Flag",
+                                contentDescription = stringResource(R.string.txt_vn_flag),
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -511,7 +511,7 @@ fun CreateStudySetAITab(
                         if (language == LanguageCode.VI.code) {
                             Icon(
                                 imageVector = Icons.Default.Check,
-                                contentDescription = "Check",
+                                contentDescription = stringResource(R.string.txt_check),
                                 tint = colorScheme.primary
                             )
                         }
@@ -532,7 +532,7 @@ fun CreateStudySetAITab(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_us_flag),
-                                contentDescription = "US Flag",
+                                contentDescription = stringResource(R.string.txt_us_flag),
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -552,7 +552,7 @@ fun CreateStudySetAITab(
                         if (language == LanguageCode.EN.code) {
                             Icon(
                                 imageVector = Icons.Default.Check,
-                                contentDescription = "Check",
+                                contentDescription = stringResource(R.string.txt_check),
                                 tint = colorScheme.primary
                             )
                         }

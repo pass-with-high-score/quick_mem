@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScr
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.pwhs.quickmem.R
 
 @Composable
 @Destination<RootGraph>
@@ -104,7 +106,6 @@ fun ExploreScreen(
         onCreateStudySet = {
             viewModel.onEvent(ExploreUiAction.OnCreateStudySet)
         },
-        errorMessage = uiState.errorMessage
     )
 }
 
@@ -131,12 +132,11 @@ fun Explore(
     onQuestionTypeChange: (QuestionType) -> Unit = {},
     onDifficultyLevelChange: (DifficultyLevel) -> Unit = {},
     onCreateStudySet: () -> Unit = {},
-    errorMessage: String = ""
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf(
-        "Create Study Set AI",
-        "Top Streak",
+        stringResource(R.string.txt_create_study_set_ai),
+        stringResource(R.string.txt_top_streak),
     )
 
     Scaffold(
@@ -145,7 +145,7 @@ fun Explore(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Explore",
+                        text = stringResource(R.string.txt_explore),
                         style = typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
