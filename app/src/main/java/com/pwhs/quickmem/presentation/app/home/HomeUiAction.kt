@@ -9,6 +9,5 @@ sealed class HomeUiAction {
     data class OnChangeCustomerInfo(val customerInfo: CustomerInfo) : HomeUiAction()
     data class LoadNotifications(val userId: String) : HomeUiAction()
     data class MarkAsRead(val notificationId: String) : HomeUiAction()
-    data object RefreshNotifications : HomeUiAction()
     data object RefreshHome : HomeUiAction()
 }

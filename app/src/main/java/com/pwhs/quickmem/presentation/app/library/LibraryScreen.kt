@@ -124,7 +124,7 @@ fun LibraryScreen(
         studySets = uiState.studySets,
         classes = uiState.classes,
         folders = uiState.folders,
-        avatarUrl = uiState.userAvatar,
+        avatarUrl = uiState.userAvatarUrl,
         username = uiState.username,
         onStudySetRefresh = {
             viewModel.onEvent(LibraryUiAction.RefreshStudySets)

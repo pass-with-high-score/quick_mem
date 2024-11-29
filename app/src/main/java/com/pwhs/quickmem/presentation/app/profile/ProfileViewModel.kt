@@ -12,14 +12,15 @@ import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -39,11 +40,25 @@ class ProfileViewModel @Inject constructor(
     private val _uiEvent = Channel<ProfileUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    private var job: Job? = null
+
     init {
-        loadProfile()
-        getUserProfile()
-        getCustomerInfo()
-        getStudyTime()
+        initData()
+    }
+
+    private fun initData() {
+        viewModelScope.launch {
+            combine(tokenManager.accessToken, appManager.userId) { token, userId ->
+                token to userId
+            }.collectLatest { (token, userId) ->
+                if (token?.isNotEmpty() == true && userId.isNotEmpty()) {
+                    loadProfile()
+                    getUserProfile(token = token, userId = userId)
+                    getCustomerInfo()
+                    getStudyTime(token = token, userId = userId)
+                }
+            }
+        }
     }
 
     fun onEvent(event: ProfileUiAction) {
@@ -57,10 +72,11 @@ class ProfileViewModel @Inject constructor(
             }
 
             ProfileUiAction.Refresh -> {
-                getUserProfile()
-                getUserProfile()
-                getCustomerInfo()
-                getStudyTime()
+                job?.cancel()
+                job = viewModelScope.launch {
+                    delay(500)
+                    initData()
+                }
             }
         }
     }
@@ -81,10 +97,8 @@ class ProfileViewModel @Inject constructor(
         })
     }
 
-    private fun getUserProfile() {
+    private fun getUserProfile(token: String, userId: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
 
             authRepository.getUserProfile(token, userId).collectLatest { resource ->
                 when (resource) {
@@ -123,7 +137,7 @@ class ProfileViewModel @Inject constructor(
         }
         viewModelScope.launch {
             try {
-                appManager.userName.combine(appManager.userAvatar) { username, avatar ->
+                appManager.username.combine(appManager.userAvatarUrl) { username, avatar ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -145,10 +159,8 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun getStudyTime() {
+    private fun getStudyTime(token: String, userId: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
 
             studyTimeRepository.getStudyTimeByUser(token, userId).collectLatest { resource ->
                 when (resource) {

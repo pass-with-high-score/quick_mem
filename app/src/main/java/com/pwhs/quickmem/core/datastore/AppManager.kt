@@ -41,11 +41,11 @@ class AppManager(private val context: Context) {
         .map { preferences ->
             preferences[USER_FULL_NAME] ?: ""
         }
-    val userName: Flow<String> = context.dataStore.data
+    val username: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_NAME] ?: ""
         }
-    val userAvatar: Flow<String> = context.dataStore.data
+    val userAvatarUrl: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_AVATAR] ?: ""
         }

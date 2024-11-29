@@ -9,11 +9,13 @@ import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -34,61 +36,81 @@ class LibraryViewModel @Inject constructor(
     private val _uiEvent = Channel<LibraryUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    init {
-        viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: return@launch
-            val ownerId = appManager.userId.firstOrNull() ?: return@launch
-            val userAvatar = appManager.userAvatar.firstOrNull() ?: return@launch
-            val username = appManager.userName.firstOrNull() ?: return@launch
-            _uiState.update {
-                it.copy(
-                    token = token,
-                    userId = ownerId,
-                    userAvatar = userAvatar,
-                    username = username
-                )
-            }
-            getStudySets()
-            getClasses()
-            getFolders()
-        }
+    private var job: Job? = null
 
+    init {
+        initData()
+    }
+
+    private fun initData() {
+        viewModelScope.launch {
+            combine(tokenManager.accessToken, appManager.userId) { token, userId ->
+                token to userId
+            }.collectLatest { (token, userId) ->
+                if (token?.isNotEmpty() == true && userId.isNotEmpty()) {
+                    getUserInfo()
+                    getStudySets(token = token, userId = userId)
+                    getClasses(token = token, userId = userId)
+                    getFolders(token = token, userId = userId)
+                }
+            }
+        }
     }
 
     fun onEvent(event: LibraryUiAction) {
         when (event) {
             is LibraryUiAction.Refresh -> {
-                getStudySets()
-                getClasses()
-                getFolders()
+                initData()
             }
 
             LibraryUiAction.RefreshStudySets -> {
-                viewModelScope.launch {
+                job?.cancel()
+                job = viewModelScope.launch {
                     delay(500)
-                    getStudySets()
+                    val token = tokenManager.accessToken.firstOrNull() ?: ""
+                    val userId = appManager.userId.firstOrNull() ?: ""
+                    getStudySets(token = token, userId = userId)
                 }
             }
 
             LibraryUiAction.RefreshClasses -> {
-                viewModelScope.launch {
+                job?.cancel()
+                job = viewModelScope.launch {
                     delay(500)
-                    getClasses()
+                    val token = tokenManager.accessToken.firstOrNull() ?: ""
+                    val userId = appManager.userId.firstOrNull() ?: ""
+                    getClasses(token = token, userId = userId)
                 }
             }
 
             LibraryUiAction.RefreshFolders -> {
-                viewModelScope.launch {
+                job?.cancel()
+                job = viewModelScope.launch {
                     delay(500)
-                    getFolders()
+                    val token = tokenManager.accessToken.firstOrNull() ?: ""
+                    val userId = appManager.userId.firstOrNull() ?: ""
+                    getFolders(token = token, userId = userId)
                 }
             }
         }
     }
 
-    private fun getStudySets() {
+    private fun getUserInfo() {
         viewModelScope.launch {
-            studySetRepository.getStudySetsByOwnerId(_uiState.value.token, _uiState.value.userId, null, null)
+            val username = appManager.username.firstOrNull() ?: ""
+            val userAvatarUrl = appManager.userAvatarUrl.firstOrNull() ?: ""
+            _uiState.update {
+                it.copy(
+                    username = username,
+                    userAvatarUrl = userAvatarUrl
+                )
+            }
+        }
+    }
+
+    private fun getStudySets(token: String, userId: String) {
+        viewModelScope.launch {
+            studySetRepository.getStudySetsByOwnerId(token, userId, null, null)
                 .collectLatest { resources ->
                     when (resources) {
                         is Resources.Success -> {
@@ -121,9 +143,9 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun getClasses() {
+    private fun getClasses(token: String, userId: String) {
         viewModelScope.launch {
-            classRepository.getClassByOwnerId(_uiState.value.token, _uiState.value.userId, null, null)
+            classRepository.getClassByOwnerId(token, userId, null, null)
                 .collectLatest { resource ->
                     when (resource) {
                         is Resources.Error -> {
@@ -156,9 +178,9 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun getFolders() {
+    private fun getFolders(token: String, userId: String) {
         viewModelScope.launch {
-            folderRepository.getFoldersByUserId(_uiState.value.token, _uiState.value.userId, null, null)
+            folderRepository.getFoldersByUserId(token, userId, null, null)
                 .collectLatest { resources ->
                     when (resources) {
                         is Resources.Success -> {
