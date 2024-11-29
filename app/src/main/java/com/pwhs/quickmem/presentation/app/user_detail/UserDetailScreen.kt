@@ -147,7 +147,6 @@ fun UserDetailScreen(
                     id = it.id,
                     description = it.description,
                     title = it.title,
-                    code = ""
                 )
             )
         },
@@ -162,7 +161,6 @@ fun UserDetailScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it.id,
-                    code = ""
                 )
             )
         },

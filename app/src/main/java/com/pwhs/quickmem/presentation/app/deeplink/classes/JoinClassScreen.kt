@@ -72,7 +72,6 @@ fun JoinClassScreen(
                     navigator.navigate(
                         ClassDetailScreenDestination(
                             id = event.id,
-                            code = event.classCode,
                             title = event.title,
                             description = event.description
                         )

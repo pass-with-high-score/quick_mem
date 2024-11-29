@@ -255,7 +255,6 @@ fun ClassDetailScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it.id,
-                    code = ""
                 )
             )
         },

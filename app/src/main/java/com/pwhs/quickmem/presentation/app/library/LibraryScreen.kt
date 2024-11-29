@@ -146,7 +146,6 @@ fun LibraryScreen(
             navigator.navigate(
                 ClassDetailScreenDestination(
                     id = it.id,
-                    code = it.joinToken ?: "",
                     title = it.title,
                     description = it.description
                 )
@@ -156,7 +155,6 @@ fun LibraryScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it.id,
-                    code = ""
                 )
             )
         },

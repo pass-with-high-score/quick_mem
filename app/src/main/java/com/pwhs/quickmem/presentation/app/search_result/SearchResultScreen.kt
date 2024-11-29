@@ -144,7 +144,6 @@ fun SearchResultScreen(
             navigator.navigate(
                 ClassDetailScreenDestination(
                     id = it?.id ?: "",
-                    code = it?.joinToken ?: "",
                     title = it?.title ?: "",
                     description = it?.description ?: ""
                 )
@@ -154,7 +153,6 @@ fun SearchResultScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it?.id ?: "",
-                    code = ""
                 )
             )
         },

@@ -39,7 +39,6 @@ class ClassDetailViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val joinClassCode: String = savedStateHandle["code"] ?: ""
         val id: String = savedStateHandle["id"] ?: ""
         val title: String = savedStateHandle["title"] ?: ""
         val description: String = savedStateHandle["description"] ?: ""
@@ -49,7 +48,6 @@ class ClassDetailViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLogin = true,
-                            joinClassCode = joinClassCode,
                             id = id,
                             title = title,
                             description = description
