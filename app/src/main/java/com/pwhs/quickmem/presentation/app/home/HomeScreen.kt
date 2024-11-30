@@ -612,7 +612,7 @@ private fun Home(
                 )
                 Text(
                     text = stringResource(R.string.txt_practice_every_day),
-                    modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(top = 16.dp)
                 )
                 StreakCalendar(
                     currentDate = currentDate,
