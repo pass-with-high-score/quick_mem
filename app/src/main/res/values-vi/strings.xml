@@ -18,10 +18,8 @@
     <string name="txt_please_enter_your_new_password">Vui lòng nhập mật khẩu mới của bạn</string>
     <string name="txt_new_password">Mật khẩu mới</string>
     <string name="txt_confirm_password">Xác nhận mật khẩu</string>
-    <string name="tx_log_in">Đăng nhập</string>
     <string name="txt_log_in_with_email">Đăng nhập bằng email</string>
     <string name="txt_or">hoặc</string>
-    <string name="tx_continue_with_google">Tiếp tục với Google</string>
     <string name="txt_continue_with_facebook">Tiếp tục với Facebook</string>
     <string name="txt_don_t_have_an_account">Chưa có tài khoản?</string>
     <string name="txt_sign_up">Đăng ký</string>
@@ -303,7 +301,7 @@
     <string name="txt_add_icon">Biểu tượng thêm</string>
     <string name="txt_there_are_no_folders_yet_create_one_to_get_started">Chưa có thư mục nào, hãy tạo một cái để bắt đầu!</string>
     <string name="txt_there_are_no_owned_study_sets_create_one_to_get_started">Chưa có bộ học nào thuộc sở hữu, hãy tạo một cái để bắt đầu!</string>
-    <string name="txt_no_study_set_fold_found">Không tìm thấy bộ học</string>
+    <string name="txt_no_study_set_folder_found">Không tìm thấy bộ học</string>
     <string name="txt_create_study_set">Tạo bộ học</string>
     <string name="txt_create_new_class">Tạo lớp học mới</string>
     <string name="txt_class_title">Tiêu đề lớp</string>
@@ -336,7 +334,7 @@
     <string name="txt_title">Tiêu đề</string>
     <string name="txt_class_image">Hình ảnh lớp</string>
     <string name="txt_image_for_definition">Hình ảnh cho định nghĩa</string>
-    <string name="add_image_to_definition">Thêm hình ảnh vào định nghĩa</string>
+    <string name="txt_add_image_to_definition">Thêm hình ảnh vào định nghĩa</string>
     <string name="txt_full_image">Hình ảnh đầy đủ</string>
     <string name="txt_delete_image">Xóa hình ảnh</string>
     <string name="txt_save">Lưu</string>
@@ -351,4 +349,12 @@
     <string name="txt_to_confirm_it_s_really_you_please_enter_your_quickmem_password">Để xác nhận bạn thực sự là bạn, vui lòng nhập mật khẩu QuickMem của bạn</string>
     <string name="txt_current_password">Mật khẩu hiện tại</string>
     <string name="txt_confirm_new_password">Xác nhận mật khẩu mới</string>
+    <string name="txt_you_have_reached_the_top_on_the_top_streak_leaderboard">Bạn đã đạt vị trí top #%1$s trên bảng xếp hạng chuỗi đỉnh cao!</string>
+    <string name="txt_are_you_sure_you_want_to_delete_this_class">Bạn có chắc chắn muốn xóa lớp này không?</string>
+    <string name="txt_are_you_sure_you_want_to_exit_this_class">Bạn có chắc chắn muốn rời khỏi lớp này không?</string>
+    <string name="txt_exit">Thoát</string>
+    <string name="txt_invite_member">Mời thành viên</string>
+    <string name="txt_invite_members">Mời các thành viên</string>
+    <string name="txt_to_invite_members_to_this_class_add_their_quizlet_usernames_below">Để mời thành viên vào lớp này, hãy thêm tên người dùng Quizlet của họ bên dưới.</string>
+    <string name="txt_type_username_to_invite">Nhập tên người dùng để mời</string>
 </resources>

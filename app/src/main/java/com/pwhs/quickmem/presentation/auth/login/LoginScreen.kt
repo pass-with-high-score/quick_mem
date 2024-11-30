@@ -136,7 +136,7 @@ fun Login(
         ) {
 
             Text(
-                text = stringResource(R.string.tx_log_in),
+                text = stringResource(R.string.txt_log_in),
                 style = typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.primary
@@ -185,7 +185,7 @@ fun Login(
             AuthButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = onLoginWithGoogle,
-                text = stringResource(R.string.tx_continue_with_google),
+                text = stringResource(R.string.txt_continue_with_google),
                 colors = Color.White,
                 textColor = colorScheme.onSurface,
                 icon = R.drawable.ic_google,

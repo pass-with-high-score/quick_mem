@@ -458,10 +458,10 @@ fun ClassDetail(
                 onDeleteClass()
                 showDeleteConfirmationDialog = false
             },
-            title = "Delete class",
-            text = "Are you sure you want to delete this class?",
-            confirmButtonTitle = "Delete",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(id = R.string.txt_delete_class),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_class),
+            confirmButtonTitle = stringResource(R.string.txt_delete),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
         )
     }
 
@@ -474,10 +474,10 @@ fun ClassDetail(
                 onExitClass()
                 showExitConfirmationDialog = false
             },
-            title = "Exit Class",
-            text = "Are you sure you want to exit this class?",
-            confirmButtonTitle = "Exit",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(id = R.string.txt_exit_class),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_exit_this_class),
+            confirmButtonTitle = stringResource(R.string.txt_exit),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
         )
     }
 

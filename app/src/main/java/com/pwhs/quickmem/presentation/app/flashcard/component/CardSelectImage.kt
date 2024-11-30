@@ -98,7 +98,7 @@ fun CardSelectImage(
                     Timber.d("No Image")
                     Image(
                         painter = painterResource(id = R.drawable.ic_add_image),
-                        contentDescription = stringResource(R.string.add_image_to_definition),
+                        contentDescription = stringResource(R.string.txt_add_image_to_definition),
                         modifier = Modifier.size(120.dp),
                         colorFilter = ColorFilter.tint(
                             MaterialTheme.colorScheme.onSurface.copy(

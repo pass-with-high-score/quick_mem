@@ -121,7 +121,7 @@ fun AddStudySetToClassList(
                                 horizontalAlignment = CenterHorizontally
                             ) {
                                 Text(
-                                    text = stringResource(R.string.txt_no_study_set_fold_found),
+                                    text = stringResource(R.string.txt_no_study_set_folder_found),
                                     style = typography.bodyLarge,
                                     textAlign = TextAlign.Center
                                 )

@@ -84,7 +84,7 @@ fun ClassDetailBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onInviteClass,
                         icon = Default.PersonAdd,
-                        title = "Invite Member"
+                        title = stringResource(R.string.txt_invite_member)
                     )
                 }
                 if (!isOwner && isMember) {

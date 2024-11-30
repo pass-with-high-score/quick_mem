@@ -103,7 +103,10 @@ fun TopStreakScreen(
             }
 
             val message = when (rankOwner) {
-                in 1..3 -> "You have reached the top #$rankOwner on the Top Streak leaderboard!"
+                in 1..3 -> stringResource(
+                    R.string.txt_you_have_reached_the_top_on_the_top_streak_leaderboard,
+                    rankOwner.toString()
+                )
                 in 4..10 -> stringResource(R.string.txt_keep_up_the_streak_to_climb_the_leaderboard)
                 else -> stringResource(R.string.txt_top_10_highest_streak_leaderboard)
             }
