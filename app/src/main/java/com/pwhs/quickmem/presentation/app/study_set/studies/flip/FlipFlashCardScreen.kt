@@ -240,6 +240,7 @@ fun FlipFlashCard(
                                 if (flashCards.isNotEmpty()) {
                                     CardStack(
                                         modifier = Modifier
+                                            .fillMaxSize()
                                             .padding(16.dp)
                                             .zIndex(2f),
                                         stackState = stackState,

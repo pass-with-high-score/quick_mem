@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -101,162 +102,331 @@ fun StudyFlipFlashCard(
             }
         )
     ) {
-        if (rotation.value <= 90f) {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .animateContentSize()
-                        .align(Alignment.Center)
-                        .graphicsLayer(
-                            scaleX = effectScale,
-                            scaleY = effectScale,
-                            alpha = effectAlpha
-                        )
-                        .padding(vertical = 16.dp)
-                ) {
-                    when {
-                        isShowingEffect -> when {
-                            isSwipingLeft -> {
-                                Text(
-                                    text = "Still Learning",
-                                    style = typography.bodyLarge.copy(
-                                        fontSize = 20.sp,
-                                        color = stillLearningColor,
-                                        fontWeight = FontWeight.Black
-                                    )
+        BoxWithConstraints {
+            if (maxHeight > 720.dp) {
+                if (rotation.value <= 90f) {
+                    Box(
+                        Modifier.fillMaxSize()
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .animateContentSize()
+                                .align(Alignment.Center)
+                                .graphicsLayer(
+                                    scaleX = effectScale,
+                                    scaleY = effectScale,
+                                    alpha = effectAlpha
                                 )
-                            }
-
-                            isSwipingRight -> {
-                                Text(
-                                    text = "Known",
-                                    style = typography.bodyLarge.copy(
-                                        fontSize = 20.sp,
-                                        color = knownColor,
-                                        fontWeight = FontWeight.Black
-                                    )
-                                )
-                            }
-
-                            else -> {
-                                Text(
-                                    text = flashCard.term,
-                                    style = typography.bodyLarge.copy(
-                                        fontSize = when {
-                                            // tiny
-                                            flashCard.term.length <= 5 -> 30.sp
-                                            // small
-                                            flashCard.term.length <= 10 -> 25.sp
-                                            // medium
-                                            flashCard.term.length <= 15 -> 20.sp
-                                            // large
-                                            else -> 15.sp
-                                        }
-                                    ),
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .padding(40.dp)
-                                        .wrapContentSize(Alignment.Center),
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            Box(
-                Modifier
-                    .fillMaxSize(),
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .animateContentSize()
-                        .align(Alignment.Center)
-                        .graphicsLayer(
-                            rotationY = 180f,
-                            scaleX = effectScale,
-                            scaleY = effectScale,
-                            alpha = effectAlpha
-                        )
-                        .padding(vertical = 16.dp)
-                ) {
-                    when {
-                        isShowingEffect -> when {
-                            isSwipingLeft -> {
-                                Text(
-                                    text = "Still Learning",
-                                    style = typography.bodyLarge.copy(
-                                        fontSize = 20.sp,
-                                        color = stillLearningColor,
-                                        fontWeight = FontWeight.Black
-                                    )
-                                )
-                            }
-
-                            isSwipingRight -> {
-                                Text(
-                                    text = "Known",
-                                    style = typography.bodyLarge.copy(
-                                        fontSize = 20.sp,
-                                        color = knownColor,
-                                        fontWeight = FontWeight.Black
-                                    ),
-                                    modifier = Modifier
-                                        .padding(40.dp)
-                                        .wrapContentSize(Alignment.Center),
-                                    softWrap = true
-                                )
-                            }
-
-                            else -> {
-                                LazyColumn(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.padding(40.dp)
-                                ) {
-                                    item {
-                                        flashCard.definitionImageURL?.let { url ->
-                                            if (url.isEmpty()) {
-                                                return@let
-                                            }
-                                            AsyncImage(
-                                                model = flashCard.definitionImageURL,
-                                                contentDescription = null,
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier
-                                                    .size(200.dp)
-                                                    .padding(16.dp)
-                                            )
-                                        }
-                                    }
-                                    item {
+                                .padding(vertical = 16.dp)
+                        ) {
+                            when {
+                                isShowingEffect -> when {
+                                    isSwipingLeft -> {
                                         Text(
-                                            text = flashCard.definition,
+                                            text = "Still Learning",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 20.sp,
+                                                color = stillLearningColor,
+                                                fontWeight = FontWeight.Black
+                                            )
+                                        )
+                                    }
+
+                                    isSwipingRight -> {
+                                        Text(
+                                            text = "Known",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 20.sp,
+                                                color = knownColor,
+                                                fontWeight = FontWeight.Black
+                                            )
+                                        )
+                                    }
+
+                                    else -> {
+                                        Text(
+                                            text = flashCard.term,
                                             style = typography.bodyLarge.copy(
                                                 fontSize = when {
                                                     // tiny
-                                                    flashCard.definition.length <= 5 -> 30.sp
+                                                    flashCard.term.length <= 5 -> 30.sp
                                                     // small
-                                                    flashCard.definition.length <= 10 -> 25.sp
+                                                    flashCard.term.length <= 10 -> 25.sp
                                                     // medium
-                                                    flashCard.definition.length <= 15 -> 20.sp
+                                                    flashCard.term.length <= 15 -> 20.sp
                                                     // large
                                                     else -> 15.sp
                                                 }
                                             ),
                                             textAlign = TextAlign.Center,
                                             modifier = Modifier
+                                                .padding(40.dp)
+                                                .wrapContentSize(Alignment.Center),
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Box(
+                        Modifier
+                            .fillMaxSize(),
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .animateContentSize()
+                                .align(Alignment.Center)
+                                .graphicsLayer(
+                                    rotationY = 180f,
+                                    scaleX = effectScale,
+                                    scaleY = effectScale,
+                                    alpha = effectAlpha
+                                )
+                                .padding(vertical = 16.dp)
+                        ) {
+                            when {
+                                isShowingEffect -> when {
+                                    isSwipingLeft -> {
+                                        Text(
+                                            text = "Still Learning",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 20.sp,
+                                                color = stillLearningColor,
+                                                fontWeight = FontWeight.Black
+                                            )
+                                        )
+                                    }
+
+                                    isSwipingRight -> {
+                                        Text(
+                                            text = "Known",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 20.sp,
+                                                color = knownColor,
+                                                fontWeight = FontWeight.Black
+                                            ),
+                                            modifier = Modifier
+                                                .padding(40.dp)
                                                 .wrapContentSize(Alignment.Center),
                                             softWrap = true
                                         )
+                                    }
+
+                                    else -> {
+                                        LazyColumn(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center,
+                                            modifier = Modifier.padding(40.dp)
+                                        ) {
+                                            item {
+                                                flashCard.definitionImageURL?.let { url ->
+                                                    if (url.isEmpty()) {
+                                                        return@let
+                                                    }
+                                                    AsyncImage(
+                                                        model = flashCard.definitionImageURL,
+                                                        contentDescription = null,
+                                                        contentScale = ContentScale.Crop,
+                                                        modifier = Modifier
+                                                            .size(200.dp)
+                                                            .padding(16.dp)
+                                                    )
+                                                }
+                                            }
+                                            item {
+                                                Text(
+                                                    text = flashCard.definition,
+                                                    style = typography.bodyLarge.copy(
+                                                        fontSize = when {
+                                                            // tiny
+                                                            flashCard.definition.length <= 5 -> 30.sp
+                                                            // small
+                                                            flashCard.definition.length <= 10 -> 25.sp
+                                                            // medium
+                                                            flashCard.definition.length <= 15 -> 20.sp
+                                                            // large
+                                                            else -> 15.sp
+                                                        }
+                                                    ),
+                                                    textAlign = TextAlign.Center,
+                                                    modifier = Modifier
+                                                        .wrapContentSize(Alignment.Center),
+                                                    softWrap = true
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (rotation.value <= 90f) {
+                    Box(
+                        Modifier.fillMaxSize()
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .animateContentSize()
+                                .align(Alignment.Center)
+                                .graphicsLayer(
+                                    scaleX = effectScale,
+                                    scaleY = effectScale,
+                                    alpha = effectAlpha
+                                )
+                                .padding(vertical = 16.dp)
+                        ) {
+                            when {
+                                isShowingEffect -> when {
+                                    isSwipingLeft -> {
+                                        Text(
+                                            text = "Still Learning",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 18.sp,
+                                                color = stillLearningColor,
+                                                fontWeight = FontWeight.Black
+                                            )
+                                        )
+                                    }
+
+                                    isSwipingRight -> {
+                                        Text(
+                                            text = "Known",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 18.sp,
+                                                color = knownColor,
+                                                fontWeight = FontWeight.Black
+                                            )
+                                        )
+                                    }
+
+                                    else -> {
+                                        Text(
+                                            text = flashCard.term,
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = when {
+                                                    // tiny
+                                                    flashCard.term.length <= 5 -> 28.sp
+                                                    // small
+                                                    flashCard.term.length <= 10 -> 22.sp
+                                                    // medium
+                                                    flashCard.term.length <= 15 -> 18.sp
+                                                    // large
+                                                    else -> 13.sp
+                                                }
+                                            ),
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .padding(30.dp)
+                                                .wrapContentSize(Alignment.Center),
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Box(
+                        Modifier
+                            .fillMaxSize(),
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .animateContentSize()
+                                .align(Alignment.Center)
+                                .graphicsLayer(
+                                    rotationY = 180f,
+                                    scaleX = effectScale,
+                                    scaleY = effectScale,
+                                    alpha = effectAlpha
+                                )
+                                .padding(vertical = 16.dp)
+                        ) {
+                            when {
+                                isShowingEffect -> when {
+                                    isSwipingLeft -> {
+                                        Text(
+                                            text = "Still Learning",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 18.sp,
+                                                color = stillLearningColor,
+                                                fontWeight = FontWeight.Black
+                                            )
+                                        )
+                                    }
+
+                                    isSwipingRight -> {
+                                        Text(
+                                            text = "Known",
+                                            style = typography.bodyLarge.copy(
+                                                fontSize = 18.sp,
+                                                color = knownColor,
+                                                fontWeight = FontWeight.Black
+                                            ),
+                                            modifier = Modifier
+                                                .padding(30.dp)
+                                                .wrapContentSize(Alignment.Center),
+                                            softWrap = true
+                                        )
+                                    }
+
+                                    else -> {
+                                        LazyColumn(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center,
+                                            modifier = Modifier.padding(30.dp)
+                                        ) {
+                                            item {
+                                                flashCard.definitionImageURL?.let { url ->
+                                                    if (url.isEmpty()) {
+                                                        return@let
+                                                    }
+                                                    AsyncImage(
+                                                        model = flashCard.definitionImageURL,
+                                                        contentDescription = null,
+                                                        contentScale = ContentScale.Crop,
+                                                        modifier = Modifier
+                                                            .size(100.dp)
+                                                            .padding(16.dp)
+                                                    )
+                                                }
+                                            }
+                                            item {
+                                                Text(
+                                                    text = flashCard.definition,
+                                                    style = typography.bodyLarge.copy(
+                                                        fontSize = when {
+                                                            // tiny
+                                                            flashCard.definition.length <= 5 -> 28.sp
+                                                            // small
+                                                            flashCard.definition.length <= 10 -> 22.sp
+                                                            // medium
+                                                            flashCard.definition.length <= 15 -> 18.sp
+                                                            // large
+                                                            else -> 13.sp
+                                                        }
+                                                    ),
+                                                    textAlign = TextAlign.Center,
+                                                    modifier = Modifier
+                                                        .wrapContentSize(Alignment.Center),
+                                                    softWrap = true
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
