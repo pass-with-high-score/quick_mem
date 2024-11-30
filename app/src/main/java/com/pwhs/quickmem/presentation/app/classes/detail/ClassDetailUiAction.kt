@@ -12,5 +12,7 @@ sealed class ClassDetailUiAction {
     data object OnNavigateToAddFolder : ClassDetailUiAction()
     data object OnNavigateToAddStudySets : ClassDetailUiAction()
     data object OnJoinClass : ClassDetailUiAction()
+    data class OnChangeUsername(val username: String) : ClassDetailUiAction()
     data object ExitClass : ClassDetailUiAction()
+    data object OnInviteClass : ClassDetailUiAction()
 }

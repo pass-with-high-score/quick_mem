@@ -7,7 +7,7 @@ import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.DeleteOutline
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Folder
@@ -36,7 +36,7 @@ fun ClassDetailBottomSheet(
     onEditClass: () -> Unit = {},
     onExitClass: () -> Unit = {},
     onDeleteClass: () -> Unit = {},
-    onShareClass: () -> Unit = {},
+    onInviteClass: () -> Unit = {},
     onReportClass: () -> Unit = {},
     onJoinClass: () -> Unit = {},
     showMoreBottomSheet: Boolean = false,
@@ -80,11 +80,13 @@ fun ClassDetailBottomSheet(
                         title = stringResource(R.string.txt_join_class)
                     )
                 }
-                ItemMenuBottomSheet(
-                    onClick = onShareClass,
-                    icon = Default.IosShare,
-                    title = stringResource(R.string.txt_share_class)
-                )
+                if (isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onInviteClass,
+                        icon = Default.PersonAdd,
+                        title = "Invite Member"
+                    )
+                }
                 if (!isOwner && isMember) {
                     ItemMenuBottomSheet(
                         onClick = onExitClass,

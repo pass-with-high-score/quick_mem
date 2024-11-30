@@ -9,6 +9,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.classes.DeleteFolderRequestModel
 import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.InviteToClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.model.classes.SaveRecentAccessClassRequestModel
@@ -112,6 +113,19 @@ class ClassDetailViewModel @Inject constructor(
 
             is ClassDetailUiAction.OnDeleteFolderInClass -> {
                 deleteFolderInClass(event.folderId)
+            }
+
+            is ClassDetailUiAction.OnChangeUsername -> {
+                _uiState.update {
+                    it.copy(
+                        username = event.username,
+                        errorMessage = ""
+                    )
+                }
+            }
+
+            ClassDetailUiAction.OnInviteClass -> {
+                inviteToClass()
             }
         }
     }
@@ -413,6 +427,84 @@ class ClassDetailViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun inviteToClass() {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val classId = _uiState.value.id
+            val username = _uiState.value.username
+            if (username.isEmpty()) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Username cannot be empty"
+                    )
+                }
+                return@launch
+            }
+            if (username.length < 4) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Username must be at least 4 characters"
+                    )
+                }
+                return@launch
+            }
+
+            classRepository.inviteToClass(
+                token,
+                InviteToClassRequestModel(classId, username)
+            ).collectLatest { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = true
+                            )
+                        }
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isInvited = resource.data?.status == true
+                            )
+                        }
+                        if (_uiState.value.isInvited) {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = "",
+                                    username = ""
+                                )
+                            }
+                            _uiEvent.send(ClassDetailUiEvent.InviteToClassSuccess)
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = resource.data?.message ?: "An error occurred"
+                                )
+                            }
+                        }
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = resource.message ?: "An error occurred",
+                                isLoading = false
+                            )
+                        }
+                        _uiEvent.send(
+                            ClassDetailUiEvent.ShowError(
+                                resource.message ?: "An error occurred"
+                            )
+                        )
+                        Timber.d("Error")
+                    }
+                }
+            }
         }
     }
 }
