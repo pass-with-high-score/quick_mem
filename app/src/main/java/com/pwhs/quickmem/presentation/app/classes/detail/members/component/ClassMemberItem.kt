@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +34,7 @@ import coil.compose.AsyncImage
 import com.pwhs.quickmem.domain.model.users.ClassMemberModel
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.upperCaseFirstLetter
+import com.pwhs.quickmem.R
 
 @Composable
 fun ClassMemberItem(
@@ -73,7 +75,7 @@ fun ClassMemberItem(
                 ) {
                     AsyncImage(
                         model = classMemberModel.avatarUrl,
-                        contentDescription = "avatar",
+                        contentDescription = stringResource(id = R.string.txt_avatar),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(30.dp)
@@ -98,7 +100,7 @@ fun ClassMemberItem(
 
                 if (classMemberModel.isOwner) {
                     Text(
-                        text = "Owner",
+                        text = stringResource(R.string.txt_owner),
                         style = typography.bodySmall.copy(
                             color = colorScheme.primary
                         ),
@@ -113,7 +115,7 @@ fun ClassMemberItem(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
-                            contentDescription = "delete",
+                            contentDescription = stringResource(R.string.txt_delete),
                             modifier = Modifier
                                 .size(24.dp)
                         )

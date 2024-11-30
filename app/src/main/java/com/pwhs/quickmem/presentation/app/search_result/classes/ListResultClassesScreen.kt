@@ -117,7 +117,7 @@ fun ListResultClassesScreen(
                                     onClick = onClassRefresh,
                                     modifier = Modifier.padding(top = 16.dp)
                                 ) {
-                                    Text(text = "Retry")
+                                    Text(text = stringResource(R.string.txt_retry))
                                 }
                             }
                         }
@@ -163,7 +163,7 @@ fun ListResultClassesScreen(
                                     onClick = { retry() },
                                     modifier = Modifier.padding(top = 16.dp)
                                 ) {
-                                    Text(text = "Retry")
+                                    Text(text = stringResource(R.string.txt_retry))
                                 }
                             }
                         }

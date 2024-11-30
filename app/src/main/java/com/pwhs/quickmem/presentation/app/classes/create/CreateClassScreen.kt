@@ -11,9 +11,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.CreateTextField
 import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -107,7 +109,7 @@ fun CreateClass(
             CreateTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateBack = onNavigateBack,
-                title = "Create new class"
+                title = stringResource(R.string.txt_create_new_class)
             )
         }
     ) { innerPadding ->
@@ -118,25 +120,25 @@ fun CreateClass(
         ) {
             CreateTextField(
                 value = title,
-                title = "Class Title",
+                title = stringResource(R.string.txt_class_title),
                 valueError = titleError,
                 onValueChange = onTitleChange,
-                placeholder = "Enter Class Title"
+                placeholder = stringResource(R.string.txt_enter_class_title)
             )
             CreateTextField(
                 value = description,
-                title = "Description (Optional)",
+                title = stringResource(R.string.txt_description_optional),
                 valueError = descriptionError,
                 onValueChange = onDescriptionChange,
-                placeholder = "Enter Class Description"
+                placeholder = stringResource(R.string.txt_enter_class_description)
             )
             SwitchContainer(
-                text = "Allow class members to send invites to other people",
+                text = stringResource(R.string.txt_allow_class_members_to_send_invites_to_other_people),
                 checked = allowMemberManagement,
                 onCheckedChange = onAllowMemberManagementChange
             )
             SwitchContainer(
-                text = "Allow class members to add study set and folders",
+                text = stringResource(R.string.txt_allow_class_members_to_add_study_set_and_folders),
                 checked = allowSetManagement,
                 onCheckedChange = onAllowSetManagementChange
             )

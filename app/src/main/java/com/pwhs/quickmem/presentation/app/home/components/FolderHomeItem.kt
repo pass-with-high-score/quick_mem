@@ -79,7 +79,7 @@ fun FolderHomeItem(
                 ) {
                     Icon(
                         imageVector = Outlined.Folder,
-                        contentDescription = "Folder Icon",
+                        contentDescription = stringResource(R.string.txt_folder_icon),
                     )
                     Text(
                         text = title,

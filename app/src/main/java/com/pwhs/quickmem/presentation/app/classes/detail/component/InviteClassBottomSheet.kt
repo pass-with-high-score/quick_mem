@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,13 +45,13 @@ fun InviteClassBottomSheet(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Invite Members",
+                    text = stringResource(R.string.txt_invite_members),
                     style = typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
                 Text(
-                    text = "To invite members to this class, add their Quizlet usernames below.",
+                    text = stringResource(R.string.txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below),
                     style = typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -58,7 +60,7 @@ fun InviteClassBottomSheet(
                     value = username,
                     onValueChange = onUsernameChanged,
                     errorMessage = errorMessage,
-                    placeholder = "Type username to invite",
+                    placeholder = stringResource(R.string.txt_type_username_to_invite),
                 )
                 Button(
                     enabled = username.isNotEmpty() && username.length > 4,
@@ -68,7 +70,8 @@ fun InviteClassBottomSheet(
                     shape = shapes.medium
                 ) {
                     Text(
-                        text = "Submit", style = typography.bodyMedium.copy(
+                        text = stringResource(R.string.txt_submit),
+                        style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -84,7 +87,7 @@ fun InviteClassBottomSheet(
                     shape = shapes.medium
                 ) {
                     Text(
-                        text = "Cancel",
+                        text = stringResource(R.string.txt_cancel),
                         style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )

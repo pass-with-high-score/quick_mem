@@ -8,9 +8,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.app.search_result.component.TopBarSearch
@@ -55,7 +57,7 @@ fun FilterStudySetBottomSheet(
     ) {
         item {
             TopBarSearch(
-                title = "Filters",
+                title = stringResource(R.string.txt_filters),
                 onNavigateBack = onNavigateBack,
                 onResetClick = onResetClick
             )
@@ -65,7 +67,7 @@ fun FilterStudySetBottomSheet(
 
         item {
             FilterSection(
-                title = "Number of terms",
+                title = stringResource(R.string.txt_number_of_terms),
                 options = SearchResultSizeEnum.entries.map { it.title },
                 selectedOption = sizeModel.title,
                 onOptionSelected = { selectedContent ->
@@ -78,7 +80,7 @@ fun FilterStudySetBottomSheet(
 
         item {
             FilterSection(
-                title = "Created by",
+                title = stringResource(R.string.txt_created_by),
                 options = SearchResultCreatorEnum.entries.map { it.title },
                 selectedOption = creatorTypeModel.title,
                 onOptionSelected = {
@@ -98,7 +100,7 @@ fun FilterStudySetBottomSheet(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "AI Generated",
+                    text = stringResource(R.string.txt_ai_generated),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -135,7 +137,7 @@ fun FilterStudySetBottomSheet(
                     .height(50.dp),
             ) {
                 Text(
-                    text = "Apply",
+                    text = stringResource(R.string.txt_apply),
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold

@@ -16,9 +16,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.presentation.app.classes.add_folder.component.AddFolderToClassList
 import com.pwhs.quickmem.presentation.app.classes.add_folder.component.AddFolderToClassTopAppBar
@@ -103,7 +105,7 @@ fun AddFolderToClass(
             AddFolderToClassTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
-                title = "Add Folder"
+                title = stringResource(R.string.txt_add_folder)
             )
         },
         floatingActionButton = {
@@ -114,7 +116,7 @@ fun AddFolderToClass(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Create Folder"
+                    contentDescription = stringResource(R.string.txt_create_folder)
                 )
             }
         }

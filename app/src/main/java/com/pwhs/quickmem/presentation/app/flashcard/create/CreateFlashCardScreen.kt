@@ -315,7 +315,7 @@ fun CreateFlashCard(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Clear,
-                                        contentDescription = "Close",
+                                        contentDescription = stringResource(R.string.txt_close),
                                     )
                                 }
                             }
@@ -359,7 +359,7 @@ fun CreateFlashCard(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Clear,
-                                        contentDescription = "Close",
+                                        contentDescription = stringResource(R.string.txt_close),
                                     )
                                 }
                             }
@@ -425,7 +425,6 @@ fun CreateFlashCard(
                         title = stringResource(R.string.txt_draw_to_answer),
                         icon = R.drawable.ic_art,
                         onClick = {
-                            //TODO: Draw
                             showBottomSheetSetting = false
                         },
                     )

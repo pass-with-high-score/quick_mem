@@ -429,7 +429,6 @@ fun CreateFlashCard(
                         title = stringResource(R.string.txt_draw_to_answer),
                         icon = R.drawable.ic_art,
                         onClick = {
-                            //TODO: Draw
                             showBottomSheetSetting = false
                         },
                     )

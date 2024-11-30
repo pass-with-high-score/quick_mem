@@ -408,7 +408,7 @@ private fun Home(
                 if (studySets.isEmpty() && classes.isEmpty() && folders.isEmpty() && !isLoading) {
                     item {
                         Text(
-                            text = "Here's how to get started",
+                            text = stringResource(R.string.txt_here_is_how_to_get_started),
                             style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
@@ -434,14 +434,14 @@ private fun Home(
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_three_cards),
-                                    contentDescription = "Create a flashcard",
+                                    contentDescription = stringResource(R.string.txt_create_a_flashcard),
                                     tint = Color.Blue,
                                     modifier = Modifier
                                         .size(50.dp)
                                 )
 
                                 Text(
-                                    text = "Create your own flashcards",
+                                    text = stringResource(R.string.txt_create_your_own_flashcards),
                                     style = typography.titleMedium.copy(
                                         color = colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold
@@ -460,7 +460,7 @@ private fun Home(
                 if (studySets.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Study sets",
+                            text = stringResource(R.string.txt_study_sets),
                             style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
@@ -488,7 +488,7 @@ private fun Home(
                 if (folders.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Folders",
+                            text = stringResource(R.string.txt_folders),
                             style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
@@ -518,7 +518,7 @@ private fun Home(
                 if (classes.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Classes",
+                            text = stringResource(R.string.txt_classes),
                             style = typography.titleMedium.copy(
                                 color = colorScheme.primary,
                                 fontWeight = FontWeight.Bold
@@ -545,7 +545,7 @@ private fun Home(
 
                 item {
                     Text(
-                        text = "Top 5 subjects have study sets",
+                        text = stringResource(R.string.txt_top_5_subjects_have_study_sets),
                         style = typography.titleMedium.copy(
                             color = colorScheme.primary,
                             fontWeight = FontWeight.Bold
@@ -611,8 +611,8 @@ private fun Home(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 Text(
-                    text = "Practice every day so you don't lose your streak!",
-                    modifier.padding(top = 16.dp)
+                    text = stringResource(R.string.txt_practice_every_day),
+                    modifier = Modifier.padding(top = 16.dp)
                 )
                 StreakCalendar(
                     currentDate = currentDate,

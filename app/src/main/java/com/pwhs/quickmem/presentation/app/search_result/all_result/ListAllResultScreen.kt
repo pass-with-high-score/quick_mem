@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -62,10 +63,10 @@ fun ListAllResultScreen(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_flashcards),
-                        contentDescription = "No results found",
+                        contentDescription = stringResource(R.string.txt_no_results_found),
                     )
                     Text(
-                        text = "No results found",
+                        text = stringResource(R.string.txt_no_results_found),
                         style = typography.titleLarge,
                         textAlign = TextAlign.Center
                     )
@@ -81,7 +82,7 @@ fun ListAllResultScreen(
                     if (studySets?.itemCount != 0) {
                         item {
                             SectionHeader(
-                                title = "Study Sets",
+                                title = stringResource(R.string.txt_study_sets),
                                 onSeeAllClick = onSeeAllClickStudySet
                             )
                         }
@@ -97,7 +98,7 @@ fun ListAllResultScreen(
                     if (folders?.itemCount != 0) {
                         item {
                             SectionHeader(
-                                title = "Folders",
+                                title = stringResource(R.string.txt_folders),
                                 onSeeAllClick = onSeeAllClickFolder
                             )
                         }
@@ -116,7 +117,7 @@ fun ListAllResultScreen(
                     if (classes?.itemCount != 0) {
                         item {
                             SectionHeader(
-                                title = "Classes",
+                                title = stringResource(R.string.txt_classes),
                                 onSeeAllClick = onSeeAllClickClass
                             )
                         }
@@ -132,7 +133,7 @@ fun ListAllResultScreen(
                     if (users?.itemCount != 0) {
                         item {
                             SectionHeader(
-                                title = "Users",
+                                title = stringResource(R.string.txt_users),
                                 onSeeAllClick = onSeeAllClickUsers
                             )
                         }

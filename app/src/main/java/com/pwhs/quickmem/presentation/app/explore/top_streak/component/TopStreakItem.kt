@@ -55,19 +55,19 @@ fun StreakItem(
             when (rank) {
                 1 -> Image(
                     painter = painterResource(id = R.drawable.top1),
-                    contentDescription = "Gold Medal",
+                    contentDescription = stringResource(R.string.txt_gold_medal),
                     modifier = Modifier.size(32.dp)
                 )
 
                 2 -> Image(
                     painter = painterResource(id = R.drawable.top2),
-                    contentDescription = "Silver Medal",
+                    contentDescription = stringResource(R.string.txt_silver_medal),
                     modifier = Modifier.size(32.dp)
                 )
 
                 3 -> Image(
                     painter = painterResource(id = R.drawable.top3),
-                    contentDescription = "Bronze Medal",
+                    contentDescription = stringResource(R.string.txt_bronze_medal),
                     modifier = Modifier.size(32.dp)
                 )
 
@@ -85,7 +85,7 @@ fun StreakItem(
 
         AsyncImage(
             model = topStreak.avatarUrl,
-            contentDescription = "User Avatar",
+            contentDescription = stringResource(R.string.txt_user_avatar),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(40.dp)

@@ -13,7 +13,9 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.pwhs.quickmem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,12 +39,12 @@ fun FlashCardTopAppBar(
         },
         navigationIcon = {
             IconButton(onClick = onNavigationBack) {
-                Icon(imageVector = Icons.Filled.Clear, contentDescription = "Back")
+                Icon(imageVector = Icons.Filled.Clear, contentDescription = stringResource(R.string.txt_back))
             }
         },
         actions = {
             IconButton(onClick = onSettingsClicked) {
-                Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+                Icon(imageVector = Icons.Default.Settings, contentDescription = stringResource(R.string.txt_settings))
             }
             IconButton(
                 onClick = onSaveFlashCardClicked,
@@ -50,7 +52,7 @@ fun FlashCardTopAppBar(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Done,
-                    contentDescription = "Save",
+                    contentDescription = stringResource(R.string.txt_save),
                     tint = if (enableSaveButton) {
                         colorScheme.primary
                     } else {

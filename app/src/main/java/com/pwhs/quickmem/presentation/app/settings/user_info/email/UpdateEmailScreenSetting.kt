@@ -9,9 +9,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTextField
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -77,7 +79,7 @@ fun UpdateEmailSetting(
         modifier = modifier,
         topBar = {
             SettingTopAppBar(
-                title = "Email",
+                title = stringResource(R.string.txt_email),
                 onNavigateBack = onNavigateBack,
                 onSaved = onSaved,
                 enabled = email.isNotEmpty()
@@ -96,7 +98,7 @@ fun UpdateEmailSetting(
                         .padding(horizontal = 16.dp),
                     value = email,
                     onValueChange = onEmailChanged,
-                    placeholder = "Email",
+                    placeholder = stringResource(R.string.txt_email),
                     errorMessage = errorMessage
                 )
             }

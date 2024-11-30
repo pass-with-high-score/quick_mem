@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,6 +64,7 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import timber.log.Timber
+import com.pwhs.quickmem.R
 
 @Composable
 @Destination<RootGraph>(
@@ -333,8 +335,12 @@ fun ClassDetail(
     onDeleteStudySetClick: (String) -> Unit = {},
     onDeleteFolderClick: (String) -> Unit = {},
 ) {
+    val tabTitles = listOf(
+        stringResource(id = R.string.txt_study_sets),
+        stringResource(id = R.string.txt_folders),
+        stringResource(R.string.txt_members)
+    )
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
-    val tabTitles = listOf("Study sets", "Folders", "Members")
 
     val refreshState = rememberPullToRefreshState()
     var showMoreBottomSheet by remember { mutableStateOf(false) }
@@ -452,10 +458,10 @@ fun ClassDetail(
                 onDeleteClass()
                 showDeleteConfirmationDialog = false
             },
-            title = "Delete class",
-            text = "Are you sure you want to delete this class?",
-            confirmButtonTitle = "Delete",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(id = R.string.txt_delete_class),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_class),
+            confirmButtonTitle = stringResource(R.string.txt_delete),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
         )
     }
 
@@ -468,10 +474,10 @@ fun ClassDetail(
                 onExitClass()
                 showExitConfirmationDialog = false
             },
-            title = "Exit Class",
-            text = "Are you sure you want to exit this class?",
-            confirmButtonTitle = "Exit",
-            dismissButtonTitle = "Cancel",
+            title = stringResource(id = R.string.txt_exit_class),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_exit_this_class),
+            confirmButtonTitle = stringResource(R.string.txt_exit),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
         )
     }
 

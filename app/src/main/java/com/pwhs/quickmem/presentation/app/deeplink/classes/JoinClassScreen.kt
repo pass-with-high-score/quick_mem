@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -52,6 +53,7 @@ import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import timber.log.Timber
+import com.pwhs.quickmem.R
 
 @Destination<RootGraph>(
     navArgs = JoinClassArgs::class
@@ -155,14 +157,14 @@ fun JoinClass(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Join Class") },
+                title = { Text(stringResource(R.string.txt_join_class)) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBackHome
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.txt_back),
                             tint = Color.Gray.copy(alpha = 0.6f)
                         )
                     }
@@ -178,7 +180,7 @@ fun JoinClass(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item {
-                    SettingTitleSection("Class Detail")
+                    SettingTitleSection(stringResource(R.string.txt_class_detail))
                     SettingCard {
                         Column(
                             modifier = Modifier.padding(16.dp)
@@ -191,7 +193,7 @@ fun JoinClass(
                             if (classDetailResponseModel?.description?.isNotEmpty() == true) {
                                 HorizontalDivider()
                                 SettingItem(
-                                    title = "Description",
+                                    title = stringResource(R.string.txt_description),
                                     subtitle = classDetailResponseModel.description,
                                     showArrow = false
                                 )
@@ -201,7 +203,7 @@ fun JoinClass(
                 }
 
                 item {
-                    SettingTitleSection("Owner")
+                    SettingTitleSection(stringResource(R.string.txt_owner))
                     SettingCard(
                         onClick = onOwnerClick
                     ) {
@@ -216,7 +218,7 @@ fun JoinClass(
                                 )
                                 AsyncImage(
                                     model = classDetailResponseModel?.owner?.avatarUrl ?: "",
-                                    contentDescription = "Class Image",
+                                    contentDescription = stringResource(R.string.txt_class_image),
                                     modifier = Modifier
                                         .padding(end = 16.dp)
                                         .size(20.dp)
@@ -237,7 +239,7 @@ fun JoinClass(
                         },
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = "Join Class")
+                        Text(text = stringResource(R.string.txt_join_class))
                     }
                 }
                 item {
