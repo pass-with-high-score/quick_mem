@@ -264,7 +264,7 @@
     <string name="txt_top_10_highest_streak_leaderboard">Bảng xếp hạng 10 chuỗi thành tích cao nhất</string>
     <string name="txt_streak_leaderboard_motivation">Duy trì chuỗi để leo bảng xếp hạng!</string>
     <string name="txt_create">Tạo</string>
-    <string name="txt_warning_ai_not_gen">Cảnh báo: AI có thể không tạo flashcard chính xác hoặc đầy đủ. Vui lòng kiểm tra nếu nghi ngờ.</string>
+    <string name="txt_warning_ai_not_gen">Cảnh báo: AI có thể không tạo thẻ học chính xác hoặc đầy đủ. Vui lòng kiểm tra nếu nghi ngờ.</string>
     <string name="txt_title_required">Tiêu đề (bắt buộc)</string>
     <string name="txt_description_optional">Mô tả (tùy chọn)</string>
     <string name="txt_number_of_flashcards_optional">Số lượng thẻ học (tùy chọn)</string>
