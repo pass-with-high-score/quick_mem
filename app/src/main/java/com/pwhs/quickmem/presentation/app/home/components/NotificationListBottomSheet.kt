@@ -36,7 +36,8 @@ fun NotificationListBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState,
     notifications: List<GetNotificationResponseModel>,
-    onNotificationClicked: (String) -> Unit,
+    onMarkAsRead: (String) -> Unit,
+    onNotificationClicked: (GetNotificationResponseModel) -> Unit
 ) {
 
     ModalBottomSheet(
@@ -91,8 +92,9 @@ fun NotificationListBottomSheet(
                             NotificationItem(
                                 notification = notification,
                                 onMarkAsRead = {
-                                    onNotificationClicked(notification.id)
-                                }
+                                    onMarkAsRead(it)
+                                },
+                                onNotificationClicked = onNotificationClicked
                             )
                             HorizontalDivider(
                                 modifier = Modifier.padding(horizontal = 10.dp),

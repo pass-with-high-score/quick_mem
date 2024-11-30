@@ -139,8 +139,7 @@ private fun Search(
                         errorMessage = errorMessage,
                         placeholder = stringResource(R.string.txt_study_sets_folder_classes),
                         onSearch = onSearch,
-
-                        )
+                    )
                 },
                 expandedHeight = 160.dp,
                 actions = {

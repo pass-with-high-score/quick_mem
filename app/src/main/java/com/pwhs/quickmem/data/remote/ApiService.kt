@@ -57,7 +57,7 @@ import com.pwhs.quickmem.data.dto.folder.UpdateFolderRequestDto
 import com.pwhs.quickmem.data.dto.folder.UpdateFolderResponseDto
 import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
 import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
-import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
+import com.pwhs.quickmem.data.dto.notification.DeviceTokenRequestDto
 import com.pwhs.quickmem.data.dto.flashcard.WriteStatusFlashCardDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.GetTopStreakResponseDto
@@ -564,7 +564,7 @@ interface ApiService {
     @POST("notifications/register")
     suspend fun sendDeviceToken(
         @Header("Authorization") authorization: String,
-        @Body tokenRequest: TokenRequestDto
+        @Body tokenRequest: DeviceTokenRequestDto
     ): Response<Unit>
 
     @GET("notifications/user/{id}")

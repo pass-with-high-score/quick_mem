@@ -10,7 +10,9 @@ fun GetNotificationResponseDto.toModel() = GetNotificationResponseModel(
     userId = userId,
     isRead = isRead,
     createdAt = createdAt,
-    updatedAt = updatedAt
+    updatedAt = updatedAt,
+    notificationType = notificationType,
+    data = data?.toModel()
 )
 
 fun GetNotificationResponseModel.toDto() = GetNotificationResponseDto(
@@ -20,5 +22,7 @@ fun GetNotificationResponseModel.toDto() = GetNotificationResponseDto(
     userId = userId,
     isRead = isRead,
     createdAt = createdAt,
-    updatedAt = updatedAt
+    updatedAt = updatedAt,
+    notificationType = notificationType,
+    data = data?.toDto()
 )

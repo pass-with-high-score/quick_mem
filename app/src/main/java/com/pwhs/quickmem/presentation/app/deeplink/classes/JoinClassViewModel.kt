@@ -34,15 +34,12 @@ class JoinClassViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val code = savedStateHandle.get<String>("code")
-        val type = savedStateHandle.get<String>("type")
-
-        Timber.d("JoinClassViewModel: code: $code, type: $type")
-
+        val code = savedStateHandle.get<String>("code") ?: ""
+        val isFromDeepLink = savedStateHandle.get<Boolean>("isFromDeepLink") ?: false
         _uiState.update {
             it.copy(
                 code = code,
-                type = type
+                isFromDeepLink = isFromDeepLink
             )
         }
 
@@ -85,6 +82,14 @@ class JoinClassViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         if (resource.data?.owner?.id == userId || resource.data?.isJoined == true) {
+                            _uiState.update {
+                                it.copy(
+                                    classDetailResponseModel = resource.data,
+                                    isLoading = false,
+                                    userId = userId,
+                                    classId = resource.data.id
+                                )
+                            }
                             _uiEvent.send(
                                 JoinClassUiEvent.JoinedClass(
                                     id = resource.data.id,

@@ -8,6 +8,6 @@ data class JoinClassUiState(
     val classId: String? = null,
     val isUnAuthorized: Boolean = false,
     val code: String? = null,
-    val type: String? = null,
+    val isFromDeepLink: Boolean = false,
     val classDetailResponseModel: GetClassDetailResponseModel? = null
 )

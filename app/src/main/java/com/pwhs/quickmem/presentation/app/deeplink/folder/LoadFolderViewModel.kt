@@ -30,12 +30,10 @@ class LoadFolderViewModel @Inject constructor(
 
     init {
         val folderCode = saveStateHandle.get<String>("folderCode") ?: ""
-        val type = saveStateHandle.get<String>("type") ?: ""
 
         _uiState.update {
             it.copy(
                 folderCode = folderCode,
-                type = type
             )
         }
         loadFolder()
@@ -44,10 +42,9 @@ class LoadFolderViewModel @Inject constructor(
     private fun loadFolder() {
         viewModelScope.launch {
             val folderCode = uiState.value.folderCode
-            val type = uiState.value.type
             val token = tokenManager.accessToken.firstOrNull()
 
-            if (folderCode.isEmpty() || type.isEmpty() || token == null) {
+            if (folderCode.isEmpty() || token == null) {
                 _uiEvent.send(LoadFolderUiEvent.UnAuthorized)
                 return@launch
             }
