@@ -49,7 +49,6 @@ fun CreateFolderScreen(
                     navigator.navigate(
                         FolderDetailScreenDestination(
                             id = event.id,
-                            code = ""
                         )
                     )
                 }

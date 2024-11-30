@@ -71,6 +71,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.NotificationType
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
@@ -94,6 +95,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.JoinClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchStudySetBySubjectScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
@@ -139,7 +141,6 @@ fun HomeScreen(
             navigator.navigate(
                 ClassDetailScreenDestination(
                     id = it.id,
-                    code = it.joinToken ?: "",
                     title = it.title,
                     description = it.description
                 )
@@ -149,7 +150,6 @@ fun HomeScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it.id,
-                    code = ""
                 )
             )
         },
@@ -164,8 +164,18 @@ fun HomeScreen(
             viewModel.onEvent(HomeUiAction.OnChangeCustomerInfo(customerInfo))
         },
         notifications = uiState.notifications,
-        onNotificationClicked = { notificationId ->
+        onMarkAsRead = { notificationId ->
             viewModel.onEvent(HomeUiAction.MarkAsRead(notificationId))
+        },
+        onNotificationClick = { notification ->
+            if (notification.data?.id?.isNotEmpty() == true && notification.data.code?.isNotEmpty() == true && notification.notificationType == NotificationType.INVITE_USER_JOIN_CLASS) {
+                navigator.navigate(
+                    JoinClassScreenDestination(
+                        code = notification.data.code,
+                        isFromDeepLink = false
+                    )
+                )
+            }
         },
         onSearchStudySetBySubject = { subject ->
             navigator.navigate(
@@ -208,7 +218,8 @@ private fun Home(
     onClickToCreateStudySet: () -> Unit = {},
     customer: CustomerInfo? = null,
     onCustomerInfoChanged: (CustomerInfo) -> Unit = {},
-    onNotificationClicked: (String) -> Unit = {},
+    onMarkAsRead: (String) -> Unit = {},
+    onNotificationClick: (GetNotificationResponseModel) -> Unit = {},
     notifications: List<GetNotificationResponseModel> = emptyList(),
     onSearchStudySetBySubject: (SubjectModel) -> Unit = {},
 ) {
@@ -340,20 +351,7 @@ private fun Home(
                                     modifier = Modifier
                                         .align(Alignment.TopEnd)
                                         .size(16.dp),
-                                ) {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = "$notificationCount",
-                                            style = typography.bodySmall.copy(
-                                                fontSize = 10.sp,
-                                                fontWeight = FontWeight.Bold,
-                                            )
-                                        )
-                                    }
-                                }
+                                )
                             }
                         }
                     }
@@ -477,7 +475,7 @@ private fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            items(studySets) { studySet ->
+                            items(items = studySets, key = { it.id }) { studySet ->
                                 StudySetHomeItem(
                                     studySet = studySet,
                                     onStudySetClick = { onStudySetClick(studySet) }
@@ -505,7 +503,7 @@ private fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            items(folders) { folder ->
+                            items(items = folders, key = { it.id }) { folder ->
                                 FolderHomeItem(
                                     title = folder.title,
                                     numOfStudySets = folder.studySetCount,
@@ -535,7 +533,7 @@ private fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            items(classes) { classItem ->
+                            items(items = classes, key = {it.id}) { classItem ->
                                 ClassHomeItem(
                                     classItem = classItem,
                                     onClick = { onClassClicked(classItem) }
@@ -556,7 +554,7 @@ private fun Home(
                         modifier = Modifier.padding(top = 24.dp)
                     )
                 }
-                items(subjects, key = { it.id }) { subject ->
+                items(items = subjects, key = { it.id }) { subject ->
                     SubjectItem(
                         subject = subject,
                         onSearchStudySetBySubject = {
@@ -628,7 +626,8 @@ private fun Home(
         NotificationListBottomSheet(
             onDismissRequest = { showNotificationBottomSheet = false },
             notifications = notifications,
-            onNotificationClicked = onNotificationClicked,
+            onMarkAsRead = onMarkAsRead,
+            onNotificationClicked = onNotificationClick,
             sheetState = modalBottomSheetState
         )
     }

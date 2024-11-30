@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -257,7 +258,6 @@ fun ClassDetailScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it.id,
-                    code = ""
                 )
             )
         },
@@ -318,12 +318,12 @@ fun ClassDetail(
     onDeleteStudySetClick: (String) -> Unit = {},
     onDeleteFolderClick: (String) -> Unit = {},
 ) {
-    var tabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf(
         stringResource(id = R.string.txt_study_sets),
         stringResource(id = R.string.txt_folders),
         stringResource(R.string.txt_members)
     )
+    var tabIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val refreshState = rememberPullToRefreshState()
     var showMoreBottomSheet by remember { mutableStateOf(false) }

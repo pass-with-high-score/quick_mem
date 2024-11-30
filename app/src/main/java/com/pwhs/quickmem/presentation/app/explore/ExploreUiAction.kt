@@ -12,4 +12,5 @@ sealed class ExploreUiAction {
     data class OnQuestionTypeChanged(val questionType: QuestionType) : ExploreUiAction()
     data class OnDifficultyLevelChanged(val difficultyLevel: DifficultyLevel) : ExploreUiAction()
     data object OnCreateStudySet : ExploreUiAction()
+    data object OnEarnCoins : ExploreUiAction()
 }

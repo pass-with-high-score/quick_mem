@@ -142,7 +142,7 @@ fun ListClassesScreen(
                                 modifier = Modifier.padding(8.dp)
                             )
                         }
-                        items(filterClass) { classItem ->
+                        items(items = filterClass, key = {it.id}) { classItem ->
                             ClassItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 classItem = classItem,

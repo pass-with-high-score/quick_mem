@@ -1,25 +1,36 @@
 package com.pwhs.quickmem.presentation.app.explore
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.enums.CoinAction
 import com.pwhs.quickmem.core.data.enums.DifficultyLevel
 import com.pwhs.quickmem.core.data.enums.QuestionType
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetByAIRequestModel
+import com.pwhs.quickmem.domain.model.users.UpdateCoinRequestModel
+import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.util.getLanguageCode
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +39,7 @@ class ExploreViewModel @Inject constructor(
     private val appManager: AppManager,
     private val streakRepository: StreakRepository,
     private val studySetRepository: StudySetRepository,
+    private val authRepository: AuthRepository,
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(ExploreUiState())
@@ -39,15 +51,19 @@ class ExploreViewModel @Inject constructor(
     init {
         val languageCode = getApplication<Application>().getLanguageCode()
         viewModelScope.launch {
-            val userId = appManager.userId.firstOrNull() ?: ""
-            _uiState.update {
-                it.copy(
-                    ownerId = userId,
-                    language = languageCode
-                )
+            combine(appManager.userId, appManager.userCoins) { userId, coins ->
+                _uiState.update {
+                    it.copy(
+                        ownerId = userId,
+                        coins = coins,
+                        language = languageCode
+                    )
+                }
+            }.collectLatest {
+                getTopStreaks()
+                getCustomerInfo()
             }
         }
-        getTopStreaks()
     }
 
     fun onEvent(event: ExploreUiAction) {
@@ -93,40 +109,48 @@ class ExploreViewModel @Inject constructor(
                     createStudySet()
                 }
             }
+
+            is ExploreUiAction.OnEarnCoins -> {
+                updateCoins(coinAction = CoinAction.ADD, coin = 1)
+            }
         }
     }
 
     private fun getTopStreaks() {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            streakRepository.getTopStreaks(token, 10).collect { resource ->
-                when (resource) {
-                    is Resources.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
+            tokenManager.accessToken.collect { token ->
+                streakRepository.getTopStreaks(token = token ?: "", limit = 10)
+                    .collect { resource ->
+                        when (resource) {
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
 
-                    is Resources.Success -> {
-                        val topStreaks = resource.data ?: emptyList()
-                        val streakOwner = topStreaks.find { it.userId == uiState.value.ownerId }
-                        val rankOwner =
-                            topStreaks.indexOfFirst { it.userId == uiState.value.ownerId }
-                                .takeIf { it != -1 }?.plus(1)
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                topStreaks = topStreaks,
-                                streakOwner = streakOwner,
-                                rankOwner = rankOwner
-                            )
+                            is Resources.Success -> {
+                                val topStreaks = resource.data ?: emptyList()
+                                val streakOwner =
+                                    topStreaks.find { it.userId == uiState.value.ownerId }
+                                val rankOwner =
+                                    topStreaks.indexOfFirst { it.userId == uiState.value.ownerId }
+                                        .takeIf { it != -1 }?.plus(1)
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        topStreaks = topStreaks,
+                                        streakOwner = streakOwner,
+                                        rankOwner = rankOwner
+                                    )
+                                }
+                            }
+
+                            is Resources.Error -> {
+                                _uiState.update { it.copy(isLoading = false) }
+                                _uiEvent.send(ExploreUiEvent.Error(resource.message ?: ""))
+                            }
                         }
                     }
-
-                    is Resources.Error -> {
-                        _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(ExploreUiEvent.Error(resource.message ?: ""))
-                    }
-                }
             }
+
         }
     }
 
@@ -165,7 +189,14 @@ class ExploreViewModel @Inject constructor(
                                 language = getApplication<Application>().getLanguageCode()
                             )
                         }
-                        _uiEvent.send(ExploreUiEvent.CreatedStudySet(resource.data?.id ?: ""))
+                        if (_uiState.value.customerInfo?.activeSubscriptions?.isNotEmpty() == false) {
+                            updateCoins(coinAction = CoinAction.SUBTRACT, coin = 1)
+                        }
+                        _uiEvent.send(
+                            ExploreUiEvent.CreatedStudySet(
+                                studySetId = resource.data?.id ?: ""
+                            )
+                        )
                     }
 
                     is Resources.Error -> {
@@ -180,5 +211,61 @@ class ExploreViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun updateCoins(
+        coinAction: CoinAction,
+        coin: Int = 1
+    ) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            authRepository.updateCoin(
+                token, UpdateCoinRequestModel(
+                    userId = userId,
+                    action = coinAction.action,
+                    coin = coin
+                )
+            ).collect { coin ->
+                when (coin) {
+                    is Resources.Error -> {
+                        Timber.e("Too many requests, please wait 1 minute")
+                        _uiEvent.send(ExploreUiEvent.Error("Too many requests, please wait 1 minute"))
+                    }
+
+                    is Resources.Loading -> {
+                        // do nothing
+                    }
+
+                    is Resources.Success -> {
+                        appManager.saveUserCoins(coin.data?.coins ?: 0)
+                        _uiState.update {
+                            it.copy(coins = coin.data?.coins ?: 0)
+                        }
+                        Toast.makeText(
+                            getApplication(),
+                            "You have earned 1 coin",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getCustomerInfo() {
+        Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
+            override fun onReceived(customerInfo: CustomerInfo) {
+                _uiState.update {
+                    it.copy(
+                        customerInfo = customerInfo
+                    )
+                }
+            }
+
+            override fun onError(error: PurchasesError) {
+                Timber.e(error.message)
+            }
+        })
     }
 }

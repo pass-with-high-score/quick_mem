@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -124,7 +125,7 @@ fun LibraryScreen(
         studySets = uiState.studySets,
         classes = uiState.classes,
         folders = uiState.folders,
-        avatarUrl = uiState.userAvatar,
+        avatarUrl = uiState.userAvatarUrl,
         username = uiState.username,
         onStudySetRefresh = {
             viewModel.onEvent(LibraryUiAction.RefreshStudySets)
@@ -146,7 +147,6 @@ fun LibraryScreen(
             navigator.navigate(
                 ClassDetailScreenDestination(
                     id = it.id,
-                    code = it.joinToken ?: "",
                     title = it.title,
                     description = it.description
                 )
@@ -156,7 +156,6 @@ fun LibraryScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it.id,
-                    code = ""
                 )
             )
         },
@@ -192,7 +191,7 @@ fun Library(
     navigateToCreateClass: () -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
 ) {
-    var tabIndex by remember { mutableIntStateOf(0) }
+    var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf(
         stringResource(R.string.txt_study_sets),
         stringResource(R.string.txt_classes),

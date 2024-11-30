@@ -3,7 +3,6 @@ package com.pwhs.quickmem.presentation.app.deeplink.study_set
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.StudySetRepository
@@ -31,12 +30,10 @@ class LoadStudySetViewModel @Inject constructor(
 
     init {
         val studySetCode = savedStateHandle.get<String>("studySetCode") ?: ""
-        val type = savedStateHandle.get<String>("type") ?: ""
 
         _uiState.update {
             it.copy(
                 studySetCode = studySetCode,
-                type = type
             )
         }
         loadStudySet()
@@ -45,10 +42,9 @@ class LoadStudySetViewModel @Inject constructor(
     private fun loadStudySet() {
         viewModelScope.launch {
             val studySetCode = uiState.value.studySetCode
-            val type = uiState.value.type
             val token = tokenManager.accessToken.firstOrNull()
 
-            if (studySetCode.isEmpty() || type.isEmpty() || token == null) {
+            if (studySetCode.isEmpty() || token == null) {
                 _uiEvent.send(LoadStudySetUiEvent.UnAuthorized)
                 return@launch
             }

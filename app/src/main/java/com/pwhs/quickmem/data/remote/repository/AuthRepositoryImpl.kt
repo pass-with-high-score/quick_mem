@@ -8,6 +8,7 @@ import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.data.dto.verify_email.EmailRequestDto
 import com.pwhs.quickmem.data.mapper.auth.toDto
 import com.pwhs.quickmem.data.mapper.auth.toModel
+import com.pwhs.quickmem.data.mapper.user.toDto
 import com.pwhs.quickmem.data.mapper.user.toModel
 import com.pwhs.quickmem.data.paging.UserPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
@@ -40,6 +41,8 @@ import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
 import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
+import com.pwhs.quickmem.domain.model.users.UpdateCoinRequestModel
+import com.pwhs.quickmem.domain.model.users.UpdateCoinResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -355,6 +358,25 @@ class AuthRepositoryImpl @Inject constructor(
                 val response = apiService.changeRole(
                     token,
                     changeRoleRequestModel.toDto()
+                )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun updateCoin(
+        token: String,
+        updateCoinRequestModel: UpdateCoinRequestModel
+    ): Flow<Resources<UpdateCoinResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.updateCoin(
+                    token,
+                    updateCoinRequestModel.toDto()
                 )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {

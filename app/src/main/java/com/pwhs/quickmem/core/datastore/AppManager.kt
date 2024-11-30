@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Patterns
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,7 @@ class AppManager(private val context: Context) {
         val USER_BIRTHDAY = stringPreferencesKey("USER_BIRTHDAY")
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
+        val USER_COINS = intPreferencesKey("USER_COINS")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -41,11 +43,11 @@ class AppManager(private val context: Context) {
         .map { preferences ->
             preferences[USER_FULL_NAME] ?: ""
         }
-    val userName: Flow<String> = context.dataStore.data
+    val username: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_NAME] ?: ""
         }
-    val userAvatar: Flow<String> = context.dataStore.data
+    val userAvatarUrl: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_AVATAR] ?: ""
         }
@@ -70,6 +72,11 @@ class AppManager(private val context: Context) {
     val userBirthday: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[USER_BIRTHDAY] ?: ""
+        }
+
+    val userCoins: Flow<Int> = context.dataStore.data
+        .map { preferences ->
+            preferences[USER_COINS] ?: 0
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -147,6 +154,13 @@ class AppManager(private val context: Context) {
         Timber.d("Saving user birthday: $birthday")
         context.dataStore.edit { preferences ->
             preferences[USER_BIRTHDAY] = birthday
+        }
+    }
+
+    suspend fun saveUserCoins(coins: Int) {
+        Timber.d("Saving user coins: $coins")
+        context.dataStore.edit { preferences ->
+            preferences[USER_COINS] = coins
         }
     }
 

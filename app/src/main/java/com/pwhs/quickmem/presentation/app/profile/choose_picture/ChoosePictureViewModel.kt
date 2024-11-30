@@ -39,7 +39,7 @@ class ChoosePictureViewModel @Inject constructor(
 
     private fun getCurrentAvatar() {
         viewModelScope.launch {
-            val currentAvatarUrl = appManager.userAvatar.firstOrNull()
+            val currentAvatarUrl = appManager.userAvatarUrl.firstOrNull()
             if (currentAvatarUrl != null) {
                 _uiState.update {
                     it.copy(

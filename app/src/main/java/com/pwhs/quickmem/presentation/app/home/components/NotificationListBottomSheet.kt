@@ -36,7 +36,8 @@ fun NotificationListBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState,
     notifications: List<GetNotificationResponseModel>,
-    onNotificationClicked: (String) -> Unit,
+    onMarkAsRead: (String) -> Unit,
+    onNotificationClicked: (GetNotificationResponseModel) -> Unit
 ) {
 
     ModalBottomSheet(
@@ -87,12 +88,13 @@ fun NotificationListBottomSheet(
 
                 else -> {
                     LazyColumn {
-                        items(notifications, key = { it.id }) { notification ->
+                        items(items = notifications, key = { it.id }) { notification ->
                             NotificationItem(
                                 notification = notification,
                                 onMarkAsRead = {
-                                    onNotificationClicked(notification.id)
-                                }
+                                    onMarkAsRead(it)
+                                },
+                                onNotificationClicked = onNotificationClicked
                             )
                             HorizontalDivider(
                                 modifier = Modifier.padding(horizontal = 10.dp),

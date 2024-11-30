@@ -38,7 +38,6 @@ import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
-import timber.log.Timber
 
 @Composable
 fun AddStudySetToFolderList(
@@ -129,12 +128,10 @@ fun AddStudySetToFolderList(
                             }
                         }
                     }
-                    items(filterStudySets) { studySet ->
-                        Timber.d("Check isAdd: ${studySetImportedIds.contains(studySet.id)}")
+                    items(items = filterStudySets, key = {it.id}) { studySet ->
                         AddStudySetToFolderItem(
                             studySet = studySet,
                             onAddStudySetToFolder = {
-                                Timber.d("Study set added: $it")
                                 onAddStudySetToFolder(it)
                             },
                             isAdded = studySetImportedIds.contains(studySet.id)

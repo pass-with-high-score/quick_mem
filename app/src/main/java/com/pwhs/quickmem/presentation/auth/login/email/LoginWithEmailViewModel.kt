@@ -140,6 +140,7 @@ class LoginWithEmailViewModel @Inject constructor(
                                             appManager.saveUserBirthday(login.data?.birthday ?: "")
                                             appManager.saveUserName(login.data?.username ?: "")
                                             appManager.saveUserRole(login.data?.role ?: "")
+                                            appManager.saveUserCoins(login.data?.coin ?: 0)
                                             Purchases.sharedInstance.apply {
                                                 setEmail(login.data?.email)
                                                 setDisplayName(login.data?.fullName)

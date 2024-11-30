@@ -1,5 +1,7 @@
 package com.pwhs.quickmem.presentation.app.settings
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
@@ -28,8 +30,9 @@ class SettingsViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     private val authRepository: AuthRepository,
-    private val searchQueryRepository: SearchQueryRepository
-) : ViewModel() {
+    private val searchQueryRepository: SearchQueryRepository,
+    application: Application
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(SettingUiState())
     val uiState = _uiState.asStateFlow()
@@ -98,7 +101,7 @@ class SettingsViewModel @Inject constructor(
             try {
                 val userId = appManager.userId.firstOrNull() ?: ""
                 val fullName = appManager.userFullName.firstOrNull() ?: ""
-                val username = appManager.userName.firstOrNull() ?: ""
+                val username = appManager.username.firstOrNull() ?: ""
                 val role = appManager.userRole.firstOrNull() ?: ""
                 val email = appManager.userEmail.firstOrNull() ?: ""
                 val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false

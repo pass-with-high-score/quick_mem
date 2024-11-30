@@ -38,8 +38,8 @@ class AddStudySetToClassViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
             val ownerId = appManager.userId.firstOrNull() ?: return@launch
-            val userAvatar = appManager.userAvatar.firstOrNull() ?: return@launch
-            val username = appManager.userName.firstOrNull() ?: return@launch
+            val userAvatar = appManager.userAvatarUrl.firstOrNull() ?: return@launch
+            val username = appManager.username.firstOrNull() ?: return@launch
             _uiState.update {
                 it.copy(
                     token = token,

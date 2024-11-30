@@ -12,4 +12,5 @@ data class AuthResponseModel(
     val refreshToken: String? = null,
     val provider: String? = null,
     val isVerified: Boolean? = null,
+    val coin: Int? = null,
 )

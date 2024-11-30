@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.presentation.app.home.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +29,7 @@ import com.pwhs.quickmem.util.calculateTimeAgo
 fun NotificationItem(
     notification: GetNotificationResponseModel,
     onMarkAsRead: (String) -> Unit,
+    onNotificationClicked: (GetNotificationResponseModel) -> Unit
 ) {
 
     val backgroundColor = if (notification.isRead) {
@@ -53,6 +53,7 @@ fun NotificationItem(
             if (!notification.isRead) {
                 onMarkAsRead(notification.id)
             }
+            onNotificationClicked(notification)
         },
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
@@ -62,8 +63,7 @@ fun NotificationItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(backgroundColor)
-                .clickable { onMarkAsRead(notification.id) },
+                .background(backgroundColor),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(

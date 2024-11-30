@@ -4,16 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.domain.repository.AuthRepository
-import com.pwhs.quickmem.presentation.auth.login.LoginUiAction
-import com.pwhs.quickmem.presentation.auth.login.LoginUiEvent
-import com.pwhs.quickmem.presentation.auth.login.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +31,6 @@ class SignupViewModel @Inject constructor(
     }
 
     fun signupWithGoogle() {
-        Timber.d("Signup with Google")
         viewModelScope.launch {
             _uiEvent.trySend(SignupUiEvent.SignupWithGoogle)
         }

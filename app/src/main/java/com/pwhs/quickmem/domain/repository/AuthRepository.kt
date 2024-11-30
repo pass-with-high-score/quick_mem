@@ -29,6 +29,8 @@ import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
 import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
+import com.pwhs.quickmem.domain.model.users.UpdateCoinRequestModel
+import com.pwhs.quickmem.domain.model.users.UpdateCoinResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import kotlinx.coroutines.flow.Flow
 
@@ -110,4 +112,8 @@ interface AuthRepository {
         changeRoleRequestModel: ChangeRoleRequestModel
     ): Flow<Resources<ChangeRoleResponseModel>>
 
+    suspend fun updateCoin(
+        token: String,
+        updateCoinRequestModel: UpdateCoinRequestModel
+    ): Flow<Resources<UpdateCoinResponseModel>>
 }

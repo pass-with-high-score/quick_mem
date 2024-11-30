@@ -61,7 +61,7 @@ fun OnboardingScreen(
         },
         onGetStartedClick = {
             viewModel.saveIsFirstRun(false)
-            navigator.navigate(WelcomeScreenDestination) {
+            navigator.navigate(WelcomeScreenDestination()) {
                 popUpTo(NavGraphs.root) {
                     saveState = false
                 }

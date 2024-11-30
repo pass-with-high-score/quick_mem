@@ -34,7 +34,6 @@ import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
-import timber.log.Timber
 
 @Composable
 fun AddStudySetToFoldersList(
@@ -107,8 +106,7 @@ fun AddStudySetToFoldersList(
                             )
                         }
                     }
-                    items(filterFolders) { folder ->
-                        Timber.d("List folder ID: $folderImportedIds")
+                    items(items = filterFolders, key = { it.id }) { folder ->
                         AddStudySetToFoldersItem(
                             folder = folder,
                             onAddStudySetToFolders = {

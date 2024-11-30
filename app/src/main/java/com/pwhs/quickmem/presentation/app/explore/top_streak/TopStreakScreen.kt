@@ -127,7 +127,7 @@ fun TopStreakScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(topStreaks.size) { index ->
+                items(topStreaks.size, key = { it }) { index ->
                     val topStreak = topStreaks[index]
                     StreakItem(
                         rank = index + 1,

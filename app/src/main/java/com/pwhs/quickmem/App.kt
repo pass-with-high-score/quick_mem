@@ -6,7 +6,7 @@ import com.onesignal.OneSignal
 import com.onesignal.debug.LogLevel as OneSignalLogLevel
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
-import com.pwhs.quickmem.data.dto.notification.TokenRequestDto
+import com.pwhs.quickmem.data.dto.notification.DeviceTokenRequestDto
 import com.pwhs.quickmem.data.remote.ApiService
 import com.revenuecat.purchases.LogLevel as RevenueCatLogLevel
 import com.revenuecat.purchases.Purchases
@@ -78,7 +78,7 @@ class App : Application() {
                 val accessToken = tokenManager.accessToken.firstOrNull() ?: ""
                 val userId = appManager.userId.firstOrNull() ?: ""
                 try {
-                    apiService.sendDeviceToken(accessToken, TokenRequestDto(userId, token))
+                    apiService.sendDeviceToken(accessToken, DeviceTokenRequestDto(userId, token))
                     Timber.d("Token sent to server successfully.")
                 } catch (e: Exception) {
                     Timber.e(e, "Error sending token to server")

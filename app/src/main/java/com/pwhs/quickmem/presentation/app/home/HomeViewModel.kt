@@ -23,6 +23,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -55,28 +56,41 @@ class HomeViewModel @Inject constructor(
             val userId = appManager.userId.firstOrNull() ?: ""
             _uiState.value = HomeUiState(userId = userId)
             initData()
-            updateStreak()
         }
     }
 
     private fun initData() {
         job?.cancel()
         job = viewModelScope.launch {
-            val studySetsDeferred = async { getRecentAccessStudySets() }
-            val foldersDeferred = async { getRecentAccessFolders() }
-            val classesDeferred = async { getRecentAccessClasses() }
-            val top5SubjectsDeferred = async { getTop5Subjects() }
-            val streaksDeferred = async { getStreaksByUserId() }
-            val customerInfoDeferred = async { getCustomerInfo() }
-            val notificationsDeferred = async { loadNotifications() }
+            combine(tokenManager.accessToken, appManager.userId) { token, userId ->
+                token to userId
+            }.collect { (token, userId) ->
+                if (token?.isNotEmpty() == true && userId.isNotEmpty()) {
+                    val studySetsDeferred =
+                        async { getRecentAccessStudySets(token = token, userId = userId) }
+                    val foldersDeferred =
+                        async { getRecentAccessFolders(token = token, userId = userId) }
+                    val classesDeferred =
+                        async { getRecentAccessClasses(token = token, userId = userId) }
+                    val top5SubjectsDeferred = async { getTop5Subjects(token = token) }
+                    val streaksDeferred =
+                        async { getStreaksByUserId(token = token, userId = userId) }
+                    val customerInfoDeferred = async { getCustomerInfo() }
+                    val notificationsDeferred =
+                        async { loadNotifications(token = token, userId = userId) }
+                    val updateStreakDeferred =
+                        async { updateStreak(token = token, userId = userId) }
 
-            studySetsDeferred.await()
-            foldersDeferred.await()
-            classesDeferred.await()
-            top5SubjectsDeferred.await()
-            streaksDeferred.await()
-            customerInfoDeferred.await()
-            notificationsDeferred.await()
+                    studySetsDeferred.await()
+                    foldersDeferred.await()
+                    classesDeferred.await()
+                    top5SubjectsDeferred.await()
+                    streaksDeferred.await()
+                    customerInfoDeferred.await()
+                    notificationsDeferred.await()
+                    updateStreakDeferred.await()
+                }
+            }
         }
     }
 
@@ -97,15 +111,15 @@ class HomeViewModel @Inject constructor(
             }
 
             is HomeUiAction.LoadNotifications -> {
-                loadNotifications()
+                viewModelScope.launch {
+                    val token = tokenManager.accessToken.firstOrNull() ?: ""
+                    val userId = appManager.userId.firstOrNull() ?: ""
+                    loadNotifications(token = token, userId = userId)
+                }
             }
 
             is HomeUiAction.MarkAsRead -> {
                 markNotificationAsRead(event.notificationId)
-            }
-
-            is HomeUiAction.RefreshNotifications -> {
-                loadNotifications()
             }
 
             HomeUiAction.RefreshHome -> {
@@ -130,10 +144,8 @@ class HomeViewModel @Inject constructor(
         })
     }
 
-    private fun getStreaksByUserId() {
+    private fun getStreaksByUserId(token: String, userId: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
             streakRepository.getStreaksByUserId(token, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
@@ -169,10 +181,8 @@ class HomeViewModel @Inject constructor(
         }.distinct()
     }
 
-    private fun updateStreak() {
+    private fun updateStreak(token: String, userId: String) {
         viewModelScope.launch {
-            val userId = appManager.userId.firstOrNull() ?: ""
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
             streakRepository.updateStreak(token, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
@@ -200,10 +210,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun loadNotifications() {
+    private fun loadNotifications(token: String, userId: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
             notificationRepository.loadNotifications(userId, token).collect { result ->
                 when (result) {
                     is Resources.Loading -> {
@@ -259,9 +267,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getTop5Subjects() {
+    private fun getTop5Subjects(token: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
             studySetRepository.getTop5Subject(token).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
@@ -297,10 +304,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getRecentAccessStudySets() {
+    private fun getRecentAccessStudySets(token: String, userId: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
             studySetRepository.getRecentAccessStudySet(token, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
@@ -322,10 +327,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getRecentAccessFolders() {
+    private fun getRecentAccessFolders(token: String, userId: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
             folderRepository.getRecentAccessFolders(token, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {
@@ -347,10 +350,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getRecentAccessClasses() {
+    private fun getRecentAccessClasses(token: String, userId: String) {
         viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
             classRepository.getRecentAccessClass(token, userId).collect { resource ->
                 when (resource) {
                     is Resources.Loading -> {

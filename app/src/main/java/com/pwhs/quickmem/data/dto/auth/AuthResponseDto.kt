@@ -25,4 +25,6 @@ data class AuthResponseDto(
     val provider: String? = null,
     @SerializedName("isVerified")
     val isVerified: Boolean? = null,
+    @SerializedName("coin")
+    val coin: Int? = null,
 )

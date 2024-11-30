@@ -2,7 +2,6 @@ package com.pwhs.quickmem.presentation.app.deeplink
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.annotation.parameters.DeepLink
@@ -11,10 +10,7 @@ import com.ramcosta.composedestinations.generated.destinations.JoinClassScreenDe
 import com.ramcosta.composedestinations.generated.destinations.LoadFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LoadStudySetScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import timber.log.Timber
 
-//Deeplink for receiving code from class, folder, study set
-//TODO: Implement this screen
 @Destination<RootGraph>(
     deepLinks = [
         DeepLink(uriPattern = "quickmem://join/class?code={classCode}"),
@@ -24,20 +20,18 @@ import timber.log.Timber
 )
 @Composable
 fun DeepLinkScreen(
-    modifier: Modifier = Modifier,
     studySetCode: String? = null,
     folderCode: String? = null,
     classCode: String? = null,
     navigator: DestinationsNavigator,
 ) {
-    Timber.d("DeepLinkScreen: studySetCode: $studySetCode, folderCode: $folderCode, classCode: $classCode")
     LaunchedEffect(key1 = true) {
         when {
             classCode != null -> {
                 navigator.navigate(
                     JoinClassScreenDestination(
                         code = classCode,
-                        type = "class"
+                        isFromDeepLink = true
                     )
                 ) {
                     popUpTo(NavGraphs.root) {
@@ -51,7 +45,6 @@ fun DeepLinkScreen(
             folderCode != null -> {
                 navigator.navigate(
                     LoadFolderScreenDestination(
-                        type = "folder",
                         folderCode = folderCode
                     )
                 ) {
@@ -66,7 +59,6 @@ fun DeepLinkScreen(
             studySetCode != null -> {
                 navigator.navigate(
                     LoadStudySetScreenDestination(
-                        type = "studySet",
                         studySetCode = studySetCode
                     )
                 ) {

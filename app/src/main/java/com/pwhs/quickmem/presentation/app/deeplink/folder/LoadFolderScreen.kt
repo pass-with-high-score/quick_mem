@@ -35,7 +35,6 @@ fun LoadFolderScreen(
                     navigator.navigate(
                         FolderDetailScreenDestination(
                             id = event.folderId,
-                            code = uiState.folderCode,
                         )
                     ) {
                         popUpTo(NavGraphs.root) {

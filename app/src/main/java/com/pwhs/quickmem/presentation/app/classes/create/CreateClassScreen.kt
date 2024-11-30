@@ -43,7 +43,6 @@ fun CreateClassScreen(
                     navigator.navigateUp()
                     navigator.navigate(
                         ClassDetailScreenDestination(
-                            code = "",
                             id = event.id,
                             title = uiState.title,
                             description = uiState.description

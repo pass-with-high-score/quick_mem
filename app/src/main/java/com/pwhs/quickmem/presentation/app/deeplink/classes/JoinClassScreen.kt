@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,19 +71,23 @@ fun JoinClassScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is JoinClassUiEvent.JoinedClass -> {
+                    if (!uiState.isFromDeepLink) {
+                        navigator.navigateUp()
+                    }
                     navigator.navigate(
                         ClassDetailScreenDestination(
                             id = event.id,
-                            code = event.classCode,
                             title = event.title,
                             description = event.description
                         )
                     ) {
-                        popUpTo(NavGraphs.root) {
-                            saveState = false
+                        if (uiState.isFromDeepLink) {
+                            popUpTo(NavGraphs.root) {
+                                saveState = false
+                            }
+                            launchSingleTop = true
+                            restoreState = false
                         }
-                        launchSingleTop = true
-                        restoreState = false
                     }
                 }
 
@@ -159,7 +163,7 @@ fun JoinClass(
                         onClick = onBackHome
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Home,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.txt_back),
                             tint = Color.Gray.copy(alpha = 0.6f)
                         )
@@ -182,7 +186,7 @@ fun JoinClass(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingItem(
-                                title = stringResource(R.string.txt_title),
+                                title = "Name",
                                 subtitle = classDetailResponseModel?.title ?: "",
                                 showArrow = false
                             )

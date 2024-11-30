@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,7 +72,7 @@ fun SearchResultScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    var tabIndex by remember { mutableIntStateOf(0) }
+    var tabIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val studySetItems: LazyPagingItems<GetStudySetResponseModel> =
         viewModel.studySetState.collectAsLazyPagingItems()
@@ -146,7 +147,6 @@ fun SearchResultScreen(
             navigator.navigate(
                 ClassDetailScreenDestination(
                     id = it?.id ?: "",
-                    code = it?.joinToken ?: "",
                     title = it?.title ?: "",
                     description = it?.description ?: ""
                 )
@@ -156,7 +156,6 @@ fun SearchResultScreen(
             navigator.navigate(
                 FolderDetailScreenDestination(
                     id = it?.id ?: "",
-                    code = ""
                 )
             )
         },

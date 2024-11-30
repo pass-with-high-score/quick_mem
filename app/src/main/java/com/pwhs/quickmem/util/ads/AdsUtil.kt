@@ -16,6 +16,7 @@ import com.pwhs.quickmem.MainActivity
 import com.pwhs.quickmem.core.utils.AppConstant.INTERSTITIAL_ADS_ID
 import com.pwhs.quickmem.core.utils.AppConstant.REWARDED_INTERSTITIAL_ADS_ID
 import com.pwhs.quickmem.core.utils.AppConstant.REWARD_ADS_ID
+import timber.log.Timber
 
 object AdsUtil {
     fun interstitialAds(
@@ -89,7 +90,7 @@ object AdsUtil {
         )
     }
 
-    fun rewardedInterstitialTestAd(context: Context, onAdWatched: () -> Unit) {
+    fun rewardedInterstitialAd(context: Context, onAdWatched: () -> Unit) {
         // Load an ad
         RewardedInterstitialAd.load(
             context,
@@ -99,45 +100,15 @@ object AdsUtil {
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     super.onAdFailedToLoad(error)
                     Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-
-
                 }
 
                 override fun onAdLoaded(adLoaded: RewardedInterstitialAd) {
                     super.onAdLoaded(adLoaded)
-                    Toast.makeText(context, "Ad Loaded", Toast.LENGTH_SHORT).show()
-
                     if (context is MainActivity) {
                         adLoaded.show(context) {
                             // The user earned the reward
+                            Timber.d("User earned the reward")
                             onAdWatched()
-                        }
-                    }
-
-                    adLoaded.fullScreenContentCallback = object : FullScreenContentCallback() {
-                        override fun onAdDismissedFullScreenContent() {
-                            super.onAdDismissedFullScreenContent()
-                            Toast.makeText(context, "Ad Dismissed", Toast.LENGTH_SHORT).show()
-                        }
-
-                        override fun onAdShowedFullScreenContent() {
-                            super.onAdShowedFullScreenContent()
-                            Toast.makeText(context, "Ad Showed", Toast.LENGTH_SHORT).show()
-                        }
-
-                        override fun onAdClicked() {
-                            super.onAdClicked()
-                            Toast.makeText(context, "Ad Clicked", Toast.LENGTH_SHORT).show()
-                        }
-
-                        override fun onAdImpression() {
-                            super.onAdImpression()
-                            Toast.makeText(context, "Ad Impression", Toast.LENGTH_SHORT).show()
-                        }
-
-                        override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-                            super.onAdFailedToShowFullScreenContent(p0)
-                            Toast.makeText(context, p0.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
