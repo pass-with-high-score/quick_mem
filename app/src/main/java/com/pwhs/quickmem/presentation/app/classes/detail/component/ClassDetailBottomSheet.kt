@@ -82,7 +82,7 @@ fun ClassDetailBottomSheet(
                     ItemMenuBottomSheet(
                         onClick = onInviteClass,
                         icon = Default.PersonAdd,
-                        title = "Invite Class"
+                        title = "Invite Member"
                     )
                 }
                 if (!isOwner && isMember) {

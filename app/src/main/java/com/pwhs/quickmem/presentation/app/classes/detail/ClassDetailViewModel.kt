@@ -463,7 +463,6 @@ class ClassDetailViewModel @Inject constructor(
                                 isLoading = true
                             )
                         }
-                        Timber.d("Loading")
                     }
 
                     is Resources.Success -> {
@@ -473,7 +472,13 @@ class ClassDetailViewModel @Inject constructor(
                                 statusInvite = resource.data?.status == true
                             )
                         }
-                        if (_uiState.value.statusInvite == true) {
+                        if (_uiState.value.statusInvite) {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = "",
+                                    username = ""
+                                )
+                            }
                             _uiEvent.send(ClassDetailUiEvent.InviteToClassSuccess)
                         } else {
                             _uiState.update {
@@ -482,7 +487,6 @@ class ClassDetailViewModel @Inject constructor(
                                 )
                             }
                         }
-                        Timber.d("Success")
                     }
 
                     is Resources.Error -> {

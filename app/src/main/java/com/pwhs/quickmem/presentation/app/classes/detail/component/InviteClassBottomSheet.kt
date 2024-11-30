@@ -43,13 +43,13 @@ fun InviteClassBottomSheet(
                     .padding(16.dp)
             ) {
                 Text(
-                    "Invite Members",
+                    text = "Invite Members",
                     style = typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
                 Text(
-                    "To invite members to this class, add their Quizlet usernames or emails below (separate by commas or line breaks).",
+                    text = "To invite members to this class, add their Quizlet usernames below.",
                     style = typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -68,7 +68,7 @@ fun InviteClassBottomSheet(
                     shape = shapes.medium
                 ) {
                     Text(
-                        "Submit", style = typography.bodyMedium.copy(
+                        text = "Submit", style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -84,7 +84,7 @@ fun InviteClassBottomSheet(
                     shape = shapes.medium
                 ) {
                     Text(
-                        "Cancel",
+                        text = "Cancel",
                         style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
