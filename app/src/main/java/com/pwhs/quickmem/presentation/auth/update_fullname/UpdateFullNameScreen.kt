@@ -1,14 +1,18 @@
 package com.pwhs.quickmem.presentation.auth.update_fullname
 
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -44,6 +48,7 @@ import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
+import com.pwhs.quickmem.util.rememberImeState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
@@ -114,6 +119,13 @@ fun UpdateFullName(
     isLoading: Boolean = false,
     errorMessage: String? = null
 ) {
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -126,7 +138,8 @@ fun UpdateFullName(
                     Text(
                         text = stringResource(R.string.txt_what_should_we_call_you),
                         style = typography.titleMedium.copy(
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            color = colorScheme.primary
                         )
                     )
                 },
@@ -150,7 +163,9 @@ fun UpdateFullName(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it),
+                    .padding(it)
+                    .verticalScroll(scrollState)
+                    .imePadding(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TextField(

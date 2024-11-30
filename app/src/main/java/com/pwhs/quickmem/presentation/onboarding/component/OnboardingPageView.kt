@@ -40,7 +40,7 @@ fun OnboardingPageView(page: OnboardingPage) {
     Column(
         modifier = Modifier
             .padding(16.dp)
-            .height(450.dp)
+            .height(400.dp)
             .graphicsLayer(alpha = alpha),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

@@ -1,9 +1,14 @@
 package com.pwhs.quickmem.presentation.app.classes.edit
 
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
@@ -22,6 +27,7 @@ import com.pwhs.quickmem.presentation.component.CreateTextField
 import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.SwitchContainer
+import com.pwhs.quickmem.util.rememberImeState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -44,6 +50,7 @@ fun EditClassScreen(
                 EditClassUiEvent.ClassesUpdated -> {
                     resultNavigator.navigateBack(true)
                 }
+
                 is EditClassUiEvent.ShowError -> {
                     Toast.makeText(context, "Update class error", Toast.LENGTH_SHORT).show()
                 }
@@ -97,6 +104,13 @@ fun EditClass(
     allowMemberManagement: Boolean = false,
     onAllowMemberManagementChange: (Boolean) -> Unit = {},
 ) {
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
     Scaffold(
         containerColor = colorScheme.background,
         modifier = modifier,
@@ -113,6 +127,9 @@ fun EditClass(
                 modifier = Modifier
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .imePadding()
             ) {
                 CreateTextField(
                     value = title,

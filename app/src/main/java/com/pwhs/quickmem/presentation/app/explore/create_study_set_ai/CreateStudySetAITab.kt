@@ -1,16 +1,20 @@
 package com.pwhs.quickmem.presentation.app.explore.create_study_set_ai
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -31,6 +35,7 @@ import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +54,7 @@ import com.pwhs.quickmem.core.data.enums.DifficultyLevel
 import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.core.data.enums.QuestionType
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.rememberImeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,7 +79,13 @@ fun CreateStudySetAITab(
     var showBottomSheetLanguage by remember {
         mutableStateOf(false)
     }
-    val context = LocalContext.current
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.value, tween(300))
+        }
+    }
     Scaffold(
         floatingActionButton = {
             if (title.isNotEmpty()) {
@@ -103,10 +114,13 @@ fun CreateStudySetAITab(
             Spacer(modifier = Modifier.height(100.dp))
         },
     ) { innerPadding ->
-        LazyColumn(
-            modifier = modifier.padding(innerPadding),
-        ) {
-            item {
+        Box {
+            Column(
+                modifier = modifier
+                    .padding(innerPadding)
+                    .verticalScroll(scrollState)
+                    .imePadding(),
+            ) {
                 Column(
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
@@ -115,11 +129,8 @@ fun CreateStudySetAITab(
                         color = Color.Red,
                         style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                         textAlign = TextAlign.Start,
-                        modifier = Modifier.padding(top = 8.dp)
                     )
                 }
-            }
-            item {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
@@ -151,8 +162,6 @@ fun CreateStudySetAITab(
                         )
                     }
                 )
-            }
-            item {
                 OutlinedTextField(
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
@@ -178,8 +187,6 @@ fun CreateStudySetAITab(
                         unfocusedIndicatorColor = Color.Transparent,
                     )
                 )
-            }
-            item {
                 Text(
                     text = stringResource(R.string.txt_number_of_flashcards_optional),
                     style = typography.titleMedium.copy(
@@ -252,9 +259,7 @@ fun CreateStudySetAITab(
                         }
                     }
                 }
-            }
 
-            item {
                 Text(
                     text = "Language",
                     style = typography.titleMedium.copy(
@@ -303,8 +308,6 @@ fun CreateStudySetAITab(
                         )
                     }
                 }
-            }
-            item {
                 Text(
                     text = stringResource(R.string.txt_question_type),
                     style = typography.titleMedium.copy(
@@ -356,9 +359,7 @@ fun CreateStudySetAITab(
                         }
                     }
                 }
-            }
 
-            item {
                 Text(
                     text = stringResource(R.string.txt_difficulty_level),
                     style = typography.titleMedium.copy(
@@ -423,109 +424,106 @@ fun CreateStudySetAITab(
                         }
                     }
                 }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    }
 
-        if (showBottomSheetLanguage) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheetLanguage = false
-                },
-                sheetState = sheetLanguageState,
+    if (showBottomSheetLanguage) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showBottomSheetLanguage = false
+            },
+            sheetState = sheetLanguageState,
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                        .clickable {
+                            onLanguageChange(
+                                if (language == LanguageCode.VI.code) {
+                                    LanguageCode.EN.code
+                                } else {
+                                    LanguageCode.VI.code
+                                }
+                            )
+                            showBottomSheetLanguage = false
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp)
-                            .clickable {
-                                onLanguageChange(
-                                    if (language == LanguageCode.VI.code) {
-                                        LanguageCode.EN.code
-                                    } else {
-                                        LanguageCode.VI.code
-                                    }
-                                )
-                                showBottomSheetLanguage = false
-                            },
                         verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_vn_flag),
-                                contentDescription = stringResource(R.string.txt_vn_flag),
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_vn_flag),
+                            contentDescription = stringResource(R.string.txt_vn_flag),
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
 
-                            Text(
-                                text = stringResource(R.string.txt_vietnamese),
-                                style = typography.bodyMedium.copy(
-                                    color = colorScheme.onSurface,
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                modifier = Modifier
-                                    .padding(vertical = 10.dp)
-                                    .padding(start = 10.dp)
-                            )
-                        }
-                        if (language == LanguageCode.VI.code) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = stringResource(R.string.txt_check),
-                                tint = colorScheme.primary
-                            )
-                        }
+                        Text(
+                            text = stringResource(R.string.txt_vietnamese),
+                            style = typography.bodyMedium.copy(
+                                color = colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier
+                                .padding(vertical = 10.dp)
+                                .padding(start = 10.dp)
+                        )
                     }
+                    if (language == LanguageCode.VI.code) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = stringResource(R.string.txt_check),
+                            tint = colorScheme.primary
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                        .clickable {
+                            onLanguageChange(LanguageCode.EN.code)
+                            showBottomSheetLanguage = false
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp)
-                            .clickable {
-                                onLanguageChange(LanguageCode.EN.code)
-                                showBottomSheetLanguage = false
-                            },
                         verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_us_flag),
-                                contentDescription = stringResource(R.string.txt_us_flag),
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_us_flag),
+                            contentDescription = stringResource(R.string.txt_us_flag),
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
 
-                            Text(
-                                text = stringResource(R.string.txt_english_us),
-                                style = typography.bodyMedium.copy(
-                                    color = colorScheme.onSurface,
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                modifier = Modifier
-                                    .padding(vertical = 10.dp)
-                                    .padding(start = 10.dp)
-                            )
-                        }
+                        Text(
+                            text = stringResource(R.string.txt_english_us),
+                            style = typography.bodyMedium.copy(
+                                color = colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier
+                                .padding(vertical = 10.dp)
+                                .padding(start = 10.dp)
+                        )
+                    }
 
-                        if (language == LanguageCode.EN.code) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = stringResource(R.string.txt_check),
-                                tint = colorScheme.primary
-                            )
-                        }
+                    if (language == LanguageCode.EN.code) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = stringResource(R.string.txt_check),
+                            tint = colorScheme.primary
+                        )
                     }
                 }
             }

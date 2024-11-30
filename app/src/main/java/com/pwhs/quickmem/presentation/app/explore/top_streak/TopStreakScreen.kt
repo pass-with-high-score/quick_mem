@@ -4,8 +4,8 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -70,76 +70,75 @@ fun TopStreakScreen(
             onTopStreakRefresh()
         }
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(top = 16.dp)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(124.dp)
-                    .padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.top2),
-                    contentDescription = stringResource(R.string.txt_silver_medal),
-                    modifier = Modifier.size(with(density) { silverSize.value.toDp() })
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.top1),
-                    contentDescription = stringResource(R.string.txt_gold_medal),
-                    modifier = Modifier.size(with(density) { goldSize.value.toDp() })
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.top3),
-                    contentDescription = stringResource(R.string.txt_bronze_medal),
-                    modifier = Modifier.size(with(density) { bronzeSize.value.toDp() })
-                )
-            }
-
-            val message = when (rankOwner) {
-                in 1..3 -> stringResource(
-                    R.string.txt_you_have_reached_the_top_on_the_top_streak_leaderboard,
-                    rankOwner ?: 0
-                )
-
-                in 4..10 -> stringResource(R.string.txt_streak_leaderboard_motivation)
-                else -> stringResource(R.string.txt_top_10_highest_streak_leaderboard)
-            }
-
-            Text(
-                text = message,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = premiumColor,
-                    fontWeight = FontWeight.Bold
-                ),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .padding(horizontal = 16.dp),
-            )
-            HorizontalDivider(
-                color = Color.Gray.copy(alpha = 0.1f),
-                thickness = 1.dp,
-            )
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(topStreaks.size, key = { it }) { index ->
-                    val topStreak = topStreaks[index]
-                    StreakItem(
-                        rank = index + 1,
-                        topStreak = topStreak,
-                        onClickToUserDetail = onClickToUserDetail,
-                        isCurrentUser = topStreak.userId == streakOwner?.userId
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(124.dp)
+                        .padding(bottom = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.top2),
+                        contentDescription = stringResource(R.string.txt_silver_medal),
+                        modifier = Modifier.size(with(density) { silverSize.value.toDp() })
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.top1),
+                        contentDescription = stringResource(R.string.txt_gold_medal),
+                        modifier = Modifier.size(with(density) { goldSize.value.toDp() })
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.top3),
+                        contentDescription = stringResource(R.string.txt_bronze_medal),
+                        modifier = Modifier.size(with(density) { bronzeSize.value.toDp() })
                     )
                 }
+            }
+            item {
+                val message = when (rankOwner) {
+                    in 1..3 -> stringResource(
+                        R.string.txt_you_have_reached_the_top_on_the_top_streak_leaderboard,
+                        rankOwner ?: 0
+                    )
+
+                    in 4..10 -> stringResource(R.string.txt_streak_leaderboard_motivation)
+                    else -> stringResource(R.string.txt_top_10_highest_streak_leaderboard)
+                }
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = premiumColor,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .padding(horizontal = 16.dp),
+                )
+                HorizontalDivider(
+                    color = Color.Gray.copy(alpha = 0.1f),
+                    thickness = 1.dp,
+                )
+            }
+            items(topStreaks.size, key = { it }) { index ->
+                val topStreak = topStreaks[index]
+                StreakItem(
+                    rank = index + 1,
+                    topStreak = topStreak,
+                    onClickToUserDetail = onClickToUserDetail,
+                    isCurrentUser = topStreak.userId == streakOwner?.userId
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

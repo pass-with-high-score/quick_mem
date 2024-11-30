@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -48,8 +49,9 @@ fun StudySetSubjectBottomSheet(
             modifier = modifier
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
-
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxHeight(0.95f)
             ) {
                 Text(
                     "Subjects",
@@ -70,7 +72,7 @@ fun StudySetSubjectBottomSheet(
                     placeholder = { Text("Try Arts") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp),
+                        .padding(vertical = 10.dp),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,

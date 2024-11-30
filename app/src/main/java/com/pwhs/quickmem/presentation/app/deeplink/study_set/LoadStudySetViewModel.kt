@@ -79,7 +79,6 @@ class LoadStudySetViewModel @Inject constructor(
                     }
                 }
             }
-
         }
     }
 }

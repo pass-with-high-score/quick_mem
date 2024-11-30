@@ -359,4 +359,7 @@
     <string name="txt_invite_members">Invite Members</string>
     <string name="txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below">To invite members to this class, add their QuickMem usernames below.</string>
     <string name="txt_type_username_to_invite">Type username to invite</string>
+    <string name="txt_empty_user">No members found</string>
+    <string name="txt_unauthorized">Unauthorized</string>
+    <string name="txt_class_not_found">Class not found</string>
 </resources>

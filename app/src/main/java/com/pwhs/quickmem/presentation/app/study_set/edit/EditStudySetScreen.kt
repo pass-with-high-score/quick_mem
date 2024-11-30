@@ -1,9 +1,14 @@
 package com.pwhs.quickmem.presentation.app.study_set.edit
 
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
@@ -14,7 +19,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +34,8 @@ import com.pwhs.quickmem.presentation.component.CreateTextField
 import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.SwitchContainer
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.rememberImeState
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -105,7 +111,6 @@ fun EditStudySet(
     onNavigateBack: () -> Unit = {}
 ) {
     val sheetSubjectState = rememberModalBottomSheetState()
-    rememberCoroutineScope()
     var showBottomSheetEdit by remember {
         mutableStateOf(false)
     }
@@ -114,6 +119,13 @@ fun EditStudySet(
     }
     val filteredSubjects = SubjectModel.defaultSubjects.filter {
         it.name.contains(searchSubjectQuery, ignoreCase = true)
+    }
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
     }
 
     Scaffold(
@@ -132,6 +144,9 @@ fun EditStudySet(
                 modifier = Modifier
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .imePadding()
             ) {
                 CreateTextField(
                     value = title,
@@ -191,5 +206,7 @@ fun EditStudySet(
 )
 @Composable
 fun EditFlashCardScreenPreview() {
-    EditStudySet()
+    QuickMemTheme {
+        EditStudySet()
+    }
 }

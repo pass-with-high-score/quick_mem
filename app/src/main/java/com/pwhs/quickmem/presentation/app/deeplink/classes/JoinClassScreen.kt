@@ -92,7 +92,20 @@ fun JoinClassScreen(
                 }
 
                 JoinClassUiEvent.UnAuthorized -> {
-                    Toast.makeText(context, "Unauthorized", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_unauthorized), Toast.LENGTH_SHORT).show()
+                    navigator.navigate(NavGraphs.root) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                        restoreState = false
+                    }
+                }
+
+                JoinClassUiEvent.NotFound -> {
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_class_not_found), Toast.LENGTH_SHORT).show()
                     navigator.navigate(NavGraphs.root) {
                         popUpTo(NavGraphs.root) {
                             saveState = false

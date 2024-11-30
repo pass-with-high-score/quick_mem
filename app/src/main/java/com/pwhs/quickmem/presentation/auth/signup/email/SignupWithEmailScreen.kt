@@ -1,14 +1,17 @@
 package com.pwhs.quickmem.presentation.auth.signup.email
 
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
@@ -41,8 +44,10 @@ import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.presentation.auth.signup.email.component.DatePickerModalInput
 import com.pwhs.quickmem.presentation.auth.signup.email.component.RadioGroup
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
 import com.pwhs.quickmem.util.isDateSmallerThan
+import com.pwhs.quickmem.util.rememberImeState
 import com.pwhs.quickmem.util.toFormattedString
 import com.pwhs.quickmem.util.toTimestamp
 import com.ramcosta.composedestinations.annotation.Destination
@@ -132,6 +137,14 @@ private fun SignupWithEmail(
 ) {
     var isDatePickerVisible by rememberSaveable { mutableStateOf(false) }
     var isRoleVisible by rememberSaveable { mutableStateOf(false) }
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
+
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -141,13 +154,16 @@ private fun SignupWithEmail(
             )
         }
     ) { innerPadding ->
-        Box {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxSize()
                     .padding(16.dp)
-                    .padding(top = 40.dp),
+                    .verticalScroll(scrollState)
+                    .padding(top = 40.dp)
+                    .imePadding(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -158,6 +174,7 @@ private fun SignupWithEmail(
                     modifier = Modifier
                         .size(60.dp)
                 )
+
 
                 Text(
                     text = stringResource(R.string.txt_signup_with_email),
@@ -212,8 +229,8 @@ private fun SignupWithEmail(
                     onClick = onSignUpClick,
                     modifier = Modifier.padding(top = 16.dp)
                 )
-
             }
+
             LoadingOverlay(
                 isLoading = isLoading,
                 text = stringResource(R.string.txt_signing_up)
@@ -241,5 +258,7 @@ private fun SignupWithEmail(
 @Preview
 @Composable
 fun PreviewSignupWithEmailScreen() {
-    SignupWithEmail()
+    QuickMemTheme {
+        SignupWithEmail()
+    }
 }

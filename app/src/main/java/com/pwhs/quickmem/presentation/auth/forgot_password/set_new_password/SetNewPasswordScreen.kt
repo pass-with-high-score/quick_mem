@@ -1,13 +1,17 @@
 package com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password
 
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -35,6 +39,7 @@ import com.pwhs.quickmem.presentation.auth.component.AuthTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
+import com.pwhs.quickmem.util.rememberImeState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
@@ -118,6 +123,14 @@ private fun SetNewPassword(
     onConfirmPasswordChanged: (String) -> Unit = {},
     onSubmitClick: () -> Unit = {}
 ) {
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
+
     Scaffold(
         modifier = modifier.gradientBackground(),
         containerColor = Color.Transparent,
@@ -131,7 +144,9 @@ private fun SetNewPassword(
                     .padding(innerPadding)
                     .fillMaxSize()
                     .padding(16.dp)
-                    .padding(top = 40.dp),
+                    .verticalScroll(scrollState)
+                    .padding(top = 40.dp)
+                    .imePadding(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -139,7 +154,8 @@ private fun SetNewPassword(
                     text = stringResource(R.string.txt_please_enter_your_new_password),
                     style = typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp
+                        fontSize = 22.sp,
+                        color = colorScheme.primary
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 16.dp)

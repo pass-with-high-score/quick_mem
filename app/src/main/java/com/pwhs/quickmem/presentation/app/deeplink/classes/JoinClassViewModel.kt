@@ -72,6 +72,7 @@ class JoinClassViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(isLoading = false)
                         }
+                        _uiEvent.send(JoinClassUiEvent.NotFound)
                     }
 
                     is Resources.Loading -> {

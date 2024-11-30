@@ -20,7 +20,7 @@ fun WelcomeScrollingText(textList: List<String>, displayCount: Int, currentIndex
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
-            .padding(vertical = 50.dp)
+            .padding(vertical = 20.dp)
     ) {
         for (i in 0 until displayCount) {
             val index = (currentIndex + i) % textList.size

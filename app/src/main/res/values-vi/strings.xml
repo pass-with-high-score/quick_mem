@@ -256,15 +256,15 @@
     <string name="txt_login_description">Chào mừng trở lại! Đăng nhập vào tài khoản của bạn</string>
     <string name="txt_ai_generated">Được tạo bởi AI</string>
     <string name="txt_yes">Đúng</string>
-    <string name="txt_top_streak">Chuỗi thành tích cao nhất</string>
-    <string name="txt_create_study_set_ai">Tạo bộ học AI</string>
+    <string name="txt_top_streak">Top Streaks</string>
+    <string name="txt_create_study_set_ai">Tạo bộ học bằng AI</string>
     <string name="txt_gold_medal">Huy chương vàng</string>
     <string name="txt_silver_medal">Huy chương bạc</string>
     <string name="txt_bronze_medal">Huy chương đồng</string>
     <string name="txt_top_10_highest_streak_leaderboard">Bảng xếp hạng 10 chuỗi thành tích cao nhất</string>
     <string name="txt_streak_leaderboard_motivation">Duy trì chuỗi để leo bảng xếp hạng!</string>
     <string name="txt_create">Tạo</string>
-    <string name="txt_warning_ai_not_gen">Cảnh báo: AI có thể không tạo thẻ học chính xác hoặc đầy đủ. Vui lòng kiểm tra nếu nghi ngờ.</string>
+    <string name="txt_warning_ai_not_gen">Cảnh báo: AI có thể không tạo thẻ học chính xác hoặc đầy đủ. Hãy kiểm tra lại nếu bạn thấy cần thiết.</string>
     <string name="txt_title_required">Tiêu đề (bắt buộc)</string>
     <string name="txt_description_optional">Mô tả (tùy chọn)</string>
     <string name="txt_number_of_flashcards_optional">Số lượng thẻ học (tùy chọn)</string>
@@ -356,4 +356,7 @@
     <string name="txt_invite_members">Mời các thành viên</string>
     <string name="txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below">Để mời thành viên vào lớp này, hãy thêm tên người dùng QuickMem của họ bên dưới.</string>
     <string name="txt_type_username_to_invite">Nhập tên người dùng để mời</string>
+    <string name="txt_empty_user">Không tìm thấy người dùng nào có username mà bạn cung cấp</string>
+    <string name="txt_unauthorized">Vui lòng đăng ký hoặc đăng nhập vào ứng dụng</string>
+    <string name="txt_class_not_found">Không tìm thấy class</string>
 </resources>

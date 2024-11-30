@@ -72,8 +72,8 @@ fun ListResultUserScreen(
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.ic_folder),
-                                contentDescription = stringResource(R.string.txt_empty_folder),
+                                painter = painterResource(id = R.drawable.ic_group),
+                                contentDescription = stringResource(R.string.txt_empty_user),
                             )
                             Text(
                                 text = stringResource(R.string.txt_no_members),

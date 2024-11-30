@@ -7,4 +7,5 @@ sealed class JoinClassUiEvent {
         val description: String,
     ) : JoinClassUiEvent()
     data object UnAuthorized : JoinClassUiEvent()
+    data object NotFound : JoinClassUiEvent()
 }

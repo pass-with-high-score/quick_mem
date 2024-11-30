@@ -304,7 +304,7 @@ private fun Home(
                                 imageVector = Icons.Outlined.Search,
                                 contentDescription = stringResource(R.string.txt_search),
                                 tint = colorScheme.secondary,
-                                modifier = Modifier.size(15.dp)
+                                modifier = Modifier.size(30.dp)
                             )
                             Text(
                                 text = stringResource(R.string.txt_study_sets_folders_class),
@@ -576,12 +576,11 @@ private fun Home(
                 showStreakBottomSheet = false
             },
             sheetState = streakBottomSheet,
-            dragHandle = {}
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxHeight(0.65f)
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .fillMaxHeight(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LottieAnimation(

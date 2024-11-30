@@ -4,9 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -42,12 +44,15 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.LanguageCode
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
 import com.pwhs.quickmem.presentation.auth.welcome.component.WelcomeScrollingText
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.premiumColor
 import com.pwhs.quickmem.util.changeLanguage
 import com.pwhs.quickmem.util.getLanguageCode
@@ -166,59 +171,72 @@ private fun WelCome(
             )
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            WelcomeScrollingText(
-                textList = textList,
-                displayCount = displayCount,
-                currentIndex = currentIndex
-            )
-            val color = colorScheme.onSurface
-            Text(
-                buildAnnotatedString {
-                    withStyle(
-                        style = ParagraphStyle(
-                            textAlign = TextAlign.Start,
-                            lineHeight = 40.sp
-                        )
-                    ) {
+            item {
+                WelcomeScrollingText(
+                    textList = textList,
+                    displayCount = displayCount,
+                    currentIndex = currentIndex
+                )
+            }
+
+            item {
+                val color = colorScheme.onSurface
+                Text(
+                    buildAnnotatedString {
                         withStyle(
-                            style = SpanStyle(
-                                color = color,
-                                fontSize = 30.sp,
-                                fontWeight = FontWeight.Black
+                            style = ParagraphStyle(
+                                textAlign = TextAlign.Start,
+                                lineHeight = 40.sp
                             )
                         ) {
-                            append("All the tools for \nlearning success.\n")
                             withStyle(
                                 style = SpanStyle(
-                                    color = premiumColor,
+                                    color = color,
+                                    fontSize = 30.sp,
+                                    fontWeight = FontWeight.Black
                                 )
                             ) {
-                                append("In one app.")
+                                append("All the tools for \nlearning success.\n")
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = premiumColor,
+                                    )
+                                ) {
+                                    append("In one app.")
+                                }
                             }
                         }
-                    }
-                },
-                modifier = Modifier.padding(top = 60.dp)
-            )
+                    },
+                    modifier = Modifier.padding(top = 30.dp)
+                )
+            }
 
-            AuthButton(
-                modifier = Modifier.padding(top = 50.dp),
-                onClick = onNavigateToSignup,
-                text = stringResource(R.string.txt_get_started_for_free)
-            )
-            AuthButton(
-                modifier = Modifier.padding(top = 16.dp),
-                onClick = onNavigateToLogin,
-                text = stringResource(R.string.txt_already_have_an_account),
-                colors = Color.White,
-                borderColor = colorScheme.primary,
-                textColor = colorScheme.primary
-            )
+            item {
+                AuthButton(
+                    modifier = Modifier.padding(top = 30.dp),
+                    onClick = onNavigateToSignup,
+                    text = stringResource(R.string.txt_get_started_for_free)
+                )
+            }
+            item {
+                AuthButton(
+                    modifier = Modifier.padding(top = 16.dp),
+                    onClick = onNavigateToLogin,
+                    text = stringResource(R.string.txt_already_have_an_account),
+                    colors = Color.White,
+                    borderColor = colorScheme.primary,
+                    textColor = colorScheme.primary
+                )
+            }
+            
+            item {
+                Spacer(modifier = Modifier.padding(20.dp))
+            }
         }
 
     }
@@ -322,5 +340,18 @@ private fun WelCome(
                 }
             }
         }
+    }
+}
+
+@Preview(device = Devices.PIXEL_4_XL)
+@Composable
+private fun WelcomeScreenPreview() {
+    QuickMemTheme {
+        WelCome(
+            language = LanguageCode.EN.code,
+            onLanguageChange = {},
+            onNavigateToLogin = {},
+            onNavigateToSignup = {}
+        )
     }
 }
