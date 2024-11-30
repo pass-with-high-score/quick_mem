@@ -18,7 +18,7 @@ data class ClassDetailUiState(
     val isMember: Boolean = false,
     val username: String = "",
     val errorMessage: String = "",
-    val statusInvite : Boolean = false,
+    val isInvited: Boolean = false,
     val userResponseModel: UserResponseModel = UserResponseModel(),
     val studySets: List<GetStudySetResponseModel> = emptyList(),
     val folders: List<GetFolderResponseModel> = emptyList(),
