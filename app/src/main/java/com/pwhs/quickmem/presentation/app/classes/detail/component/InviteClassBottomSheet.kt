@@ -51,7 +51,7 @@ fun InviteClassBottomSheet(
                     )
                 )
                 Text(
-                    text = stringResource(R.string.txt_to_invite_members_to_this_class_add_their_quizlet_usernames_below),
+                    text = stringResource(R.string.txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below),
                     style = typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp)
                 )

@@ -261,14 +261,13 @@
     <string name="txt_gold_medal">Huy chương vàng</string>
     <string name="txt_silver_medal">Huy chương bạc</string>
     <string name="txt_bronze_medal">Huy chương đồng</string>
-    <string name="txt_user_avatar_top_streak">Ảnh đại diện người dùng</string>
     <string name="txt_top_10_highest_streak_leaderboard">Bảng xếp hạng 10 chuỗi thành tích cao nhất</string>
-    <string name="txt_keep_up_the_streak_to_climb_the_leaderboard">Duy trì chuỗi để leo bảng xếp hạng!</string>
+    <string name="txt_streak_leaderboard_motivation">Duy trì chuỗi để leo bảng xếp hạng!</string>
     <string name="txt_create">Tạo</string>
     <string name="txt_warning_ai_not_gen">Cảnh báo: AI có thể không tạo flashcard chính xác hoặc đầy đủ. Vui lòng kiểm tra nếu nghi ngờ.</string>
     <string name="txt_title_required">Tiêu đề (bắt buộc)</string>
     <string name="txt_description_optional">Mô tả (tùy chọn)</string>
-    <string name="txt_number_of_flashcards_optional">Số lượng flashcard (tùy chọn)</string>
+    <string name="txt_number_of_flashcards_optional">Số lượng thẻ học (tùy chọn)</string>
     <string name="txt_question_type">Loại câu hỏi</string>
     <string name="txt_multiple_choice">Trắc nghiệm</string>
     <string name="txt_difficulty_level">Mức độ khó</string>
@@ -355,6 +354,6 @@
     <string name="txt_exit">Thoát</string>
     <string name="txt_invite_member">Mời thành viên</string>
     <string name="txt_invite_members">Mời các thành viên</string>
-    <string name="txt_to_invite_members_to_this_class_add_their_quizlet_usernames_below">Để mời thành viên vào lớp này, hãy thêm tên người dùng Quizlet của họ bên dưới.</string>
+    <string name="txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below">Để mời thành viên vào lớp này, hãy thêm tên người dùng QuickMem của họ bên dưới.</string>
     <string name="txt_type_username_to_invite">Nhập tên người dùng để mời</string>
 </resources>

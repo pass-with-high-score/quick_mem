@@ -264,9 +264,8 @@
     <string name="txt_gold_medal">Gold Medal</string>
     <string name="txt_silver_medal">Silver Medal</string>
     <string name="txt_bronze_medal">Bronze Medal</string>
-    <string name="txt_user_avatar_top_streak">User Avatar</string>
     <string name="txt_top_10_highest_streak_leaderboard">Top 10 highest streak leaderboard</string>
-    <string name="txt_keep_up_the_streak_to_climb_the_leaderboard">Keep up the streak to climb the leaderboard!</string>
+    <string name="txt_streak_leaderboard_motivation">Keep up the streak to climb the leaderboard!</string>
     <string name="txt_create">Create</string>
     <string name="txt_warning_ai_not_gen">Warning: AI may not generate accurate or complete flashcards. Please review if unsure.</string>
     <string name="txt_title_required">Title (required)</string>
@@ -284,7 +283,7 @@
     <string name="txt_here_is_how_to_get_started">Here\'s how to get started</string>
     <string name="txt_create_a_flashcard">Create a flashcard</string>
     <string name="txt_create_your_own_flashcards">Create your own flashcards</string>
-    <string name="txt_top_5_subjects_have_study_sets">Top 5 subjects have study sets</string>
+    <string name="txt_top_5_subjects_have_study_sets">Top 5 subjects with study sets</string>
     <string name="txt_practice_every_day">Practice every day so you don\'t lose your streak!</string>
     <string name="txt_retry">Retry</string>
     <string name="txt_folder_icon">Folder Icon</string>
@@ -310,8 +309,8 @@
     <string name="txt_class_title">Class Title</string>
     <string name="txt_enter_class_title">Enter Class Title</string>
     <string name="txt_enter_class_description">Enter Class Description</string>
-    <string name="txt_allow_class_members_to_send_invites_to_other_people">Allow class members to send invites to other people</string>
-    <string name="txt_allow_class_members_to_add_study_set_and_folders">Allow class members to add study set and folders</string>
+    <string name="txt_allow_class_members_to_send_invites_to_other_people">Allow class members to send invites to others</string>
+    <string name="txt_allow_class_members_to_add_study_set_and_folders">Allow class members to add study sets and folders</string>
     <string name="txt_add_study_set_to_class">Add study set to class</string>
     <string name="txt_add_folder_to_class">Add folder to class</string>
     <string name="txt_edit_class">Edit Class</string>
@@ -358,6 +357,6 @@
     <string name="txt_exit">Exit</string>
     <string name="txt_invite_member">Invite Member</string>
     <string name="txt_invite_members">Invite Members</string>
-    <string name="txt_to_invite_members_to_this_class_add_their_quizlet_usernames_below">To invite members to this class, add their Quizlet usernames below.</string>
+    <string name="txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below">To invite members to this class, add their QuickMem usernames below.</string>
     <string name="txt_type_username_to_invite">Type username to invite</string>
 </resources>

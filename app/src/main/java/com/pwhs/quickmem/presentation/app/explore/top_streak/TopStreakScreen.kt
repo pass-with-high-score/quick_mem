@@ -107,7 +107,7 @@ fun TopStreakScreen(
                     R.string.txt_you_have_reached_the_top_on_the_top_streak_leaderboard,
                     rankOwner.toString()
                 )
-                in 4..10 -> stringResource(R.string.txt_keep_up_the_streak_to_climb_the_leaderboard)
+                in 4..10 -> stringResource(R.string.txt_streak_leaderboard_motivation)
                 else -> stringResource(R.string.txt_top_10_highest_streak_leaderboard)
             }
 

@@ -85,7 +85,7 @@ fun StreakItem(
 
         AsyncImage(
             model = topStreak.avatarUrl,
-            contentDescription = stringResource(R.string.txt_user_avatar_top_streak),
+            contentDescription = stringResource(R.string.txt_user_avatar),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(40.dp)
