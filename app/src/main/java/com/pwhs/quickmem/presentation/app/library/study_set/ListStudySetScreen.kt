@@ -50,7 +50,7 @@ fun ListStudySetScreen(
     isLoading: Boolean = false,
     studySets: List<GetStudySetResponseModel> = emptyList(),
     onStudySetClick: (GetStudySetResponseModel) -> Unit = {},
-    onStudySetRefresh: () -> Unit = {}, 
+    onStudySetRefresh: () -> Unit = {},
     avatarUrl: String = "",
     username: String = "",
     isOwner: Boolean = false
@@ -146,7 +146,7 @@ fun ListStudySetScreen(
                                 modifier = Modifier.padding(8.dp)
                             )
                         }
-                        items(filterStudySets) { studySet ->
+                        items(items = filterStudySets, key = { it.id }) { studySet ->
                             StudySetItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 studySet = studySet,

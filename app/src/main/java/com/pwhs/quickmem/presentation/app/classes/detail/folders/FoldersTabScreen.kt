@@ -48,7 +48,7 @@ fun FoldersTabScreen(
                         modifier = Modifier
                             .fillMaxSize(),
                     ) {
-                        items(folder) { folders ->
+                        items(items = folder, key = {it.id}) { folders ->
                             FolderItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 title = folders.title,

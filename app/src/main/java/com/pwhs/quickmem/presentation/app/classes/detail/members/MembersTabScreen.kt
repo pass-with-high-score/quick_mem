@@ -46,7 +46,7 @@ fun MembersTabScreen(
                         modifier = Modifier
                             .fillMaxSize(),
                     ) {
-                        items(member) { member ->
+                        items(items = member, key = {it.id}) { member ->
                             ClassMemberItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 classMemberModel = member,

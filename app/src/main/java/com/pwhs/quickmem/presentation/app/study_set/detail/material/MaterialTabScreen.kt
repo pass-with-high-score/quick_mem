@@ -187,7 +187,7 @@ fun MaterialTabScreen(
                                 LazyRow(
                                     modifier = Modifier.fillMaxWidth(),
                                 ) {
-                                    items(flashCards) { flashCard ->
+                                    items(items = flashCards, key = {it.id}) { flashCard ->
                                         StudySetFlipCard(
                                             frontText = flashCard.term,
                                             backText = flashCard.definition,
@@ -279,7 +279,7 @@ fun MaterialTabScreen(
                             }
                         }
 
-                        items(flashCards) { flashCards ->
+                        items(items = flashCards, key = {it.id}) { flashCards ->
                             CardDetail(
                                 isOwner = isOwner,
                                 color = studySetColor,

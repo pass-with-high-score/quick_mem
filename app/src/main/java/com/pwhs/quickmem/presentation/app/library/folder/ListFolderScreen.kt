@@ -142,7 +142,7 @@ fun ListFolderScreen(
                                 modifier = Modifier.padding(8.dp)
                             )
                         }
-                        items(filterFolders) { folder ->
+                        items(items = filterFolders, key = {it.id}) { folder ->
                             FolderItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 title = folder.title,
