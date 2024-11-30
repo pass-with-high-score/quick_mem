@@ -9,6 +9,8 @@ import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.InviteToClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.InviteToClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.model.classes.SaveRecentAccessClassRequestModel
@@ -91,4 +93,9 @@ interface ClassRepository {
         token: String,
         userId: String
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>>
+
+    suspend fun inviteToClass(
+        token: String,
+        inviteToClassRequestModel: InviteToClassRequestModel
+    ): Flow<Resources<InviteToClassResponseModel>>
 }

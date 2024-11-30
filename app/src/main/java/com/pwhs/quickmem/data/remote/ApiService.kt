@@ -34,6 +34,8 @@ import com.pwhs.quickmem.data.dto.classes.DeleteStudySetsRequestDto
 import com.pwhs.quickmem.data.dto.classes.ExitClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.GetClassByOwnerResponseDto
 import com.pwhs.quickmem.data.dto.classes.GetClassDetailResponseDto
+import com.pwhs.quickmem.data.dto.classes.InviteToClassRequestDto
+import com.pwhs.quickmem.data.dto.classes.InviteToClassResponseDto
 import com.pwhs.quickmem.data.dto.classes.JoinClassRequestDto
 import com.pwhs.quickmem.data.dto.classes.RemoveMembersRequestDto
 import com.pwhs.quickmem.data.dto.classes.SaveRecentAccessClassRequestDto
@@ -548,6 +550,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("userId") userId: String
     ): List<GetClassByOwnerResponseDto>
+
+    @POST("class/invite")
+    suspend fun inviteUserToClass(
+        @Header("Authorization") token: String,
+        @Body inviteToClassRequestDto: InviteToClassRequestDto
+    ): InviteToClassResponseDto
 
     // Streak
     @GET("streak/{userId}")

@@ -16,6 +16,8 @@ import com.pwhs.quickmem.domain.model.classes.DeleteStudySetsRequestModel
 import com.pwhs.quickmem.domain.model.classes.ExitClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
+import com.pwhs.quickmem.domain.model.classes.InviteToClassRequestModel
+import com.pwhs.quickmem.domain.model.classes.InviteToClassResponseModel
 import com.pwhs.quickmem.domain.model.classes.JoinClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.RemoveMembersRequestModel
 import com.pwhs.quickmem.domain.model.classes.SaveRecentAccessClassRequestModel
@@ -273,6 +275,24 @@ class ClassRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.getRecentClass(token, userId)
                 emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun inviteToClass(
+        token: String,
+        inviteToClassRequestModel: InviteToClassRequestModel
+    ): Flow<Resources<InviteToClassResponseModel>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                val response = apiService.inviteUserToClass(
+                    token, inviteToClassRequestModel.toDto()
+                )
+                emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

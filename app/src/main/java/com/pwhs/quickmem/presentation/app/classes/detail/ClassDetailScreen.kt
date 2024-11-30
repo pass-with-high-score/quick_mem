@@ -40,6 +40,7 @@ import com.pwhs.quickmem.domain.model.users.ClassMemberModel
 import com.pwhs.quickmem.domain.model.users.UserResponseModel
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailBottomSheet
 import com.pwhs.quickmem.presentation.app.classes.detail.component.ClassDetailTopAppBar
+import com.pwhs.quickmem.presentation.app.classes.detail.component.InviteClassBottomSheet
 import com.pwhs.quickmem.presentation.app.classes.detail.folders.FoldersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.members.MembersTabScreen
 import com.pwhs.quickmem.presentation.app.classes.detail.study_sets.StudySetsTabScreen
@@ -204,6 +205,10 @@ fun ClassDetailScreen(
                 ClassDetailUiEvent.OnNavigateToRemoveMembers -> {
 
                 }
+
+                ClassDetailUiEvent.InviteToClassSuccess -> {
+                    Toast.makeText(context, "Invite to class success", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -220,6 +225,11 @@ fun ClassDetailScreen(
             resultNavigator.navigateBack(true)
         },
         title = uiState.title,
+        username = uiState.username,
+        errorMessage = uiState.errorMessage,
+        onUsernameChanged = {
+            viewModel.onEvent(ClassDetailUiAction.OnChangeUsername(it))
+        },
         isLoading = uiState.isLoading,
         isAllowMember = uiState.allowMember,
         userResponseModel = uiState.userResponseModel,
@@ -268,6 +278,9 @@ fun ClassDetailScreen(
         onJoinClass = {
             viewModel.onEvent(ClassDetailUiAction.OnJoinClass)
         },
+        onInviteClass = {
+            viewModel.onEvent(ClassDetailUiAction.OnInviteClass)
+        },
         onReportClass = {
             navigator.navigate(
                 ReportScreenDestination(
@@ -292,6 +305,9 @@ fun ClassDetail(
     modifier: Modifier = Modifier,
     isOwner: Boolean,
     title: String = "",
+    username: String = "",
+    onUsernameChanged: (String) -> Unit = {},
+    errorMessage: String = "",
     isLoading: Boolean = false,
     isMember: Boolean = false,
     isAllowMember: Boolean = false,
@@ -307,6 +323,7 @@ fun ClassDetail(
     onEditClass: () -> Unit = {},
     onExitClass: () -> Unit = {},
     onJoinClass: () -> Unit = {},
+    onInviteClass: () -> Unit = {},
     onRemoveMembers: (String) -> Unit = {},
     onDeleteClass: () -> Unit = {},
     onRefresh: () -> Unit = {},
@@ -324,6 +341,7 @@ fun ClassDetail(
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var showExitConfirmationDialog by remember { mutableStateOf(false) }
+    var showInviteClassBottomSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Scaffold(
@@ -456,6 +474,27 @@ fun ClassDetail(
             dismissButtonTitle = "Cancel",
         )
     }
+
+    if (showInviteClassBottomSheet) {
+        InviteClassBottomSheet(
+            username = username,
+            errorMessage = errorMessage,
+            onUsernameChanged = onUsernameChanged,
+            showInviteClassBottomSheet = showInviteClassBottomSheet,
+            sheetShowMoreState = sheetShowMoreState,
+            onDismissRequest = {
+                showInviteClassBottomSheet = false
+                onUsernameChanged("")
+            },
+            onSubmitClick = {
+                onInviteClass()
+//                if (!isLoading && errorMessage.isEmpty()) {
+//                    showInviteClassBottomSheet = false
+//                }
+            }
+        )
+    }
+
     ClassDetailBottomSheet(
         onAddStudySetToClass = onNavigateAddStudySets,
         onAddFolderToClass = onNavigateAddFolder,
@@ -468,7 +507,10 @@ fun ClassDetail(
             showExitConfirmationDialog = true
             showMoreBottomSheet = false
         },
-        onShareClass = {},
+        onInviteClass = {
+            showInviteClassBottomSheet = true
+            showMoreBottomSheet = false
+        },
         onReportClass = {
             onReportClass()
             showMoreBottomSheet = false

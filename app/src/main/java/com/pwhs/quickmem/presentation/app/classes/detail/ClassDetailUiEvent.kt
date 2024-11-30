@@ -10,4 +10,5 @@ sealed class ClassDetailUiEvent {
     data object ClassDeleted : ClassDetailUiEvent()
     data object NavigateToEditClass : ClassDetailUiEvent()
     data object ExitClass : ClassDetailUiEvent()
+    data object InviteToClassSuccess : ClassDetailUiEvent()
 }
