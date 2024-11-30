@@ -469,10 +469,10 @@ class ClassDetailViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                statusInvite = resource.data?.status == true
+                                isInvited = resource.data?.status == true
                             )
                         }
-                        if (_uiState.value.statusInvite) {
+                        if (_uiState.value.isInvited) {
                             _uiState.update {
                                 it.copy(
                                     errorMessage = "",
