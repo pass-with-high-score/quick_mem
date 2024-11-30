@@ -1,5 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.signup
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -47,6 +50,7 @@ fun SignupScreen(
     navigator: DestinationsNavigator,
     viewModel: SignupViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -95,8 +99,18 @@ fun SignupScreen(
         },
         onSignupWithFacebook = {
             viewModel.signupWithFacebook()
+        },
+        onPrivacyPolicyClick = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
         }
-
     )
 }
 
@@ -108,6 +122,7 @@ fun Signup(
     onSignupWithEmail: () -> Unit = {},
     onSignupWithGoogle: () -> Unit = {},
     onSignupWithFacebook: () -> Unit = {},
+    onPrivacyPolicyClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier.gradientBackground(),
@@ -115,7 +130,6 @@ fun Signup(
         topBar = {
             AuthTopAppBar(
                 onClick = onNavigationIconClick,
-                showLogo = true
             )
         }
     ) { innerPadding ->
@@ -222,7 +236,9 @@ fun Signup(
                 },
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .clickable { },
+                    .clickable {
+                        onPrivacyPolicyClick()
+                    },
                 textAlign = TextAlign.Center
             )
 
