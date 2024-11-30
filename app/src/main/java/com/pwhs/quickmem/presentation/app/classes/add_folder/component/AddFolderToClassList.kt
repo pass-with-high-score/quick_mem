@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -35,9 +34,7 @@ import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
-import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFolderToClassList(
     modifier: Modifier = Modifier,
@@ -109,8 +106,7 @@ fun AddFolderToClassList(
                             )
                         }
                     }
-                    items(filterFolders) { folder ->
-                        Timber.d("List folder ID: $folderImportedIds")
+                    items(items = filterFolders, key = {it.id}) { folder ->
                         AddFolderToClassItem(
                             folder = folder,
                             onAddFolderToClass = {

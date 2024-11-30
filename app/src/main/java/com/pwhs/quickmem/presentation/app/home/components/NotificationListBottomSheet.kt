@@ -88,7 +88,7 @@ fun NotificationListBottomSheet(
 
                 else -> {
                     LazyColumn {
-                        items(notifications, key = { it.id }) { notification ->
+                        items(items = notifications, key = { it.id }) { notification ->
                             NotificationItem(
                                 notification = notification,
                                 onMarkAsRead = {

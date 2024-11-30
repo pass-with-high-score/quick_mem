@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.explore
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.data.enums.CoinAction
@@ -229,6 +230,7 @@ class ExploreViewModel @Inject constructor(
                 when (coin) {
                     is Resources.Error -> {
                         Timber.e("Too many requests, please wait 1 minute")
+                        _uiEvent.send(ExploreUiEvent.Error("Too many requests, please wait 1 minute"))
                     }
 
                     is Resources.Loading -> {
@@ -240,6 +242,11 @@ class ExploreViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(coins = coin.data?.coins ?: 0)
                         }
+                        Toast.makeText(
+                            getApplication(),
+                            "You have earned 1 coin",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

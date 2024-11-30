@@ -90,7 +90,7 @@ fun FolderDetailStudySetList(
                 LazyColumn(
                     horizontalAlignment = CenterHorizontally,
                 ) {
-                    items(studySets) { studySet ->
+                    items(items = studySets, key = { it.id }) { studySet ->
                         StudySetItem(
                             studySet = studySet,
                             onStudySetClick = { onStudySetClick(studySet.id) }

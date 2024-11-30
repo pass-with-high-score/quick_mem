@@ -47,7 +47,7 @@ fun StudySetsTabScreen(
                         modifier = Modifier
                             .fillMaxSize(),
                     ) {
-                        items(studySets) { studySet ->
+                        items(items = studySets, key = {it.id}) { studySet ->
                             StudySetItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 studySet = studySet,

@@ -475,7 +475,7 @@ private fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            items(studySets) { studySet ->
+                            items(items = studySets, key = { it.id }) { studySet ->
                                 StudySetHomeItem(
                                     studySet = studySet,
                                     onStudySetClick = { onStudySetClick(studySet) }
@@ -503,7 +503,7 @@ private fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            items(folders) { folder ->
+                            items(items = folders, key = { it.id }) { folder ->
                                 FolderHomeItem(
                                     title = folder.title,
                                     numOfStudySets = folder.studySetCount,
@@ -533,7 +533,7 @@ private fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            items(classes) { classItem ->
+                            items(items = classes, key = {it.id}) { classItem ->
                                 ClassHomeItem(
                                     classItem = classItem,
                                     onClick = { onClassClicked(classItem) }
@@ -554,7 +554,7 @@ private fun Home(
                         modifier = Modifier.padding(top = 24.dp)
                     )
                 }
-                items(subjects, key = { it.id }) { subject ->
+                items(items = subjects, key = { it.id }) { subject ->
                     SubjectItem(
                         subject = subject,
                         onSearchStudySetBySubject = {

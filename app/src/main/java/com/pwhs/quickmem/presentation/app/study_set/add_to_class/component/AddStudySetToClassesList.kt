@@ -136,7 +136,7 @@ fun AddStudySetToClassesList(
                                 )
                             }
                         }
-                        items(filterClass) { classItem ->
+                        items(items = filterClass, key = { it.id }) { classItem ->
                             AddStudySetToClassesItem(
                                 classItem = classItem,
                                 onAddStudySetToClasses = {
