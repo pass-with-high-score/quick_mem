@@ -99,7 +99,8 @@ fun MaterialTabScreen(
             when {
                 flashCards.isEmpty() -> {
                     Column(
-                        horizontalAlignment = CenterHorizontally
+                        horizontalAlignment = CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.txt_add_your_material_to_get_started),

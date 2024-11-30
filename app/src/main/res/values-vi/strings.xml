@@ -161,8 +161,8 @@
     <string name="txt_study_sets_folder_classes">Bộ học, thư mục, lớp học,..</string>
     <string name="txt_enter_a_topic_or_keywords">Nhập một chủ đề hoặc từ khóa</string>
     <string name="txt_tip_the_more_specific_the_better">Mẹo: Càng cụ thể càng tốt!</string>
-    <string name="txt_material">Tài liệu</string>
-    <string name="txt_progress">Tiến trình</string>
+    <string name="txt_material">Tài liệu</string>b
+    <string name="txt_progress">Tiến trình học</string>
     <string name="txt_check_out_this_study_set">Xem bộ học này: %1$s\n%2$s</string>
     <string name="txt_check_out_this_folder">Xem folder này: %1$s\n%2$s</string>
     <string name="txt_delete_study_set">Xóa bộ học</string>
@@ -184,7 +184,7 @@
     <string name="txt_add_material">Thêm tài liệu</string>
     <string name="txt_choose_your_way_to_study">Chọn cách học của bạn</string>
     <string name="txt_flip_flashcards">Lật thẻ học</string>
-    <string name="txt_quiz">Bài kiểm tra</string>
+    <string name="txt_quiz">Trắc nghiệm</string>
     <string name="txt_true_false">Đúng/Sai</string>
     <string name="txt_write">Viết</string>
     <string name="txt_terms">Thuật ngữ</string>
@@ -359,4 +359,5 @@
     <string name="txt_empty_user">Không tìm thấy người dùng nào có username mà bạn cung cấp</string>
     <string name="txt_unauthorized">Vui lòng đăng ký hoặc đăng nhập vào ứng dụng</string>
     <string name="txt_class_not_found">Không tìm thấy class</string>
+    <string name="txt_restart">Restart</string>
 </resources>

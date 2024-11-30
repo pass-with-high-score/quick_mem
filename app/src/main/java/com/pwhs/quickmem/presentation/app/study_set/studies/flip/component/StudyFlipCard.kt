@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.study_set.studies.component
+package com.pwhs.quickmem.presentation.app.study_set.studies.flip.component
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing

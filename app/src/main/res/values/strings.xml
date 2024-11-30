@@ -362,4 +362,5 @@
     <string name="txt_empty_user">No members found</string>
     <string name="txt_unauthorized">Unauthorized</string>
     <string name="txt_class_not_found">Class not found</string>
+    <string name="txt_restart">Restart</string>
 </resources>

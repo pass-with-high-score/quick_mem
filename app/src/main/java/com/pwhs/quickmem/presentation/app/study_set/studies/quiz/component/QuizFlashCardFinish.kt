@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -111,8 +111,8 @@ fun QuizFlashCardFinish(
                         modifier = Modifier
                             .size(200.dp)
                             .padding(16.dp),
-                        studySetsStillLearn = wrongAnswerCount,
-                        studySetsMastered = correctAnswerCount,
+                        studySetsStillLearn = wrongAnswerCount.coerceAtLeast(0),
+                        studySetsMastered = correctAnswerCount.coerceAtLeast(0),
                         color = studySetColor
                     )
 
@@ -125,7 +125,6 @@ fun QuizFlashCardFinish(
                     )
 
                     Card(
-                        onClick = {},
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
@@ -143,10 +142,9 @@ fun QuizFlashCardFinish(
                                 .fillMaxWidth()
                                 .padding(16.dp)
                         ) {
-                            Image(
+                            Icon(
                                 painter = painterResource(id = R.drawable.ic_card),
                                 contentDescription = "Card",
-                                contentScale = ContentScale.Crop
                             )
                             Text(
                                 text = "Flashcards learned",
@@ -170,7 +168,7 @@ fun QuizFlashCardFinish(
                                             fontWeight = FontWeight.Bold
                                         )
                                     ) {
-                                        append(correctAnswerCount.toString())
+                                        append(correctAnswerCount.coerceAtLeast(0).toString())
                                     }
                                     append("/${flashCardSize}")
                                 },
@@ -181,7 +179,6 @@ fun QuizFlashCardFinish(
                         }
                     }
                     Card(
-                        onClick = {},
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
                             containerColor = Color.White
@@ -197,7 +194,7 @@ fun QuizFlashCardFinish(
                                 .fillMaxWidth()
                                 .padding(16.dp)
                         ) {
-                            Image(
+                            Icon(
                                 imageVector = Icons.Default.AccessTime,
                                 contentDescription = "Time",
                             )

@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.study_set.studies.write
 
 import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,12 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Clear
@@ -46,11 +49,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,17 +60,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.WriteStatus
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
-import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.LearnByTrueFalseUiEvent
 import com.pwhs.quickmem.presentation.app.study_set.studies.write.component.WriteFlashcardFinish
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.ViewImageDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.util.rememberImeState
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -144,24 +146,27 @@ fun LearnByWrite(
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
-    val focusRequester = remember { FocusRequester() }
     var userAnswer by rememberSaveable { mutableStateOf("") }
     val showHintBottomSheet = remember { mutableStateOf(false) }
     val hintBottomSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var debounceJob: Job? = null
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.viewportSize, tween(300))
+        }
     }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     when (isLoading) {
-                        true -> Text("Loading")
+                        true -> Text(text = "Loading")
                         false -> when (isEndOfList) {
                             false -> Text("${currentCardIndex + 1}/${flashCardList.size}")
-                            true -> Text("Finished")
+                            true -> Text(text = "Finished")
                         }
                     }
                 },
@@ -185,7 +190,7 @@ fun LearnByWrite(
                         ) {
                             Icon(
                                 imageVector = Default.RestartAlt,
-                                contentDescription = "Restart",
+                                contentDescription = stringResource(R.string.txt_restart),
                                 tint = studySetColor
                             )
                         }
@@ -221,159 +226,158 @@ fun LearnByWrite(
                 )
                 when (isEndOfList) {
                     false -> {
-                        LazyColumn(
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(scrollState)
+                                .imePadding()
                         ) {
-                            item {
-                                Card(
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .requiredHeight(300.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surface
+                                ),
+                                shape = MaterialTheme.shapes.small
+                            ) {
+                                Column(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(300.dp),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surface
-                                    ),
-                                    shape = MaterialTheme.shapes.small
+                                        .fillMaxSize()
+                                        .padding(8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
                                 ) {
-                                    Column(
+                                    Text(
+                                        text = writeQuestion?.definition ?: "",
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            fontSize = when (writeQuestion?.definition?.length
+                                                ?: 0) {
+                                                in 0..10 -> 16.sp
+                                                in 11..20 -> 14.sp
+                                                else -> 12.sp
+                                            }
+                                        ),
                                         modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(8.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            text = writeQuestion?.definition ?: "",
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontSize = when (writeQuestion?.definition?.length
-                                                    ?: 0) {
-                                                    in 0..10 -> 16.sp
-                                                    in 11..20 -> 14.sp
-                                                    else -> 12.sp
-                                                }
-                                            ),
+                                            .padding(8.dp)
+                                            .padding(bottom = 8.dp)
+                                    )
+                                    if (writeQuestion?.definitionImageUrl?.isNotEmpty() == true) {
+                                        AsyncImage(
+                                            model = writeQuestion.definitionImageUrl,
+                                            contentDescription = "Definition Image",
+                                            contentScale = ContentScale.Crop,
                                             modifier = Modifier
-                                                .padding(8.dp)
-                                                .padding(bottom = 8.dp)
+                                                .size(80.dp)
+                                                .clickable {
+                                                    isImageViewerOpen = true
+                                                    definitionImageUri =
+                                                        writeQuestion.definitionImageUrl
+                                                }
                                         )
-                                        if (writeQuestion?.definitionImageUrl?.isNotEmpty() == true) {
-                                            AsyncImage(
-                                                model = writeQuestion.definitionImageUrl,
-                                                contentDescription = "Definition Image",
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier
-                                                    .size(80.dp)
-                                                    .clickable {
-                                                        isImageViewerOpen = true
-                                                        definitionImageUri =
-                                                            writeQuestion.definitionImageUrl
-                                                    }
-                                            )
-                                        }
                                     }
                                 }
                             }
-                            item {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 16.dp),
-                                    horizontalArrangement = Arrangement.SpaceEvenly,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    TextField(
-                                        value = userAnswer,
-                                        maxLines = 1,
-                                        keyboardActions = KeyboardActions(
-                                            onDone = {
-                                                userAnswer = ""
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextField(
+                                    value = userAnswer,
+                                    maxLines = 1,
+                                    keyboardActions = KeyboardActions(
+                                        onDone = {
+                                            userAnswer = ""
+                                        }
+                                    ),
+                                    keyboardOptions = KeyboardOptions(
+                                        autoCorrectEnabled = false,
+                                        imeAction = ImeAction.Done,
+                                        showKeyboardOnFocus = true
+                                    ),
+                                    placeholder = {
+                                        Text(
+                                            text = "Enter your answer",
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        )
+                                    },
+                                    trailingIcon = {
+                                        TextButton(
+                                            onClick = {
+                                                debounceJob?.cancel()
+                                                debounceJob = scope.launch {
+                                                    delay(500)
+                                                    onSubmitAnswer(
+                                                        writeQuestion?.id ?: "",
+                                                        WriteStatus.SKIPPED,
+                                                        ""
+                                                    )
+                                                }
                                             }
-                                        ),
-                                        keyboardOptions = KeyboardOptions(
-                                            autoCorrectEnabled = false,
-                                            imeAction = ImeAction.Done,
-                                            showKeyboardOnFocus = true
-                                        ),
-                                        placeholder = {
+                                        ) {
                                             Text(
-                                                text = "Enter your answer",
+                                                text = "Don't know",
                                                 style = MaterialTheme.typography.bodyMedium.copy(
+                                                    color = studySetColor,
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             )
-                                        },
-                                        trailingIcon = {
-                                            TextButton(
-                                                onClick = {
-                                                    debounceJob?.cancel()
-                                                    debounceJob = scope.launch {
-                                                        delay(500)
-                                                        onSubmitAnswer(
-                                                            writeQuestion?.id ?: "",
-                                                            WriteStatus.SKIPPED,
-                                                            ""
-                                                        )
-                                                    }
-                                                }
-                                            ) {
-                                                Text(
-                                                    text = "Don't know",
-                                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                                        color = studySetColor,
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-                                                )
-                                            }
-                                        },
-                                        onValueChange = {
-                                            userAnswer = it
-                                        },
-                                        colors = TextFieldDefaults.colors(
-                                            unfocusedContainerColor = Color.Transparent,
-                                            focusedContainerColor = Color.Transparent,
-                                            focusedIndicatorColor = studySetColor,
-                                            unfocusedIndicatorColor = studySetColor
-                                        ),
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .focusRequester(focusRequester)
-                                            .padding(end = 8.dp),
-                                    )
+                                        }
+                                    },
+                                    onValueChange = {
+                                        userAnswer = it
+                                    },
+                                    colors = TextFieldDefaults.colors(
+                                        unfocusedContainerColor = Color.Transparent,
+                                        focusedContainerColor = Color.Transparent,
+                                        focusedIndicatorColor = studySetColor,
+                                        unfocusedIndicatorColor = studySetColor
+                                    ),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(horizontal = 8.dp),
+                                )
 
-                                    IconButton(
-                                        onClick = {
-                                            debounceJob?.cancel()
-                                            debounceJob = scope.launch {
-                                                delay(500)
-                                                if (userAnswer.isNotEmpty() && writeQuestion?.term == userAnswer) {
-                                                    onSubmitAnswer(
-                                                        writeQuestion.id,
-                                                        WriteStatus.CORRECT,
-                                                        userAnswer
-                                                    )
-                                                    userAnswer = ""
-                                                } else {
-                                                    onSubmitAnswer(
-                                                        writeQuestion?.id ?: "",
-                                                        WriteStatus.WRONG,
-                                                        userAnswer
-                                                    )
-                                                    userAnswer = ""
-                                                }
+                                IconButton(
+                                    onClick = {
+                                        debounceJob?.cancel()
+                                        debounceJob = scope.launch {
+                                            delay(500)
+                                            if (userAnswer.isNotEmpty() && writeQuestion?.term == userAnswer) {
+                                                onSubmitAnswer(
+                                                    writeQuestion.id,
+                                                    WriteStatus.CORRECT,
+                                                    userAnswer
+                                                )
+                                                userAnswer = ""
+                                            } else {
+                                                onSubmitAnswer(
+                                                    writeQuestion?.id ?: "",
+                                                    WriteStatus.WRONG,
+                                                    userAnswer
+                                                )
+                                                userAnswer = ""
                                             }
-                                        },
-                                        enabled = userAnswer.isNotEmpty(),
-                                        colors = IconButtonDefaults.iconButtonColors(
-                                            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(
-                                                alpha = 0.5f
-                                            ),
-                                            contentColor = studySetColor
-                                        )
-                                    ) {
-                                        Icon(
-                                            imageVector = Default.ArrowCircleUp,
-                                            contentDescription = "Submit",
-                                        )
-                                    }
+                                        }
+                                    },
+                                    enabled = userAnswer.isNotEmpty(),
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(
+                                            alpha = 0.5f
+                                        ),
+                                        contentColor = studySetColor
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Default.ArrowCircleUp,
+                                        contentDescription = "Submit",
+                                    )
                                 }
                             }
                         }
