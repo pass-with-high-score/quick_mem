@@ -28,7 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -199,7 +199,7 @@ private fun UserDetail(
     onRefresh: () -> Unit = {},
     onReportClick: () -> Unit = {}
 ) {
-    var tabIndex by remember { mutableIntStateOf(UserDetailTabEnum.STUDY_SET.index) }
+    var tabIndex by rememberSaveable { mutableIntStateOf(UserDetailTabEnum.STUDY_SET.index) }
     val tabTitles = listOf(
         stringResource(R.string.txt_study_sets),
         stringResource(R.string.txt_classes),

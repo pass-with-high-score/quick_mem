@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -190,7 +191,7 @@ fun Library(
     navigateToCreateClass: () -> Unit = {},
     navigateToCreateFolder: () -> Unit = {},
 ) {
-    var tabIndex by remember { mutableIntStateOf(0) }
+    var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf(
         stringResource(R.string.txt_study_sets),
         stringResource(R.string.txt_classes),

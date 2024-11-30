@@ -184,7 +184,7 @@ fun JoinClass(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingItem(
-                                title = "Title",
+                                title = "Name",
                                 subtitle = classDetailResponseModel?.title ?: "",
                                 showArrow = false
                             )
