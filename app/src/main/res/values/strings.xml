@@ -351,7 +351,7 @@
     <string name="txt_to_confirm_it_s_really_you_please_enter_your_quickmem_password">To confirm it\'s really you, please enter your QuickMem password</string>
     <string name="txt_current_password">Current Password</string>
     <string name="txt_confirm_new_password">Confirm New Password</string>
-    <string name="txt_you_have_reached_the_top_on_the_top_streak_leaderboard">You have reached the top #%1$s on the Top Streak leaderboard!</string>
+    <string name="txt_you_have_reached_the_top_on_the_top_streak_leaderboard">You have reached the top %1$d on the Top Streak leaderboard!</string>
     <string name="txt_are_you_sure_you_want_to_delete_this_class">Are you sure you want to delete this class?</string>
     <string name="txt_are_you_sure_you_want_to_exit_this_class">Are you sure you want to exit this class?</string>
     <string name="txt_exit">Exit</string>

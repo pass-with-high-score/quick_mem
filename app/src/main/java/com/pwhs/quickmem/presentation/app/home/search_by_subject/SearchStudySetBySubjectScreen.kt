@@ -218,7 +218,7 @@ fun SearchStudySetBySubject(
                                     onClick = onStudySetRefresh,
                                     modifier = Modifier.padding(top = 16.dp)
                                 ) {
-                                    Text(text = "Retry")
+                                    Text(text = stringResource(R.string.txt_retry))
                                 }
                             }
                         }
