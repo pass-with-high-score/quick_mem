@@ -119,6 +119,10 @@ class ProfileViewModel @Inject constructor(
                             appManager.saveUserName(data.username)
                             appManager.saveUserAvatar(data.avatarUrl)
                             appManager.saveUserRole(data.role)
+                            appManager.saveUserFullName(data.fullname)
+                            appManager.saveUserEmail(data.email)
+                            appManager.saveUserId(data.id)
+                            appManager.saveUserCoins(data.coin)
                         }
                     }
 

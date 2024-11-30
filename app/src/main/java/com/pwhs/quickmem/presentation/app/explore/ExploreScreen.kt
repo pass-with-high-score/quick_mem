@@ -1,11 +1,21 @@
 package com.pwhs.quickmem.presentation.app.explore
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -23,25 +33,31 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.DifficultyLevel
 import com.pwhs.quickmem.core.data.enums.QuestionType
 import com.pwhs.quickmem.domain.model.streak.GetTopStreakResponseModel
 import com.pwhs.quickmem.presentation.app.explore.create_study_set_ai.CreateStudySetAITab
 import com.pwhs.quickmem.presentation.app.explore.top_streak.TopStreakScreen
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
+import com.pwhs.quickmem.util.ads.AdsUtil
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.revenuecat.purchases.CustomerInfo
 
 @Composable
 @Destination<RootGraph>
@@ -105,7 +121,10 @@ fun ExploreScreen(
         onCreateStudySet = {
             viewModel.onEvent(ExploreUiAction.OnCreateStudySet)
         },
-        errorMessage = uiState.errorMessage
+        errorMessage = uiState.errorMessage,
+        coins = uiState.coins,
+        onEarnCoins = { viewModel.onEvent(ExploreUiAction.OnEarnCoins) },
+        customerInfo = uiState.customerInfo
     )
 }
 
@@ -132,13 +151,17 @@ fun Explore(
     onQuestionTypeChange: (QuestionType) -> Unit = {},
     onDifficultyLevelChange: (DifficultyLevel) -> Unit = {},
     onCreateStudySet: () -> Unit = {},
-    errorMessage: String = ""
+    onEarnCoins: () -> Unit = {},
+    errorMessage: String = "",
+    coins: Int = 0,
+    customerInfo: CustomerInfo? = null
 ) {
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf(
         "Create Study Set AI",
         "Top Streak",
     )
+    val context = LocalContext.current
 
     Scaffold(
         modifier = modifier,
@@ -153,7 +176,54 @@ fun Explore(
                     )
                 },
                 actions = {
-
+                    if (tabIndex == ExploreTabEnum.TOP_STREAK.index) {
+                        IconButton(
+                            onClick = onTopStreakRefresh
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Refresh",
+                            )
+                        }
+                    } else {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(end = 16.dp)
+                        ) {
+                            Text(
+                                text = when (customerInfo?.activeSubscriptions?.isNotEmpty()) {
+                                    true -> "Unlimited"
+                                    false -> coins.toString()
+                                    else -> "0"
+                                },
+                                style = typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_coin),
+                                contentDescription = "Coins",
+                                modifier = Modifier.size(24.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                            if (customerInfo?.activeSubscriptions?.isNotEmpty() == false) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add",
+                                    tint = colorScheme.primary,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .clickable {
+                                            AdsUtil.rewardedInterstitialAd(
+                                                context,
+                                                onEarnCoins
+                                            )
+                                        },
+                                )
+                            }
+                        }
+                    }
                 }
             )
         }
@@ -202,7 +272,17 @@ fun Explore(
                         onLanguageChange = onLanguageChange,
                         onQuestionTypeChange = onQuestionTypeChange,
                         onDifficultyLevelChange = onDifficultyLevelChange,
-                        onCreateStudySet = onCreateStudySet
+                        onCreateStudySet = {
+                            if (coins > 0) {
+                                onCreateStudySet()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "You need at least 1 coin to create a study set",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     )
 
                     ExploreTabEnum.TOP_STREAK.index -> TopStreakScreen(

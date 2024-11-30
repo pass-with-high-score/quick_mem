@@ -40,7 +40,7 @@ android {
             localProperties.getProperty("REWARD_ADS_ID") ?: "ca-app-pub-5725743620724195/5188260450"
         val rewardedInterstitialAdsId: String =
             localProperties.getProperty("REWARDED_INTERSTITIAL_ADS_ID")
-                ?: "ca-app-pub-3940256099942544/5354046379"
+                ?: "ca-app-pub-5725743620724195/6760705307"
         val oneSignalAppId: String = localProperties.getProperty("ONESIGNAL_APP_ID")
             ?: "b2f7f966-d8cc-11e4-bed1-df8f05be55ba"
         val revenueCatApiKey: String = localProperties.getProperty("REVENUECAT_API_KEY")

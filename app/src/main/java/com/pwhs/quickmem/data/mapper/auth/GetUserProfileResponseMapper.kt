@@ -11,7 +11,8 @@ fun GetUserProfileResponseDto.toModel() = GetUserProfileResponseModel(
     username = username,
     avatarUrl = avatarUrl,
     createdAt = createdAt,
-    updatedAt = updatedAt
+    updatedAt = updatedAt,
+    coin = coin
 )
 
 fun GetUserProfileResponseModel.toDto() = GetUserProfileResponseDto(
@@ -22,5 +23,6 @@ fun GetUserProfileResponseModel.toDto() = GetUserProfileResponseDto(
     username = username,
     avatarUrl = avatarUrl,
     createdAt = createdAt,
-    updatedAt = updatedAt
+    updatedAt = updatedAt,
+    coin = coin
 )

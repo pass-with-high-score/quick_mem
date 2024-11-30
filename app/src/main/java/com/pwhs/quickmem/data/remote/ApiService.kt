@@ -81,6 +81,8 @@ import com.pwhs.quickmem.data.dto.subject.GetTop5SubjectResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
 import com.pwhs.quickmem.data.dto.user.SearchUserResponseDto
+import com.pwhs.quickmem.data.dto.user.UpdateCoinRequestDto
+import com.pwhs.quickmem.data.dto.user.UpdateCoinResponseDto
 import com.pwhs.quickmem.data.dto.user.UserDetailResponseDto
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -182,6 +184,12 @@ interface ApiService {
         @Query("username") username: String,
         @Query("page") page: Int?
     ): List<SearchUserResponseDto>
+
+    @POST("auth/coin")
+    suspend fun updateCoin(
+        @Header("Authorization") token: String,
+        @Body request: UpdateCoinRequestDto
+    ): UpdateCoinResponseDto
 
     // Upload
     @Multipart

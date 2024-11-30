@@ -7,6 +7,7 @@ data class GetUserProfileResponseModel(
     val email: String,
     val avatarUrl: String,
     val role: String,
+    val coin: Int,
     val createdAt: String,
     val updatedAt: String
 )
