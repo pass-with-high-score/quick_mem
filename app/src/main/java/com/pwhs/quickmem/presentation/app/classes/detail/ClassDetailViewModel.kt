@@ -61,13 +61,14 @@ class ClassDetailViewModel @Inject constructor(
             }
         }
         _uiState.update { it.copy(id = id) }
-        getClassByID()
+        getClassById()
+        saveRecentAccessClass(classId = id)
     }
 
     fun onEvent(event: ClassDetailUiAction) {
         when (event) {
             is ClassDetailUiAction.Refresh -> {
-                getClassByID()
+                getClassById()
             }
 
             is ClassDetailUiAction.NavigateToWelcomeClicked -> {
@@ -130,7 +131,7 @@ class ClassDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getClassByID() {
+    private fun getClassById() {
         val id = _uiState.value.id
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
@@ -170,7 +171,6 @@ class ClassDetailViewModel @Inject constructor(
                         } ?: run {
                             _uiEvent.send(ClassDetailUiEvent.ShowError("Class not found"))
                         }
-                        saveRecentAccessClass()
                     }
                 }
             }
@@ -311,7 +311,7 @@ class ClassDetailViewModel @Inject constructor(
                         }
 
                         is Resources.Success -> {
-                            getClassByID()
+                            getClassById()
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -404,11 +404,10 @@ class ClassDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveRecentAccessClass() {
+    private fun saveRecentAccessClass(classId: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            val classId = _uiState.value.id
             val saveRecentAccessClassRequestModel =
                 SaveRecentAccessClassRequestModel(userId, classId)
             classRepository.saveRecentAccessClass(token, saveRecentAccessClassRequestModel)

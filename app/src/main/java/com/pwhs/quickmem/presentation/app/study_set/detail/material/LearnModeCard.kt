@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 
@@ -32,15 +33,20 @@ fun LearnModeCard(
     @DrawableRes icon: Int,
     onClick: () -> Unit = {},
     color: Color = colorScheme.primary,
-    learningPercentage: Int = 0
+    leadingText: String = "",
+    learningPercentage: Int? = null,
+    containerColor: Color = Color.White,
+    contentColor: Color = colorScheme.onSurface,
+    elevation: Dp = 5.dp
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = colorScheme.onSurface
+            containerColor = containerColor,
+            contentColor = contentColor
         ),
         elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 5.dp
+            defaultElevation = elevation,
+            pressedElevation = elevation
         ),
         onClick = onClick,
         modifier = modifier
@@ -71,13 +77,21 @@ fun LearnModeCard(
                 ),
                 modifier = Modifier.weight(1f)
             )
-            Text(
-                text = "$learningPercentage%",
-                style = typography.bodyMedium.copy(
-                    color = colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
+            if (learningPercentage != null) {
+                LearnModeCard(
+                    title = stringResource(R.string.txt_flip_flashcards),
+                    icon = R.drawable.ic_flipcard,
                 )
-            )
+            }
+            if (leadingText.isNotEmpty()) {
+                Text(
+                    text = leadingText,
+                    style = typography.bodyMedium.copy(
+                        color = colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
         }
     }
 }

@@ -42,6 +42,7 @@ class StudySetDetailViewModel @Inject constructor(
         val id: String = savedStateHandle["id"] ?: ""
         _uiState.update { it.copy(id = id) }
         initData()
+        saveRecentAccessStudySet(studySetId = id)
     }
 
     private fun initData() {
@@ -120,7 +121,6 @@ class StudySetDetailViewModel @Inject constructor(
                                 isOwner = isOwner,
                             )
                         }
-                        saveRecentAccessStudySet()
                     }
 
                     is Resources.Error -> {
@@ -132,11 +132,10 @@ class StudySetDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveRecentAccessStudySet() {
+    private fun saveRecentAccessStudySet(studySetId: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            val studySetId = _uiState.value.id
             val saveRecentAccessStudySetRequestModel = SaveRecentAccessStudySetRequestModel(
                 userId = userId,
                 studySetId = studySetId

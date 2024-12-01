@@ -360,4 +360,15 @@
     <string name="txt_unauthorized">Vui lòng đăng ký hoặc đăng nhập vào ứng dụng</string>
     <string name="txt_class_not_found">Không tìm thấy class</string>
     <string name="txt_restart">Restart</string>
+    <string name="txt_turn_on_notifications_to_receive_study_reminders">Bật thông báo để nhận nhắc nhở học tập</string>
+    <string name="txt_you_need_to_enable_notifications_in_the_app_settings_to_receive_study_reminders">Bạn cần bật thông báo trong cài đặt ứng dụng để nhận nhắc nhở học tập</string>
+    <string name="txt_turn_on_notifications">Bật thông báo</string>
+    <string name="txt_not_now">Không phải bây giờ</string>
+    <string name="txt_scheduled_notifications">Thông báo đã lên lịch</string>
+    <string name="txt_study_reminders">Nhắc nhở học tập</string>
+    <string name="txt_every_day_at">Mỗi ngày vào lúc</string>
+    <string name="txt_please_enable_study_reminders">Vui lòng bật nhắc nhở học tập</string>
+    <string name="txt_modified">Đã chỉnh sửa vào %1$s</string>
+    <string name="txt_created">Đã tạo vào %1$s</string>
+    <string name="txt_coming_soon">Sắp ra mắt</string>
 </resources>

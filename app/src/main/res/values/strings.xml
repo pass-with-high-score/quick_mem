@@ -363,4 +363,15 @@
     <string name="txt_unauthorized">Unauthorized</string>
     <string name="txt_class_not_found">Class not found</string>
     <string name="txt_restart">Restart</string>
+    <string name="txt_turn_on_notifications_to_receive_study_reminders">Turn on notifications to receive study reminders</string>
+    <string name="txt_you_need_to_enable_notifications_in_the_app_settings_to_receive_study_reminders">You need to enable notifications in the app settings to receive study reminders</string>
+    <string name="txt_turn_on_notifications">Turn on notifications</string>
+    <string name="txt_not_now">Not now</string>
+    <string name="txt_scheduled_notifications">Scheduled Notifications</string>
+    <string name="txt_study_reminders">Study Reminders</string>
+    <string name="txt_every_day_at">Every day at</string>
+    <string name="txt_please_enable_study_reminders">Please enable Study Reminders</string>
+    <string name="txt_modified">Modified %1$s</string>
+    <string name="txt_created">Created %1$s</string>
+    <string name="txt_coming_soon">Coming soon</string>
 </resources>

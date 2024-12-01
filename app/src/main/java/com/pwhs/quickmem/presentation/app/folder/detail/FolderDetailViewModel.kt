@@ -37,6 +37,7 @@ class FolderDetailViewModel @Inject constructor(
         val id: String = savedStateHandle["id"] ?: ""
         _uiState.update { it.copy(id = id) }
         getFolderSetById(id)
+        saveRecentAccessFolder(id)
     }
 
     fun onEvent(event: FolderDetailUiAction) {
@@ -94,7 +95,6 @@ class FolderDetailViewModel @Inject constructor(
                         } ?: run {
                             _uiEvent.send(FolderDetailUiEvent.ShowError("Folder not found"))
                         }
-                        saveRecentAccessFolder()
                     }
 
                     is Resources.Error -> {
@@ -138,11 +138,10 @@ class FolderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveRecentAccessFolder() {
+    private fun saveRecentAccessFolder(folderId: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
-            val folderId = _uiState.value.id
             val saveRecentAccessFolderRequestModel = SaveRecentAccessFolderRequestModel(
                 userId = userId,
                 folderId = folderId

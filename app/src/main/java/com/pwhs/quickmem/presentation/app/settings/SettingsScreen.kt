@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -488,13 +487,13 @@ fun Setting(
                     }
                 }
                 item {
-                    SettingTitleSection(title = "Scheduled Notifications")
+                    SettingTitleSection(title = stringResource(R.string.txt_scheduled_notifications))
                     SettingCard {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingSwitch(
-                                title = "Study Reminders",
+                                title = stringResource(R.string.txt_study_reminders),
                                 value = enabledStudySchedule,
                                 onChangeValue = {
                                     if (isPushNotificationsEnabled) {
@@ -504,22 +503,16 @@ fun Setting(
                                     }
                                 }
                             )
-                            HorizontalDivider()
-                            SettingItem(
-                                title = "Every day at",
-                                leadingText = timeStudySchedule,
-                                onClick = {
-                                    if (enabledStudySchedule) {
+                            if (enabledStudySchedule) {
+                                HorizontalDivider()
+                                SettingItem(
+                                    title = stringResource(R.string.txt_every_day_at),
+                                    leadingText = timeStudySchedule,
+                                    onClick = {
                                         showTimePicker = true
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Please enable Study Reminders",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }
@@ -732,10 +725,10 @@ fun Setting(
                         onEnablePushNotifications(true)
                         onChangeStudyAlarm(true)
                     },
-                    title = "Turn on notifications to receive study reminders",
-                    text = "You need to enable notifications in the app settings to receive study reminders",
-                    confirmButtonTitle = "Turn on notifications",
-                    dismissButtonTitle = "Not now",
+                    title = stringResource(R.string.txt_turn_on_notifications_to_receive_study_reminders),
+                    text = stringResource(R.string.txt_you_need_to_enable_notifications_in_the_app_settings_to_receive_study_reminders),
+                    confirmButtonTitle = stringResource(R.string.txt_turn_on_notifications),
+                    dismissButtonTitle = stringResource(R.string.txt_not_now),
                     buttonColor = colorScheme.primary
                 )
             }
