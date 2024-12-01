@@ -25,6 +25,8 @@ class AppManager(private val context: Context) {
         val PUSH_NOTIFICATIONS = booleanPreferencesKey("PUSH_NOTIFICATIONS")
         val APP_PUSH_NOTIFICATIONS = booleanPreferencesKey("APP_PUSH_NOTIFICATIONS")
         val USER_COINS = intPreferencesKey("USER_COINS")
+        val ENABLED_STUDY_SCHEDULE = booleanPreferencesKey("ENABLED_STUDY_SCHEDULE")
+        val TIME_STUDY_SCHEDULE = stringPreferencesKey("TIME_STUDY_SCHEDULE")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -77,6 +79,16 @@ class AppManager(private val context: Context) {
     val userCoins: Flow<Int> = context.dataStore.data
         .map { preferences ->
             preferences[USER_COINS] ?: 0
+        }
+
+    val enabledStudySchedule: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[ENABLED_STUDY_SCHEDULE] ?: false
+        }
+
+    val timeStudySchedule: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[TIME_STUDY_SCHEDULE] ?: ""
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -161,6 +173,20 @@ class AppManager(private val context: Context) {
         Timber.d("Saving user coins: $coins")
         context.dataStore.edit { preferences ->
             preferences[USER_COINS] = coins
+        }
+    }
+
+    suspend fun saveEnabledStudySchedule(enabled: Boolean) {
+        Timber.d("Saving enabled study schedule: $enabled")
+        context.dataStore.edit { preferences ->
+            preferences[ENABLED_STUDY_SCHEDULE] = enabled
+        }
+    }
+
+    suspend fun saveTimeStudySchedule(time: String) {
+        Timber.d("Saving time study schedule: $time")
+        context.dataStore.edit { preferences ->
+            preferences[TIME_STUDY_SCHEDULE] = time
         }
     }
 

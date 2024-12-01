@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import java.text.SimpleDateFormat
 import java.time.Duration
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -70,5 +71,14 @@ fun String.calculateTimeAgo(): String {
         }
     } catch (e: Exception) {
         "N/A"
+    }
+}
+
+fun String.toLocalDateTime(): LocalDateTime? {
+    return try {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        LocalDateTime.parse(this, formatter)
+    } catch (e: Exception) {
+        null
     }
 }

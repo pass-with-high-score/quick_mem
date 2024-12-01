@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -57,9 +58,11 @@ import com.pwhs.quickmem.presentation.app.settings.component.SettingTitleSection
 import com.pwhs.quickmem.presentation.app.settings.component.SettingValidatePasswordBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
+import com.pwhs.quickmem.presentation.component.QuickmemTimePicker
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.getLanguageCode
 import com.pwhs.quickmem.util.toFormattedString
+import com.pwhs.quickmem.util.toTimePickerState
 import com.pwhs.quickmem.util.upperCaseFirstLetter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -76,6 +79,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.revenuecat.purchases.CustomerInfo
+import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -288,7 +292,15 @@ fun SettingsScreen(
                 e.stackTrace
             }
         },
-        customerInfo = uiState.customerInfo
+        customerInfo = uiState.customerInfo,
+        timeStudySchedule = uiState.timeStudyAlarm,
+        enabledStudySchedule = uiState.isStudyAlarmEnabled,
+        onChangeStudyAlarm = {
+            viewModel.onEvent(SettingUiAction.OnChangeStudyAlarm(it))
+        },
+        onChangeTimeStudyAlarm = {
+            viewModel.onEvent(SettingUiAction.OnChangeTimeStudyAlarm(it))
+        }
     )
 }
 
@@ -322,7 +334,11 @@ fun Setting(
     onNavigateToOpenSourceLicenses: () -> Unit = {},
     onNavigateToHelpCenter: () -> Unit = {},
     onLogout: () -> Unit = {},
-    customerInfo: CustomerInfo? = null
+    customerInfo: CustomerInfo? = null,
+    enabledStudySchedule: Boolean = false,
+    timeStudySchedule: String = "",
+    onChangeStudyAlarm: (Boolean) -> Unit = {},
+    onChangeTimeStudyAlarm: (String) -> Unit = {}
 ) {
 
     val bottomSheetState = rememberModalBottomSheetState()
@@ -342,7 +358,13 @@ fun Setting(
     var showDialog by remember {
         mutableStateOf(false)
     }
+    var showDialogSchedule by remember {
+        mutableStateOf(false)
+    }
     val context = LocalContext.current
+    var showTimePicker by remember {
+        mutableStateOf(false)
+    }
 
     Scaffold(
         modifier = modifier,
@@ -460,6 +482,42 @@ fun Setting(
                                 title = stringResource(R.string.txt_change_password),
                                 onClick = {
                                     onNavigateToChangePassword()
+                                }
+                            )
+                        }
+                    }
+                }
+                item {
+                    SettingTitleSection(title = "Scheduled Notifications")
+                    SettingCard {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            SettingSwitch(
+                                title = "Study Reminders",
+                                value = enabledStudySchedule,
+                                onChangeValue = {
+                                    if (isPushNotificationsEnabled) {
+                                        onChangeStudyAlarm(it)
+                                    } else {
+                                        showDialogSchedule = true
+                                    }
+                                }
+                            )
+                            HorizontalDivider()
+                            SettingItem(
+                                title = "Every day at",
+                                leadingText = timeStudySchedule,
+                                onClick = {
+                                    if (enabledStudySchedule) {
+                                        showTimePicker = true
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Please enable Study Reminders",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             )
                         }
@@ -664,6 +722,37 @@ fun Setting(
                     confirmButtonTitle = stringResource(R.string.txt_open_settings),
                     dismissButtonTitle = stringResource(R.string.txt_cancel),
                     buttonColor = colorScheme.primary
+                )
+            }
+            if (showDialogSchedule) {
+                QuickMemAlertDialog(
+                    onDismissRequest = { showDialogSchedule = false },
+                    onConfirm = {
+                        showDialogSchedule = false
+                        onEnablePushNotifications(true)
+                        onChangeStudyAlarm(true)
+                    },
+                    title = "Turn on notifications to receive study reminders",
+                    text = "You need to enable notifications in the app settings to receive study reminders",
+                    confirmButtonTitle = "Turn on notifications",
+                    dismissButtonTitle = "Not now",
+                    buttonColor = colorScheme.primary
+                )
+            }
+            if (showTimePicker) {
+                val timePickerState = timeStudySchedule.toTimePickerState()
+                QuickmemTimePicker(
+                    onConfirm = {
+                        Timber.d("Time selected: $it")
+                        onChangeTimeStudyAlarm(
+                            it.toFormattedString()
+                        )
+                        showTimePicker = false
+                    },
+                    onDismiss = {
+                        showTimePicker = false
+                    },
+                    timePickerState = timePickerState
                 )
             }
         }

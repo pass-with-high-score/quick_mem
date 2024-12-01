@@ -12,4 +12,6 @@ sealed class SettingUiAction {
 
     data class OnChangeAppPushNotifications(val isAppPushNotificationsEnabled: Boolean) :
         SettingUiAction()
+    data class OnChangeStudyAlarm(val isStudyAlarmEnabled: Boolean) : SettingUiAction()
+    data class OnChangeTimeStudyAlarm(val timeStudyAlarm: String) : SettingUiAction()
 }

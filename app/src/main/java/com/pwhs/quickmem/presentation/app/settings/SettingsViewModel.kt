@@ -2,14 +2,16 @@ package com.pwhs.quickmem.presentation.app.settings
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.alarm.StudyAlarm
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
+import com.pwhs.quickmem.core.schedule_alarm.AndroidAlarmScheduler
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.SearchQueryRepository
+import com.pwhs.quickmem.util.toLocalDateTime
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +34,7 @@ class SettingsViewModel @Inject constructor(
     private val appManager: AppManager,
     private val authRepository: AuthRepository,
     private val searchQueryRepository: SearchQueryRepository,
+    private val scheduler: AndroidAlarmScheduler,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -93,6 +97,37 @@ class SettingsViewModel @Inject constructor(
             is SettingUiAction.Refresh -> {
                 initData()
             }
+
+            is SettingUiAction.OnChangeStudyAlarm -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isStudyAlarmEnabled = event.isStudyAlarmEnabled)
+                    }
+                    appManager.saveEnabledStudySchedule(event.isStudyAlarmEnabled)
+                    if (event.isStudyAlarmEnabled) {
+                        scheduler.schedule(_uiState.value.studyAlarm)
+                    } else {
+                        scheduler.cancel(_uiState.value.studyAlarm)
+                    }
+                }
+            }
+
+            is SettingUiAction.OnChangeTimeStudyAlarm -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(
+                            timeStudyAlarm = event.timeStudyAlarm,
+                            studyAlarm = StudyAlarm(
+                                time = event.timeStudyAlarm.toLocalDateTime()
+                                    ?: LocalDateTime.now(),
+                                message = "It's time to study!"
+                            )
+                        )
+                    }
+                    appManager.saveTimeStudySchedule(event.timeStudyAlarm)
+                    scheduler.schedule(_uiState.value.studyAlarm)
+                }
+            }
         }
     }
 
@@ -107,6 +142,8 @@ class SettingsViewModel @Inject constructor(
                 val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
                 val isAppPushNotificationsEnabled =
                     appManager.appPushNotifications.firstOrNull() ?: false
+                val enabledStudySchedule = appManager.enabledStudySchedule.firstOrNull() ?: false
+                val timeStudySchedule = appManager.timeStudySchedule.firstOrNull() ?: ""
                 _uiState.update {
                     it.copy(
                         userId = userId,
@@ -116,6 +153,8 @@ class SettingsViewModel @Inject constructor(
                         role = role,
                         isPushNotificationsEnabled = isPushNotificationsEnabled,
                         isAppPushNotificationsEnabled = isAppPushNotificationsEnabled,
+                        isStudyAlarmEnabled = enabledStudySchedule && isPushNotificationsEnabled && isAppPushNotificationsEnabled,
+                        timeStudyAlarm = timeStudySchedule,
                     )
                 }
                 getCustomerInfo()
@@ -214,6 +253,7 @@ class SettingsViewModel @Inject constructor(
                 appManager.clearAllData()
                 Purchases.sharedInstance.logOut()
                 searchQueryRepository.clearSearchHistory()
+                scheduler.cancelAll()
                 _uiEvent.send(SettingUiEvent.NavigateToLogin)
             } catch (e: Exception) {
                 Timber.e(e)

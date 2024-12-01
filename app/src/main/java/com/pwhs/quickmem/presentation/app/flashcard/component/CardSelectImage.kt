@@ -35,7 +35,6 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.mr0xf00.easycrop.ImagePicker
 import com.pwhs.quickmem.R
-import timber.log.Timber
 
 @Composable
 fun CardSelectImage(
@@ -78,7 +77,6 @@ fun CardSelectImage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (definitionImageUri == null && !definitionImageUrl.isNullOrEmpty()) {
-                    Timber.d("Image Url: $definitionImageUrl")
                     AsyncImage(
                         model = definitionImageUrl,
                         contentDescription = stringResource(R.string.txt_image_for_definition),
@@ -86,7 +84,6 @@ fun CardSelectImage(
                         contentScale = ContentScale.Crop
                     )
                 } else if (definitionImageUri != null) {
-                    Timber.d("Image Uri: $definitionImageUri")
                     AsyncImage(
                         model = definitionImageUri,
                         contentDescription = stringResource(R.string.txt_image_for_definition),
@@ -95,7 +92,6 @@ fun CardSelectImage(
                         onSuccess = { onUploadImage(definitionImageUri) }
                     )
                 } else {
-                    Timber.d("No Image")
                     Image(
                         painter = painterResource(id = R.drawable.ic_add_image),
                         contentDescription = stringResource(R.string.txt_add_image_to_definition),
