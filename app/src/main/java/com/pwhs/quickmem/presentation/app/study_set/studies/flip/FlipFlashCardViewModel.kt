@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.datastore.AppManager
@@ -16,6 +17,7 @@ import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.study_time.CreateStudyTimeModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
+import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +38,7 @@ class FlipFlashCardViewModel @Inject constructor(
     private val flashCardRepository: FlashCardRepository,
     private val studySetRepository: StudySetRepository,
     private val studyTimeRepository: StudyTimeRepository,
+    private val folderRepository: FolderRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
     savedStateHandle: SavedStateHandle,
@@ -53,8 +56,12 @@ class FlipFlashCardViewModel @Inject constructor(
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 0
+        val folderId = savedStateHandle.get<String>("folderId") ?: ""
+        val learnFrom = savedStateHandle.get<LearnFrom>("learnFrom") ?: LearnFrom.STUDY_SET
         _uiState.update {
             it.copy(
+                learnFrom = learnFrom,
+                folderId = folderId,
                 studySetId = studySetId,
                 studySetTitle = studySetTitle,
                 studySetDescription = studySetDescription,
@@ -186,40 +193,87 @@ class FlipFlashCardViewModel @Inject constructor(
     private fun getFlashCard() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            flashCardRepository.getFlashCardsByStudySetId(
-                token = token,
-                studySetId = _uiState.value.studySetId,
-                learnMode = LearnMode.FLIP
-            ).collect { resource ->
-                when (resource) {
-                    is Resources.Error -> {
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-
-                    is Resources.Success -> {
-                        if (resource.data.isNullOrEmpty()) {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    isEndOfList = true,
-                                    learningTime = 0,
-                                )
+            val studySetId = _uiState.value.studySetId
+            val folderId = _uiState.value.folderId
+            val learnFrom = _uiState.value.learnFrom
+            when (learnFrom) {
+                LearnFrom.STUDY_SET -> {
+                    flashCardRepository.getFlashCardsByStudySetId(
+                        token = token,
+                        studySetId = studySetId,
+                        learnMode = LearnMode.FLIP
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
                             }
-                            playCompleteSound()
-                            return@collect
-                        }
 
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                flashCardList = resource.data
-                            )
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
+
+                            is Resources.Success -> {
+                                if (resource.data.isNullOrEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isEndOfList = true,
+                                            learningTime = 0,
+                                        )
+                                    }
+                                    playCompleteSound()
+                                    return@collect
+                                }
+
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        flashCardList = resource.data
+                                    )
+                                }
+                            }
                         }
                     }
                 }
+
+                LearnFrom.FOLDER -> {
+                    flashCardRepository.getFlashCardsByFolderId(
+                        token = token,
+                        folderId = folderId,
+                        learnMode = LearnMode.FLIP
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                            }
+
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
+
+                            is Resources.Success -> {
+                                if (resource.data.isNullOrEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isEndOfList = true,
+                                            learningTime = 0,
+                                        )
+                                    }
+                                    playCompleteSound()
+                                    return@collect
+                                }
+
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        flashCardList = resource.data
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                LearnFrom.CLASS -> TODO()
             }
         }
     }
@@ -249,45 +303,95 @@ class FlipFlashCardViewModel @Inject constructor(
     }
 
     private fun restartStudySet() {
-        viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            studySetRepository.resetProgress(
-                token,
-                _uiState.value.studySetId,
-                resetType = ResetType.FLIP_STATUS.type
-            )
-                .collect { resource ->
-                    when (resource) {
-                        is Resources.Error -> {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    isEndOfList = true,
-                                    learningTime = 0,
-                                )
+        val learnFrom = _uiState.value.learnFrom
+        when (learnFrom) {
+            LearnFrom.STUDY_SET -> {
+                viewModelScope.launch {
+                    val token = tokenManager.accessToken.firstOrNull() ?: ""
+                    studySetRepository.resetProgress(
+                        token = token,
+                        studySetId = _uiState.value.studySetId,
+                        resetType = ResetType.FLIP_STATUS.type
+                    )
+                        .collect { resource ->
+                            when (resource) {
+                                is Resources.Error -> {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isEndOfList = true,
+                                            learningTime = 0,
+                                        )
+                                    }
+                                }
+
+                                is Resources.Loading -> {
+                                    _uiState.update { it.copy(isLoading = true) }
+                                }
+
+                                is Resources.Success -> {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isEndOfList = false,
+                                            countKnown = 0,
+                                            countStillLearning = 0,
+                                            currentCardIndex = 0,
+                                            startTime = System.currentTimeMillis(),
+                                            flashCardList = emptyList()
+                                        )
+                                    }
+                                    getFlashCard()
+                                }
                             }
                         }
-
-                        is Resources.Loading -> {
-                            _uiState.update { it.copy(isLoading = true) }
-                        }
-
-                        is Resources.Success -> {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    isEndOfList = false,
-                                    countKnown = 0,
-                                    countStillLearning = 0,
-                                    currentCardIndex = 0,
-                                    startTime = System.currentTimeMillis(),
-                                    flashCardList = emptyList()
-                                )
-                            }
-                            getFlashCard()
-                        }
-                    }
                 }
+            }
+
+            LearnFrom.FOLDER -> {
+                viewModelScope.launch {
+                    val token = tokenManager.accessToken.firstOrNull() ?: ""
+                    folderRepository.resetProgress(
+                        token = token,
+                        folderId = _uiState.value.folderId,
+                        resetType = ResetType.FLIP_STATUS.type
+                    )
+                        .collect { resource ->
+                            when (resource) {
+                                is Resources.Error -> {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isEndOfList = true,
+                                            learningTime = 0,
+                                        )
+                                    }
+                                }
+
+                                is Resources.Loading -> {
+                                    _uiState.update { it.copy(isLoading = true) }
+                                }
+
+                                is Resources.Success -> {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isEndOfList = false,
+                                            countKnown = 0,
+                                            countStillLearning = 0,
+                                            currentCardIndex = 0,
+                                            startTime = System.currentTimeMillis(),
+                                            flashCardList = emptyList()
+                                        )
+                                    }
+                                    getFlashCard()
+                                }
+                            }
+                        }
+                }
+            }
+
+            LearnFrom.CLASS -> TODO()
         }
     }
 
@@ -297,17 +401,28 @@ class FlipFlashCardViewModel @Inject constructor(
     }
 
     private fun sendCompletedStudyTime() {
-        viewModelScope.launch {
-            val token = tokenManager.accessToken.firstOrNull() ?: ""
-            val userId = appManager.userId.firstOrNull() ?: ""
-            val createStudyTimeModel = CreateStudyTimeModel(
-                learnMode = LearnMode.FLIP.mode,
-                studySetId = _uiState.value.studySetId,
-                timeSpent = _uiState.value.learningTime.toInt(),
-                userId = userId
-            )
-            studyTimeRepository.createStudyTime(token, createStudyTimeModel)
-                .collect()
+        val learnFrom = _uiState.value.learnFrom
+        when (learnFrom) {
+            LearnFrom.STUDY_SET -> {
+                viewModelScope.launch {
+                    val token = tokenManager.accessToken.firstOrNull() ?: ""
+                    val userId = appManager.userId.firstOrNull() ?: ""
+                    val createStudyTimeModel = CreateStudyTimeModel(
+                        learnMode = LearnMode.FLIP.mode,
+                        studySetId = _uiState.value.studySetId,
+                        timeSpent = _uiState.value.learningTime.toInt(),
+                        userId = userId
+                    )
+                    studyTimeRepository.createStudyTime(token, createStudyTimeModel)
+                        .collect()
+                }
+            }
+
+            LearnFrom.FOLDER -> {
+                // TODO(): Implement this
+            }
+
+            LearnFrom.CLASS -> TODO()
         }
     }
 }

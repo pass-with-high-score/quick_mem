@@ -33,7 +33,10 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.createFolder(token, createFolderRequestModel.toDto())
+                val response = apiService.createFolder(
+                    token = token,
+                    createFolderRequestDto = createFolderRequestModel.toDto()
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 emit(Resources.Error(e.toString()))
@@ -48,7 +51,7 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getFolderById(token, folderId)
+                val response = apiService.getFolderById(token = token, id = folderId)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -66,7 +69,11 @@ class FolderRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 val response =
-                    apiService.updateFolder(token, folderId, updateFolderRequestModel.toDto())
+                    apiService.updateFolder(
+                        token = token,
+                        id = folderId,
+                        updateFolderRequestDto = updateFolderRequestModel.toDto()
+                    )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -84,7 +91,12 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getFoldersByOwnerId(token, userId, classId, studySetId)
+                val response = apiService.getFoldersByOwnerId(
+                    token = token,
+                    ownerId = userId,
+                    classId = classId,
+                    studySetId = studySetId
+                )
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -97,7 +109,7 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                apiService.deleteFolder(token, folderId)
+                apiService.deleteFolder(token = token, id = folderId)
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -113,7 +125,10 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                apiService.addFolderToClass(token, addFolderToClassRequestModel.toDto())
+                apiService.addFolderToClass(
+                    token = token,
+                    addFolderToClassRequestDto = addFolderToClassRequestModel.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -134,9 +149,9 @@ class FolderRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = {
                 FolderPagingSource(
-                    folderRemoteDataSource,
-                    token,
-                    title
+                    folderRemoteDataSource = folderRemoteDataSource,
+                    token = token,
+                    title = title
                 )
             }
         ).flow
@@ -149,7 +164,7 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getFolderByLinkCode(token, code)
+                val response = apiService.getFolderByLinkCode(token = token, code = code)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -165,7 +180,10 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                apiService.saveRecentFolder(token, saveRecentAccessFolderRequestModel.toDto())
+                apiService.saveRecentFolder(
+                    token = token,
+                    saveRecentAccessFolderRequestDto = saveRecentAccessFolderRequestModel.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -181,8 +199,25 @@ class FolderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                val response = apiService.getRecentFolder(token, userId)
+                val response = apiService.getRecentFolder(token = token, userId = userId)
                 emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun resetProgress(
+        token: String,
+        folderId: String,
+        resetType: String
+    ): Flow<Resources<Unit>> {
+        return flow {
+            emit(Resources.Loading())
+            try {
+                apiService.resetProgressFolder(token = token, id = folderId, resetType = resetType)
+                emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))

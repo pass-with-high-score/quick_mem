@@ -66,4 +66,10 @@ interface FlashCardRepository {
         studySetId: String,
         learnMode: LearnMode
     ): Flow<Resources<List<FlashCardResponseModel>>>
+
+    suspend fun getFlashCardsByFolderId(
+        token: String,
+        folderId: String,
+        learnMode: LearnMode
+    ): Flow<Resources<List<FlashCardResponseModel>>>
 }

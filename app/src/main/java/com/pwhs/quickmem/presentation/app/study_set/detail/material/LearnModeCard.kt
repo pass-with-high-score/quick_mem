@@ -22,9 +22,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
 fun LearnModeCard(
@@ -78,9 +80,12 @@ fun LearnModeCard(
                 modifier = Modifier.weight(1f)
             )
             if (learningPercentage != null) {
-                LearnModeCard(
-                    title = stringResource(R.string.txt_flip_flashcards),
-                    icon = R.drawable.ic_flipcard,
+               Text(
+                    text = "$learningPercentage%",
+                    style = typography.bodyMedium.copy(
+                        color = colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
             }
             if (leadingText.isNotEmpty()) {
@@ -93,5 +98,18 @@ fun LearnModeCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun LearnModeCardPreview() {
+    QuickMemTheme {
+         LearnModeCard(
+            title = "Flip Flashcards",
+            icon = R.drawable.ic_flipcard,
+            leadingText = "Completed",
+            learningPercentage = 10
+        )
     }
 }

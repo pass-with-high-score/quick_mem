@@ -131,7 +131,7 @@ class StudySetRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
-                apiService.resetProgress(token, studySetId, resetType)
+                apiService.resetStudySetProgress(token, studySetId, resetType)
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)

@@ -261,4 +261,28 @@ class FlashCardRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getFlashCardsByFolderId(
+        token: String,
+        folderId: String,
+        learnMode: LearnMode
+    ): Flow<Resources<List<FlashCardResponseModel>>> {
+        return flow {
+            emit(Resources.Loading(true))
+            try {
+                val response = apiService.getFlashCardsByFolderId(
+                    token = token,
+                    id = folderId,
+                    learnMode = learnMode.mode
+                )
+                emit(Resources.Success(response.map { it.toModel() }))
+            } catch (e: HttpException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            } catch (e: IOException) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
 }

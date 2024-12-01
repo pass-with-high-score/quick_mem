@@ -65,4 +65,10 @@ interface FolderRepository {
         token: String,
         userId: String
     ): Flow<Resources<List<GetFolderResponseModel>>>
+
+    suspend fun resetProgress(
+        token: String,
+        folderId: String,
+        resetType: String
+    ): Flow<Resources<Unit>>
 }

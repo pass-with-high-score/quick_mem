@@ -236,7 +236,7 @@ interface ApiService {
     ): UpdateStudySetResponseDto
 
     @PATCH("study-set/{id}/reset-progress")
-    suspend fun resetProgress(
+    suspend fun resetStudySetProgress(
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Query("resetType") resetType: String
@@ -384,6 +384,13 @@ interface ApiService {
         @Body writeStatusDto: WriteStatusFlashCardDto
     ): UpdateFlashCardResponseDto
 
+    @GET("flashcard/folder/{id}")
+    suspend fun getFlashCardsByFolderId(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Query("learnMode") learnMode: String
+    ): List<FlashCardResponseDto>
+
     // Folder
     @POST("folder")
     suspend fun createFolder(
@@ -448,6 +455,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("userId") userId: String
     ): List<GetFolderResponseDto>
+
+    @PATCH("folder/{id}/reset-progress")
+    suspend fun resetProgressFolder(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Query("resetType") resetType: String
+    )
 
     // Class
     @POST("class")

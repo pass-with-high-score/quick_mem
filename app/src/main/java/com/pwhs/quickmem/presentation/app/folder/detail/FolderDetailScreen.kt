@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
@@ -47,6 +48,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -150,8 +152,18 @@ fun FolderDetailScreen(
             )
         },
         onEditFolder = { viewModel.onEvent(FolderDetailUiAction.EditFolder) },
-        onStudyFolderClick = {
-            //TODO: Implement study folder
+        onLearnFlipFlashcardClick = {
+            navigator.navigate(
+                FlipFlashCardScreenDestination(
+                    studySetId = "",
+                    studySetTitle = "",
+                    studySetDescription = "",
+                    studySetColorId = 0,
+                    studySetSubjectId = 0,
+                    folderId = uiState.id,
+                    learnFrom = LearnFrom.FOLDER
+                )
+            )
         },
         onNavigateBack = {
             resultNavigator.navigateBack(true)
@@ -190,7 +202,7 @@ fun FolderDetail(
     onStudySetClick: (String) -> Unit = {},
     onEditFolder: () -> Unit = {},
     onDeleteFolder: () -> Unit = {},
-    onStudyFolderClick: () -> Unit = {},
+    onLearnFlipFlashcardClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onAddStudySet: () -> Unit = {},
     onNavigateToUserDetail: () -> Unit = {}
@@ -303,30 +315,32 @@ fun FolderDetail(
         onDismissRequest = { showMoreBottomSheet = false },
         isOwner = isOwner
     )
-    if(showStudyFolderBottomSheet) {
+    if (showStudyFolderBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showStudyFolderBottomSheet = false },
             sheetState = sheetStudyFolderState,
             containerColor = colorScheme.surface,
         ) {
-            Column (
+            Column(
                 modifier = Modifier
                     .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 LearnModeCard(
                     title = stringResource(R.string.txt_flip_flashcards),
                     icon = R.drawable.ic_flipcard,
                     containerColor = colorScheme.surface,
                     elevation = 0.dp,
-                    leadingText = stringResource(R.string.txt_coming_soon)
+                    onClick = {
+                        onLearnFlipFlashcardClick()
+                        showStudyFolderBottomSheet = false
+                    },
                 )
                 LearnModeCard(
                     title = stringResource(R.string.txt_quiz),
                     icon = R.drawable.ic_quiz,
                     containerColor = colorScheme.surface,
                     elevation = 0.dp,
-                    leadingText = stringResource(R.string.txt_coming_soon)
                 )
                 LearnModeCard(
                     title = stringResource(R.string.txt_true_false),

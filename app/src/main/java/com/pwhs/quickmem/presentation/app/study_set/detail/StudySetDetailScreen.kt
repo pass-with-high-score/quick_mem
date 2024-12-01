@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.FlipCardStatus
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 import com.pwhs.quickmem.core.data.enums.WriteStatus
@@ -339,6 +340,8 @@ fun StudySetDetailScreen(
                     studySetDescription = uiState.description,
                     studySetColorId = uiState.colorModel.id,
                     studySetSubjectId = uiState.subject.id,
+                    folderId = "",
+                    learnFrom = LearnFrom.STUDY_SET
                 )
             )
         },

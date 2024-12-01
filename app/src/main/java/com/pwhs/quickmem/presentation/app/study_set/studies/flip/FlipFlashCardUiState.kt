@@ -1,11 +1,14 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.flip
 
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 
 data class FlipFlashCardUiState(
     val isLoading: Boolean = false,
+    val learnFrom: LearnFrom = LearnFrom.STUDY_SET,
+    val folderId: String = "",
     val studySetId: String = "",
     val studySetTitle: String = "",
     val studySetDescription: String = "",
