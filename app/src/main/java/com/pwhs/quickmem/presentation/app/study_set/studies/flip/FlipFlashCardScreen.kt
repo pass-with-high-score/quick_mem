@@ -241,7 +241,6 @@ fun FlipFlashCard(
                                     CardStack(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .padding(16.dp)
                                             .zIndex(2f),
                                         stackState = stackState,
                                         cardElevation = 10.dp,
@@ -302,7 +301,8 @@ fun FlipFlashCard(
                                         }
                                         StudyFlipFlashCard(
                                             flashCard = flashcard,
-                                            modifier = Modifier.fillMaxSize(),
+                                            modifier = Modifier
+                                                .fillMaxSize(),
                                             isSwipingLeft = isSwipingLeft,
                                             isSwipingRight = isSwipingRight,
                                             stillLearningColor = stillLearningColor,
@@ -324,7 +324,9 @@ fun FlipFlashCard(
 
                         true -> {
                             FlipFlashCardFinish(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp),
                                 isEndOfList = true,
                                 countStillLearning = countStillLearning,
                                 countKnown = countKnown,

@@ -12,7 +12,11 @@ import com.msusman.compose.cardstack.internal.visible
  * Created by Muhammad Usman : msusman97@gmail.com on 7/19/2023.
  */
 @Composable
-fun CardContainer(stackState: StackState, index: Int, content: @Composable () -> Unit) {
+fun CardContainer(
+    stackState: StackState,
+    index: Int,
+    content: @Composable () -> Unit
+) {
     val cardState: CardSate = stackState.cardQueue[index]
     Box(
         modifier = Modifier

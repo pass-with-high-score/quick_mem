@@ -123,7 +123,11 @@ fun <T> CardStack(
     ) {
         items.forEachIndexed { index, item ->
             CardContainer(stackState = stackState, index = index) {
-                content(item)
+                Box(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    content(item)
+                }
             }
         }
     }

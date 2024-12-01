@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -120,7 +121,6 @@ fun StudyFlipFlashCard(
                                     scaleY = effectScale,
                                     alpha = effectAlpha
                                 )
-                                .padding(vertical = 16.dp)
                         ) {
                             when {
                                 isShowingEffect -> when {
@@ -181,6 +181,7 @@ fun StudyFlipFlashCard(
                             verticalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .fillMaxSize()
+                                .padding(16.dp)
                                 .animateContentSize()
                                 .align(Alignment.Center)
                                 .graphicsLayer(
@@ -189,7 +190,6 @@ fun StudyFlipFlashCard(
                                     scaleY = effectScale,
                                     alpha = effectAlpha
                                 )
-                                .padding(vertical = 16.dp)
                         ) {
                             when {
                                 isShowingEffect -> when {
@@ -278,6 +278,7 @@ fun StudyFlipFlashCard(
                             verticalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .fillMaxSize()
+                                .padding(16.dp)
                                 .animateContentSize()
                                 .align(Alignment.Center)
                                 .graphicsLayer(
@@ -285,7 +286,6 @@ fun StudyFlipFlashCard(
                                     scaleY = effectScale,
                                     alpha = effectAlpha
                                 )
-                                .padding(vertical = 16.dp)
                         ) {
                             when {
                                 isShowingEffect -> when {
@@ -346,6 +346,7 @@ fun StudyFlipFlashCard(
                             verticalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .fillMaxSize()
+                                .padding(16.dp)
                                 .animateContentSize()
                                 .align(Alignment.Center)
                                 .graphicsLayer(
@@ -354,7 +355,6 @@ fun StudyFlipFlashCard(
                                     scaleY = effectScale,
                                     alpha = effectAlpha
                                 )
-                                .padding(vertical = 16.dp)
                         ) {
                             when {
                                 isShowingEffect -> when {

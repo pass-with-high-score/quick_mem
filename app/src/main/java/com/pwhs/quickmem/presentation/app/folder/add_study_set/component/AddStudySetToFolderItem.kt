@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -77,10 +76,11 @@ fun AddStudySetToFolderItem(
                 modifier = Modifier
                     .padding(8.dp)
                     .background(Color.Transparent)
+                    .weight(1f)
             ) {
                 Text(
                     studySet.title,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     maxLines = 2,
@@ -93,14 +93,14 @@ fun AddStudySetToFolderItem(
                 Text(
                     buildAnnotatedString {
                         withStyle(
-                            style = MaterialTheme.typography.bodySmall.toSpanStyle()
+                            style = typography.bodySmall.toSpanStyle()
                                 .copy(
                                     fontWeight = FontWeight.Bold
                                 )
                         ) {
                             append("${studySet.flashcardCount}")
                             withStyle(
-                                style = MaterialTheme.typography.bodySmall.toSpanStyle()
+                                style = typography.bodySmall.toSpanStyle()
                                     .copy(
                                         fontWeight = FontWeight.Normal
                                     )
@@ -115,7 +115,7 @@ fun AddStudySetToFolderItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = studySet?.subject?.name ?: SubjectModel.defaultSubjects[0].name,
+                        text = studySet.subject?.name ?: SubjectModel.defaultSubjects[0].name,
                         style = typography.bodySmall.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f)
                         )
@@ -154,7 +154,7 @@ fun AddStudySetToFolderItem(
                     )
                     Text(
                         studySet.owner.username,
-                        style = MaterialTheme.typography.bodySmall
+                        style = typography.bodySmall
                     )
                 }
             }
