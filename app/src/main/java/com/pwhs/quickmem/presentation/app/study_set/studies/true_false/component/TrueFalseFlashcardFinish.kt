@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -73,11 +74,11 @@ fun TrueFalseFlashcardFinish(
         isPlaying = isEndOfList,
     )
     val encouragementMessage = when {
-        correctAnswerCount == 0 -> "Don't give up! Keep trying!"
-        correctAnswerCount <= flashCardSize * 0.3 -> "Good start! Keep going!"
-        correctAnswerCount <= flashCardSize * 0.6 -> "You're doing great! Keep it up!"
-        correctAnswerCount < flashCardSize -> "Almost there! Keep pushing!"
-        else -> "Excellent! You've mastered it!"
+        correctAnswerCount == 0 -> stringResource(R.string.txt_don_t_give_up_keep_trying)
+        correctAnswerCount <= flashCardSize * 0.3 -> stringResource(R.string.txt_good_start_keep_going)
+        correctAnswerCount <= flashCardSize * 0.6 -> stringResource(R.string.txt_you_re_doing_great_keep_it_up)
+        correctAnswerCount < flashCardSize -> stringResource(R.string.txt_almost_there_keep_pushing)
+        else -> stringResource(R.string.txt_excellent_you_ve_mastered_it)
     }
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -117,7 +118,7 @@ fun TrueFalseFlashcardFinish(
                     )
 
                     Text(
-                        text = "Keep focusing on your study set to master it!",
+                        text = stringResource(R.string.txt_keep_focusing_on_your_study_set_to_master_it),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -148,7 +149,7 @@ fun TrueFalseFlashcardFinish(
                                 contentDescription = "Card",
                             )
                             Text(
-                                text = "Flashcards learned",
+                                text = stringResource(R.string.txt_flashcards_learned),
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontSize = 18.sp
                                 ),
@@ -200,7 +201,7 @@ fun TrueFalseFlashcardFinish(
                                 contentDescription = "Time",
                             )
                             Text(
-                                text = "Learning Time",
+                                text = stringResource(R.string.txt_learning_time),
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontSize = 18.sp
                                 ),
@@ -240,7 +241,7 @@ fun TrueFalseFlashcardFinish(
                             border = BorderStroke(1.dp, studySetColor)
                         ) {
                             Text(
-                                text = "Finish $wrongAnswerCount answers now",
+                                text = stringResource(R.string.txt_finish_answers_now),
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold
@@ -264,7 +265,7 @@ fun TrueFalseFlashcardFinish(
                         border = BorderStroke(1.dp, studySetColor)
                     ) {
                         Text(
-                            text = "Learn from the beginning",
+                            text = stringResource(R.string.txt_learn_from_the_beginning),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
@@ -277,7 +278,7 @@ fun TrueFalseFlashcardFinish(
             if (wrongAnswerCount < 0) {
                 item {
                     Text(
-                        text = "Review your wrong answers",
+                        text = stringResource(R.string.txt_review_your_wrong_answers),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -301,7 +302,7 @@ fun TrueFalseFlashcardFinish(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             Text(
-                                text = "Term: ${it.term}",
+                                text = stringResource(R.string.txt_term_write, it.term),
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -322,7 +323,10 @@ fun TrueFalseFlashcardFinish(
                             }
                         }
                         Text(
-                            text = "Correct Answer: ${it.originalDefinition}",
+                            text = stringResource(
+                                R.string.txt_correct_answers,
+                                it.originalDefinition
+                            ),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = correctColor
                             )
@@ -331,7 +335,10 @@ fun TrueFalseFlashcardFinish(
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
                         Text(
-                            text = "Your Answer: ${it.definition}",
+                            text = stringResource(
+                                R.string.txt_your_answers,
+                                it.definition
+                            ),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = incorrectColor
                             )

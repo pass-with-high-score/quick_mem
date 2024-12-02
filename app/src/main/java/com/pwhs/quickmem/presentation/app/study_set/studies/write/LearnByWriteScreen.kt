@@ -165,10 +165,10 @@ fun LearnByWrite(
             CenterAlignedTopAppBar(
                 title = {
                     when (isLoading) {
-                        true -> Text(text = "Loading")
+                        true -> Text(stringResource(R.string.txt_loading))
                         false -> when (isEndOfList) {
                             false -> Text("${currentCardIndex + 1}/${flashCardList.size}")
-                            true -> Text(text = "Finished")
+                            true -> Text(stringResource(R.string.txt_finished))
                         }
                     }
                 },
@@ -309,7 +309,7 @@ fun LearnByWrite(
                                     ),
                                     placeholder = {
                                         Text(
-                                            text = "Enter your answer",
+                                            text = stringResource(R.string.txt_enter_your_answer),
                                             style = MaterialTheme.typography.bodyMedium.copy(
                                                 fontWeight = FontWeight.Bold
                                             )
@@ -330,7 +330,7 @@ fun LearnByWrite(
                                             }
                                         ) {
                                             Text(
-                                                text = "Don't know",
+                                                text = stringResource(R.string.txt_don_t_know),
                                                 style = MaterialTheme.typography.bodyMedium.copy(
                                                     color = studySetColor,
                                                     fontWeight = FontWeight.Bold
@@ -429,7 +429,7 @@ fun LearnByWrite(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "Hint",
+                            text = stringResource(R.string.txt_hint),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Bold
                             )
