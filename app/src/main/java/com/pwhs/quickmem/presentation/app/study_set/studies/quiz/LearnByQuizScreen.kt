@@ -45,6 +45,7 @@ import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.states.RandomAnswer
 import com.pwhs.quickmem.core.data.states.WrongAnswer
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component.QuizFlashCardFinish
 import com.pwhs.quickmem.presentation.app.study_set.studies.quiz.component.QuizView
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -85,7 +86,7 @@ fun LearnByQuizScreen(
     LearnByQuiz(
         modifier = modifier,
         isLoading = uiState.isLoading,
-        onNavigateBack = {
+        onEndSessionClick = {
             resultNavigator.navigateBack(true)
         },
         wrongAnswerCount = uiState.wrongAnswerCount,
@@ -122,7 +123,7 @@ fun LearnByQuizScreen(
 @Composable
 fun LearnByQuiz(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit = {},
+    onEndSessionClick: () -> Unit = {},
     isLoading: Boolean = false,
     wrongAnswerCount: Int = 0,
     listWrongAnswer: List<WrongAnswer> = emptyList(),
@@ -141,6 +142,7 @@ fun LearnByQuiz(
     var canResetState by remember { mutableStateOf(false) }
     val showHintBottomSheet = remember { mutableStateOf(false) }
     val hintBottomSheetState = rememberModalBottomSheetState()
+    var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     var debounceJob: Job? = null
@@ -158,7 +160,13 @@ fun LearnByQuiz(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onNavigateBack
+                        onClick = {
+                            if (isEndOfList) {
+                                onEndSessionClick()
+                            } else {
+                                showUnfinishedLearningBottomSheet = true
+                            }
+                        }
                     ) {
                         Icon(
                             imageVector = Default.Clear,
@@ -307,6 +315,22 @@ fun LearnByQuiz(
                         )
                     }
                 }
+            }
+
+            if (showUnfinishedLearningBottomSheet) {
+                UnfinishedLearningBottomSheet(
+                    showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
+                    onDismissRequest = {
+                        showUnfinishedLearningBottomSheet = false
+                    },
+                    onKeepLearningClick = {
+                        showUnfinishedLearningBottomSheet = false
+                    },
+                    onEndSessionClick = {
+                        onEndSessionClick()
+                        showUnfinishedLearningBottomSheet = false
+                    }
+                )
             }
         }
 

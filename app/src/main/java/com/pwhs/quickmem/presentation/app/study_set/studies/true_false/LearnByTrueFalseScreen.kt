@@ -48,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.component.TrueFalseButton
 import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.component.TrueFalseFlashcardFinish
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -84,7 +85,7 @@ fun LearnByTrueFalseScreen(
     }
     LearnByTrueFalse(
         modifier = modifier,
-        onNavigateBack = {
+        onEndSessionClick = {
             viewModel.onEvent(LearnByTrueFalseUiAction.OnBackClicked)
         },
         isLoading = uiState.isLoading,
@@ -123,7 +124,7 @@ fun LearnByTrueFalse(
     studySetColor: Color = MaterialTheme.colorScheme.primary,
     flashCardList: List<FlashCardResponseModel> = emptyList(),
     randomQuestion: TrueFalseQuestion? = null,
-    onNavigateBack: () -> Unit = {},
+    onEndSessionClick: () -> Unit = {},
     onRestart: () -> Unit = {},
     onAnswer: (Boolean, String) -> Unit = { _, _ -> },
     wrongAnswerCount: Int = 0,
@@ -133,6 +134,8 @@ fun LearnByTrueFalse(
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
+    var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -147,7 +150,13 @@ fun LearnByTrueFalse(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onNavigateBack
+                        onClick = {
+                            if (isEndOfList) {
+                                onEndSessionClick()
+                            } else {
+                                showUnfinishedLearningBottomSheet = true
+                            }
+                        }
                     ) {
                         Icon(
                             imageVector = Default.Clear,
@@ -357,6 +366,22 @@ fun LearnByTrueFalse(
                     onDismissRequest = {
                         isImageViewerOpen = false
                         definitionImageUri = ""
+                    }
+                )
+            }
+
+            if (showUnfinishedLearningBottomSheet) {
+                UnfinishedLearningBottomSheet(
+                    showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
+                    onDismissRequest = {
+                        showUnfinishedLearningBottomSheet = false
+                    },
+                    onKeepLearningClick = {
+                        showUnfinishedLearningBottomSheet = false
+                    },
+                    onEndSessionClick = {
+                        onEndSessionClick()
+                        showUnfinishedLearningBottomSheet = false
                     }
                 )
             }
