@@ -419,4 +419,15 @@
     <string name="txt_keep_reviewing_terms_flip">Tiếp tục ôn lại %1$s thuật ngữ</string>
     <string name="txt_don_t_know">Không biết</string>
     <string name="txt_enter_your_answer">Nhập câu trả lời của bạn</string>
+    <string name="txt_get_all">Số lượng flashcard của bạn khá nhiều!</string>
+    <string name="txt_are_you_sure_you_want_to_get_all_flashcards">Bạn có muốn chia nhỏ số lượng flashcard ra để học từng phần không?</string>
+    <string name="txt_no_thanks">Không cảm ơn</string>
+    <string name="txt_sort_by_date">Sắp xếp theo ngày</string>
+    <string name="txt_keep_learning_terms_flip">Tiếp tục học các thuật ngữ</string>
+    <string name="txt_title_learn_flashcard">Thẻ %1$s của %2$s</string>
+    <string name="txt_you_have_finished_this_section_of_study_set">Bạn đã hoàn thành phần này của bộ học</string>
+    <string name="txt_continue_learning">Tiếp tục học</string>
+    <string name="txt_wait_don_t_go_yet_you_ll_miss_out_on_completing_this_study_set">Chờ đã, đừng đi vội! Bạn sẽ bỏ lỡ việc hoàn thành bộ học này!</string>
+    <string name="txt_keep_learning">Tiếp tục học</string>
+    <string name="txt_end_session">Kết thúc phần học</string>
 </resources>

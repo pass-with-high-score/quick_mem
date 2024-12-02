@@ -52,6 +52,8 @@ class FlipFlashCardViewModel @Inject constructor(
 
     init {
         val studySetId = savedStateHandle.get<String>("studySetId") ?: ""
+        val isGetAll = savedStateHandle.get<Boolean>("isGetAll") ?: false
+        Timber.d("isGetAll: $isGetAll")
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
@@ -61,6 +63,7 @@ class FlipFlashCardViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 learnFrom = learnFrom,
+                isGetAll = isGetAll,
                 folderId = folderId,
                 studySetId = studySetId,
                 studySetTitle = studySetTitle,
@@ -137,7 +140,6 @@ class FlipFlashCardViewModel @Inject constructor(
             }
 
             is FlipFlashCardUiAction.OnUpdateCountStillLearning -> {
-                Timber.d("OnUpdateCountStillLearninggggg")
                 if (event.isIncrease) {
                     _uiState.update {
                         it.copy(
@@ -184,7 +186,9 @@ class FlipFlashCardViewModel @Inject constructor(
                         learningTime = System.currentTimeMillis() - it.startTime
                     )
                 }
-                sendCompletedStudyTime()
+                if (!_uiState.value.isEndOfList) {
+                    sendCompletedStudyTime()
+                }
                 _uiEvent.trySend(FlipFlashCardUiEvent.Back)
             }
         }
@@ -196,12 +200,14 @@ class FlipFlashCardViewModel @Inject constructor(
             val studySetId = _uiState.value.studySetId
             val folderId = _uiState.value.folderId
             val learnFrom = _uiState.value.learnFrom
+            val isGetAll = _uiState.value.isGetAll
             when (learnFrom) {
                 LearnFrom.STUDY_SET -> {
                     flashCardRepository.getFlashCardsByStudySetId(
                         token = token,
                         studySetId = studySetId,
-                        learnMode = LearnMode.FLIP
+                        learnMode = LearnMode.FLIP,
+                        isGetAll = isGetAll
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {
@@ -239,7 +245,8 @@ class FlipFlashCardViewModel @Inject constructor(
                     flashCardRepository.getFlashCardsByFolderId(
                         token = token,
                         folderId = folderId,
-                        learnMode = LearnMode.FLIP
+                        learnMode = LearnMode.FLIP,
+                        isGetAll = isGetAll
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {

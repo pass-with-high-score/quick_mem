@@ -6,4 +6,5 @@ data class LearnByWriteArgs(
     val studySetDescription: String,
     val studySetColorId: Int,
     val studySetSubjectId: Int,
+    val isGetAll: Boolean,
 )

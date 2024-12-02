@@ -115,7 +115,8 @@ fun LearnByQuizScreen(
         },
         onRestartClicked = {
             viewModel.onEvent(LearnByQuizUiAction.RestartLearn)
-        }
+        },
+        isGetAll = uiState.isGetAll
     )
 }
 
@@ -137,12 +138,14 @@ fun LearnByQuiz(
     flashCard: FlashCardResponseModel? = null,
     isEndOfList: Boolean = false,
     onContinueLearningClicked: () -> Unit = {},
-    onRestartClicked: () -> Unit = {}
+    onRestartClicked: () -> Unit = {},
+    isGetAll: Boolean = false
 ) {
     var canResetState by remember { mutableStateOf(false) }
     val showHintBottomSheet = remember { mutableStateOf(false) }
     val hintBottomSheetState = rememberModalBottomSheetState()
     var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
+    val unFinishedLearningBottomSheetState = rememberModalBottomSheetState()
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     var debounceJob: Job? = null
@@ -175,7 +178,7 @@ fun LearnByQuiz(
                     }
                 },
                 actions = {
-                    if (!isEndOfList) {
+                    if (!isEndOfList && isGetAll) {
                         if (!flashCard?.hint.isNullOrEmpty()) {
                             IconButton(
                                 onClick = {
@@ -285,6 +288,7 @@ fun LearnByQuiz(
                                 onRestartClicked()
                             },
                             listWrongAnswer = listWrongAnswer,
+                            isGetAll = isGetAll
                         )
                     }
                 }
@@ -319,7 +323,6 @@ fun LearnByQuiz(
 
             if (showUnfinishedLearningBottomSheet) {
                 UnfinishedLearningBottomSheet(
-                    showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
                     onDismissRequest = {
                         showUnfinishedLearningBottomSheet = false
                     },
@@ -329,7 +332,8 @@ fun LearnByQuiz(
                     onEndSessionClick = {
                         onEndSessionClick()
                         showUnfinishedLearningBottomSheet = false
-                    }
+                    },
+                    sheetState = unFinishedLearningBottomSheetState
                 )
             }
         }

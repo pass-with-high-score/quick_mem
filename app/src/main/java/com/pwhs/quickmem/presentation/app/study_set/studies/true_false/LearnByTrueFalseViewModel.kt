@@ -106,7 +106,9 @@ class LearnByTrueFalseViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(learningTime = System.currentTimeMillis() - it.startTime)
                 }
-                sendCompletedStudyTime()
+                if (!_uiState.value.isEndOfList) {
+                    sendCompletedStudyTime()
+                }
                 _uiEvent.trySend(LearnByTrueFalseUiEvent.Back)
             }
         }
@@ -115,10 +117,13 @@ class LearnByTrueFalseViewModel @Inject constructor(
     private fun getFlashCard() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val studySetId = _uiState.value.studySetId
+            val isGetAll = _uiState.value.isGetAll
             flashCardRepository.getFlashCardsByStudySetId(
                 token = token,
-                studySetId = _uiState.value.studySetId,
-                learnMode = LearnMode.TRUE_FALSE
+                studySetId = studySetId,
+                learnMode = LearnMode.TRUE_FALSE,
+                isGetAll = isGetAll
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {

@@ -161,7 +161,8 @@ fun FolderDetailScreen(
                     studySetColorId = 0,
                     studySetSubjectId = 0,
                     folderId = uiState.id,
-                    learnFrom = LearnFrom.FOLDER
+                    learnFrom = LearnFrom.FOLDER,
+                    isGetAll = true
                 )
             )
         },

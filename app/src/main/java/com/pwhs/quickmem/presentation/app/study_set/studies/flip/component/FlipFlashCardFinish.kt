@@ -54,6 +54,7 @@ fun FlipFlashCardFinish(
     learningTime: Long,
     onContinueLearningClicked: () -> Unit,
     onRestartClicked: () -> Unit,
+    isGetAll: Boolean
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
     val progress by animateLottieCompositionAsState(
@@ -230,10 +231,17 @@ fun FlipFlashCardFinish(
                         border = BorderStroke(1.dp, studySetColor)
                     ) {
                         Text(
-                            text = stringResource(
-                                R.string.txt_keep_reviewing_terms_flip,
-                                countStillLearning
-                            ),
+                            text = when (isGetAll) {
+                                true -> stringResource(
+                                    R.string.txt_keep_reviewing_terms_flip,
+                                    countStillLearning
+                                )
+
+                                false -> stringResource(
+                                    R.string.txt_keep_learning_terms_flip,
+                                    countStillLearning
+                                )
+                            },
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
@@ -244,27 +252,38 @@ fun FlipFlashCardFinish(
                 }
             }
             item {
-                Button(
-                    onClick = {
-                        onRestartClicked()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = MaterialTheme.shapes.small,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = studySetColor
-                    ),
-                    border = BorderStroke(1.dp, studySetColor)
-                ) {
+                if (isGetAll) {
+                    Button(
+                        onClick = {
+                            onRestartClicked()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        shape = MaterialTheme.shapes.small,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = studySetColor
+                        ),
+                        border = BorderStroke(1.dp, studySetColor)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.txt_restart_flashcards),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                } else {
                     Text(
-                        text = stringResource(R.string.txt_restart_flashcards),
+                        text = stringResource(R.string.txt_you_have_finished_this_section_of_study_set),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
                         ),
-                        modifier = Modifier.padding(8.dp)
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

@@ -9,5 +9,6 @@ data class FlipFlashCardArgs(
     val studySetColorId: Int,
     val studySetSubjectId: Int,
     val folderId: String,
-    val learnFrom: LearnFrom
+    val learnFrom: LearnFrom,
+    val isGetAll: Boolean,
 )

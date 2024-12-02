@@ -127,7 +127,8 @@ fun FlipFlashCardScreen(
         },
         onContinueLearningClicked = {
             viewModel.onEvent(FlipFlashCardUiAction.OnContinueLearningClicked)
-        }
+        },
+        isGetAll = uiState.isGetAll
     )
 }
 
@@ -152,7 +153,8 @@ fun FlipFlashCard(
     onUpdateCountKnown: (Boolean, String) -> Unit = { _, _ -> },
     onUpdateCountStillLearning: (Boolean, String) -> Unit = { _, _ -> },
     onRestartClicked: () -> Unit = { },
-    onContinueLearningClicked: () -> Unit = { }
+    onContinueLearningClicked: () -> Unit = { },
+    isGetAll: Boolean = false
 ) {
     var showHintBottomSheet by remember {
         mutableStateOf(false)
@@ -163,6 +165,7 @@ fun FlipFlashCard(
     val hintBottomSheetState = rememberModalBottomSheetState()
     val explanationBottomSheetState = rememberModalBottomSheetState()
     var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
+    val unFinishedLearningBottomSheetState = rememberModalBottomSheetState()
     val stillLearningColor = Color(0xffd05700)
     val knownColor = Color(0xff18ae79)
     val stackState = rememberStackState()
@@ -198,7 +201,8 @@ fun FlipFlashCard(
                     onRestartClicked()
                     stackState.reset()
                 },
-                shouldShowRestart = !isEndOfList
+                shouldShowRestart = !isEndOfList,
+                isGetAll = isGetAll
             )
         }
     ) { innerPadding ->
@@ -351,7 +355,8 @@ fun FlipFlashCard(
                                 onRestartClicked = {
                                     onRestartClicked()
                                     stackState.reset()
-                                }
+                                },
+                                isGetAll = isGetAll
                             )
                         }
                     }
@@ -438,7 +443,6 @@ fun FlipFlashCard(
 
     if (showUnfinishedLearningBottomSheet) {
         UnfinishedLearningBottomSheet(
-            showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
             onDismissRequest = {
                 showUnfinishedLearningBottomSheet = false
             },
@@ -448,7 +452,8 @@ fun FlipFlashCard(
             onEndSessionClick = {
                 onEndSessionClick()
                 showUnfinishedLearningBottomSheet = false
-            }
+            },
+            sheetState = unFinishedLearningBottomSheetState
         )
     }
 

@@ -28,6 +28,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -110,7 +111,8 @@ fun LearnByTrueFalseScreen(
                     isCorrect = isTrue
                 )
             )
-        }
+        },
+        isGetAll = uiState.isGetAll
     )
 }
 
@@ -131,10 +133,12 @@ fun LearnByTrueFalse(
     learningTime: Long = 0,
     listWrongAnswer: List<TrueFalseQuestion> = emptyList(),
     onContinueLearningClicked: () -> Unit = {},
+    isGetAll: Boolean = false
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
     var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
+    val unFinishedLearningBottomSheetState = rememberModalBottomSheetState()
 
     Scaffold(
         topBar = {
@@ -165,7 +169,7 @@ fun LearnByTrueFalse(
                     }
                 },
                 actions = {
-                    if (!isEndOfList) {
+                    if (!isEndOfList && isGetAll) {
                         IconButton(
                             onClick = onRestart
                         ) {
@@ -353,7 +357,8 @@ fun LearnByTrueFalse(
                             onContinueLearningClicked = onContinueLearningClicked,
                             listWrongAnswer = listWrongAnswer,
                             flashCardSize = flashCardList.size,
-                            onRestartClicked = onRestart
+                            onRestartClicked = onRestart,
+                            isGetAll = isGetAll
                         )
                     }
                 }
@@ -372,7 +377,6 @@ fun LearnByTrueFalse(
 
             if (showUnfinishedLearningBottomSheet) {
                 UnfinishedLearningBottomSheet(
-                    showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
                     onDismissRequest = {
                         showUnfinishedLearningBottomSheet = false
                     },
@@ -382,7 +386,8 @@ fun LearnByTrueFalse(
                     onEndSessionClick = {
                         onEndSessionClick()
                         showUnfinishedLearningBottomSheet = false
-                    }
+                    },
+                    sheetState = unFinishedLearningBottomSheetState
                 )
             }
         }

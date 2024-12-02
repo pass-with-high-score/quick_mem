@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -60,7 +61,7 @@ class StudySetDetailViewModel @Inject constructor(
                 _uiState.update { it.copy(idOfFlashCardSelected = event.id) }
             }
 
-            StudySetDetailUiAction.OnDeleteFlashCardClicked -> {
+            is StudySetDetailUiAction.OnDeleteFlashCardClicked -> {
                 deleteFlashCard()
             }
 
@@ -68,15 +69,15 @@ class StudySetDetailViewModel @Inject constructor(
                 toggleStarredFlashCard(event.id, event.isStarred)
             }
 
-            StudySetDetailUiAction.OnEditStudySetClicked -> {
+            is StudySetDetailUiAction.OnEditStudySetClicked -> {
                 _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditStudySet)
             }
 
-            StudySetDetailUiAction.OnEditFlashCardClicked -> {
+            is StudySetDetailUiAction.OnEditFlashCardClicked -> {
                 _uiEvent.trySend(StudySetDetailUiEvent.NavigateToEditFlashCard)
             }
 
-            StudySetDetailUiAction.OnDeleteStudySetClicked -> {
+            is StudySetDetailUiAction.OnDeleteStudySetClicked -> {
                 deleteStudySet()
             }
 
@@ -84,8 +85,32 @@ class StudySetDetailViewModel @Inject constructor(
                 resetProgress(event.id)
             }
 
-            StudySetDetailUiAction.OnMakeCopyClicked -> {
+            is StudySetDetailUiAction.OnMakeCopyClicked -> {
                 makeCopyStudySet()
+            }
+
+            is StudySetDetailUiAction.NavigateToLearn -> {
+                when (event.learnMode) {
+                    LearnMode.FLIP -> {
+                        _uiEvent.trySend(StudySetDetailUiEvent.OnNavigateToFlipFlashcard(event.isGetAll))
+                    }
+
+                    LearnMode.QUIZ -> {
+                        _uiEvent.trySend(StudySetDetailUiEvent.OnNavigateToQuiz(event.isGetAll))
+                    }
+
+                    LearnMode.TRUE_FALSE -> {
+                        _uiEvent.trySend(StudySetDetailUiEvent.OnNavigateToTrueFalse(event.isGetAll))
+                    }
+
+                    LearnMode.WRITE -> {
+                        _uiEvent.trySend(StudySetDetailUiEvent.OnNavigateToWrite(event.isGetAll))
+                    }
+
+                    else -> {
+                        // Do nothing
+                    }
+                }
             }
         }
     }
@@ -101,7 +126,8 @@ class StudySetDetailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
-                        val isOwner = appManager.userId.firstOrNull() == resource.data!!.owner.id
+                        val isOwner =
+                            appManager.userId.firstOrNull() == resource.data!!.owner.id
                         _uiState.update {
                             it.copy(
                                 title = resource.data.title,
@@ -140,7 +166,10 @@ class StudySetDetailViewModel @Inject constructor(
                 userId = userId,
                 studySetId = studySetId
             )
-            studySetRepository.saveRecentAccessStudySet(token, saveRecentAccessStudySetRequestModel)
+            studySetRepository.saveRecentAccessStudySet(
+                token,
+                saveRecentAccessStudySetRequestModel
+            )
                 .collect { resource ->
                     when (resource) {
                         is Resources.Loading -> {
@@ -267,7 +296,11 @@ class StudySetDetailViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(StudySetDetailUiEvent.StudySetCopied(resource.data?.id ?: ""))
+                        _uiEvent.send(
+                            StudySetDetailUiEvent.StudySetCopied(
+                                resource.data?.id ?: ""
+                            )
+                        )
                     }
 
                     is Resources.Error -> {

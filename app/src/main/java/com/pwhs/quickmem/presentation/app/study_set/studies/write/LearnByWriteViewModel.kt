@@ -103,23 +103,28 @@ class LearnByWriteViewModel @Inject constructor(
                 onRestart()
             }
 
-           is LearnByWriteUiAction.OnBackClicked -> {
-               _uiState.update {
-                   it.copy(learningTime = System.currentTimeMillis() - it.startTime)
-               }
-               sendCompletedStudyTime()
-               _uiEvent.trySend(LearnByWriteUiEvent.Back)
-           }
+            is LearnByWriteUiAction.OnBackClicked -> {
+                _uiState.update {
+                    it.copy(learningTime = System.currentTimeMillis() - it.startTime)
+                }
+                if (!_uiState.value.isEndOfList) {
+                    sendCompletedStudyTime()
+                }
+                _uiEvent.trySend(LearnByWriteUiEvent.Back)
+            }
         }
     }
 
     private fun getFlashCard() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val studySetId = _uiState.value.studySetId
+            val isGetAll = _uiState.value.isGetAll
             flashCardRepository.getFlashCardsByStudySetId(
                 token = token,
-                studySetId = _uiState.value.studySetId,
-                learnMode = LearnMode.WRITE
+                studySetId = studySetId,
+                learnMode = LearnMode.WRITE,
+                isGetAll = isGetAll
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {

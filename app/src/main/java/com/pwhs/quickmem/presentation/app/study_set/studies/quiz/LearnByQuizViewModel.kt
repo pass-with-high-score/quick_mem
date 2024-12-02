@@ -83,8 +83,7 @@ class LearnByQuizViewModel @Inject constructor(
                 event.userAnswer
             )
 
-            LearnByQuizUiAction.ContinueLearnWrongAnswer -> {
-                // reset all state
+            is LearnByQuizUiAction.ContinueLearnWrongAnswer -> {
                 _uiState.update {
                     it.copy(
                         currentCardIndex = 0,
@@ -98,7 +97,7 @@ class LearnByQuizViewModel @Inject constructor(
                 getFlashCard()
             }
 
-            LearnByQuizUiAction.RestartLearn -> {
+            is LearnByQuizUiAction.RestartLearn -> {
                 onRestart()
             }
 
@@ -106,7 +105,9 @@ class LearnByQuizViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(learningTime = System.currentTimeMillis() - it.startTime)
                 }
-                sendCompletedStudyTime()
+                if (!_uiState.value.isEndOfList) {
+                    sendCompletedStudyTime()
+                }
                 _uiEvent.trySend(LearnByQuizUiEvent.Back)
             }
         }
@@ -115,10 +116,13 @@ class LearnByQuizViewModel @Inject constructor(
     private fun getFlashCard() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val studySetId = _uiState.value.studySetId
+            val isGetAll = _uiState.value.isEndOfList
             flashCardRepository.getFlashCardsByStudySetId(
                 token = token,
-                studySetId = _uiState.value.studySetId,
-                learnMode = LearnMode.QUIZ
+                studySetId = studySetId,
+                learnMode = LearnMode.QUIZ,
+                isGetAll = isGetAll
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {

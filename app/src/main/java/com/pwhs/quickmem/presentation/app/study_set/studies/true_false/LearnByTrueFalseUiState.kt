@@ -5,6 +5,7 @@ import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 
 data class LearnByTrueFalseUiState(
+    val isGetAll: Boolean = false,
     val isLoading: Boolean = false,
     val studySetId: String = "",
     val studySetTitle: String = "",

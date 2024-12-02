@@ -26,13 +26,16 @@ fun StudyTopAppBar(
     onBackClicked: () -> Unit,
     isEnOfSet: Boolean = false,
     onRestartClicked: () -> Unit = {},
-    shouldShowRestart: Boolean = true
+    shouldShowRestart: Boolean = true,
+    isGetAll: Boolean = false,
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
             Text(
-                text = if (isEnOfSet) stringResource(R.string.txt_congratulations) else "Card $currentCardIndex of $totalCards",
+                text = if (isEnOfSet) stringResource(R.string.txt_congratulations) else stringResource(
+                    R.string.txt_title_learn_flashcard, currentCardIndex, totalCards
+                ),
                 style = typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                 )
@@ -49,7 +52,7 @@ fun StudyTopAppBar(
             }
         },
         actions = {
-            if (shouldShowRestart) {
+            if (shouldShowRestart && isGetAll) {
                 IconButton(
                     onClick = onRestartClicked
                 ) {

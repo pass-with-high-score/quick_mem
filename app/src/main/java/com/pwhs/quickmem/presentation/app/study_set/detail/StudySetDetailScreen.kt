@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.FlipCardStatus
 import com.pwhs.quickmem.core.data.enums.LearnFrom
+import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.enums.TrueFalseStatus
 import com.pwhs.quickmem.core.data.enums.WriteStatus
@@ -172,15 +173,15 @@ fun StudySetDetailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                StudySetDetailUiEvent.FlashCardDeleted -> {
+                is StudySetDetailUiEvent.FlashCardDeleted -> {
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
 
-                StudySetDetailUiEvent.FlashCardStarred -> {
+                is StudySetDetailUiEvent.FlashCardStarred -> {
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
 
-                StudySetDetailUiEvent.NavigateToEditStudySet -> {
+                is StudySetDetailUiEvent.NavigateToEditStudySet -> {
                     navigator.navigate(
                         EditStudySetScreenDestination(
                             studySetId = uiState.id,
@@ -193,7 +194,7 @@ fun StudySetDetailScreen(
                     )
                 }
 
-                StudySetDetailUiEvent.NavigateToEditFlashCard -> {
+                is StudySetDetailUiEvent.NavigateToEditFlashCard -> {
                     val flashCard =
                         uiState.flashCards.find { it.id == uiState.idOfFlashCardSelected }
                     navigator.navigate(
@@ -208,12 +209,12 @@ fun StudySetDetailScreen(
                     )
                 }
 
-                StudySetDetailUiEvent.StudySetDeleted -> {
+                is StudySetDetailUiEvent.StudySetDeleted -> {
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
 
-                StudySetDetailUiEvent.StudySetProgressReset -> {
+                is StudySetDetailUiEvent.StudySetProgressReset -> {
                     viewModel.onEvent(StudySetDetailUiAction.Refresh)
                 }
 
@@ -222,6 +223,60 @@ fun StudySetDetailScreen(
                     navigator.navigate(
                         StudySetDetailScreenDestination(
                             id = event.newStudySetId,
+                        )
+                    )
+                }
+
+                is StudySetDetailUiEvent.OnNavigateToFlipFlashcard -> {
+                    navigator.navigate(
+                        FlipFlashCardScreenDestination(
+                            studySetId = uiState.id,
+                            studySetTitle = uiState.title,
+                            studySetDescription = uiState.description,
+                            studySetColorId = uiState.colorModel.id,
+                            studySetSubjectId = uiState.subject.id,
+                            folderId = "",
+                            learnFrom = LearnFrom.STUDY_SET,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
+
+                is StudySetDetailUiEvent.OnNavigateToQuiz -> {
+                    navigator.navigate(
+                        LearnByQuizScreenDestination(
+                            studySetId = uiState.id,
+                            studySetTitle = uiState.title,
+                            studySetDescription = uiState.description,
+                            studySetColorId = uiState.colorModel.id,
+                            studySetSubjectId = uiState.subject.id,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
+
+                is StudySetDetailUiEvent.OnNavigateToTrueFalse -> {
+                    navigator.navigate(
+                        LearnByTrueFalseScreenDestination(
+                            studySetId = uiState.id,
+                            studySetTitle = uiState.title,
+                            studySetDescription = uiState.description,
+                            studySetColorId = uiState.colorModel.id,
+                            studySetSubjectId = uiState.subject.id,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
+
+                is StudySetDetailUiEvent.OnNavigateToWrite -> {
+                    navigator.navigate(
+                        LearnByWriteScreenDestination(
+                            studySetId = uiState.id,
+                            studySetTitle = uiState.title,
+                            studySetDescription = uiState.description,
+                            studySetColorId = uiState.colorModel.id,
+                            studySetSubjectId = uiState.subject.id,
+                            isGetAll = event.isGetAll
                         )
                     )
                 }
@@ -299,52 +354,6 @@ fun StudySetDetailScreen(
             viewModel.onEvent(StudySetDetailUiAction.OnResetProgressClicked(uiState.id))
         },
         isAIGenerated = uiState.isAIGenerated,
-        onNavigateToQuiz = {
-            navigator.navigate(
-                LearnByQuizScreenDestination(
-                    studySetId = uiState.id,
-                    studySetTitle = uiState.title,
-                    studySetDescription = uiState.description,
-                    studySetColorId = uiState.colorModel.id,
-                    studySetSubjectId = uiState.subject.id,
-                )
-            )
-        },
-        onNavigateToTrueFalse = {
-            navigator.navigate(
-                LearnByTrueFalseScreenDestination(
-                    studySetId = uiState.id,
-                    studySetTitle = uiState.title,
-                    studySetDescription = uiState.description,
-                    studySetColorId = uiState.colorModel.id,
-                    studySetSubjectId = uiState.subject.id,
-                )
-            )
-        },
-        onNavigateToWrite = {
-            navigator.navigate(
-                LearnByWriteScreenDestination(
-                    studySetId = uiState.id,
-                    studySetTitle = uiState.title,
-                    studySetDescription = uiState.description,
-                    studySetColorId = uiState.colorModel.id,
-                    studySetSubjectId = uiState.subject.id,
-                )
-            )
-        },
-        onNavigateToFlip = {
-            navigator.navigate(
-                FlipFlashCardScreenDestination(
-                    studySetId = uiState.id,
-                    studySetTitle = uiState.title,
-                    studySetDescription = uiState.description,
-                    studySetColorId = uiState.colorModel.id,
-                    studySetSubjectId = uiState.subject.id,
-                    folderId = "",
-                    learnFrom = LearnFrom.STUDY_SET
-                )
-            )
-        },
         onRefresh = {
             viewModel.onEvent(StudySetDetailUiAction.Refresh)
         },
@@ -367,7 +376,10 @@ fun StudySetDetailScreen(
                     username = uiState.user.username
                 )
             )
-        }
+        },
+        onNavigateToLearn = { learnMode, isGetAll ->
+            viewModel.onEvent(StudySetDetailUiAction.NavigateToLearn(learnMode, isGetAll))
+        },
     )
 }
 
@@ -397,14 +409,11 @@ fun StudySetDetail(
     onAddToFolder: () -> Unit = {},
     onDeleteStudySet: () -> Unit = {},
     onResetProgress: () -> Unit = {},
-    onNavigateToQuiz: () -> Unit = {},
-    onNavigateToTrueFalse: () -> Unit = {},
-    onNavigateToWrite: () -> Unit = {},
-    onNavigateToFlip: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onNavigateToUserDetail: () -> Unit = {},
     onCopyStudySet: () -> Unit = {},
-    onReportClick: () -> Unit = {}
+    onReportClick: () -> Unit = {},
+    onNavigateToLearn: (LearnMode, Boolean) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -498,17 +507,14 @@ fun StudySetDetail(
                                 onToggleStarClick = onToggleStarredFlashCard,
                                 onEditFlashCardClick = onEditFlashCard,
                                 onAddFlashCardClick = onAddFlashcard,
-                                onNavigateToQuiz = onNavigateToQuiz,
-                                onNavigateToTrueFalse = onNavigateToTrueFalse,
-                                onNavigateToWrite = onNavigateToWrite,
-                                onNavigateToFlip = onNavigateToFlip,
+                                onNavigateToLearn = onNavigateToLearn,
                                 isOwner = true,
                                 studySetColor = color,
                                 learningPercentQuiz = if (flashCardCount > 0) (flashCards.count { it.quizStatus == QuizStatus.CORRECT.status } * 100 / flashCardCount) else 0,
                                 learningPercentFlipped = if (flashCardCount > 0) (flashCards.count { it.flipStatus == FlipCardStatus.KNOW.name } * 100 / flashCardCount) else 0,
                                 learningPercentWrite = if (flashCardCount > 0) (flashCards.count { it.writeStatus == WriteStatus.CORRECT.status } * 100 / flashCardCount) else 0,
                                 learningPercentTrueFalse = if (flashCardCount > 0) (flashCards.count { it.trueFalseStatus == TrueFalseStatus.CORRECT.status } * 100 / flashCardCount) else 0,
-                                onMakeCopyClick = onCopyStudySet
+                                onMakeCopyClick = onCopyStudySet,
                             )
 
                             StudySetDetailEnum.PROGRESS.index -> ProgressTabScreen(
@@ -530,13 +536,10 @@ fun StudySetDetail(
                                 onToggleStarClick = onToggleStarredFlashCard,
                                 onEditFlashCardClick = onEditFlashCard,
                                 onAddFlashCardClick = onAddFlashcard,
-                                onNavigateToQuiz = onNavigateToQuiz,
-                                onNavigateToTrueFalse = onNavigateToTrueFalse,
-                                onNavigateToWrite = onNavigateToWrite,
-                                onNavigateToFlip = onNavigateToFlip,
+                                onNavigateToLearn = onNavigateToLearn,
                                 isOwner = false,
                                 onMakeCopyClick = onCopyStudySet,
-                                studySetColor = color
+                                studySetColor = color,
                             )
                         }
                     }

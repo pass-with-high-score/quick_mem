@@ -2,14 +2,12 @@ package com.pwhs.quickmem.presentation.app.study_set.detail.material
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
-import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -18,7 +16,6 @@ import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
-import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.outlined.Edit
@@ -49,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.detail.component.ItemMenuBottomSheet
@@ -67,16 +65,13 @@ fun MaterialTabScreen(
     onEditFlashCardClick: () -> Unit = {},
     onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
     onAddFlashCardClick: () -> Unit = {},
-    onNavigateToQuiz: () -> Unit = {},
-    onNavigateToTrueFalse: () -> Unit = {},
-    onNavigateToWrite: () -> Unit = {},
-    onNavigateToFlip: () -> Unit = {},
     onMakeCopyClick: () -> Unit = {},
     studySetColor: Color = ColorModel.defaultColors.first().hexValue.toColor(),
     learningPercentFlipped: Int = 0,
     learningPercentQuiz: Int = 0,
     learningPercentTrueFalse: Int = 0,
     learningPercentWrite: Int = 0,
+    onNavigateToLearn: (LearnMode, Boolean) -> Unit = { _, _ -> },
 ) {
     val menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
@@ -88,6 +83,8 @@ fun MaterialTabScreen(
     var showExplanation by remember { mutableStateOf(false) }
     var hint by remember { mutableStateOf("") }
     var explanation by remember { mutableStateOf("") }
+    var showGetAllDialog by remember { mutableStateOf(false) }
+    var learningMode by remember { mutableStateOf(LearnMode.NONE) }
 
     Scaffold { innerPadding ->
         Box(
@@ -188,7 +185,7 @@ fun MaterialTabScreen(
                                 LazyRow(
                                     modifier = Modifier.fillMaxWidth(),
                                 ) {
-                                    items(items = flashCards, key = {it.id}) { flashCard ->
+                                    items(items = flashCards, key = { it.id }) { flashCard ->
                                         StudySetFlipCard(
                                             frontText = flashCard.term,
                                             backText = flashCard.definition,
@@ -214,7 +211,10 @@ fun MaterialTabScreen(
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_flip_flashcards),
                                     icon = R.drawable.ic_flipcard,
-                                    onClick = onNavigateToFlip,
+                                    onClick = {
+                                        showGetAllDialog = true
+                                        learningMode = LearnMode.FLIP
+                                    },
                                     color = studySetColor,
                                     learningPercentage = learningPercentFlipped
                                 )
@@ -223,7 +223,10 @@ fun MaterialTabScreen(
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_quiz),
                                     icon = R.drawable.ic_quiz,
-                                    onClick = onNavigateToQuiz,
+                                    onClick = {
+                                        showGetAllDialog = true
+                                        learningMode = LearnMode.QUIZ
+                                    },
                                     color = studySetColor,
                                     learningPercentage = learningPercentQuiz
                                 )
@@ -232,7 +235,10 @@ fun MaterialTabScreen(
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_true_false),
                                     icon = R.drawable.ic_tf,
-                                    onClick = onNavigateToTrueFalse,
+                                    onClick = {
+                                        showGetAllDialog = true
+                                        learningMode = LearnMode.TRUE_FALSE
+                                    },
                                     color = studySetColor,
                                     learningPercentage = learningPercentTrueFalse
                                 )
@@ -241,7 +247,10 @@ fun MaterialTabScreen(
                                 LearnModeCard(
                                     title = stringResource(R.string.txt_write),
                                     icon = R.drawable.ic_write,
-                                    onClick = onNavigateToWrite,
+                                    onClick = {
+                                        showGetAllDialog = true
+                                        learningMode = LearnMode.WRITE
+                                    },
                                     color = studySetColor,
                                     learningPercentage = learningPercentWrite
                                 )
@@ -262,25 +271,12 @@ fun MaterialTabScreen(
                                         color = colorScheme.onSurface,
                                         fontWeight = Bold
                                     ),
+                                    modifier = Modifier.weight(1f)
                                 )
-
-                                Row(
-                                    horizontalArrangement = spacedBy(5.dp),
-                                    verticalAlignment = CenterVertically
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.txt_original)
-                                    )
-                                    Icon(
-                                        imageVector = Filled.Sort,
-                                        contentDescription = stringResource(R.string.txt_sort),
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
                             }
                         }
 
-                        items(items = flashCards, key = {it.id}) { flashCards ->
+                        items(items = flashCards, key = { it.id }) { flashCards ->
                             CardDetail(
                                 isOwner = isOwner,
                                 color = studySetColor,
@@ -426,6 +422,27 @@ fun MaterialTabScreen(
                 dismissButtonTitle = stringResource(R.string.txt_cancel),
                 buttonColor = colorScheme.error,
             )
+        }
+        if (showGetAllDialog && flashCards.size > 10) {
+            QuickMemAlertDialog(
+                onDismissRequest = {
+                    showGetAllDialog = false
+                    onNavigateToLearn(learningMode, true)
+                    learningMode = LearnMode.NONE
+                },
+                onConfirm = {
+                    showGetAllDialog = false
+                    onNavigateToLearn(learningMode, false)
+                    learningMode = LearnMode.NONE
+                },
+                title = stringResource(R.string.txt_get_all),
+                text = stringResource(R.string.txt_are_you_sure_you_want_to_get_all_flashcards),
+                confirmButtonTitle = stringResource(R.string.txt_ok),
+                dismissButtonTitle = stringResource(R.string.txt_no_thanks),
+            )
+        } else {
+            onNavigateToLearn(learningMode, true)
+            learningMode = LearnMode.NONE
         }
     }
 }

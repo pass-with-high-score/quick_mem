@@ -123,7 +123,8 @@ fun LearnByWriteScreen(
         },
         onSubmitAnswer = { id, status, answer ->
             viewModel.onEvent(LearnByWriteUiAction.OnAnswer(id, status, answer))
-        }
+        },
+        isGetAll = uiState.isGetAll
     )
 }
 
@@ -143,7 +144,8 @@ fun LearnByWrite(
     learningTime: Long = 0,
     listWrongAnswer: List<WriteQuestion> = emptyList(),
     onContinueLearningClicked: () -> Unit = {},
-    onSubmitAnswer: (String, WriteStatus, String) -> Unit = { _, _, _ -> }
+    onSubmitAnswer: (String, WriteStatus, String) -> Unit = { _, _, _ -> },
+    isGetAll: Boolean = false
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -151,6 +153,7 @@ fun LearnByWrite(
     val showHintBottomSheet = remember { mutableStateOf(false) }
     val hintBottomSheetState = rememberModalBottomSheetState()
     var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
+    val unFinishedLearningBottomSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var debounceJob: Job? = null
     val imeState = rememberImeState()
@@ -189,7 +192,7 @@ fun LearnByWrite(
                     }
                 },
                 actions = {
-                    if (!isEndOfList) {
+                    if (!isEndOfList && isGetAll) {
                         IconButton(
                             onClick = {
                                 userAnswer = ""
@@ -401,7 +404,8 @@ fun LearnByWrite(
                             onContinueLearningClicked = onContinueLearningClicked,
                             listWrongAnswer = listWrongAnswer,
                             flashCardSize = flashCardList.size,
-                            onRestartClicked = onRestart
+                            onRestartClicked = onRestart,
+                            isGetAll = isGetAll
                         )
                     }
                 }
@@ -444,7 +448,6 @@ fun LearnByWrite(
 
             if (showUnfinishedLearningBottomSheet) {
                 UnfinishedLearningBottomSheet(
-                    showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
                     onDismissRequest = {
                         showUnfinishedLearningBottomSheet = false
                     },
@@ -454,7 +457,8 @@ fun LearnByWrite(
                     onEndSessionClick = {
                         onEndSessionClick()
                         showUnfinishedLearningBottomSheet = false
-                    }
+                    },
+                    sheetState = unFinishedLearningBottomSheetState
                 )
             }
         }

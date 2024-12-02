@@ -320,7 +320,8 @@ interface ApiService {
     suspend fun getFlashCardsByStudySetId(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-        @Query("learnMode") learnMode: String
+        @Query("learnMode") learnMode: String,
+        @Query("isGetAll") isGetAll: Boolean
     ): List<FlashCardResponseDto>
 
     @POST("flashcard")
@@ -388,7 +389,8 @@ interface ApiService {
     suspend fun getFlashCardsByFolderId(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-        @Query("learnMode") learnMode: String
+        @Query("learnMode") learnMode: String,
+        @Query("isGetAll") isGetAll: Boolean
     ): List<FlashCardResponseDto>
 
     // Folder

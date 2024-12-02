@@ -10,15 +10,18 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,56 +30,55 @@ fun UnfinishedLearningBottomSheet(
     onDismissRequest: () -> Unit = {},
     onKeepLearningClick: () -> Unit = {},
     onEndSessionClick: () -> Unit = {},
-    showUnfinishedLearningBottomSheet: Boolean = false,
-    sheetShowMoreState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState,
 ) {
-    if (showUnfinishedLearningBottomSheet) {
-        ModalBottomSheet(
-            modifier = modifier,
-            onDismissRequest = onDismissRequest,
-            sheetState = sheetShowMoreState
+    ModalBottomSheet(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Text(
+                text = stringResource(R.string.txt_wait_don_t_go_yet_you_ll_miss_out_on_completing_this_study_set),
+                style = typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Button(
+                onClick = onKeepLearningClick,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth(),
+                shape = shapes.medium
             ) {
                 Text(
-                    text = "Wait, don't go yet! You'll miss out on completing this study set!",
-                    style = typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    text = stringResource(R.string.txt_keep_learning),
+                    style = typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-                Button(
-                    onClick = onKeepLearningClick,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = shapes.medium
-                ) {
-                    Text(
-                        text = "Keep Learning",
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+            }
+            TextButton(
+                onClick = onEndSessionClick,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = colorScheme.primary,
+                    containerColor = Color.Transparent
+                ),
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .fillMaxWidth(),
+                shape = shapes.medium
+            ) {
+                Text(
+                    text = stringResource(R.string.txt_end_session),
+                    style = typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
                     )
-                }
-                OutlinedButton(
-                    onClick = onEndSessionClick,
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colorScheme.onSurface.copy(alpha = 0.6f)
-                    ),
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .fillMaxWidth(),
-                    shape = shapes.medium
-                ) {
-                    Text(
-                        text = "End Session",
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
+                )
             }
         }
     }

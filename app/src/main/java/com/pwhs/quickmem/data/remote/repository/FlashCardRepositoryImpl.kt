@@ -241,7 +241,8 @@ class FlashCardRepositoryImpl @Inject constructor(
     override suspend fun getFlashCardsByStudySetId(
         token: String,
         studySetId: String,
-        learnMode: LearnMode
+        learnMode: LearnMode,
+        isGetAll: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>> {
         return flow {
             emit(Resources.Loading(true))
@@ -249,7 +250,8 @@ class FlashCardRepositoryImpl @Inject constructor(
                 val response = apiService.getFlashCardsByStudySetId(
                     token = token,
                     id = studySetId,
-                    learnMode = learnMode.mode
+                    learnMode = learnMode.mode,
+                    isGetAll = isGetAll
                 )
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: HttpException) {
@@ -265,7 +267,8 @@ class FlashCardRepositoryImpl @Inject constructor(
     override suspend fun getFlashCardsByFolderId(
         token: String,
         folderId: String,
-        learnMode: LearnMode
+        learnMode: LearnMode,
+        isGetAll: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>> {
         return flow {
             emit(Resources.Loading(true))
@@ -273,7 +276,8 @@ class FlashCardRepositoryImpl @Inject constructor(
                 val response = apiService.getFlashCardsByFolderId(
                     token = token,
                     id = folderId,
-                    learnMode = learnMode.mode
+                    learnMode = learnMode.mode,
+                    isGetAll = isGetAll
                 )
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: HttpException) {

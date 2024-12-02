@@ -422,4 +422,15 @@
     <string name="txt_keep_reviewing_terms_flip">Keep reviewing %1$s terms</string>
     <string name="txt_don_t_know">Don\'t know</string>
     <string name="txt_enter_your_answer">Enter your answer</string>
+    <string name="txt_get_all">You have quite a lot of flashcards!</string>
+    <string name="txt_are_you_sure_you_want_to_get_all_flashcards">Do you want to split the flashcards into smaller parts to study?</string>
+    <string name="txt_no_thanks">No thanks</string>
+    <string name="txt_sort_by_date">Date</string>
+    <string name="txt_keep_learning_terms_flip">Keep learning terms flip</string>
+    <string name="txt_title_learn_flashcard">Card %1$s of %2$s</string>
+    <string name="txt_you_have_finished_this_section_of_study_set">You have finished this section of study set</string>
+    <string name="txt_continue_learning">Continue learning</string>
+    <string name="txt_wait_don_t_go_yet_you_ll_miss_out_on_completing_this_study_set">Wait, don\'t go yet! You\'ll miss out on completing this study set!</string>
+    <string name="txt_keep_learning">Keep Learning</string>
+    <string name="txt_end_session">End Session</string>
 </resources>

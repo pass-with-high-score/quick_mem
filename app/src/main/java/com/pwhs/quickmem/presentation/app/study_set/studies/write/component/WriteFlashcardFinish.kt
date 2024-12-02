@@ -67,6 +67,7 @@ fun WriteFlashcardFinish(
     onContinueLearningClicked: () -> Unit,
     listWrongAnswer: List<WriteQuestion>,
     onRestartClicked: () -> Unit,
+    isGetAll: Boolean
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
     val progress by animateLottieCompositionAsState(
@@ -240,10 +241,14 @@ fun WriteFlashcardFinish(
                             border = BorderStroke(1.dp, studySetColor)
                         ) {
                             Text(
-                                text = stringResource(
-                                    R.string.txt_finish_answers_now,
-                                    wrongAnswerCount
-                                ),
+                                text = when (isGetAll) {
+                                    true -> stringResource(
+                                        R.string.txt_finish_answers_now,
+                                        wrongAnswerCount
+                                    )
+
+                                    false -> stringResource(R.string.txt_continue_learning)
+                                },
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold
@@ -252,27 +257,38 @@ fun WriteFlashcardFinish(
                             )
                         }
                     }
-                    Button(
-                        onClick = {
-                            onRestartClicked()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        shape = MaterialTheme.shapes.small,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = studySetColor
-                        ),
-                        border = BorderStroke(1.dp, studySetColor)
-                    ) {
+                    if (isGetAll) {
+                        Button(
+                            onClick = {
+                                onRestartClicked()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            shape = MaterialTheme.shapes.small,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = studySetColor
+                            ),
+                            border = BorderStroke(1.dp, studySetColor)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.txt_learn_from_the_beginning),
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    } else {
                         Text(
-                            text = stringResource(R.string.txt_learn_from_the_beginning),
+                            text = stringResource(R.string.txt_you_have_finished_this_section_of_study_set),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
                             ),
-                            modifier = Modifier.padding(8.dp)
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(16.dp)
                         )
                     }
                 }

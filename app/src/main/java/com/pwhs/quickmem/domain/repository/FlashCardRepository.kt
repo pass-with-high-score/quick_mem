@@ -64,12 +64,14 @@ interface FlashCardRepository {
     suspend fun getFlashCardsByStudySetId(
         token: String,
         studySetId: String,
-        learnMode: LearnMode
+        learnMode: LearnMode,
+        isGetAll: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>>
 
     suspend fun getFlashCardsByFolderId(
         token: String,
         folderId: String,
-        learnMode: LearnMode
+        learnMode: LearnMode,
+        isGetAll: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>>
 }
