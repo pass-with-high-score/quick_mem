@@ -63,6 +63,7 @@ import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.WriteStatus
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.studies.write.component.WriteFlashcardFinish
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.ViewImageDialog
@@ -102,7 +103,7 @@ fun LearnByWriteScreen(
     }
     LearnByWrite(
         modifier = modifier,
-        onNavigateBack = {
+        onEndSessionClick = {
             viewModel.onEvent(LearnByWriteUiAction.OnBackClicked)
         },
         isLoading = uiState.isLoading,
@@ -136,7 +137,7 @@ fun LearnByWrite(
     studySetColor: Color = MaterialTheme.colorScheme.primary,
     flashCardList: List<FlashCardResponseModel> = emptyList(),
     writeQuestion: WriteQuestion? = null,
-    onNavigateBack: () -> Unit = {},
+    onEndSessionClick: () -> Unit = {},
     onRestart: () -> Unit = {},
     wrongAnswerCount: Int = 0,
     learningTime: Long = 0,
@@ -149,6 +150,7 @@ fun LearnByWrite(
     var userAnswer by rememberSaveable { mutableStateOf("") }
     val showHintBottomSheet = remember { mutableStateOf(false) }
     val hintBottomSheetState = rememberModalBottomSheetState()
+    var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     var debounceJob: Job? = null
     val imeState = rememberImeState()
@@ -172,7 +174,13 @@ fun LearnByWrite(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onNavigateBack
+                        onClick = {
+                            if (isEndOfList) {
+                                onEndSessionClick()
+                            } else {
+                                showUnfinishedLearningBottomSheet = true
+                            }
+                        }
                     ) {
                         Icon(
                             imageVector = Default.Clear,
@@ -432,6 +440,22 @@ fun LearnByWrite(
                         )
                     }
                 }
+            }
+
+            if (showUnfinishedLearningBottomSheet) {
+                UnfinishedLearningBottomSheet(
+                    showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
+                    onDismissRequest = {
+                        showUnfinishedLearningBottomSheet = false
+                    },
+                    onKeepLearningClick = {
+                        showUnfinishedLearningBottomSheet = false
+                    },
+                    onEndSessionClick = {
+                        onEndSessionClick()
+                        showUnfinishedLearningBottomSheet = false
+                    }
+                )
             }
         }
     }

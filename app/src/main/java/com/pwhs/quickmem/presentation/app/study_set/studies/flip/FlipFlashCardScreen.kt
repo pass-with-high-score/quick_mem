@@ -49,6 +49,7 @@ import com.pwhs.quickmem.presentation.app.study_set.studies.flip.component.FlipF
 import com.pwhs.quickmem.presentation.app.study_set.studies.flip.component.FlipFlashCardStatusRow
 import com.pwhs.quickmem.presentation.app.study_set.studies.flip.component.StudyFlipFlashCard
 import com.pwhs.quickmem.presentation.app.study_set.studies.component.StudyTopAppBar
+import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
@@ -69,6 +70,7 @@ fun FlipFlashCardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -91,7 +93,7 @@ fun FlipFlashCardScreen(
         isSwipingRight = uiState.isSwipingRight,
         isEndOfList = uiState.isEndOfList,
         learningTime = uiState.learningTime,
-        onBackClicked = {
+        onEndSessionClick = {
             viewModel.onEvent(FlipFlashCardUiAction.OnBackClicked)
         },
         currentCardIndex = uiState.currentCardIndex,
@@ -141,7 +143,7 @@ fun FlipFlashCard(
     isSwipingRight: Boolean = false,
     isEndOfList: Boolean = false,
     learningTime: Long = 0L,
-    onBackClicked: () -> Unit = { },
+    onEndSessionClick: () -> Unit = { },
     onUpdatedCardIndex: (Int) -> Unit = { },
     onSwipeRight: (Boolean) -> Unit = { },
     onSwipeLeft: (Boolean) -> Unit = { },
@@ -158,6 +160,7 @@ fun FlipFlashCard(
     }
     val hintBottomSheetState = rememberModalBottomSheetState()
     val explanationBottomSheetState = rememberModalBottomSheetState()
+    var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
     val stillLearningColor = Color(0xffd05700)
     val knownColor = Color(0xff18ae79)
     val stackState = rememberStackState()
@@ -181,7 +184,13 @@ fun FlipFlashCard(
             StudyTopAppBar(
                 currentCardIndex = currentCardIndex,
                 totalCards = flashCards.size,
-                onBackClicked = onBackClicked,
+                onBackClicked = {
+                    if (isEndOfList) {
+                        onEndSessionClick()
+                    } else {
+                        showUnfinishedLearningBottomSheet = true
+                    }
+                },
                 isEnOfSet = isEndOfList,
                 onRestartClicked = {
                     onRestartClicked()
@@ -424,6 +433,23 @@ fun FlipFlashCard(
         isShowBottomSheet = showExplanationBottomSheet,
         sheetState = explanationBottomSheetState
     )
+
+    if (showUnfinishedLearningBottomSheet) {
+        UnfinishedLearningBottomSheet(
+            showUnfinishedLearningBottomSheet = showUnfinishedLearningBottomSheet,
+            onDismissRequest = {
+                showUnfinishedLearningBottomSheet = false
+            },
+            onKeepLearningClick = {
+                showUnfinishedLearningBottomSheet = false
+            },
+            onEndSessionClick = {
+                onEndSessionClick()
+                showUnfinishedLearningBottomSheet = false
+            }
+        )
+    }
+
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_7_PRO)

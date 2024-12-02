@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -111,7 +110,7 @@ fun StudySetDetailTopAppBar(
                     VerticalDivider(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
-                            .height(16.dp)
+                            .size(16.dp)
                     )
                     Text(
                         when (flashCardCount) {
@@ -130,7 +129,7 @@ fun StudySetDetailTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
         ),
-        expandedHeight = if (isAIGenerated) 165.dp else 120.dp,
+        expandedHeight = if(isAIGenerated) 165.dp else 120.dp,
         collapsedHeight = 56.dp,
         navigationIcon = {
             IconButton(
