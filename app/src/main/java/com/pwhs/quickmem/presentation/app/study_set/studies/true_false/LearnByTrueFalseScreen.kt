@@ -40,11 +40,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.component.TrueFalseButton
 import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.component.TrueFalseFlashcardFinish
@@ -136,10 +138,10 @@ fun LearnByTrueFalse(
             CenterAlignedTopAppBar(
                 title = {
                     when (isLoading) {
-                        true -> Text("Loading")
+                        true -> Text(stringResource(R.string.txt_loading))
                         false -> when (isEndOfList) {
                             false -> Text("${currentCardIndex + 1}/${flashCardList.size}")
-                            true -> Text("Finished")
+                            true -> Text(stringResource(R.string.txt_finished))
                         }
                     }
                 },
@@ -149,7 +151,7 @@ fun LearnByTrueFalse(
                     ) {
                         Icon(
                             imageVector = Default.Clear,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.txt_back),
                         )
                     }
                 },
@@ -201,7 +203,7 @@ fun LearnByTrueFalse(
                         ) {
                             item {
                                 Text(
-                                    text = "Choose True or False",
+                                    text = stringResource(R.string.txt_choose_true_or_false),
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         color = studySetColor
                                     ),
@@ -303,7 +305,7 @@ fun LearnByTrueFalse(
                                     horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
                                     TrueFalseButton(
-                                        title = "True",
+                                        title = stringResource(R.string.txt_true),
                                         onClick = {
                                             if (randomQuestion?.isRandom == true) {
                                                 onAnswer(false, randomQuestion.id)
@@ -316,7 +318,7 @@ fun LearnByTrueFalse(
                                     )
                                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
                                     TrueFalseButton(
-                                        title = "False",
+                                        title = stringResource(R.string.txt_false),
                                         onClick = {
                                             if (randomQuestion?.isRandom == true) {
                                                 onAnswer(true, randomQuestion.id)

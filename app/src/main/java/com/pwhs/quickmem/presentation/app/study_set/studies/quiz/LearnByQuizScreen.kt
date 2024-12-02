@@ -35,10 +35,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.states.RandomAnswer
 import com.pwhs.quickmem.core.data.states.WrongAnswer
@@ -147,10 +149,10 @@ fun LearnByQuiz(
             CenterAlignedTopAppBar(
                 title = {
                     when (isLoading) {
-                        true -> Text("Loading")
+                        true -> Text(stringResource(R.string.txt_loading))
                         false -> when (isEndOfList) {
                             false -> Text("${currentCardIndex + 1}/${flashCardList.size}")
-                            true -> Text("Finished")
+                            true -> Text(stringResource(R.string.txt_finished))
                         }
                     }
                 },
@@ -160,7 +162,7 @@ fun LearnByQuiz(
                     ) {
                         Icon(
                             imageVector = Default.Clear,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.txt_back),
                         )
                     }
                 },
@@ -294,7 +296,7 @@ fun LearnByQuiz(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "Hint",
+                            text = stringResource(R.string.txt_hint),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Bold
                             )

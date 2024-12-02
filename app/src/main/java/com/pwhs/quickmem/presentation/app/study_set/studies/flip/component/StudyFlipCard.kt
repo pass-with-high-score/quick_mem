@@ -5,7 +5,6 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -30,11 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 
 @Composable
@@ -126,7 +127,7 @@ fun StudyFlipFlashCard(
                                 isShowingEffect -> when {
                                     isSwipingLeft -> {
                                         Text(
-                                            text = "Still Learning",
+                                            text = stringResource(R.string.txt_still_learning),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 20.sp,
                                                 color = stillLearningColor,
@@ -137,7 +138,7 @@ fun StudyFlipFlashCard(
 
                                     isSwipingRight -> {
                                         Text(
-                                            text = "Known",
+                                            text = stringResource(R.string.txt_known),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 20.sp,
                                                 color = knownColor,
@@ -195,7 +196,7 @@ fun StudyFlipFlashCard(
                                 isShowingEffect -> when {
                                     isSwipingLeft -> {
                                         Text(
-                                            text = "Still Learning",
+                                            text = stringResource(R.string.txt_still_learning),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 20.sp,
                                                 color = stillLearningColor,
@@ -206,7 +207,7 @@ fun StudyFlipFlashCard(
 
                                     isSwipingRight -> {
                                         Text(
-                                            text = "Known",
+                                            text = stringResource(R.string.txt_known),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 20.sp,
                                                 color = knownColor,
@@ -291,7 +292,7 @@ fun StudyFlipFlashCard(
                                 isShowingEffect -> when {
                                     isSwipingLeft -> {
                                         Text(
-                                            text = "Still Learning",
+                                            text = stringResource(R.string.txt_still_learning),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 18.sp,
                                                 color = stillLearningColor,
@@ -302,7 +303,7 @@ fun StudyFlipFlashCard(
 
                                     isSwipingRight -> {
                                         Text(
-                                            text = "Known",
+                                            text = stringResource(R.string.txt_known),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 18.sp,
                                                 color = knownColor,
@@ -360,7 +361,7 @@ fun StudyFlipFlashCard(
                                 isShowingEffect -> when {
                                     isSwipingLeft -> {
                                         Text(
-                                            text = "Still Learning",
+                                            text = stringResource(R.string.txt_still_learning),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 18.sp,
                                                 color = stillLearningColor,
@@ -371,7 +372,7 @@ fun StudyFlipFlashCard(
 
                                     isSwipingRight -> {
                                         Text(
-                                            text = "Known",
+                                            text = stringResource(R.string.txt_known),
                                             style = typography.bodyLarge.copy(
                                                 fontSize = 18.sp,
                                                 color = knownColor,
