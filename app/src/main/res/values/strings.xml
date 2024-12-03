@@ -433,4 +433,7 @@
     <string name="txt_wait_don_t_go_yet_you_ll_miss_out_on_completing_this_study_set">Wait, don\'t go yet! You\'ll miss out on completing this study set!</string>
     <string name="txt_keep_learning">Keep Learning</string>
     <string name="txt_end_session">End Session</string>
+    <string name="txt_you_can_not_edit_this_study_set_just_create_a_copy_of_it">You can not edit or learn this study set,just create a copy of it.</string>
+    <string name="txt_there_is_no_hint_for_this_flashcard">There is no hint for this flashcard.</string>
+    <string name="txt_there_is_no_explanation_for_this_flashcard">There is no explanation for this flashcard.</string>
 </resources>

@@ -50,12 +50,14 @@ class LearnByWriteViewModel @Inject constructor(
 
     init {
         val studySetId = savedStateHandle.get<String>("studySetId") ?: ""
+        val isGetAll = savedStateHandle.get<Boolean>("isGetAll") ?: false
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 0
         _uiState.update {
             it.copy(
+                isGetAll = isGetAll,
                 studySetId = studySetId,
                 studySetTitle = studySetTitle,
                 studySetDescription = studySetDescription,

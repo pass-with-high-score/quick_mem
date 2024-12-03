@@ -430,4 +430,7 @@
     <string name="txt_wait_don_t_go_yet_you_ll_miss_out_on_completing_this_study_set">Chờ đã, đừng đi vội! Bạn sẽ bỏ lỡ việc hoàn thành bộ học này!</string>
     <string name="txt_keep_learning">Tiếp tục học</string>
     <string name="txt_end_session">Kết thúc phần học</string>
+    <string name="txt_you_can_not_edit_this_study_set_just_create_a_copy_of_it">Bây giờ bạn không thể chỉnh sửa hoặc học bộ học này, chỉ cần tạo một bản sao của nó.</string>
+    <string name="txt_there_is_no_hint_for_this_flashcard">Không có gợi ý cho thẻ ghi nhớ này.</string>
+    <string name="txt_there_is_no_explanation_for_this_flashcard">Không có giải thích nào cho thẻ ghi nhớ này</string>
 </resources>

@@ -51,6 +51,7 @@ class LearnByQuizViewModel @Inject constructor(
 
     init {
         val studySetId = savedStateHandle.get<String>("studySetId") ?: ""
+        val isGetAll = savedStateHandle.get<Boolean>("isGetAll") ?: false
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
@@ -58,6 +59,7 @@ class LearnByQuizViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 studySetId = studySetId,
+                isGetAll = isGetAll,
                 studySetTitle = studySetTitle,
                 studySetDescription = studySetDescription,
                 studySetColor = ColorModel.defaultColors[studySetColorId],

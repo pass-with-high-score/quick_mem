@@ -76,7 +76,6 @@ fun FlipFlashCardFinish(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 20.dp)
                 .padding(16.dp)
         ) {
             item {
@@ -84,14 +83,14 @@ fun FlipFlashCardFinish(
                     text = stringResource(R.string.txt_you_re_doing_great_keep_it_up),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    modifier = Modifier.padding(16.dp)
                 )
             }
             item {
                 StudySetDonutChart(
                     modifier = Modifier
-                        .size(200.dp)
-                        .padding(16.dp),
+                        .size(200.dp),
                     studySetsStillLearn = countStillLearning.coerceAtLeast(0),
                     studySetsMastered = countKnown.coerceAtLeast(0),
                     color = studySetColor
@@ -222,7 +221,8 @@ fun FlipFlashCardFinish(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(top = 16.dp)
+                            .padding(horizontal = 16.dp),
                         shape = MaterialTheme.shapes.small,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = studySetColor,
@@ -252,13 +252,14 @@ fun FlipFlashCardFinish(
                 }
             }
             item {
-                if (isGetAll) {
+                if ( isEndOfList) {
                     Button(
                         onClick = {
                             onRestartClicked()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(top = 16.dp)
                             .padding(horizontal = 16.dp),
                         shape = MaterialTheme.shapes.small,
                         colors = ButtonDefaults.buttonColors(
@@ -283,7 +284,8 @@ fun FlipFlashCardFinish(
                             fontSize = 18.sp,
                         ),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier
+                            .padding(16.dp)
                     )
                 }
             }

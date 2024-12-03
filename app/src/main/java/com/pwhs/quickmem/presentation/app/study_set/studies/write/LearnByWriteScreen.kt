@@ -66,7 +66,7 @@ import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.studies.write.component.WriteFlashcardFinish
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
-import com.pwhs.quickmem.presentation.component.ViewImageDialog
+import com.pwhs.quickmem.presentation.component.ShowImageDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.rememberImeState
 import com.pwhs.quickmem.util.toColor
@@ -413,7 +413,7 @@ fun LearnByWrite(
             LoadingOverlay(isLoading = isLoading)
             // Image Viewer Dialog
             if (isImageViewerOpen) {
-                ViewImageDialog(
+                ShowImageDialog(
                     definitionImageUri = definitionImageUri,
                     onDismissRequest = {
                         isImageViewerOpen = false

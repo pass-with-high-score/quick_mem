@@ -50,7 +50,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.states.WrongAnswer
 import com.pwhs.quickmem.presentation.app.study_set.detail.progress.StudySetDonutChart
-import com.pwhs.quickmem.presentation.component.ViewImageDialog
+import com.pwhs.quickmem.presentation.component.ShowImageDialog
 import com.pwhs.quickmem.ui.theme.correctColor
 import com.pwhs.quickmem.ui.theme.incorrectColor
 import com.pwhs.quickmem.util.toStringTime
@@ -100,19 +100,18 @@ fun QuizFlashCardFinish(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 20.dp)
                         .padding(16.dp)
                 ) {
                     Text(
                         text = encouragementMessage,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
+                        modifier = Modifier.padding(16.dp)
                     )
                     StudySetDonutChart(
                         modifier = Modifier
-                            .size(200.dp)
-                            .padding(16.dp),
+                            .size(200.dp),
                         studySetsStillLearn = wrongAnswerCount.coerceAtLeast(0),
                         studySetsMastered = correctAnswerCount.coerceAtLeast(0),
                         color = studySetColor
@@ -232,7 +231,8 @@ fun QuizFlashCardFinish(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(top = 16.dp)
+                                .padding(horizontal = 16.dp),
                             shape = MaterialTheme.shapes.small,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = studySetColor,
@@ -271,6 +271,7 @@ fun QuizFlashCardFinish(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(top = 16.dp)
                                 .padding(horizontal = 16.dp),
                             shape = MaterialTheme.shapes.small,
                             colors = ButtonDefaults.buttonColors(
@@ -295,7 +296,8 @@ fun QuizFlashCardFinish(
                                 fontSize = 18.sp,
                             ),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier
+                                .padding(16.dp)
                         )
                     }
                 }
@@ -375,7 +377,7 @@ fun QuizFlashCardFinish(
 
         // Image Viewer Dialog
         if (isImageViewerOpen) {
-            ViewImageDialog(
+            ShowImageDialog(
                 definitionImageUri = definitionImageUri,
                 onDismissRequest = {
                     isImageViewerOpen = false

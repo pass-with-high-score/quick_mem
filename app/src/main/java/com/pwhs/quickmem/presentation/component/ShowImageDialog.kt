@@ -23,7 +23,7 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 
 @Composable
-fun ViewImageDialog(
+fun ShowImageDialog(
     modifier: Modifier = Modifier,
     definitionImageUri: String,
     onDismissRequest: () -> Unit,

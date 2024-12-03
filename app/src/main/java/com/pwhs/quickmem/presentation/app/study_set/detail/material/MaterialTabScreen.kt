@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
@@ -85,6 +86,7 @@ fun MaterialTabScreen(
     var explanation by remember { mutableStateOf("") }
     var showGetAllDialog by remember { mutableStateOf(false) }
     var learningMode by remember { mutableStateOf(LearnMode.NONE) }
+    val context = LocalContext.current
 
     Scaffold { innerPadding ->
         Box(
@@ -162,7 +164,7 @@ fun MaterialTabScreen(
                                         )
                                     ) {
                                         Text(
-                                            text = "Make a copy",
+                                            text = stringResource(R.string.txt_make_a_copy),
                                             style = typography.titleMedium.copy(
                                                 color = colorScheme.background
                                             )
@@ -170,7 +172,7 @@ fun MaterialTabScreen(
                                     }
 
                                     Text(
-                                        text = "You can now edit this study set,just create a copy of it.",
+                                        text = stringResource(R.string.txt_you_can_not_edit_this_study_set_just_create_a_copy_of_it),
                                         style = typography.bodyMedium.copy(
                                             color = colorScheme.onSurface
                                         ),
@@ -289,9 +291,14 @@ fun MaterialTabScreen(
                                     onToggleStarClick(flashCards.id, isStarred)
                                 },
                                 onMenuClick = {
-                                    hint = flashCards.hint ?: "There is no hint for this flashcard."
-                                    explanation = flashCards.explanation
-                                        ?: "There is no explanation for this flashcard."
+                                    (flashCards.hint
+                                        ?: context.getString(R.string.txt_there_is_no_hint_for_this_flashcard)).also {
+                                        hint = it
+                                    }
+                                    (flashCards.explanation
+                                        ?: context.getString(R.string.txt_there_is_no_explanation_for_this_flashcard)).also {
+                                        explanation = it
+                                    }
                                     showMenu = true
                                     studySetId = flashCards.id
                                     onFlashCardClick(flashCards.id)

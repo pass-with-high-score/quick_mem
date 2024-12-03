@@ -65,12 +65,11 @@ fun UnfinishedLearningBottomSheet(
             TextButton(
                 onClick = onEndSessionClick,
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = colorScheme.primary,
-                    containerColor = Color.Transparent
+                    contentColor = colorScheme.error,
+                    containerColor = Color.Transparent,
                 ),
                 modifier = Modifier
-                    .padding(top = 4.dp)
-                    .fillMaxWidth(),
+                    .padding(top = 4.dp),
                 shape = shapes.medium
             ) {
                 Text(

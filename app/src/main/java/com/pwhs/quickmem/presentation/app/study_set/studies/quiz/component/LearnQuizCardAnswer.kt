@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.core.data.states.RandomAnswer
-import com.pwhs.quickmem.presentation.component.ViewImageDialog
+import com.pwhs.quickmem.presentation.component.ShowImageDialog
 
 @Composable
 fun LearnQuizCardAnswer(
@@ -107,7 +107,7 @@ fun LearnQuizCardAnswer(
 
     // Image Viewer Dialog
     if (isImageViewerOpen) {
-        ViewImageDialog(
+        ShowImageDialog(
             definitionImageUri = definitionImageUri,
             onDismissRequest = {
                 isImageViewerOpen = false

@@ -53,7 +53,7 @@ import com.pwhs.quickmem.presentation.app.study_set.studies.component.Unfinished
 import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.component.TrueFalseButton
 import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.component.TrueFalseFlashcardFinish
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
-import com.pwhs.quickmem.presentation.component.ViewImageDialog
+import com.pwhs.quickmem.presentation.component.ShowImageDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -366,7 +366,7 @@ fun LearnByTrueFalse(
             LoadingOverlay(isLoading = isLoading)
             // Image Viewer Dialog
             if (isImageViewerOpen) {
-                ViewImageDialog(
+                ShowImageDialog(
                     definitionImageUri = definitionImageUri,
                     onDismissRequest = {
                         isImageViewerOpen = false
