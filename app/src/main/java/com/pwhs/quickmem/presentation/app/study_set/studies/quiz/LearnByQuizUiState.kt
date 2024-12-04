@@ -9,6 +9,7 @@ import com.pwhs.quickmem.domain.model.subject.SubjectModel
 data class LearnFlashCardUiState(
     val isLoading: Boolean = false,
     val isGetAll: Boolean = false,
+    val isPlaySound: Boolean = false,
     val studySetId: String = "",
     val studySetTitle: String = "",
     val studySetDescription: String = "",

@@ -128,6 +128,15 @@ class SettingsViewModel @Inject constructor(
                     scheduler.schedule(_uiState.value.studyAlarm)
                 }
             }
+
+            is SettingUiAction.OnChangeIsPlaySound -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isPlaySound = event.isPlaySound)
+                    }
+                    appManager.saveIsPlaySound(event.isPlaySound)
+                }
+            }
         }
     }
 
@@ -144,6 +153,7 @@ class SettingsViewModel @Inject constructor(
                     appManager.appPushNotifications.firstOrNull() ?: false
                 val enabledStudySchedule = appManager.enabledStudySchedule.firstOrNull() ?: false
                 val timeStudySchedule = appManager.timeStudySchedule.firstOrNull() ?: ""
+                val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
                 _uiState.update {
                     it.copy(
                         userId = userId,
@@ -155,6 +165,7 @@ class SettingsViewModel @Inject constructor(
                         isAppPushNotificationsEnabled = isAppPushNotificationsEnabled,
                         isStudyAlarmEnabled = enabledStudySchedule && isPushNotificationsEnabled && isAppPushNotificationsEnabled,
                         timeStudyAlarm = timeStudySchedule,
+                        isPlaySound = isPlaySound
                     )
                 }
                 getCustomerInfo()

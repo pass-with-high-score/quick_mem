@@ -154,7 +154,7 @@ fun Explore(
     onEarnCoins: () -> Unit = {},
     errorMessage: String = "",
     coins: Int = 0,
-    customerInfo: CustomerInfo? = null
+    customerInfo: CustomerInfo? = null,
 ) {
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf(
@@ -162,6 +162,7 @@ fun Explore(
         stringResource(R.string.txt_top_streak),
     )
     val context = LocalContext.current
+
 
     Scaffold(
         modifier = modifier,
@@ -272,6 +273,7 @@ fun Explore(
                         onLanguageChange = onLanguageChange,
                         onQuestionTypeChange = onQuestionTypeChange,
                         onDifficultyLevelChange = onDifficultyLevelChange,
+                        errorMessage = errorMessage,
                         onCreateStudySet = {
                             if (coins > 0) {
                                 onCreateStudySet()

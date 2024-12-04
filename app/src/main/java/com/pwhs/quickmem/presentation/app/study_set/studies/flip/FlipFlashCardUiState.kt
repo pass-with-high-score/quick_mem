@@ -8,6 +8,7 @@ import com.pwhs.quickmem.domain.model.subject.SubjectModel
 data class FlipFlashCardUiState(
     val isLoading: Boolean = false,
     val isGetAll: Boolean = false,
+    val isPlaySound: Boolean = false,
     val learnFrom: LearnFrom = LearnFrom.STUDY_SET,
     val folderId: String = "",
     val studySetId: String = "",

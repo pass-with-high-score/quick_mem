@@ -53,7 +53,6 @@ class FlipFlashCardViewModel @Inject constructor(
     init {
         val studySetId = savedStateHandle.get<String>("studySetId") ?: ""
         val isGetAll = savedStateHandle.get<Boolean>("isGetAll") ?: false
-        Timber.d("isGetAll: $isGetAll")
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
@@ -72,6 +71,13 @@ class FlipFlashCardViewModel @Inject constructor(
                 studySetSubject = SubjectModel.defaultSubjects[studySetSubjectId],
                 startTime = System.currentTimeMillis()
             )
+        }
+
+        viewModelScope.launch {
+            val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
+            _uiState.update {
+                it.copy(isPlaySound = isPlaySound)
+            }
         }
 
         getFlashCard()
@@ -403,8 +409,11 @@ class FlipFlashCardViewModel @Inject constructor(
     }
 
     private fun playCompleteSound() {
-        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.study_complete)
-        mediaPlayer.start()
+        val isPlaySound = _uiState.value.isPlaySound
+        if (isPlaySound) {
+            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.study_complete)
+            mediaPlayer.start()
+        }
     }
 
     private fun sendCompletedStudyTime() {

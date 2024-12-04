@@ -68,6 +68,13 @@ class LearnByQuizViewModel @Inject constructor(
             )
         }
 
+        viewModelScope.launch {
+            val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
+            _uiState.update {
+                it.copy(isPlaySound = isPlaySound)
+            }
+        }
+
         getFlashCard()
     }
 
@@ -177,10 +184,13 @@ class LearnByQuizViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            when (quizStatus) {
-                QuizStatus.CORRECT -> playCorrectSound()
-                QuizStatus.WRONG -> playIncorrectSound()
-                else -> {
+            val isPlaySound = _uiState.value.isPlaySound
+            if (isPlaySound) {
+                when (quizStatus) {
+                    QuizStatus.CORRECT -> playCorrectSound()
+                    QuizStatus.WRONG -> playIncorrectSound()
+                    else -> {
+                    }
                 }
             }
             try {
@@ -344,8 +354,11 @@ class LearnByQuizViewModel @Inject constructor(
     }
 
     private fun playCompleteSound() {
-        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.finish)
-        mediaPlayer.start()
+        val isPlaySound = _uiState.value.isPlaySound
+        if (isPlaySound) {
+            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.finish)
+            mediaPlayer.start()
+        }
     }
 
     private fun playCorrectSound() {

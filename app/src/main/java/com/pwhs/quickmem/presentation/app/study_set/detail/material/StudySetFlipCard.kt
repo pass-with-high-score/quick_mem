@@ -122,18 +122,20 @@ fun StudySetFlipCard(
                         rotationX = 180f
                     },
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = backText,
-                    fontSize = backTextSize,
-                    fontWeight = FontWeight.Normal,
-                    color = colorScheme.onBackground,
-                    textAlign = TextAlign.Center,
-                    maxLines = 10,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
+                if (backText.isNotEmpty()) {
+                    Text(
+                        text = backText,
+                        fontSize = backTextSize,
+                        fontWeight = FontWeight.Normal,
+                        color = colorScheme.onBackground,
+                        textAlign = TextAlign.Start,
+                        maxLines = 10,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
                 backImage?.let {
                     if (it.isNotEmpty()) {
                         AsyncImage(

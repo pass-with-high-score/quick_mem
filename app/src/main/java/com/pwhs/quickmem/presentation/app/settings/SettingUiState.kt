@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 data class SettingUiState(
     val canChangeInfo: Boolean = false,
+    val isPlaySound: Boolean = false,
     val password: String = "",
     val errorMessage: String = "",
     val isLoading: Boolean = false,

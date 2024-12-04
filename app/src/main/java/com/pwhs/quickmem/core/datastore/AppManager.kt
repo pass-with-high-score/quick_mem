@@ -27,6 +27,7 @@ class AppManager(private val context: Context) {
         val USER_COINS = intPreferencesKey("USER_COINS")
         val ENABLED_STUDY_SCHEDULE = booleanPreferencesKey("ENABLED_STUDY_SCHEDULE")
         val TIME_STUDY_SCHEDULE = stringPreferencesKey("TIME_STUDY_SCHEDULE")
+        val IS_PLAY_SOUND = booleanPreferencesKey("IS_PLAY_SOUND")
     }
 
     val isFirstRun: Flow<Boolean> = context.dataStore.data
@@ -89,6 +90,11 @@ class AppManager(private val context: Context) {
     val timeStudySchedule: Flow<String> = context.dataStore.data
         .map { preferences ->
             preferences[TIME_STUDY_SCHEDULE] ?: ""
+        }
+
+    val isPlaySound: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[IS_PLAY_SOUND] ?: true
         }
 
     suspend fun saveIsFirstRun(isFirstRun: Boolean) {
@@ -187,6 +193,13 @@ class AppManager(private val context: Context) {
         Timber.d("Saving time study schedule: $time")
         context.dataStore.edit { preferences ->
             preferences[TIME_STUDY_SCHEDULE] = time
+        }
+    }
+
+    suspend fun saveIsPlaySound(isPlaySound: Boolean) {
+        Timber.d("Saving is play sound: $isPlaySound")
+        context.dataStore.edit { preferences ->
+            preferences[IS_PLAY_SOUND] = isPlaySound
         }
     }
 

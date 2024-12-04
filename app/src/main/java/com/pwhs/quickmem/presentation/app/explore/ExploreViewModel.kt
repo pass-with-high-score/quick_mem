@@ -70,6 +70,7 @@ class ExploreViewModel @Inject constructor(
         when (event) {
             ExploreUiAction.RefreshTopStreaks -> {
                 getTopStreaks()
+                getCustomerInfo()
             }
 
             is ExploreUiAction.OnDescriptionChanged -> {

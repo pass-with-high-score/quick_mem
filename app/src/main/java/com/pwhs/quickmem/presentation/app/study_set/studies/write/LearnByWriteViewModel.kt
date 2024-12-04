@@ -66,6 +66,10 @@ class LearnByWriteViewModel @Inject constructor(
                 startTime = System.currentTimeMillis()
             )
         }
+        viewModelScope.launch {
+            val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
+            _uiState.update { it.copy(isPlaySound = isPlaySound) }
+        }
 
         getFlashCard()
     }
@@ -177,10 +181,13 @@ class LearnByWriteViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            when (writeStatus) {
-                WriteStatus.CORRECT -> playCorrectSound()
-                WriteStatus.WRONG -> playIncorrectSound()
-                else -> {}
+            val isPlaySound = _uiState.value.isPlaySound
+            if (isPlaySound) {
+                when (writeStatus) {
+                    WriteStatus.CORRECT -> playCorrectSound()
+                    WriteStatus.WRONG -> playIncorrectSound()
+                    else -> {}
+                }
             }
             try {
                 flashCardRepository.updateWriteStatus(
@@ -332,8 +339,11 @@ class LearnByWriteViewModel @Inject constructor(
     }
 
     private fun playCompleteSound() {
-        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.finish)
-        mediaPlayer.start()
+        val isPlaySound = _uiState.value.isPlaySound
+        if (isPlaySound) {
+            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.finish)
+            mediaPlayer.start()
+        }
     }
 
     private fun playCorrectSound() {

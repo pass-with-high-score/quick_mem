@@ -66,6 +66,10 @@ class LearnByTrueFalseViewModel @Inject constructor(
                 startTime = System.currentTimeMillis()
             )
         }
+        viewModelScope.launch {
+            val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
+            _uiState.update { it.copy(isPlaySound = isPlaySound) }
+        }
 
         getFlashCard()
     }
@@ -176,9 +180,12 @@ class LearnByTrueFalseViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            when (isCorrect) {
-                true -> playCorrectSound()
-                false -> playIncorrectSound()
+            val isPlaySound = _uiState.value.isPlaySound
+            if (isPlaySound) {
+                when (isCorrect) {
+                    true -> playCorrectSound()
+                    false -> playIncorrectSound()
+                }
             }
             try {
                 flashCardRepository.updateTrueFalseStatus(
@@ -357,8 +364,11 @@ class LearnByTrueFalseViewModel @Inject constructor(
     }
 
     private fun playCompleteSound() {
-        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.finish)
-        mediaPlayer.start()
+        val isPlaySound = _uiState.value.isPlaySound
+        if (isPlaySound) {
+            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.finish)
+            mediaPlayer.start()
+        }
     }
 
     private fun playCorrectSound() {

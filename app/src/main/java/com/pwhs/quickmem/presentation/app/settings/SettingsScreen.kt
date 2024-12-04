@@ -299,6 +299,10 @@ fun SettingsScreen(
         },
         onChangeTimeStudyAlarm = {
             viewModel.onEvent(SettingUiAction.OnChangeTimeStudyAlarm(it))
+        },
+        isPlaySound = uiState.isPlaySound,
+        onChangeIsPlaySound = {
+            viewModel.onEvent(SettingUiAction.OnChangeIsPlaySound(it))
         }
     )
 }
@@ -326,7 +330,6 @@ fun Setting(
     onNavigateToManageStorage: () -> Unit = {},
     onEnablePushNotifications: (Boolean) -> Unit = {},
     onNotificationEnabled: (Boolean) -> Unit = {},
-    onEnableSoundEffects: () -> Unit = {},
     onNavigateToPrivacyPolicy: () -> Unit = {},
     onNavigateToChangeLanguage: () -> Unit = {},
     onNavigateToTermsOfService: () -> Unit = {},
@@ -337,7 +340,9 @@ fun Setting(
     enabledStudySchedule: Boolean = false,
     timeStudySchedule: String = "",
     onChangeStudyAlarm: (Boolean) -> Unit = {},
-    onChangeTimeStudyAlarm: (String) -> Unit = {}
+    onChangeTimeStudyAlarm: (String) -> Unit = {},
+    isPlaySound: Boolean = false,
+    onChangeIsPlaySound: (Boolean) -> Unit = {}
 ) {
 
     val bottomSheetState = rememberModalBottomSheetState()
@@ -490,7 +495,9 @@ fun Setting(
                     SettingTitleSection(title = stringResource(R.string.txt_scheduled_notifications))
                     SettingCard {
                         Column(
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier
+                                .padding(if (enabledStudySchedule) 16.dp else 0.dp)
+                                .padding(horizontal = if (enabledStudySchedule) 0.dp else 16.dp)
                         ) {
                             SettingSwitch(
                                 title = stringResource(R.string.txt_study_reminders),
@@ -566,6 +573,9 @@ fun Setting(
                                     } else {
                                         onEnablePushNotifications(it)
                                         onNotificationEnabled(it)
+                                        if (!it) {
+                                            onChangeStudyAlarm(false)
+                                        }
                                     }
                                 },
                                 value = isPushNotificationsEnabled && isAppPushNotificationsEnabled
@@ -574,9 +584,9 @@ fun Setting(
                             SettingSwitch(
                                 title = stringResource(R.string.txt_sound_effects),
                                 onChangeValue = {
-                                    onEnableSoundEffects()
+                                    onChangeIsPlaySound(it)
                                 },
-                                value = true
+                                value = isPlaySound
                             )
 
                         }

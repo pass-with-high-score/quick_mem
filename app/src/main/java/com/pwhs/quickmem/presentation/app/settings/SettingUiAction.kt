@@ -14,4 +14,5 @@ sealed class SettingUiAction {
         SettingUiAction()
     data class OnChangeStudyAlarm(val isStudyAlarmEnabled: Boolean) : SettingUiAction()
     data class OnChangeTimeStudyAlarm(val timeStudyAlarm: String) : SettingUiAction()
+    data class OnChangeIsPlaySound(val isPlaySound: Boolean) : SettingUiAction()
 }
