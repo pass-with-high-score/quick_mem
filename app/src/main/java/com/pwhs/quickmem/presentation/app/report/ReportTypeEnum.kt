@@ -1,37 +1,49 @@
 package com.pwhs.quickmem.presentation.app.report
 
+import androidx.annotation.StringRes
+import com.pwhs.quickmem.R
+
 enum class ReportTypeEnum(
-    val title: String,
-    val questionText: String,
-    val options: List<String>
+    @StringRes val title: Int,
+    @StringRes val questionText: Int,
+    @StringRes val options: List<Int>
 ) {
     STUDY_SET(
-        title = "Report this set",
-        questionText = "Why are you reporting this set?",
+        title = R.string.txt_report_this_study_set,
+        questionText = R.string.txt_why_report_this_study_set,
         options = listOf(
-            "It contains inaccurate information",
-            "It is inappropriate",
-            "It is being used to cheat",
-            "It violates my intellectual property rights"
+            R.string.txt_set_inaccurate_information,
+            R.string.txt_set_inappropriate,
+            R.string.txt_set_cheating,
+            R.string.txt_set_ip_violation
         )
     ),
     CLASS(
-        title = "Report this class",
-        questionText = "Why are you reporting this class?",
+        title = R.string.txt_report_this_class,
+        questionText = R.string.txt_why_report_this_class,
         options = listOf(
-            "The class name is misleading",
-            "It is inappropriate",
-            "It is being used to cheat",
-            "It violates my intellectual property rights",
-            "I'm having trouble joining this class"
+            R.string.txt_class_name_misleading,
+            R.string.txt_class_inappropriate,
+            R.string.txt_class_cheating,
+            R.string.txt_class_ip_violation,
+            R.string.txt_class_joining_trouble
         )
     ),
     USER_DETAIL(
-        title = "Report this user",
-        questionText = "Why are you reporting this user?",
+        title = R.string.txt_report_this_user,
+        questionText = R.string.txt_why_report_this_user,
         options = listOf(
-            "The user is harassing me",
-            "The user posted inappropriate content"
+            R.string.txt_user_harassment,
+            R.string.txt_user_inappropriate_content
         )
-    );
+    ),
+    FOLDER(
+        title = R.string.txt_report_this_folder,
+        questionText = R.string.txt_why_report_this_folder,
+        options = listOf(
+            R.string.txt_folder_name_misleading,
+            R.string.txt_folder_inappropriate,
+            R.string.txt_folder_ip_violation
+        )
+    )
 }

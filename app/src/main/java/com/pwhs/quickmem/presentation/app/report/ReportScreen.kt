@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.report
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,20 +25,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -47,23 +49,41 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun ReportScreen(
     navigator: DestinationsNavigator,
-    args: ReportArgs
+    viewModel: ReportViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    var selectedReason by remember { mutableStateOf("") }
-    val reportType = args.reportType
-    val questionText = reportType.questionText
-    val options = reportType.options
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                ReportUiEvent.OnSubmitReport -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_report_submitted), Toast.LENGTH_SHORT
+                    ).show()
+                    navigator.popBackStack()
+                }
+
+                is ReportUiEvent.OnError -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Report(
-        title = reportType.title,
-        questionText = questionText,
-        options = options,
-        selectedReason = selectedReason,
-        onReasonSelected = { selectedReason = it },
+        isLoading = uiState.isLoading,
+        title = uiState.reportType?.title ?: R.string.txt_report_this_class,
+        questionText = uiState.reportType?.questionText ?: R.string.txt_why_report_this_class,
+        options = uiState.reportType?.options ?: emptyList(),
+        selectedReason = uiState.reason,
+        onReasonSelected = { reason ->
+            val res = context.getString(reason)
+            viewModel.onEvent(ReportUiAction.OnReasonChanged(res))
+        },
         onContinue = {
-            Toast.makeText(context, "Reported!", Toast.LENGTH_SHORT).show()
-            navigator.popBackStack()
+            viewModel.onEvent(ReportUiAction.OnSubmitReport)
         },
         onBackClick = { navigator.popBackStack() }
     )
@@ -73,11 +93,12 @@ fun ReportScreen(
 @Composable
 fun Report(
     modifier: Modifier = Modifier,
-    title: String,
-    questionText: String,
-    options: List<String>,
+    @StringRes title: Int,
+    isLoading: Boolean = false,
+    @StringRes questionText: Int,
+    @StringRes options: List<Int>,
     selectedReason: String,
-    onReasonSelected: (String) -> Unit,
+    onReasonSelected: (Int) -> Unit,
     onContinue: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -100,7 +121,7 @@ fun Report(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = title,
+                            text = stringResource(title),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -111,68 +132,79 @@ fun Report(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = questionText,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            options.forEach { reason ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onReasonSelected(reason) },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = selectedReason == reason,
-                        onClick = { onReasonSelected(reason) }
-                    )
-                    Text(
-                        text = reason,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            Button(
-                onClick = onContinue,
-                modifier = Modifier
-                    .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedReason.isEmpty()) Color.Gray else MaterialTheme.colorScheme.primary
-                ),
-                shape = MaterialTheme.shapes.extraLarge,
-                enabled = selectedReason.isNotEmpty()
+        Box {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = stringResource(R.string.txt_continue),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                    text = stringResource(questionText),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
+
+                options.forEach { reason ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onReasonSelected(reason)
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedReason == stringResource(reason),
+                            onClick = { onReasonSelected(reason) }
+                        )
+                        Text(
+                            text = stringResource(reason),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
+                Button(
+                    onClick = onContinue,
+                    modifier = Modifier
+                        .padding(vertical = 10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedReason.isEmpty()) Color.Gray else MaterialTheme.colorScheme.primary
+                    ),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    enabled = selectedReason.isNotEmpty()
+                ) {
+                    Text(
+                        text = stringResource(R.string.txt_continue),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
             }
+            LoadingOverlay(isLoading = isLoading)
         }
     }
 }
 
-@PreviewLightDark
+@Preview(showBackground = true)
 @Composable
 fun ReportScreenPreview() {
     QuickMemTheme {
         Report(
-            title = "Report this user",
-            questionText = "Why are you reporting this user?",
-            options = listOf("Option 1", "Option 2", "Option 3"),
+            title = R.string.txt_report_this_class,
+            questionText = R.string.txt_why_report_this_class,
+            options = listOf(
+                R.string.txt_class_name_misleading,
+                R.string.txt_class_inappropriate,
+                R.string.txt_class_cheating,
+                R.string.txt_class_ip_violation,
+                R.string.txt_class_joining_trouble
+            ),
             selectedReason = "",
             onReasonSelected = {},
             onContinue = {},

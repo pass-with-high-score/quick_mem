@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -31,6 +32,7 @@ fun FolderMenuBottomSheet(
     showMoreBottomSheet: Boolean = false,
     sheetShowMoreState: SheetState = rememberModalBottomSheetState(),
     onDismissRequest: () -> Unit = {},
+    onReportClick: () -> Unit = {}
 ) {
     if (showMoreBottomSheet) {
         ModalBottomSheet(
@@ -42,7 +44,7 @@ fun FolderMenuBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (isOwner){
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onEditFolder,
                         icon = Outlined.Edit,
@@ -55,7 +57,16 @@ fun FolderMenuBottomSheet(
                     title = stringResource(R.string.txt_share_folder)
                 )
 
-                if (isOwner){
+                if (!isOwner) {
+                    ItemMenuBottomSheet(
+                        onClick = onReportClick,
+                        icon = Outlined.Report,
+                        title = stringResource(R.string.txt_report_folder),
+                    )
+                }
+
+
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = onDeleteFolder,
                         icon = Default.DeleteOutline,

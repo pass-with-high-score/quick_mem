@@ -61,6 +61,7 @@ import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
 import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.dto.notification.DeviceTokenRequestDto
 import com.pwhs.quickmem.data.dto.flashcard.WriteStatusFlashCardDto
+import com.pwhs.quickmem.data.dto.report.CreateReportRequestDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.GetTopStreakResponseDto
 import com.pwhs.quickmem.data.dto.streak.IncreaseStreakDto
@@ -635,6 +636,13 @@ interface ApiService {
     suspend fun createStudyTime(
         @Header("Authorization") token: String,
         @Body createStudyTimeDto: CreateStudyTimeDto
+    )
+
+    // Report
+    @POST("report")
+    suspend fun createReport(
+        @Header("Authorization") token: String,
+        @Body createReportRequestDto: CreateReportRequestDto
     )
 
 }

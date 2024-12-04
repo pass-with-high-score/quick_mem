@@ -433,4 +433,28 @@
     <string name="txt_you_can_not_edit_this_study_set_just_create_a_copy_of_it">Bây giờ bạn không thể chỉnh sửa hoặc học bộ học này, chỉ cần tạo một bản sao của nó.</string>
     <string name="txt_there_is_no_hint_for_this_flashcard">Không có gợi ý cho thẻ ghi nhớ này.</string>
     <string name="txt_there_is_no_explanation_for_this_flashcard">Không có giải thích nào cho thẻ ghi nhớ này</string>
+    <string name="txt_report_submitted">Báo cáo của bạn đã được gửi. Cảm ơn vì đóng góp của bạn</string>
+    <string name="txt_report_this_class">Báo cáo lớp học này</string>
+    <string name="txt_why_report_this_class">Tại sao bạn báo cáo lớp học này?</string>
+    <string name="txt_class_name_misleading">Tên lớp học gây hiểu nhầm</string>
+    <string name="txt_class_inappropriate">Nội dung không phù hợp</string>
+    <string name="txt_class_cheating">Lớp học này đang được sử dụng để gian lận</string>
+    <string name="txt_class_ip_violation">Lớp học này vi phạm quyền sở hữu trí tuệ của tôi</string>
+    <string name="txt_class_joining_trouble">Tôi gặp khó khăn khi tham gia lớp học này</string>
+    <string name="txt_report_this_user">Báo cáo người dùng này</string>
+    <string name="txt_why_report_this_user">Tại sao bạn báo cáo người dùng này?</string>
+    <string name="txt_user_harassment">Người dùng này đang quấy rối tôi</string>
+    <string name="txt_user_inappropriate_content">Người dùng này đăng nội dung không phù hợp</string>
+    <string name="txt_report_this_folder">Báo cáo thư mục này</string>
+    <string name="txt_why_report_this_folder">Tại sao bạn báo cáo thư mục này?</string>
+    <string name="txt_folder_name_misleading">Tên thư mục gây hiểu nhầm</string>
+    <string name="txt_folder_inappropriate">Nội dung không phù hợp</string>
+    <string name="txt_folder_ip_violation">Thư mục này vi phạm quyền sở hữu trí tuệ của tôi</string>
+    <string name="txt_report_this_study_set">Báo cáo bộ học liệu này</string>
+    <string name="txt_why_report_this_study_set">Tại sao bạn báo cáo bộ học liệu này?</string>
+    <string name="txt_set_inaccurate_information">Bộ học liệu chứa thông tin không chính xác</string>
+    <string name="txt_set_inappropriate">Nội dung không phù hợp</string>
+    <string name="txt_set_cheating">Bộ học liệu này đang được sử dụng để gian lận</string>
+    <string name="txt_set_ip_violation">Bộ học liệu này vi phạm quyền sở hữu trí tuệ của tôi</string>
+
 </resources>

@@ -39,6 +39,7 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
+import com.pwhs.quickmem.presentation.app.report.ReportTypeEnum
 import com.pwhs.quickmem.presentation.app.study_set.detail.material.LearnModeCard
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
@@ -49,6 +50,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -183,7 +185,16 @@ fun FolderDetailScreen(
                     userId = uiState.user.id
                 )
             )
-        }
+        },
+        onReportClick = {
+            navigator.navigate(
+                ReportScreenDestination(
+                    reportType = ReportTypeEnum.FOLDER,
+                    reportedEntityId = uiState.id,
+                    ownerOfReportedEntity = uiState.user.id
+                )
+            )
+        },
     )
 }
 
@@ -206,7 +217,8 @@ fun FolderDetail(
     onLearnFlipFlashcardClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onAddStudySet: () -> Unit = {},
-    onNavigateToUserDetail: () -> Unit = {}
+    onNavigateToUserDetail: () -> Unit = {},
+    onReportClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val formattedCreatedAt = formatDate(createdAt)
@@ -314,7 +326,8 @@ fun FolderDetail(
         showMoreBottomSheet = showMoreBottomSheet,
         sheetShowMoreState = sheetShowMoreState,
         onDismissRequest = { showMoreBottomSheet = false },
-        isOwner = isOwner
+        isOwner = isOwner,
+        onReportClick = onReportClick
     )
     if (showStudyFolderBottomSheet) {
         ModalBottomSheet(

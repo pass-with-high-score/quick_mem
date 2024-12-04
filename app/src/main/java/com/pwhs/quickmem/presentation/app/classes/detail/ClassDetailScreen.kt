@@ -287,8 +287,8 @@ fun ClassDetailScreen(
             navigator.navigate(
                 ReportScreenDestination(
                     reportType = ReportTypeEnum.CLASS,
-                    classId = uiState.id,
-                    username = uiState.userResponseModel.username
+                    reportedEntityId = uiState.id,
+                    ownerOfReportedEntity = uiState.userResponseModel.id
                 )
             )
         },

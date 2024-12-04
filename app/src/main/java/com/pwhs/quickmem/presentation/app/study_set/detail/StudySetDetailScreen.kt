@@ -372,8 +372,8 @@ fun StudySetDetailScreen(
             navigator.navigate(
                 ReportScreenDestination(
                     reportType = ReportTypeEnum.STUDY_SET,
-                    studySetId = uiState.id,
-                    username = uiState.user.username
+                    reportedEntityId = uiState.id,
+                    ownerOfReportedEntity = uiState.user.id
                 )
             )
         },

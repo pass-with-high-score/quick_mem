@@ -436,4 +436,27 @@
     <string name="txt_you_can_not_edit_this_study_set_just_create_a_copy_of_it">You can not edit or learn this study set,just create a copy of it.</string>
     <string name="txt_there_is_no_hint_for_this_flashcard">There is no hint for this flashcard.</string>
     <string name="txt_there_is_no_explanation_for_this_flashcard">There is no explanation for this flashcard.</string>
+    <string name="txt_report_submitted">Report submitted</string>
+    <string name="txt_report_this_class">Report this class</string>
+    <string name="txt_why_report_this_class">Why are you reporting this class?</string>
+    <string name="txt_class_name_misleading">The class name is misleading</string>
+    <string name="txt_class_inappropriate">It is inappropriate</string>
+    <string name="txt_class_cheating">It is being used to cheat</string>
+    <string name="txt_class_ip_violation">It violates my intellectual property rights</string>
+    <string name="txt_class_joining_trouble">I am having trouble joining this class</string>
+    <string name="txt_report_this_user">Report this user</string>
+    <string name="txt_why_report_this_user">Why are you reporting this user?</string>
+    <string name="txt_user_harassment">The user is harassing me</string>
+    <string name="txt_user_inappropriate_content">The user posted inappropriate content</string>
+    <string name="txt_report_this_folder">Report this folder</string>
+    <string name="txt_why_report_this_folder">Why are you reporting this folder?</string>
+    <string name="txt_folder_name_misleading">The folder name is misleading</string>
+    <string name="txt_folder_inappropriate">It is inappropriate</string>
+    <string name="txt_folder_ip_violation">It violates my intellectual property rights</string>
+    <string name="txt_report_this_study_set">Report this set</string>
+    <string name="txt_why_report_this_study_set">Why are you reporting this set?</string>
+    <string name="txt_set_inaccurate_information">It contains inaccurate information</string>
+    <string name="txt_set_inappropriate">It is inappropriate</string>
+    <string name="txt_set_cheating">It is being used to cheat</string>
+    <string name="txt_set_ip_violation">It violates my intellectual property rights</string>
 </resources>

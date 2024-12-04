@@ -6,6 +6,7 @@ import com.pwhs.quickmem.data.remote.repository.ClassRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.FlashCardRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.FolderRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.NotificationRepositoryImpl
+import com.pwhs.quickmem.data.remote.repository.ReportRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StreakRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StudySetRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StudyTimeRepositoryImpl
@@ -15,6 +16,7 @@ import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
+import com.pwhs.quickmem.domain.repository.ReportRepository
 import com.pwhs.quickmem.domain.repository.SearchQueryRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
@@ -77,4 +79,9 @@ abstract class RepositoryModule {
     abstract fun bindStudyTimeRepository(
         studyTimeRepositoryImpl: StudyTimeRepositoryImpl
     ): StudyTimeRepository
+
+    @Binds
+    abstract fun bindReportRepository(
+        reportRepositoryImpl: ReportRepositoryImpl
+    ): ReportRepository
 }
