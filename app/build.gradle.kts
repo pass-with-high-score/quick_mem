@@ -88,13 +88,10 @@ dependencies {
     implementation(libs.purchases)
     implementation(libs.purchases.ui)
     implementation(libs.easycrop)
-    implementation(libs.drawbox)
-    implementation(libs.rang.vikalp)
     implementation(libs.accompanist.permissions)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging.ktx)
-//    implementation(libs.onesignal)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
     implementation(libs.bundles.roomdb)
@@ -136,6 +133,8 @@ dependencies {
     implementation(libs.easyvalidation.core)
     // DataStore
     implementation(libs.bundles.datastore)
+    // RevenueCat
+    implementation(libs.bundles.revenuecat)
     // Unit Test
     testImplementation(libs.bundles.testing)
     // Android Test

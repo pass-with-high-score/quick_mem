@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.flashcard.create
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -56,11 +55,8 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.ImageCompressor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.DrawFlashCardScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -73,23 +69,10 @@ fun CreateFlashCardScreen(
     modifier: Modifier = Modifier,
     viewModel: CreateFlashCardViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    canvasResultBack: ResultRecipient<DrawFlashCardScreenDestination, Bitmap>,
     resultNavigator: ResultBackNavigator<Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    canvasResultBack.onNavResult { result ->
-        when (result) {
-            NavResult.Canceled -> {
-                Timber.d("Canceled")
-            }
-
-            is NavResult.Value -> {
-                Timber.d("Value: ${result.value}")
-            }
-        }
-    }
-
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {

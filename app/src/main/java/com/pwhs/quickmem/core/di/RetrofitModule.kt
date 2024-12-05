@@ -9,7 +9,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,6 +25,7 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideQuickMemApi(): ApiService {
+        val versionName = BuildConfig.VERSION_NAME
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -34,7 +37,18 @@ object RetrofitModule {
                     .addInterceptor(HttpLoggingInterceptor().apply {
                         level =
                             if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-                    }).build()
+                    })
+                    .addInterceptor(
+                        Interceptor { chain ->
+                            val request: Request = chain.request()
+                                .newBuilder()
+                                .header("accept", "application/json")
+                                .header("User-Agent", "QuickMem $versionName")
+                                .build()
+                            chain.proceed(request)
+                        }
+                    )
+                    .build()
             )
             .build()
             .create(ApiService::class.java)
@@ -43,6 +57,7 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideCheckEmailApi(): EmailService {
+        val versionName = BuildConfig.VERSION_NAME
         return Retrofit.Builder()
             .baseUrl(EMAIL_VERIFICATION_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -54,7 +69,18 @@ object RetrofitModule {
                     .addInterceptor(HttpLoggingInterceptor().apply {
                         level =
                             if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-                    }).build()
+                    })
+                    .addInterceptor(
+                        Interceptor { chain ->
+                            val request: Request = chain.request()
+                                .newBuilder()
+                                .header("accept", "application/json")
+                                .header("User-Agent", "QuickMem $versionName")
+                                .build()
+                            chain.proceed(request)
+                        }
+                    )
+                    .build()
             )
             .build()
             .create(EmailService::class.java)
