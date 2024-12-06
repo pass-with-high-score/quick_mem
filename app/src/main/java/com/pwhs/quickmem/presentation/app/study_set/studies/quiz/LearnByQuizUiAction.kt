@@ -12,4 +12,5 @@ sealed class LearnByQuizUiAction {
     data object ContinueLearnWrongAnswer : LearnByQuizUiAction()
     data object RestartLearn : LearnByQuizUiAction()
     data object OnBackClicked : LearnByQuizUiAction()
+    data class OnChangeIsPlaySound(val isPlaySound: Boolean) : LearnByQuizUiAction()
 }

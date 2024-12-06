@@ -10,4 +10,5 @@ sealed class LearnByTrueFalseUiAction {
     data object ContinueLearnWrongAnswer : LearnByTrueFalseUiAction()
     data object RestartLearn : LearnByTrueFalseUiAction()
     data object OnBackClicked : LearnByTrueFalseUiAction()
+    data class OnChangeIsPlaySound(val isPlaySound: Boolean) : LearnByTrueFalseUiAction()
 }

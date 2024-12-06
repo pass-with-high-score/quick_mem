@@ -94,6 +94,10 @@ fun FlipFlashCardScreen(
         isSwipingLeft = uiState.isSwipingLeft,
         isSwipingRight = uiState.isSwipingRight,
         isEndOfList = uiState.isEndOfList,
+        isPlaySound = uiState.isPlaySound,
+        onChangeIsPlaySound = {
+            viewModel.onEvent(FlipFlashCardUiAction.OnChangeIsPlaySound(it))
+        },
         learningTime = uiState.learningTime,
         onEndSessionClick = {
             viewModel.onEvent(FlipFlashCardUiAction.OnBackClicked)
@@ -145,6 +149,8 @@ fun FlipFlashCard(
     isSwipingLeft: Boolean = false,
     isSwipingRight: Boolean = false,
     isEndOfList: Boolean = false,
+    isPlaySound: Boolean = false,
+    onChangeIsPlaySound: (Boolean) -> Unit = { },
     learningTime: Long = 0L,
     onEndSessionClick: () -> Unit = { },
     onUpdatedCardIndex: (Int) -> Unit = { },
@@ -202,7 +208,9 @@ fun FlipFlashCard(
                     stackState.reset()
                 },
                 shouldShowRestart = !isEndOfList,
-                isGetAll = isGetAll
+                isGetAll = isGetAll,
+                isPlaySound = isPlaySound,
+                onChangeIsPlaySound = onChangeIsPlaySound
             )
         }
     ) { innerPadding ->

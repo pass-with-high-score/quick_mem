@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
@@ -35,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -116,7 +118,11 @@ fun LearnByQuizScreen(
         onRestartClicked = {
             viewModel.onEvent(LearnByQuizUiAction.RestartLearn)
         },
-        isGetAll = uiState.isGetAll
+        isGetAll = uiState.isGetAll,
+        isPlaySound = uiState.isPlaySound,
+        onChangeIsPlaySound = {
+            viewModel.onEvent(LearnByQuizUiAction.OnChangeIsPlaySound(it))
+        }
     )
 }
 
@@ -139,7 +145,9 @@ fun LearnByQuiz(
     isEndOfList: Boolean = false,
     onContinueLearningClicked: () -> Unit = {},
     onRestartClicked: () -> Unit = {},
-    isGetAll: Boolean = false
+    isGetAll: Boolean = false,
+    isPlaySound: Boolean = false,
+    onChangeIsPlaySound: (Boolean) -> Unit = {}
 ) {
     var canResetState by remember { mutableStateOf(false) }
     val showHintBottomSheet = remember { mutableStateOf(false) }
@@ -179,6 +187,17 @@ fun LearnByQuiz(
                 },
                 actions = {
                     if (!isEndOfList && isGetAll) {
+                        IconButton(
+                            onClick = { onChangeIsPlaySound(!isPlaySound) }
+                        ) {
+                            Icon(
+                                painter = if (isPlaySound) painterResource(id = R.drawable.ic_sound) else painterResource(
+                                    id = R.drawable.ic_volume_off
+                                ),
+                                contentDescription = "Sound",
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
                         if (!flashCard?.hint.isNullOrEmpty()) {
                             IconButton(
                                 onClick = {

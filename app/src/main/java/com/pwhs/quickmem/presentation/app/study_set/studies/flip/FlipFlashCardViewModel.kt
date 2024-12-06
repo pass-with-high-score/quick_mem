@@ -197,6 +197,15 @@ class FlipFlashCardViewModel @Inject constructor(
                 }
                 _uiEvent.trySend(FlipFlashCardUiEvent.Back)
             }
+
+            is FlipFlashCardUiAction.OnChangeIsPlaySound -> {
+                _uiState.update {
+                    it.copy(isPlaySound = event.isPlaySound)
+                }
+                viewModelScope.launch {
+                    appManager.saveIsPlaySound(event.isPlaySound)
+                }
+            }
         }
     }
 
