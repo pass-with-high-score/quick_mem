@@ -100,7 +100,7 @@ dependencies {
 
     implementation(libs.play.services.ads)
 
-    implementation(project(":compose-cardstack"))
+    implementation(projects.composeCardstack)
     implementation(libs.lottie.compose)
 
     // Compose
