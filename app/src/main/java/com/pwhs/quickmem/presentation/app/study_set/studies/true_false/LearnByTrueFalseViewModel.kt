@@ -117,6 +117,15 @@ class LearnByTrueFalseViewModel @Inject constructor(
                 }
                 _uiEvent.trySend(LearnByTrueFalseUiEvent.Back)
             }
+
+            is LearnByTrueFalseUiAction.OnChangeIsPlaySound -> {
+                _uiState.update {
+                    it.copy(isPlaySound = event.isPlaySound)
+                }
+                viewModelScope.launch {
+                    appManager.saveIsPlaySound(event.isPlaySound)
+                }
+            }
         }
     }
 

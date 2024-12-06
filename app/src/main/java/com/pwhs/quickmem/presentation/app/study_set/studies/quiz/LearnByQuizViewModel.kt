@@ -119,6 +119,15 @@ class LearnByQuizViewModel @Inject constructor(
                 }
                 _uiEvent.trySend(LearnByQuizUiEvent.Back)
             }
+
+            is LearnByQuizUiAction.OnChangeIsPlaySound -> {
+                _uiState.update {
+                    it.copy(isPlaySound = event.isPlaySound)
+                }
+                viewModelScope.launch {
+                    appManager.saveIsPlaySound(event.isPlaySound)
+                }
+            }
         }
     }
 

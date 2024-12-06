@@ -18,4 +18,5 @@ sealed class FlipFlashCardUiAction {
     data object OnRestartClicked : FlipFlashCardUiAction()
     data object OnContinueLearningClicked : FlipFlashCardUiAction()
     data object OnBackClicked : FlipFlashCardUiAction()
+    data class OnChangeIsPlaySound(val isPlaySound: Boolean) : FlipFlashCardUiAction()
 }

@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -124,7 +125,11 @@ fun LearnByWriteScreen(
         onSubmitAnswer = { id, status, answer ->
             viewModel.onEvent(LearnByWriteUiAction.OnAnswer(id, status, answer))
         },
-        isGetAll = uiState.isGetAll
+        isGetAll = uiState.isGetAll,
+        isPlaySound = uiState.isPlaySound,
+        onChangeIsPlaySound = {
+            viewModel.onEvent(LearnByWriteUiAction.OnChangeIsPlaySound(it))
+        }
     )
 }
 
@@ -145,7 +150,9 @@ fun LearnByWrite(
     listWrongAnswer: List<WriteQuestion> = emptyList(),
     onContinueLearningClicked: () -> Unit = {},
     onSubmitAnswer: (String, WriteStatus, String) -> Unit = { _, _, _ -> },
-    isGetAll: Boolean = false
+    isGetAll: Boolean = false,
+    isPlaySound: Boolean = false,
+    onChangeIsPlaySound: (Boolean) -> Unit = { },
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -193,6 +200,17 @@ fun LearnByWrite(
                 },
                 actions = {
                     if (!isEndOfList && isGetAll) {
+                        IconButton(
+                            onClick = { onChangeIsPlaySound(!isPlaySound) }
+                        ) {
+                            Icon(
+                                painter = if (isPlaySound) painterResource(id = R.drawable.ic_sound) else painterResource(
+                                    id = R.drawable.ic_volume_off
+                                ),
+                                contentDescription = "Sound",
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
                         IconButton(
                             onClick = {
                                 userAnswer = ""

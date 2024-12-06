@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.component
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.RestartAlt
@@ -11,9 +12,11 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -28,6 +31,8 @@ fun StudyTopAppBar(
     onRestartClicked: () -> Unit = {},
     shouldShowRestart: Boolean = true,
     isGetAll: Boolean = false,
+    isPlaySound: Boolean = false,
+    onChangeIsPlaySound: (Boolean) -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -53,6 +58,17 @@ fun StudyTopAppBar(
         },
         actions = {
             if (shouldShowRestart && isGetAll) {
+                IconButton(
+                    onClick = { onChangeIsPlaySound(!isPlaySound) }
+                ) {
+                    Icon(
+                        painter = if (isPlaySound) painterResource(id = R.drawable.ic_sound) else painterResource(
+                            id = R.drawable.ic_volume_off
+                        ),
+                        contentDescription = "Sound",
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
                 IconButton(
                     onClick = onRestartClicked
                 ) {
