@@ -13,9 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.study_time.StudyTimeModel
 import ir.ehsannarmani.compose_charts.ColumnChart
 import ir.ehsannarmani.compose_charts.models.Bars
@@ -41,7 +43,7 @@ fun LearningBars(
                 .padding(16.dp),
             data = listOf(
                 Bars(
-                    label = "Flip",
+                    label = stringResource(R.string.txt_flip),
                     values = listOf(
                         Bars.Data(
                             value = (studyTime?.flip?.toDouble() ?: 0.0) / 1000,
@@ -55,7 +57,7 @@ fun LearningBars(
                     )
                 ),
                 Bars(
-                    label = "Quiz",
+                    label = stringResource(R.string.txt_quiz),
                     values = listOf(
                         Bars.Data(
                             value = (studyTime?.quiz?.toDouble() ?: 0.0) / 1000,
@@ -69,7 +71,7 @@ fun LearningBars(
                     )
                 ),
                 Bars(
-                    label = "True/False",
+                    label = stringResource(R.string.txt_true_false),
                     values = listOf(
                         Bars.Data(
                             value = (studyTime?.trueFalse?.toDouble() ?: 0.0) / 1000,
@@ -83,7 +85,7 @@ fun LearningBars(
                     )
                 ),
                 Bars(
-                    label = "Write",
+                    label = stringResource(R.string.txt_write),
                     values = listOf(
                         Bars.Data(
                             value = (studyTime?.write?.toDouble() ?: 0.0) / 1000,
@@ -154,7 +156,7 @@ fun LearningBars(
         )
         Spacer(modifier = Modifier.padding(vertical = 20.dp))
         Text(
-            text = "Time spent on each learning type",
+            text = stringResource(R.string.txt_time_spent_on_each_learning_type),
             style = typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold
             )

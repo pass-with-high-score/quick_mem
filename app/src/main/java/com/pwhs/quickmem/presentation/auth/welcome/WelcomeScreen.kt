@@ -186,6 +186,8 @@ private fun WelCome(
 
             item {
                 val color = colorScheme.onSurface
+                val textPart1 = stringResource(R.string.txt_all_the_tools_for_learning_success)
+                val textPart2 = stringResource(R.string.txt_in_one_app)
                 Text(
                     buildAnnotatedString {
                         withStyle(
@@ -201,13 +203,13 @@ private fun WelCome(
                                     fontWeight = FontWeight.Black
                                 )
                             ) {
-                                append("All the tools for \nlearning success.\n")
+                                append(textPart1)
                                 withStyle(
                                     style = SpanStyle(
                                         color = premiumColor,
                                     )
                                 ) {
-                                    append("In one app.")
+                                    append(textPart2)
                                 }
                             }
                         }
@@ -233,7 +235,7 @@ private fun WelCome(
                     textColor = colorScheme.primary
                 )
             }
-            
+
             item {
                 Spacer(modifier = Modifier.padding(20.dp))
             }
