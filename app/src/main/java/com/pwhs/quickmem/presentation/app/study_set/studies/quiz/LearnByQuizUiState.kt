@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.quiz
 
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.states.RandomAnswer
 import com.pwhs.quickmem.core.data.states.WrongAnswer
 import com.pwhs.quickmem.domain.model.color.ColorModel
@@ -14,6 +15,8 @@ data class LearnFlashCardUiState(
     val studySetTitle: String = "",
     val studySetDescription: String = "",
     val studySetCardCount: Int = 0,
+    val learnFrom: LearnFrom = LearnFrom.STUDY_SET,
+    val folderId: String = "",
     val studySetColor: ColorModel = ColorModel(),
     val studySetSubject: SubjectModel = SubjectModel(),
     val flashCardList: List<FlashCardResponseModel> = emptyList(),
