@@ -43,6 +43,7 @@ import com.msusman.compose.cardstack.SwipeDirection
 import com.msusman.compose.cardstack.SwipeMethod
 import com.msusman.compose.cardstack.rememberStackState
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.component.StudyCardBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.studies.flip.component.FlipFlashCardButton
@@ -132,7 +133,8 @@ fun FlipFlashCardScreen(
         onContinueLearningClicked = {
             viewModel.onEvent(FlipFlashCardUiAction.OnContinueLearningClicked)
         },
-        isGetAll = uiState.isGetAll
+        isGetAll = uiState.isGetAll,
+        learnFrom = uiState.learnFrom
     )
 }
 
@@ -160,7 +162,8 @@ fun FlipFlashCard(
     onUpdateCountStillLearning: (Boolean, String) -> Unit = { _, _ -> },
     onRestartClicked: () -> Unit = { },
     onContinueLearningClicked: () -> Unit = { },
-    isGetAll: Boolean = false
+    isGetAll: Boolean = false,
+    learnFrom: LearnFrom = LearnFrom.STUDY_SET
 ) {
     var showHintBottomSheet by remember {
         mutableStateOf(false)
@@ -210,7 +213,8 @@ fun FlipFlashCard(
                 shouldShowRestart = !isEndOfList,
                 isGetAll = isGetAll,
                 isPlaySound = isPlaySound,
-                onChangeIsPlaySound = onChangeIsPlaySound
+                onChangeIsPlaySound = onChangeIsPlaySound,
+                learnFrom = learnFrom
             )
         }
     ) { innerPadding ->

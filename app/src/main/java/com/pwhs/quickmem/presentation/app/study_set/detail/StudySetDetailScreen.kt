@@ -250,6 +250,8 @@ fun StudySetDetailScreen(
                             studySetDescription = uiState.description,
                             studySetColorId = uiState.colorModel.id,
                             studySetSubjectId = uiState.subject.id,
+                            folderId = "",
+                            learnFrom = LearnFrom.STUDY_SET,
                             isGetAll = event.isGetAll
                         )
                     )
@@ -263,6 +265,8 @@ fun StudySetDetailScreen(
                             studySetDescription = uiState.description,
                             studySetColorId = uiState.colorModel.id,
                             studySetSubjectId = uiState.subject.id,
+                            folderId = "",
+                            learnFrom = LearnFrom.STUDY_SET,
                             isGetAll = event.isGetAll
                         )
                     )
@@ -276,6 +280,8 @@ fun StudySetDetailScreen(
                             studySetDescription = uiState.description,
                             studySetColorId = uiState.colorModel.id,
                             studySetSubjectId = uiState.subject.id,
+                            folderId = "",
+                            learnFrom = LearnFrom.STUDY_SET,
                             isGetAll = event.isGetAll
                         )
                     )

@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.states.RandomAnswer
 import com.pwhs.quickmem.core.data.states.WrongAnswer
@@ -119,6 +120,7 @@ fun LearnByQuizScreen(
             viewModel.onEvent(LearnByQuizUiAction.RestartLearn)
         },
         isGetAll = uiState.isGetAll,
+        learnFrom = uiState.learnFrom,
         isPlaySound = uiState.isPlaySound,
         onChangeIsPlaySound = {
             viewModel.onEvent(LearnByQuizUiAction.OnChangeIsPlaySound(it))
@@ -147,6 +149,7 @@ fun LearnByQuiz(
     onRestartClicked: () -> Unit = {},
     isGetAll: Boolean = false,
     isPlaySound: Boolean = false,
+    learnFrom: LearnFrom = LearnFrom.STUDY_SET,
     onChangeIsPlaySound: (Boolean) -> Unit = {}
 ) {
     var canResetState by remember { mutableStateOf(false) }
@@ -186,7 +189,7 @@ fun LearnByQuiz(
                     }
                 },
                 actions = {
-                    if (!isEndOfList && isGetAll) {
+                    if (!isEndOfList) {
                         IconButton(
                             onClick = { onChangeIsPlaySound(!isPlaySound) }
                         ) {
@@ -211,14 +214,16 @@ fun LearnByQuiz(
                                 )
                             }
                         }
-                        IconButton(
-                            onClick = onRestartClicked
-                        ) {
-                            Icon(
-                                imageVector = Default.RestartAlt,
-                                contentDescription = "Restart",
-                                tint = studySetColor
-                            )
+                        if (learnFrom != LearnFrom.FOLDER && isGetAll) {
+                            IconButton(
+                                onClick = onRestartClicked
+                            ) {
+                                Icon(
+                                    imageVector = Default.RestartAlt,
+                                    contentDescription = "Restart",
+                                    tint = studySetColor
+                                )
+                            }
                         }
                     }
                 }

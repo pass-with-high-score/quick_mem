@@ -3,11 +3,14 @@ package com.pwhs.quickmem.presentation.app.folder.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.folder.SaveRecentAccessFolderRequestModel
+import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.repository.FolderRepository
+import com.pwhs.quickmem.presentation.app.folder.detail.FolderDetailUiEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,15 +54,39 @@ class FolderDetailViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = true) }
                     deleteFolder()
                 } else {
-                    _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't delete this folder"))
+                    _uiEvent.trySend(ShowError("You can't delete this folder"))
                 }
             }
 
             FolderDetailUiAction.EditFolder -> {
                 if (_uiState.value.isOwner) {
-                    _uiEvent.trySend(FolderDetailUiEvent.NavigateToEditFolder)
+                    _uiEvent.trySend(NavigateToEditFolder)
                 } else {
-                    _uiEvent.trySend(FolderDetailUiEvent.ShowError("You can't edit this folder"))
+                    _uiEvent.trySend(ShowError("You can't edit this folder"))
+                }
+            }
+
+            is FolderDetailUiAction.NavigateToLearn -> {
+                when (event.learnMode) {
+                    LearnMode.FLIP -> {
+                        _uiEvent.trySend(OnNavigateToFlipFlashcard(event.isGetAll))
+                    }
+
+                    LearnMode.QUIZ -> {
+                        _uiEvent.trySend(OnNavigateToQuiz(event.isGetAll))
+                    }
+
+                    LearnMode.TRUE_FALSE -> {
+                        _uiEvent.trySend(OnNavigateToTrueFalse(event.isGetAll))
+                    }
+
+                    LearnMode.WRITE -> {
+                        _uiEvent.trySend(OnNavigateToWrite(event.isGetAll))
+                    }
+
+                    else -> {
+                        // Do nothing
+                    }
                 }
             }
         }
@@ -77,6 +104,7 @@ class FolderDetailViewModel @Inject constructor(
                     is Resources.Success -> {
                         resource.data?.let { data ->
                             val isOwner = appManager.userId.firstOrNull() == data.owner.id
+                            val totalFlashCards = calculateTotalFlashCards(data.studySets ?: emptyList())
                             _uiState.update {
                                 it.copy(
                                     title = data.title,
@@ -89,12 +117,14 @@ class FolderDetailViewModel @Inject constructor(
                                     createdAt = data.createdAt,
                                     updatedAt = data.updatedAt,
                                     isLoading = false,
-                                    isOwner = isOwner
+                                    isOwner = isOwner,
+                                    totalFlashCards = totalFlashCards
                                 )
                             }
                         } ?: run {
-                            _uiEvent.send(FolderDetailUiEvent.ShowError("Folder not found"))
+                            _uiEvent.send(ShowError("Folder not found"))
                         }
+                        Timber.d("")
                     }
 
                     is Resources.Error -> {
@@ -109,7 +139,7 @@ class FolderDetailViewModel @Inject constructor(
     private fun deleteFolder() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: run {
-                _uiEvent.send(FolderDetailUiEvent.ShowError("Please login again!"))
+                _uiEvent.send(ShowError("Please login again!"))
                 return@launch
             }
             folderRepository.deleteFolder(token, _uiState.value.id).collectLatest { resource ->
@@ -123,7 +153,7 @@ class FolderDetailViewModel @Inject constructor(
                         resource.data?.let {
                             Timber.d("Folder deleted")
                             _uiState.update { it.copy(isLoading = false) }
-                            _uiEvent.send(FolderDetailUiEvent.FolderDeleted)
+                            _uiEvent.send(FolderDeleted)
                         }
                     }
 
@@ -163,5 +193,13 @@ class FolderDetailViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private fun calculateTotalFlashCards(studySets: List<GetStudySetResponseModel>): Int {
+        var totalFlashCards = 0
+        studySets.forEach { studySet ->
+            totalFlashCards += studySet.flashcardCount
+        }
+        return totalFlashCards
     }
 }

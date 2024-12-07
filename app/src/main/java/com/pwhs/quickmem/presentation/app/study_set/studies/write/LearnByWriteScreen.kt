@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.WriteStatus
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
@@ -126,6 +127,7 @@ fun LearnByWriteScreen(
             viewModel.onEvent(LearnByWriteUiAction.OnAnswer(id, status, answer))
         },
         isGetAll = uiState.isGetAll,
+        learnFrom = uiState.learnFrom,
         isPlaySound = uiState.isPlaySound,
         onChangeIsPlaySound = {
             viewModel.onEvent(LearnByWriteUiAction.OnChangeIsPlaySound(it))
@@ -153,6 +155,7 @@ fun LearnByWrite(
     isGetAll: Boolean = false,
     isPlaySound: Boolean = false,
     onChangeIsPlaySound: (Boolean) -> Unit = { },
+    learnFrom: LearnFrom = LearnFrom.STUDY_SET
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -199,7 +202,7 @@ fun LearnByWrite(
                     }
                 },
                 actions = {
-                    if (!isEndOfList && isGetAll) {
+                    if (!isEndOfList) {
                         IconButton(
                             onClick = { onChangeIsPlaySound(!isPlaySound) }
                         ) {
@@ -211,17 +214,19 @@ fun LearnByWrite(
                                 modifier = Modifier.size(22.dp)
                             )
                         }
-                        IconButton(
-                            onClick = {
-                                userAnswer = ""
-                                onRestart()
+                        if (learnFrom != LearnFrom.FOLDER && isGetAll) {
+                            IconButton(
+                                onClick = {
+                                    userAnswer = ""
+                                    onRestart()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Default.RestartAlt,
+                                    contentDescription = stringResource(R.string.txt_restart),
+                                    tint = studySetColor
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = Default.RestartAlt,
-                                contentDescription = stringResource(R.string.txt_restart),
-                                tint = studySetColor
-                            )
                         }
                     }
                 }

@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +33,8 @@ fun StudyTopAppBar(
     shouldShowRestart: Boolean = true,
     isGetAll: Boolean = false,
     isPlaySound: Boolean = false,
-    onChangeIsPlaySound: (Boolean) -> Unit = {}
+    onChangeIsPlaySound: (Boolean) -> Unit = {},
+    learnFrom: LearnFrom
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -57,7 +59,7 @@ fun StudyTopAppBar(
             }
         },
         actions = {
-            if (shouldShowRestart && isGetAll) {
+            if (shouldShowRestart) {
                 IconButton(
                     onClick = { onChangeIsPlaySound(!isPlaySound) }
                 ) {
@@ -69,13 +71,15 @@ fun StudyTopAppBar(
                         modifier = Modifier.size(22.dp)
                     )
                 }
-                IconButton(
-                    onClick = onRestartClicked
-                ) {
-                    Icon(
-                        imageVector = Default.RestartAlt,
-                        contentDescription = stringResource(R.string.txt_restart)
-                    )
+                if (learnFrom != LearnFrom.FOLDER && isGetAll) {
+                    IconButton(
+                        onClick = onRestartClicked
+                    ) {
+                        Icon(
+                            imageVector = Default.RestartAlt,
+                            contentDescription = stringResource(R.string.txt_restart)
+                        )
+                    }
                 }
             }
         }
@@ -90,6 +94,7 @@ fun StudyTopAppBarPreview() {
             currentCardIndex = 0,
             totalCards = 10,
             onBackClicked = {},
+            learnFrom = LearnFrom.STUDY_SET
         )
     }
 }
