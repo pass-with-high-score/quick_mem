@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.write
 
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
@@ -24,6 +25,8 @@ data class LearnByTrueFalseUiState(
     val writeQuestion: WriteQuestion? = null,
     val nextFlashCard: FlashCardResponseModel? = null,
     val currentFlashCard: FlashCardResponseModel? = null,
+    val learnFrom: LearnFrom = LearnFrom.STUDY_SET,
+    val folderId: String = "",
 )
 
 data class WriteQuestion(

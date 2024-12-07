@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.QuizStatus
 import com.pwhs.quickmem.core.data.enums.ResetType
@@ -56,9 +57,13 @@ class LearnByQuizViewModel @Inject constructor(
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 0
+        val folderId = savedStateHandle.get<String>("folderId") ?: ""
+        val learnFrom = savedStateHandle.get<LearnFrom>("learnFrom") ?: LearnFrom.STUDY_SET
         _uiState.update {
             it.copy(
                 studySetId = studySetId,
+                folderId = folderId,
+                learnFrom = learnFrom,
                 isGetAll = isGetAll,
                 studySetTitle = studySetTitle,
                 studySetDescription = studySetDescription,
@@ -135,52 +140,107 @@ class LearnByQuizViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val studySetId = _uiState.value.studySetId
-            val isGetAll = _uiState.value.isEndOfList
-            flashCardRepository.getFlashCardsByStudySetId(
-                token = token,
-                studySetId = studySetId,
-                learnMode = LearnMode.QUIZ,
-                isGetAll = isGetAll
-            ).collect { resource ->
-                when (resource) {
-                    is Resources.Error -> {
-                        _uiState.update { it.copy(isLoading = false) }
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-
-                    is Resources.Success -> {
-                        if (resource.data.isNullOrEmpty()) {
-                            _uiState.update {
-                                it.copy(
-                                    learningTime = 0,
-                                    isLoading = false,
-                                    isEndOfList = true
-                                )
+            val folderId = _uiState.value.folderId
+            val learnFrom = _uiState.value.learnFrom
+            val isGetAll = _uiState.value.isGetAll
+            when (learnFrom) {
+                LearnFrom.STUDY_SET -> {
+                    flashCardRepository.getFlashCardsByStudySetId(
+                        token = token,
+                        studySetId = studySetId,
+                        learnMode = LearnMode.QUIZ,
+                        isGetAll = isGetAll
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                _uiState.update { it.copy(isLoading = false) }
                             }
-                            playCompleteSound()
-                            _uiEvent.send(LearnByQuizUiEvent.Finished)
-                            return@collect
-                        }
 
-                        val flashCards = resource.data
-                        val currentCard = flashCards.firstOrNull()
-                        val randomAnswers = generateRandomAnswers(flashCards, currentCard)
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
 
-                        _uiState.update {
-                            it.copy(
-                                flashCardList = flashCards,
-                                randomAnswers = randomAnswers,
-                                isLoading = false,
-                                currentFlashCard = currentCard,
-                                nextFlashCard = flashCards.getOrNull(1)
-                            )
+                            is Resources.Success -> {
+                                if (resource.data.isNullOrEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            learningTime = 0,
+                                            isLoading = false,
+                                            isEndOfList = true
+                                        )
+                                    }
+                                    playCompleteSound()
+                                    _uiEvent.send(LearnByQuizUiEvent.Finished)
+                                    return@collect
+                                }
+
+                                val flashCards = resource.data
+                                val currentCard = flashCards.firstOrNull()
+                                val randomAnswers = generateRandomAnswers(flashCards, currentCard)
+
+                                _uiState.update {
+                                    it.copy(
+                                        flashCardList = flashCards,
+                                        randomAnswers = randomAnswers,
+                                        isLoading = false,
+                                        currentFlashCard = currentCard,
+                                        nextFlashCard = flashCards.getOrNull(1)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
 
+                LearnFrom.FOLDER -> {
+                    flashCardRepository.getFlashCardsByFolderId(
+                        token = token,
+                        folderId = folderId,
+                        learnMode = LearnMode.QUIZ,
+                        isGetAll = isGetAll
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                _uiState.update { it.copy(isLoading = false) }
+                            }
+
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
+
+                            is Resources.Success -> {
+                                if (resource.data.isNullOrEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            learningTime = 0,
+                                            isLoading = false,
+                                            isEndOfList = true
+                                        )
+                                    }
+                                    playCompleteSound()
+                                    _uiEvent.send(LearnByQuizUiEvent.Finished)
+                                    return@collect
+                                }
+
+                                val flashCards = resource.data
+                                val currentCard = flashCards.firstOrNull()
+                                val randomAnswers = generateRandomAnswers(flashCards, currentCard)
+
+                                _uiState.update {
+                                    it.copy(
+                                        flashCardList = flashCards,
+                                        randomAnswers = randomAnswers,
+                                        isLoading = false,
+                                        currentFlashCard = currentCard,
+                                        nextFlashCard = flashCards.getOrNull(1)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                LearnFrom.CLASS -> TODO()
             }
         }
     }

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.LearnFrom
+import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
@@ -50,6 +51,11 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination.invoke
+import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -131,6 +137,63 @@ fun FolderDetailScreen(
                 FolderDetailUiEvent.FolderDeleted -> {
                     resultNavigator.navigateBack(true)
                 }
+
+                is FolderDetailUiEvent.OnNavigateToFlipFlashcard -> {
+                    navigator.navigate(
+                        FlipFlashCardScreenDestination(
+                            studySetId = "",
+                            studySetTitle = "",
+                            studySetDescription = "",
+                            studySetColorId = 0,
+                            studySetSubjectId = 0,
+                            folderId = uiState.id,
+                            learnFrom = LearnFrom.FOLDER,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
+                is FolderDetailUiEvent.OnNavigateToQuiz -> {
+                    navigator.navigate(
+                        LearnByQuizScreenDestination(
+                            studySetId = "",
+                            studySetTitle = "",
+                            studySetDescription = "",
+                            studySetColorId = 0,
+                            studySetSubjectId = 0,
+                            folderId = uiState.id,
+                            learnFrom = LearnFrom.FOLDER,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
+                is FolderDetailUiEvent.OnNavigateToTrueFalse -> {
+                    navigator.navigate(
+                        LearnByTrueFalseScreenDestination(
+                            studySetId = "",
+                            studySetTitle = "",
+                            studySetDescription = "",
+                            studySetColorId = 0,
+                            studySetSubjectId = 0,
+                            folderId = uiState.id,
+                            learnFrom = LearnFrom.FOLDER,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
+                is FolderDetailUiEvent.OnNavigateToWrite -> {
+                    navigator.navigate(
+                        LearnByWriteScreenDestination(
+                            studySetId = "",
+                            studySetTitle = "",
+                            studySetDescription = "",
+                            studySetColorId = 0,
+                            studySetSubjectId = 0,
+                            folderId = uiState.id,
+                            learnFrom = LearnFrom.FOLDER,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
             }
         }
     }
@@ -154,20 +217,6 @@ fun FolderDetailScreen(
             )
         },
         onEditFolder = { viewModel.onEvent(FolderDetailUiAction.EditFolder) },
-        onLearnFlipFlashcardClick = {
-            navigator.navigate(
-                FlipFlashCardScreenDestination(
-                    studySetId = "",
-                    studySetTitle = "",
-                    studySetDescription = "",
-                    studySetColorId = 0,
-                    studySetSubjectId = 0,
-                    folderId = uiState.id,
-                    learnFrom = LearnFrom.FOLDER,
-                    isGetAll = true
-                )
-            )
-        },
         onNavigateBack = {
             resultNavigator.navigateBack(true)
         },
@@ -195,6 +244,10 @@ fun FolderDetailScreen(
                 )
             )
         },
+        totalFlashCards = uiState.totalFlashCards,
+        onNavigateToLearn = { learnMode, isGetAll ->
+            viewModel.onEvent(FolderDetailUiAction.NavigateToLearn(learnMode, isGetAll))
+        },
     )
 }
 
@@ -214,11 +267,12 @@ fun FolderDetail(
     onStudySetClick: (String) -> Unit = {},
     onEditFolder: () -> Unit = {},
     onDeleteFolder: () -> Unit = {},
-    onLearnFlipFlashcardClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onAddStudySet: () -> Unit = {},
     onNavigateToUserDetail: () -> Unit = {},
-    onReportClick: () -> Unit = {}
+    totalFlashCards: Int = 0,
+    onReportClick: () -> Unit = {},
+    onNavigateToLearn: (LearnMode, Boolean) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
     val formattedCreatedAt = formatDate(createdAt)
@@ -234,7 +288,9 @@ fun FolderDetail(
     val sheetShowMoreState = rememberModalBottomSheetState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var showStudyFolderBottomSheet by remember { mutableStateOf(false) }
+    var showGetAllDialog by remember { mutableStateOf(false) }
     val sheetStudyFolderState = rememberModalBottomSheetState()
+    var learningMode by remember { mutableStateOf(LearnMode.NONE) }
 
     Scaffold(
         modifier = modifier,
@@ -346,7 +402,8 @@ fun FolderDetail(
                     containerColor = colorScheme.surface,
                     elevation = 0.dp,
                     onClick = {
-                        onLearnFlipFlashcardClick()
+                        showGetAllDialog = true
+                        learningMode = LearnMode.FLIP
                         showStudyFolderBottomSheet = false
                     },
                 )
@@ -355,23 +412,57 @@ fun FolderDetail(
                     icon = R.drawable.ic_quiz,
                     containerColor = colorScheme.surface,
                     elevation = 0.dp,
+                    onClick = {
+                        showGetAllDialog = true
+                        learningMode = LearnMode.QUIZ
+                        showStudyFolderBottomSheet = false
+                    }
                 )
                 LearnModeCard(
                     title = stringResource(R.string.txt_true_false),
                     icon = R.drawable.ic_tf,
                     containerColor = colorScheme.surface,
                     elevation = 0.dp,
-                    leadingText = stringResource(R.string.txt_coming_soon)
+                    onClick = {
+                        showGetAllDialog = true
+                        learningMode = LearnMode.TRUE_FALSE
+                        showStudyFolderBottomSheet = false
+                    }
                 )
                 LearnModeCard(
                     title = stringResource(R.string.txt_write),
                     icon = R.drawable.ic_write,
                     containerColor = Color.Transparent,
                     elevation = 0.dp,
-                    leadingText = stringResource(R.string.txt_coming_soon)
+                    onClick = {
+                        showGetAllDialog = true
+                        learningMode = LearnMode.WRITE
+                        showStudyFolderBottomSheet = false
+                    }
                 )
             }
         }
+    }
+    if (showGetAllDialog && totalFlashCards > 10) {
+        QuickMemAlertDialog(
+            onDismissRequest = {
+                showGetAllDialog = false
+                onNavigateToLearn(learningMode, true)
+                learningMode = LearnMode.NONE
+            },
+            onConfirm = {
+                showGetAllDialog = false
+                onNavigateToLearn(learningMode, false)
+                learningMode = LearnMode.NONE
+            },
+            title = stringResource(R.string.txt_get_all),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_get_all_flashcards),
+            confirmButtonTitle = stringResource(R.string.txt_ok),
+            dismissButtonTitle = stringResource(R.string.txt_no_thanks),
+        )
+    } else {
+        onNavigateToLearn(learningMode, true)
+        learningMode = LearnMode.NONE
     }
 }
 
