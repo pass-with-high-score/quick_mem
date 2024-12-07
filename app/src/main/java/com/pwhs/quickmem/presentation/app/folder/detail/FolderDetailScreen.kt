@@ -52,6 +52,8 @@ import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFold
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -162,7 +164,20 @@ fun FolderDetailScreen(
                         )
                     )
                 }
-                is FolderDetailUiEvent.OnNavigateToTrueFalse -> TODO()
+                is FolderDetailUiEvent.OnNavigateToTrueFalse -> {
+                    navigator.navigate(
+                        LearnByTrueFalseScreenDestination(
+                            studySetId = "",
+                            studySetTitle = "",
+                            studySetDescription = "",
+                            studySetColorId = 0,
+                            studySetSubjectId = 0,
+                            folderId = uiState.id,
+                            learnFrom = LearnFrom.FOLDER,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
                 is FolderDetailUiEvent.OnNavigateToWrite -> TODO()
             }
         }
@@ -393,14 +408,22 @@ fun FolderDetail(
                     icon = R.drawable.ic_tf,
                     containerColor = colorScheme.surface,
                     elevation = 0.dp,
-                    leadingText = stringResource(R.string.txt_coming_soon)
+                    onClick = {
+                        showGetAllDialog = true
+                        learningMode = LearnMode.TRUE_FALSE
+                        showStudyFolderBottomSheet = false
+                    }
                 )
                 LearnModeCard(
                     title = stringResource(R.string.txt_write),
                     icon = R.drawable.ic_write,
                     containerColor = Color.Transparent,
                     elevation = 0.dp,
-                    leadingText = stringResource(R.string.txt_coming_soon)
+                    onClick = {
+                        showGetAllDialog = true
+                        learningMode = LearnMode.WRITE
+                        showStudyFolderBottomSheet = false
+                    }
                 )
             }
         }

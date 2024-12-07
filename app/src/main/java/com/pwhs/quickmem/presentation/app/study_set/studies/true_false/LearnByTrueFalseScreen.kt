@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.studies.true_false.component.TrueFalseButton
@@ -114,6 +115,7 @@ fun LearnByTrueFalseScreen(
             )
         },
         isGetAll = uiState.isGetAll,
+        learnFrom = uiState.learnFrom,
         isPlaySound = uiState.isPlaySound,
         onChangeIsPlaySound = {
             viewModel.onEvent(LearnByTrueFalseUiAction.OnChangeIsPlaySound(it))
@@ -140,7 +142,8 @@ fun LearnByTrueFalse(
     onContinueLearningClicked: () -> Unit = {},
     isGetAll: Boolean = false,
     isPlaySound: Boolean = false,
-    onChangeIsPlaySound: (Boolean) -> Unit = {}
+    onChangeIsPlaySound: (Boolean) -> Unit = {},
+    learnFrom: LearnFrom = LearnFrom.FOLDER
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -176,7 +179,7 @@ fun LearnByTrueFalse(
                     }
                 },
                 actions = {
-                    if (!isEndOfList && isGetAll) {
+                    if (!isEndOfList) {
                         IconButton(
                             onClick = { onChangeIsPlaySound(!isPlaySound) }
                         ) {
@@ -188,14 +191,16 @@ fun LearnByTrueFalse(
                                 modifier = Modifier.size(22.dp)
                             )
                         }
-                        IconButton(
-                            onClick = onRestart
-                        ) {
-                            Icon(
-                                imageVector = Default.RestartAlt,
-                                contentDescription = "Restart",
-                                tint = studySetColor
-                            )
+                        if (learnFrom != LearnFrom.FOLDER && isGetAll) {
+                            IconButton(
+                                onClick = onRestart
+                            ) {
+                                Icon(
+                                    imageVector = Default.RestartAlt,
+                                    contentDescription = "Restart",
+                                    tint = studySetColor
+                                )
+                            }
                         }
                     }
                 }

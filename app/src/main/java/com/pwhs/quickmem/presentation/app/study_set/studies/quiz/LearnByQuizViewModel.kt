@@ -142,7 +142,7 @@ class LearnByQuizViewModel @Inject constructor(
             val studySetId = _uiState.value.studySetId
             val folderId = _uiState.value.folderId
             val learnFrom = _uiState.value.learnFrom
-            val isGetAll = _uiState.value.isEndOfList
+            val isGetAll = _uiState.value.isGetAll
             when (learnFrom) {
                 LearnFrom.STUDY_SET -> {
                     flashCardRepository.getFlashCardsByStudySetId(
@@ -189,7 +189,6 @@ class LearnByQuizViewModel @Inject constructor(
                                 }
                             }
                         }
-
                     }
                 }
 
