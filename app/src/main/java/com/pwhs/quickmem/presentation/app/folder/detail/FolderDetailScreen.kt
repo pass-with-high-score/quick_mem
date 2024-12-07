@@ -54,6 +54,8 @@ import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScre
 import com.ramcosta.composedestinations.generated.destinations.LearnByQuizScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LearnByTrueFalseScreenDestination.invoke
+import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LearnByWriteScreenDestination.invoke
 import com.ramcosta.composedestinations.generated.destinations.ReportScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
@@ -178,7 +180,20 @@ fun FolderDetailScreen(
                         )
                     )
                 }
-                is FolderDetailUiEvent.OnNavigateToWrite -> TODO()
+                is FolderDetailUiEvent.OnNavigateToWrite -> {
+                    navigator.navigate(
+                        LearnByWriteScreenDestination(
+                            studySetId = "",
+                            studySetTitle = "",
+                            studySetDescription = "",
+                            studySetColorId = 0,
+                            studySetSubjectId = 0,
+                            folderId = uiState.id,
+                            learnFrom = LearnFrom.FOLDER,
+                            isGetAll = event.isGetAll
+                        )
+                    )
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.data.enums.WriteStatus
@@ -55,8 +56,12 @@ class LearnByWriteViewModel @Inject constructor(
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 0
+        val folderId = savedStateHandle.get<String>("folderId") ?: ""
+        val learnFrom = savedStateHandle.get<LearnFrom>("learnFrom") ?: LearnFrom.STUDY_SET
         _uiState.update {
             it.copy(
+                folderId = folderId,
+                learnFrom = learnFrom,
                 isGetAll = isGetAll,
                 studySetId = studySetId,
                 studySetTitle = studySetTitle,
@@ -134,51 +139,106 @@ class LearnByWriteViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val studySetId = _uiState.value.studySetId
+            val folderId = _uiState.value.folderId
+            val learnFrom = _uiState.value.learnFrom
             val isGetAll = _uiState.value.isGetAll
-            flashCardRepository.getFlashCardsByStudySetId(
-                token = token,
-                studySetId = studySetId,
-                learnMode = LearnMode.WRITE,
-                isGetAll = isGetAll
-            ).collect { resource ->
-                when (resource) {
-                    is Resources.Error -> {
-                        _uiState.update { it.copy(isLoading = false) }
-                    }
-
-                    is Resources.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-
-                    is Resources.Success -> {
-                        if (resource.data.isNullOrEmpty()) {
-                            _uiState.update {
-                                it.copy(
-                                    learningTime = 0,
-                                    isLoading = false,
-                                    isEndOfList = true
-                                )
+            when (learnFrom) {
+                LearnFrom.STUDY_SET -> {
+                    flashCardRepository.getFlashCardsByStudySetId(
+                        token = token,
+                        studySetId = studySetId,
+                        learnMode = LearnMode.WRITE,
+                        isGetAll = isGetAll
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                _uiState.update { it.copy(isLoading = false) }
                             }
-                            playCompleteSound()
-                            _uiEvent.send(LearnByWriteUiEvent.Finished)
-                            return@collect
+
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
+
+                            is Resources.Success -> {
+                                if (resource.data.isNullOrEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            learningTime = 0,
+                                            isLoading = false,
+                                            isEndOfList = true
+                                        )
+                                    }
+                                    playCompleteSound()
+                                    _uiEvent.send(LearnByWriteUiEvent.Finished)
+                                    return@collect
+                                }
+
+                                val flashCards = resource.data
+                                val currentCard = flashCards.firstOrNull()
+
+                                _uiState.update {
+                                    it.copy(
+                                        flashCardList = flashCards,
+                                        writeQuestion = generateQuestion(currentCard),
+                                        isLoading = false,
+                                        currentFlashCard = currentCard,
+                                        nextFlashCard = flashCards.getOrNull(1)
+                                    )
+                                }
+                            }
                         }
 
-                        val flashCards = resource.data
-                        val currentCard = flashCards.firstOrNull()
+                    }
+                }
 
-                        _uiState.update {
-                            it.copy(
-                                flashCardList = flashCards,
-                                writeQuestion = generateQuestion(currentCard),
-                                isLoading = false,
-                                currentFlashCard = currentCard,
-                                nextFlashCard = flashCards.getOrNull(1)
-                            )
+                LearnFrom.FOLDER -> {
+                    flashCardRepository.getFlashCardsByFolderId(
+                        token = token,
+                        folderId = folderId,
+                        learnMode = LearnMode.WRITE,
+                        isGetAll = isGetAll
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                _uiState.update { it.copy(isLoading = false) }
+                            }
+
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
+
+                            is Resources.Success -> {
+                                if (resource.data.isNullOrEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            learningTime = 0,
+                                            isLoading = false,
+                                            isEndOfList = true
+                                        )
+                                    }
+                                    playCompleteSound()
+                                    _uiEvent.send(LearnByWriteUiEvent.Finished)
+                                    return@collect
+                                }
+
+                                val flashCards = resource.data
+                                val currentCard = flashCards.firstOrNull()
+
+                                _uiState.update {
+                                    it.copy(
+                                        flashCardList = flashCards,
+                                        writeQuestion = generateQuestion(currentCard),
+                                        isLoading = false,
+                                        currentFlashCard = currentCard,
+                                        nextFlashCard = flashCards.getOrNull(1)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
 
+                LearnFrom.CLASS -> TODO()
             }
         }
     }
