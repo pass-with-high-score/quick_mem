@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.data.dto.auth
 
 import com.google.gson.annotations.SerializedName
+import com.pwhs.quickmem.core.data.enums.UserStatus
 
 data class AuthResponseDto(
     @SerializedName("id")
@@ -27,4 +28,10 @@ data class AuthResponseDto(
     val isVerified: Boolean? = null,
     @SerializedName("coin")
     val coin: Int? = null,
+    @SerializedName("bannedAt")
+    val bannedAt: String? = null,
+    @SerializedName("userStatus")
+    val userStatus: String? = null,
+    @SerializedName("bannedReason")
+    val bannedReason: String? = null,
 )

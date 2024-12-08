@@ -80,6 +80,7 @@ class SearchResultViewModel @Inject constructor(
             }
             try {
                 _uiState.update { it.copy(isLoading = true) }
+                Timber.d("datssssa")
                 awaitAll(
                     async { getStudySets() },
                     async { getClasses() },

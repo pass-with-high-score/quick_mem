@@ -101,6 +101,7 @@ class SetNewPasswordViewModel @Inject constructor(
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
+                        _uiState.update { it.copy(isLoading = false) }
                         _uiEvent.send(SetNewPasswordUiEvent.ResetFailure)
                     }
 

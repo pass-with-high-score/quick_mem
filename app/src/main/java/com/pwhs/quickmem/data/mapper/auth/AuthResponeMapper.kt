@@ -14,5 +14,9 @@ fun AuthResponseDto.toModel() = AuthResponseModel(
     accessToken = accessToken,
     refreshToken = refreshToken,
     provider = provider,
-    isVerified = isVerified
+    isVerified = isVerified,
+    coin = coin,
+    bannedAt = bannedAt,
+    userStatus = userStatus,
+    bannedReason = bannedReason
 )

@@ -162,7 +162,7 @@ private fun SignupWithEmail(
                     .padding(innerPadding)
                     .padding(16.dp)
                     .verticalScroll(scrollState)
-                    .padding(top = 40.dp)
+                    .padding(top = 40.dp, bottom = 16.dp)
                     .imePadding(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally

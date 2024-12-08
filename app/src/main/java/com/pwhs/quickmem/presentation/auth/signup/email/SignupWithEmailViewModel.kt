@@ -131,7 +131,7 @@ class SignupWithEmailViewModel @Inject constructor(
                                         _uiState.update {
                                             it.copy(
                                                 isLoading = false,
-                                                emailError = "Sign up failed"
+                                                emailError = signup.message ?: "Sign up failed"
                                             )
                                         }
                                         _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)

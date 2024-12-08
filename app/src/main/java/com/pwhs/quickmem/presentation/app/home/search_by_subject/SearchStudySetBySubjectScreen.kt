@@ -145,7 +145,8 @@ fun SearchStudySetBySubject(
                 SearchTextField(
                     searchQuery = searchQuery,
                     onSearchQueryChange = { searchQuery = it },
-                    placeholder = stringResource(R.string.txt_search_study_sets)
+                    placeholder = stringResource(R.string.txt_search_study_sets),
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
             item {

@@ -13,4 +13,7 @@ data class AuthResponseModel(
     val provider: String? = null,
     val isVerified: Boolean? = null,
     val coin: Int? = null,
+    val bannedAt: String? = null,
+    val userStatus: String? = null,
+    val bannedReason: String? = null,
 )

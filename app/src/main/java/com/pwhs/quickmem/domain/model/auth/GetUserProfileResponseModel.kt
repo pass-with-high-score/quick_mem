@@ -9,5 +9,8 @@ data class GetUserProfileResponseModel(
     val role: String,
     val coin: Int,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
+    val bannedAt: String? = null,
+    val userStatus: String? = null,
+    val bannedReason: String? = null,
 )

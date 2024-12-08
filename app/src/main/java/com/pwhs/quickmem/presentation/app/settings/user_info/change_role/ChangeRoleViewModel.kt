@@ -72,8 +72,8 @@ class ChangeRoleViewModel @Inject constructor(
             val birthday = appManager.userBirthday.firstOrNull() ?: ""
             Timber.d("Birthday: $birthday")
             val dateLong = birthday.toTimestamp()
-            val isUserOver20 = dateLong?.isDateSmallerThan() ?: false
-            if (!isUserOver20) {
+            val isUserUnderAge = dateLong?.isDateSmallerThan() ?: false
+            if (isUserUnderAge) {
                 _uiEvent.send(
                     ChangeRoleUiEvent.ShowUnderageDialog(
                         SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(

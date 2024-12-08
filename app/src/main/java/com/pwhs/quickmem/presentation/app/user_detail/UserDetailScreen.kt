@@ -170,7 +170,7 @@ fun UserDetailScreen(
         onReportClick = {
             navigator.navigate(
                 ReportScreenDestination(
-                    reportType = ReportTypeEnum.USER_DETAIL,
+                    reportType = ReportTypeEnum.USER,
                     reportedEntityId = uiState.userId,
                     ownerOfReportedEntity = uiState.userId
                 )

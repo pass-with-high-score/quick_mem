@@ -25,6 +25,7 @@ import com.pwhs.quickmem.domain.model.classes.UpdateClassRequestModel
 import com.pwhs.quickmem.domain.model.classes.UpdateClassResponseModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -147,24 +148,22 @@ class ClassRepositoryImpl @Inject constructor(
         title: String,
         page: Int?
     ): Flow<PagingData<GetClassByOwnerResponseModel>> {
-        return flow {
-            if (token.isEmpty()) {
-                return@flow
-            }
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = false
-                ),
-                pagingSourceFactory = {
-                    ClassPagingSource(
-                        classRemoteDataSource,
-                        token,
-                        title
-                    )
-                }
-            ).flow
+        if (token.isEmpty()) {
+            return emptyFlow()
         }
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                ClassPagingSource(
+                    classRemoteDataSource,
+                    token,
+                    title
+                )
+            }
+        ).flow
     }
 
     override suspend fun getClassByCode(

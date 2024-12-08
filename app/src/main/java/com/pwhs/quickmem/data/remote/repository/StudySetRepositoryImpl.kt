@@ -30,6 +30,7 @@ import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
 import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -244,29 +245,28 @@ class StudySetRepositoryImpl @Inject constructor(
         subjectId: Int?,
         isAIGenerated: Boolean?
     ): Flow<PagingData<GetStudySetResponseModel>> {
-        return flow {
-            if (token.isEmpty()) {
-                return@flow
-            }
-            Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = false
-                ),
-                pagingSourceFactory = {
-                    StudySetPagingSource(
-                        studySetRemoteDataSource,
-                        token,
-                        title,
-                        size,
-                        creatorType,
-                        colorId,
-                        subjectId,
-                        isAIGenerated
-                    )
-                }
-            ).flow
+        if (token.isEmpty()) {
+            return emptyFlow()
         }
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                StudySetPagingSource(
+                    studySetRemoteDataSource,
+                    token,
+                    title,
+                    size,
+                    creatorType,
+                    colorId,
+                    subjectId,
+                    isAIGenerated
+                )
+            }
+        ).flow
+
     }
 
     override suspend fun getStudySetByCode(
@@ -333,24 +333,23 @@ class StudySetRepositoryImpl @Inject constructor(
         subjectId: Int,
         page: Int
     ): Flow<PagingData<GetStudySetResponseModel>> {
-        return flow {
-            if (token.isEmpty()) {
-                return@flow
-            }
-            Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = false
-                ),
-                pagingSourceFactory = {
-                    StudySetBySubjectPagingSource(
-                        searchStudySetBySubjectRemoteDataSource,
-                        token,
-                        subjectId,
-                    )
-                }
-            ).flow
+        if (token.isEmpty()) {
+            return emptyFlow()
         }
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                StudySetBySubjectPagingSource(
+                    searchStudySetBySubjectRemoteDataSource,
+                    token,
+                    subjectId,
+                )
+            }
+        ).flow
+
     }
 
     override suspend fun saveRecentAccessStudySet(

@@ -18,6 +18,7 @@ import com.pwhs.quickmem.domain.model.folder.UpdateFolderRequestModel
 import com.pwhs.quickmem.domain.model.folder.UpdateFolderResponseModel
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -160,24 +161,22 @@ class FolderRepositoryImpl @Inject constructor(
         title: String,
         page: Int?
     ): Flow<PagingData<GetFolderResponseModel>> {
-        return flow {
-            if (token.isEmpty()) {
-                return@flow
-            }
-            Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = false
-                ),
-                pagingSourceFactory = {
-                    FolderPagingSource(
-                        folderRemoteDataSource = folderRemoteDataSource,
-                        token = token,
-                        title = title
-                    )
-                }
-            ).flow
+        if (token.isEmpty()) {
+            return emptyFlow()
         }
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                FolderPagingSource(
+                    folderRemoteDataSource = folderRemoteDataSource,
+                    token = token,
+                    title = title
+                )
+            }
+        ).flow
     }
 
     override suspend fun getFolderByLinkCode(

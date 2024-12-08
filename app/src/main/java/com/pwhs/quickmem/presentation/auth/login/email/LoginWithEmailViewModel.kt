@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.data.enums.AuthProvider
+import com.pwhs.quickmem.core.data.enums.UserStatus
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -123,6 +124,13 @@ class LoginWithEmailViewModel @Inject constructor(
                                         if (login.data?.isVerified == false) {
                                             checkAccountVerification().also {
                                                 _uiEvent.send(LoginWithEmailUiEvent.NavigateToVerifyEmail)
+                                            }
+                                        } else if (login.data?.userStatus == UserStatus.BLOCKED.status) {
+                                            _uiState.update {
+                                                it.copy(
+                                                    emailError = "Your account has been blocked",
+                                                    isLoading = false
+                                                )
                                             }
                                         } else {
                                             tokenManager.saveAccessToken(

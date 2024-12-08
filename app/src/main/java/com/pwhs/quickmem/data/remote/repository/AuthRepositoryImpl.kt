@@ -46,7 +46,9 @@ import com.pwhs.quickmem.domain.model.users.UpdateCoinResponseModel
 import com.pwhs.quickmem.domain.model.users.UserDetailResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -92,6 +94,13 @@ class AuthRepositoryImpl @Inject constructor(
             try {
                 val response = apiService.signUp(signUpRequestModel.toDto())
                 emit(Resources.Success(response.toModel()))
+            } catch (e: HttpException) {
+                if (e.code() == 409) {
+                    emit(Resources.Error("User zalready exists"))
+                } else {
+                    Timber.e(e)
+                    emit(Resources.Error(e.toString()))
+                }
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
@@ -338,24 +347,23 @@ class AuthRepositoryImpl @Inject constructor(
         username: String,
         page: Int?
     ): Flow<PagingData<SearchUserResponseModel>> {
-        return flow {
-            if (token.isEmpty()) {
-                return@flow
-            }
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = false
-                ),
-                pagingSourceFactory = {
-                    UserPagingSource(
-                        userRemoteDataResource,
-                        token,
-                        username
-                    )
-                }
-            ).flow
+        if (token.isEmpty()) {
+            return emptyFlow()
         }
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                UserPagingSource(
+                    userRemoteDataResource,
+                    token,
+                    username
+                )
+            }
+        ).flow
+
     }
 
     override suspend fun getUserProfile(

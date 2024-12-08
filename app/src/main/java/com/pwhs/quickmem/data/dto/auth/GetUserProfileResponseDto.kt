@@ -20,5 +20,11 @@ data class GetUserProfileResponseDto(
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")
-    val updatedAt: String
+    val updatedAt: String,
+    @SerializedName("bannedAt")
+    val bannedAt: String? = null,
+    @SerializedName("userStatus")
+    val userStatus: String? = null,
+    @SerializedName("bannedReason")
+    val bannedReason: String? = null,
 )

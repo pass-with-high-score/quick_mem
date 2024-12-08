@@ -29,7 +29,7 @@ enum class ReportTypeEnum(
             R.string.txt_class_joining_trouble
         )
     ),
-    USER_DETAIL(
+    USER(
         title = R.string.txt_report_this_user,
         questionText = R.string.txt_why_report_this_user,
         options = listOf(
