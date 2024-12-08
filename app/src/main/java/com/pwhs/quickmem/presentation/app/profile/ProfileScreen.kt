@@ -68,7 +68,7 @@ import com.pwhs.quickmem.ui.theme.streakTextColor
 import com.pwhs.quickmem.ui.theme.streakTitleColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.ChoosePictureScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ChangeAvatarScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
@@ -83,7 +83,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    resultBackNavigator: ResultRecipient<ChoosePictureScreenDestination, Boolean>
+    resultBackNavigator: ResultRecipient<ChangeAvatarScreenDestination, Boolean>
 ) {
 
     resultBackNavigator.onNavResult { result ->
@@ -111,7 +111,7 @@ fun ProfileScreen(
             viewModel.onEvent(ProfileUiAction.Refresh)
         },
         onAvatarClick = {
-            navigator.navigate(ChoosePictureScreenDestination)
+            navigator.navigate(ChangeAvatarScreenDestination)
         },
         navigateToSettings = {
             navigator.navigate(SettingsScreenDestination)

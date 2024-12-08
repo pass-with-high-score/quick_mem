@@ -456,7 +456,7 @@
     <string name="txt_set_inappropriate">Nội dung không phù hợp</string>
     <string name="txt_set_cheating">Bộ học liệu này đang được sử dụng để gian lận</string>
     <string name="txt_set_ip_violation">Bộ học liệu này vi phạm quyền sở hữu trí tuệ của tôi</string>
-    <string name="txt_flip">Lật</string>
+    <string name="txt_no_ads_found">Không thấy quảng cáo</string>
     <string name="txt_time_spent_on_each_learning_type">Thời gian dành cho mỗi kiểu học</string>
     <string name="txt_in_one_app">Trong một ứng dụng.</string>
     <string name="txt_all_the_tools_for_learning_success">Tất cả các công cụ để\nthành công trong học tập.\n</string>

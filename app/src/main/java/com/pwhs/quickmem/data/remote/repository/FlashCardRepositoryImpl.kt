@@ -31,7 +31,10 @@ class FlashCardRepositoryImpl @Inject constructor(
         createFlashCardModel: CreateFlashCardModel
     ): Flow<Resources<FlashCardResponseModel>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.createFlashCard(
                     token = token,
@@ -50,7 +53,10 @@ class FlashCardRepositoryImpl @Inject constructor(
         id: String
     ): Flow<Resources<Unit>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.deleteFlashCard(token = token, id = id)
                 emit(Resources.Success(response))
@@ -70,14 +76,16 @@ class FlashCardRepositoryImpl @Inject constructor(
         isStarred: Boolean
     ): Flow<Resources<UpdateFlashCardResponseModel>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.toggleStarredFlashCard(
                     token = token,
                     id = id,
                     toggleStarredFlashCardDto = ToggleStarredFlashCardDto(isStarred)
                 )
-                Timber.d("toggleStarredFlashCard: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
@@ -95,15 +103,16 @@ class FlashCardRepositoryImpl @Inject constructor(
         editFlashCardModel: EditFlashCardModel
     ): Flow<Resources<FlashCardResponseModel>> {
         return flow {
-            emit(Resources.Loading(true))
-            Timber.d("updateFlashCard: $editFlashCardModel")
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.updateFlashCard(
                     token = token,
                     id = id,
                     editFlashCardDto = editFlashCardModel.toDto()
                 )
-                Timber.d("updateFlashCard: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
@@ -121,6 +130,9 @@ class FlashCardRepositoryImpl @Inject constructor(
         flipStatus: String
     ): Flow<Resources<UpdateFlashCardResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             try {
                 val response =
                     apiService.updateFlipFlashCard(
@@ -128,7 +140,6 @@ class FlashCardRepositoryImpl @Inject constructor(
                         id = id,
                         flipFlashCardDto = FlipFlashCardDto(flipStatus)
                     )
-                Timber.d("updateFlipFlashCard: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
@@ -146,6 +157,9 @@ class FlashCardRepositoryImpl @Inject constructor(
         rating: String
     ): Flow<Resources<UpdateFlashCardResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             try {
                 val response =
                     apiService.updateRatingFlashCard(
@@ -153,7 +167,6 @@ class FlashCardRepositoryImpl @Inject constructor(
                         id = id,
                         ratingFlashCardDto = RatingFlashCardDto(rating)
                     )
-                Timber.d("updateFlashCardRating: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
@@ -171,6 +184,9 @@ class FlashCardRepositoryImpl @Inject constructor(
         quizStatus: String
     ): Flow<Resources<UpdateFlashCardResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             try {
                 val response =
                     apiService.updateQuizStatus(
@@ -178,7 +194,6 @@ class FlashCardRepositoryImpl @Inject constructor(
                         id = id,
                         quizStatusDto = QuizStatusFlashCardDto(quizStatus)
                     )
-                Timber.d("updateQuizStatus: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
@@ -196,13 +211,15 @@ class FlashCardRepositoryImpl @Inject constructor(
         trueFalseStatus: String
     ): Flow<Resources<UpdateFlashCardResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             try {
                 val response = apiService.updateTrueFalseStatus(
                     token = token,
                     id = id,
                     trueFalseStatusDto = TrueFalseStatusFlashCardDto(trueFalseStatus)
                 )
-                Timber.d("updateTrueFalseStatus: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
@@ -220,13 +237,15 @@ class FlashCardRepositoryImpl @Inject constructor(
         writeStatus: String
     ): Flow<Resources<UpdateFlashCardResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             try {
                 val response = apiService.updateWriteStatus(
                     token = token,
                     id = id,
                     writeStatusDto = WriteStatusFlashCardDto(writeStatus)
                 )
-                Timber.d("updateWriteStatus: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: HttpException) {
                 Timber.e(e)
@@ -245,7 +264,10 @@ class FlashCardRepositoryImpl @Inject constructor(
         isGetAll: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.getFlashCardsByStudySetId(
                     token = token,
@@ -271,7 +293,10 @@ class FlashCardRepositoryImpl @Inject constructor(
         isGetAll: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.getFlashCardsByFolderId(
                     token = token,

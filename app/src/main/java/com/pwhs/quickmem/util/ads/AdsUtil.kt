@@ -13,10 +13,10 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import com.pwhs.quickmem.MainActivity
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.utils.AppConstant.INTERSTITIAL_ADS_ID
 import com.pwhs.quickmem.core.utils.AppConstant.REWARDED_INTERSTITIAL_ADS_ID
 import com.pwhs.quickmem.core.utils.AppConstant.REWARD_ADS_ID
-import timber.log.Timber
 
 object AdsUtil {
     fun interstitialAds(
@@ -99,15 +99,14 @@ object AdsUtil {
             object : RewardedInterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     super.onAdFailedToLoad(error)
-                    Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_no_ads_found), Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onAdLoaded(adLoaded: RewardedInterstitialAd) {
                     super.onAdLoaded(adLoaded)
                     if (context is MainActivity) {
                         adLoaded.show(context) {
-                            // The user earned the reward
-                            Timber.d("User earned the reward")
                             onAdWatched()
                         }
                     }

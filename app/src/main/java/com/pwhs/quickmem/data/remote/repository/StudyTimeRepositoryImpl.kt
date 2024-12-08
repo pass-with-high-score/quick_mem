@@ -21,6 +21,9 @@ class StudyTimeRepositoryImpl @Inject constructor(
         studySetId: String
     ): Flow<Resources<GetStudyTimeByStudySetResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getStudyTimeByStudySet(token, studySetId)
@@ -37,6 +40,9 @@ class StudyTimeRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<GetStudyTimeByUserResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getStudyTimeByUser(token, userId)
@@ -53,6 +59,9 @@ class StudyTimeRepositoryImpl @Inject constructor(
         createStudyTimeModel: CreateStudyTimeModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.createStudyTime(token, createStudyTimeModel.toDto())

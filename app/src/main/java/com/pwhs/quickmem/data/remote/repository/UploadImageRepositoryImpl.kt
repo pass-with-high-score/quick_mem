@@ -27,18 +27,19 @@ class UploadImageRepositoryImpl @Inject constructor(
         imageUri: Uri
     ): Flow<Resources<UploadImageResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val realPath = RealPathUtil.getRealPath(context = context, imageUri)
                 val imageFile = realPath?.let { File(it) }
 
                 if (imageFile != null) {
-                    // Log image size
-                    Timber.d("Image size: ${imageFile.length()} bytes")
                     val requestUploadImageFile = MultipartBody.Part.createFormData(
-                        "flashcard",
-                        imageFile.name,
-                        imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                        name = "flashcard",
+                        filename = imageFile.name,
+                        body = imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
                     )
                     val response = apiService.uploadImage(token, requestUploadImageFile)
                     emit(Resources.Success(response.toUploadImageResponseModel()))
@@ -56,6 +57,9 @@ class UploadImageRepositoryImpl @Inject constructor(
         imageURL: String
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.deleteImage(token, DeleteImageDto(imageURL))

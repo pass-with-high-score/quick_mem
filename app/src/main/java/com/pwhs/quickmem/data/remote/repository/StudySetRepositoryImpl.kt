@@ -44,6 +44,9 @@ class StudySetRepositoryImpl @Inject constructor(
         createStudySetRequestModel: CreateStudySetRequestModel
     ): Flow<Resources<CreateStudySetResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.createStudySet(token, createStudySetRequestModel.toDto())
@@ -59,6 +62,9 @@ class StudySetRepositoryImpl @Inject constructor(
         studySetId: String
     ): Flow<Resources<GetStudySetResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getStudySetById(token, studySetId)
@@ -78,6 +84,9 @@ class StudySetRepositoryImpl @Inject constructor(
         folderId: String?
     ): Flow<Resources<List<GetStudySetResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getStudySetsByOwnerId(token, ownerId, classId, folderId)
@@ -95,6 +104,9 @@ class StudySetRepositoryImpl @Inject constructor(
         updateStudySetRequestModel: UpdateStudySetRequestModel
     ): Flow<Resources<UpdateStudySetResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response =
@@ -112,6 +124,9 @@ class StudySetRepositoryImpl @Inject constructor(
         studySetId: String
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.deleteStudySet(token, studySetId)
@@ -129,6 +144,9 @@ class StudySetRepositoryImpl @Inject constructor(
         resetType: String
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.resetStudySetProgress(token, studySetId, resetType)
@@ -145,6 +163,9 @@ class StudySetRepositoryImpl @Inject constructor(
         addStudySetToFolderRequestModel: AddStudySetToFolderRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.addStudySetToFolder(token, addStudySetToFolderRequestModel.toDto())
@@ -161,6 +182,9 @@ class StudySetRepositoryImpl @Inject constructor(
         addStudySetToClassRequestModel: AddStudySetToClassRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.addStudySetToClass(token, addStudySetToClassRequestModel.toDto())
@@ -177,6 +201,9 @@ class StudySetRepositoryImpl @Inject constructor(
         addStudySetToFoldersRequestModel: AddStudySetToFoldersRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.addStudySetToFolders(token, addStudySetToFoldersRequestModel.toDto())
@@ -193,6 +220,9 @@ class StudySetRepositoryImpl @Inject constructor(
         addStudySetToClassesRequestModel: AddStudySetToClassesRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.addStudySetToClasses(token, addStudySetToClassesRequestModel.toDto())
@@ -214,24 +244,29 @@ class StudySetRepositoryImpl @Inject constructor(
         subjectId: Int?,
         isAIGenerated: Boolean?
     ): Flow<PagingData<GetStudySetResponseModel>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                StudySetPagingSource(
-                    studySetRemoteDataSource,
-                    token,
-                    title,
-                    size,
-                    creatorType,
-                    colorId,
-                    subjectId,
-                    isAIGenerated
-                )
+        return flow {
+            if (token.isEmpty()) {
+                return@flow
             }
-        ).flow
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    StudySetPagingSource(
+                        studySetRemoteDataSource,
+                        token,
+                        title,
+                        size,
+                        creatorType,
+                        colorId,
+                        subjectId,
+                        isAIGenerated
+                    )
+                }
+            ).flow
+        }
     }
 
     override suspend fun getStudySetByCode(
@@ -239,6 +274,9 @@ class StudySetRepositoryImpl @Inject constructor(
         code: String
     ): Flow<Resources<GetStudySetResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getStudySetByLinkCode(token, code)
@@ -256,6 +294,9 @@ class StudySetRepositoryImpl @Inject constructor(
         newOwnerId: String
     ): Flow<Resources<CreateStudySetResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val request =
@@ -273,6 +314,9 @@ class StudySetRepositoryImpl @Inject constructor(
         token: String
     ): Flow<Resources<List<GetTop5SubjectResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getTop5Subject(token)
@@ -289,19 +333,24 @@ class StudySetRepositoryImpl @Inject constructor(
         subjectId: Int,
         page: Int
     ): Flow<PagingData<GetStudySetResponseModel>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                StudySetBySubjectPagingSource(
-                    searchStudySetBySubjectRemoteDataSource,
-                    token,
-                    subjectId,
-                )
+        return flow {
+            if (token.isEmpty()) {
+                return@flow
             }
-        ).flow
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    StudySetBySubjectPagingSource(
+                        searchStudySetBySubjectRemoteDataSource,
+                        token,
+                        subjectId,
+                    )
+                }
+            ).flow
+        }
     }
 
     override suspend fun saveRecentAccessStudySet(
@@ -309,6 +358,9 @@ class StudySetRepositoryImpl @Inject constructor(
         saveRecentAccessStudySetRequestModel: SaveRecentAccessStudySetRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.saveRecentStudySet(token, saveRecentAccessStudySetRequestModel.toDto())
@@ -325,6 +377,9 @@ class StudySetRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<List<GetStudySetResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getRecentStudySet(token, userId)
@@ -341,6 +396,9 @@ class StudySetRepositoryImpl @Inject constructor(
         createStudySetByAIRequestModel: CreateStudySetByAIRequestModel
     ): Flow<Resources<CreateStudySetResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response =

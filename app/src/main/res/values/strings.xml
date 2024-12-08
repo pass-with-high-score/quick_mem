@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">QuickMem</string>
-    <!--    Onboarding-->
     <string name="txt_get_started">Get Started</string>
     <string name="txt_next">Next</string>
     <string name="txt_skip">Skip</string>
@@ -459,7 +458,7 @@
     <string name="txt_set_inappropriate">It is inappropriate</string>
     <string name="txt_set_cheating">It is being used to cheat</string>
     <string name="txt_set_ip_violation">It violates my intellectual property rights</string>
-    <string name="txt_flip">Flip</string>
+    <string name="txt_no_ads_found">No ads found</string>
     <string name="txt_time_spent_on_each_learning_type">Time spent on each learning type</string>
     <string name="txt_in_one_app">In one app.</string>
     <string name="txt_all_the_tools_for_learning_success">All the tools for \nlearning success.\n</string>

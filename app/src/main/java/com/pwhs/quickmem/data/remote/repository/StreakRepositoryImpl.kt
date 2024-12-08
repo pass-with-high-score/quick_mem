@@ -21,6 +21,9 @@ class StreakRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<GetStreakModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getStreaksByUserId(token, userId)
@@ -37,6 +40,9 @@ class StreakRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<StreakModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.updateStreak(token, IncreaseStreakDto(userId))
@@ -53,6 +59,9 @@ class StreakRepositoryImpl @Inject constructor(
         limit: Int?
     ): Flow<Resources<List<GetTopStreakResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getTopStreaks(token, limit)

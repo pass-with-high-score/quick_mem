@@ -17,6 +17,9 @@ class ReportRepositoryImpl @Inject constructor(
         createReportRequestModel: CreateReportRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.createReport(

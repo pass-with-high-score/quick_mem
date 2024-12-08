@@ -134,7 +134,10 @@ class AuthRepositoryImpl @Inject constructor(
         updateFullNameRequestModel: UpdateFullNameRequestModel
     ): Flow<Resources<UpdateFullNameResponseModel>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.updateFullName(
                     token,
@@ -153,6 +156,9 @@ class AuthRepositoryImpl @Inject constructor(
         updateUsernameRequestModel: UpdateUsernameRequestModel
     ): Flow<Resources<UpdateUsernameResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.updateUsername(
@@ -173,6 +179,9 @@ class AuthRepositoryImpl @Inject constructor(
         updateEmailRequestModel: UpdateEmailRequestModel
     ): Flow<Resources<UpdateEmailResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.updateEmail(
@@ -192,6 +201,9 @@ class AuthRepositoryImpl @Inject constructor(
         changePasswordRequestModel: ChangePasswordRequestModel
     ): Flow<Resources<ChangePasswordResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.changePassword(
@@ -241,6 +253,9 @@ class AuthRepositoryImpl @Inject constructor(
         verifyPasswordRequestModel: VerifyPasswordRequestModel
     ): Flow<Resources<VerifyPasswordResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.verifyPassword(
@@ -261,8 +276,11 @@ class AuthRepositoryImpl @Inject constructor(
         isOwner: Boolean
     ): Flow<Resources<UserDetailResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
-                emit(Resources.Loading())
                 val response = apiService.getUserDetail(
                     token,
                     userId,
@@ -299,6 +317,9 @@ class AuthRepositoryImpl @Inject constructor(
         updateAvatarRequestModel: UpdateAvatarRequestModel
     ): Flow<Resources<UpdateAvatarResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.updateAvatar(
@@ -317,19 +338,24 @@ class AuthRepositoryImpl @Inject constructor(
         username: String,
         page: Int?
     ): Flow<PagingData<SearchUserResponseModel>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                UserPagingSource(
-                    userRemoteDataResource,
-                    token,
-                    username
-                )
+        return flow {
+            if (token.isEmpty()) {
+                return@flow
             }
-        ).flow
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    UserPagingSource(
+                        userRemoteDataResource,
+                        token,
+                        username
+                    )
+                }
+            ).flow
+        }
     }
 
     override suspend fun getUserProfile(
@@ -337,6 +363,9 @@ class AuthRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<GetUserProfileResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getUserProfile(token, userId)
@@ -353,6 +382,9 @@ class AuthRepositoryImpl @Inject constructor(
         changeRoleRequestModel: ChangeRoleRequestModel
     ): Flow<Resources<ChangeRoleResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.changeRole(
@@ -372,6 +404,9 @@ class AuthRepositoryImpl @Inject constructor(
         updateCoinRequestModel: UpdateCoinRequestModel
     ): Flow<Resources<UpdateCoinResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.updateCoin(

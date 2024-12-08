@@ -63,7 +63,8 @@ class AuthSocialViewModel @Inject constructor(
         fullName: String,
         avatarUrl: String,
         token: String,
-        provider: String
+        provider: String,
+        isSignUp: Boolean
     ) {
         Timber.d(token)
         _uiState.value = AuthSocialUiState(
@@ -71,7 +72,8 @@ class AuthSocialViewModel @Inject constructor(
             fullName = fullName,
             avatarUrl = avatarUrl,
             token = token,
-            provider = AuthProvider.valueOf(provider)
+            provider = AuthProvider.valueOf(provider),
+            isSignUp = isSignUp
         )
     }
 

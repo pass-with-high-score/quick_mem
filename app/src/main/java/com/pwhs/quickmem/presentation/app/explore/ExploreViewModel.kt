@@ -24,7 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -50,25 +49,16 @@ class ExploreViewModel @Inject constructor(
 
     init {
         val languageCode = getApplication<Application>().getLanguageCode()
-        viewModelScope.launch {
-            combine(appManager.userId, appManager.userCoins) { userId, coins ->
-                _uiState.update {
-                    it.copy(
-                        ownerId = userId,
-                        coins = coins,
-                        language = languageCode
-                    )
-                }
-            }.collectLatest {
-                getTopStreaks()
-                getCustomerInfo()
-            }
-        }
+        _uiState.update { it.copy(language = languageCode) }
+        getUserCoin()
+        getTopStreaks()
+        getCustomerInfo()
     }
 
     fun onEvent(event: ExploreUiAction) {
         when (event) {
             ExploreUiAction.RefreshTopStreaks -> {
+                getUserCoin()
                 getTopStreaks()
                 getCustomerInfo()
             }
@@ -268,5 +258,19 @@ class ExploreViewModel @Inject constructor(
                 Timber.e(error.message)
             }
         })
+    }
+
+    private fun getUserCoin() {
+        viewModelScope.launch {
+            appManager.userId.combine(appManager.userCoins) { userId, coins ->
+                _uiState.update {
+                    it.copy(
+                        ownerId = userId,
+                        coins = coins
+                    )
+                }
+            }
+
+        }
     }
 }

@@ -128,7 +128,7 @@ fun TopStreakScreen(
                     thickness = 1.dp,
                 )
             }
-            items(topStreaks.size, key = { it }) { index ->
+            items(topStreaks.size) { index ->
                 val topStreak = topStreaks[index]
                 StreakItem(
                     rank = index + 1,

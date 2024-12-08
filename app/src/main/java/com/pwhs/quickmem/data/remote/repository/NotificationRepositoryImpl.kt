@@ -21,7 +21,10 @@ class NotificationRepositoryImpl @Inject constructor(
         token: String
     ): Flow<Resources<List<GetNotificationResponseModel>>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val notifications = apiService.getNotificationsByUserId(token, userId)
                     .map { it.toModel() }
@@ -40,7 +43,10 @@ class NotificationRepositoryImpl @Inject constructor(
         token: String
     ): Flow<Resources<Unit>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val requestDto = MarkNotificationReadRequestDto(notificationId, true)
                 apiService.markNotificationAsRead(token, notificationId, requestDto)
@@ -58,7 +64,10 @@ class NotificationRepositoryImpl @Inject constructor(
         token: String
     ): Flow<Resources<Unit>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 apiService.deleteNotification(token, notificationId)
                 emit(Resources.Success(Unit))

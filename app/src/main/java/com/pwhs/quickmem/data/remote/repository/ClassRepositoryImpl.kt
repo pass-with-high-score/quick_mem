@@ -38,7 +38,10 @@ class ClassRepositoryImpl @Inject constructor(
         createClassRequestModel: CreateClassRequestModel
     ): Flow<Resources<CreateClassResponseModel>> {
         return flow {
-            emit(Resources.Loading(true))
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
             try {
                 val response = apiService.createClass(
                     token, createClassRequestModel.toDto()
@@ -57,6 +60,9 @@ class ClassRepositoryImpl @Inject constructor(
         classId: String
     ): Flow<Resources<GetClassDetailResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getClassByID(
@@ -80,6 +86,9 @@ class ClassRepositoryImpl @Inject constructor(
         studySetId: String?
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getClassByOwnerID(token, userId, folderId, studySetId)
@@ -98,6 +107,9 @@ class ClassRepositoryImpl @Inject constructor(
         updateClassRequestModel: UpdateClassRequestModel
     ): Flow<Resources<UpdateClassResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.updateClass(
@@ -114,6 +126,9 @@ class ClassRepositoryImpl @Inject constructor(
 
     override suspend fun deleteClass(token: String, classId: String): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.deleteClass(
@@ -132,19 +147,24 @@ class ClassRepositoryImpl @Inject constructor(
         title: String,
         page: Int?
     ): Flow<PagingData<GetClassByOwnerResponseModel>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                ClassPagingSource(
-                    classRemoteDataSource,
-                    token,
-                    title
-                )
+        return flow {
+            if (token.isEmpty()) {
+                return@flow
             }
-        ).flow
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    ClassPagingSource(
+                        classRemoteDataSource,
+                        token,
+                        title
+                    )
+                }
+            ).flow
+        }
     }
 
     override suspend fun getClassByCode(
@@ -153,15 +173,16 @@ class ClassRepositoryImpl @Inject constructor(
         classCode: String
     ): Flow<Resources<GetClassDetailResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
-                Timber.d("getClassByCode: token:  $token, userId:  $userId, classCode: $classCode")
                 val response = apiService.getClassByJoinToken(
                     token = token,
                     userId = userId,
                     joinToken = classCode
                 )
-                Timber.d("getClassByCode: $response")
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -175,6 +196,9 @@ class ClassRepositoryImpl @Inject constructor(
         joinClassRequestModel: JoinClassRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.joinClass(token, joinClassRequestModel.toDto())
@@ -191,6 +215,9 @@ class ClassRepositoryImpl @Inject constructor(
         exitClassRequestModel: ExitClassRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.exitClass(token, exitClassRequestModel.toDto())
@@ -207,6 +234,9 @@ class ClassRepositoryImpl @Inject constructor(
         removeMembersRequestModel: RemoveMembersRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.removeMembers(token, removeMembersRequestModel.toDto())
@@ -223,6 +253,9 @@ class ClassRepositoryImpl @Inject constructor(
         deleteStudySetsRequestModel: DeleteStudySetsRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.deleteStudySetInClass(token, deleteStudySetsRequestModel.toDto())
@@ -239,6 +272,9 @@ class ClassRepositoryImpl @Inject constructor(
         deleteFolderRequestModel: DeleteFolderRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.deleteFolderInClass(token, deleteFolderRequestModel.toDto())
@@ -255,6 +291,9 @@ class ClassRepositoryImpl @Inject constructor(
         saveRecentAccessClassRequestModel: SaveRecentAccessClassRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.saveRecentClass(token, saveRecentAccessClassRequestModel.toDto())
@@ -271,6 +310,9 @@ class ClassRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<List<GetClassByOwnerResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getRecentClass(token, userId)
@@ -287,6 +329,9 @@ class ClassRepositoryImpl @Inject constructor(
         inviteToClassRequestModel: InviteToClassRequestModel
     ): Flow<Resources<InviteToClassResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.inviteUserToClass(

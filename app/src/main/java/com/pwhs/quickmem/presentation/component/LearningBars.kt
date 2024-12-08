@@ -43,7 +43,7 @@ fun LearningBars(
                 .padding(16.dp),
             data = listOf(
                 Bars(
-                    label = stringResource(R.string.txt_flip),
+                    label = stringResource(R.string.txt_flip_card),
                     values = listOf(
                         Bars.Data(
                             value = (studyTime?.flip?.toDouble() ?: 0.0) / 1000,

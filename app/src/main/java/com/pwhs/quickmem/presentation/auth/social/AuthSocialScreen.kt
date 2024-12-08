@@ -52,8 +52,8 @@ import timber.log.Timber
 
 @Destination<RootGraph>(
     deepLinks = [
-        DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}"),
-        DeepLink(uriPattern = "quickmem://oauth/facebook/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}"),
+        DeepLink(uriPattern = "quickmem://oauth/google/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}&isSignUp={isSignUp}"),
+        DeepLink(uriPattern = "quickmem://oauth/facebook/callback?token={token}&email={email}&fullName={fullName}&provider={provider}&picture={picture}&isSignUp={isSignUp}"),
     ]
 )
 @Composable
@@ -66,11 +66,19 @@ fun AuthSocialScreen(
     fullName: String = "",
     provider: String = "",
     picture: String = "",
+    isSignUp: Boolean = false
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    LaunchedEffect(email, token, fullName, picture, provider) {
-        viewModel.initDataDeeplink(email, fullName, picture, token, provider)
+    LaunchedEffect(email, token, fullName, picture, provider, isSignUp) {
+        viewModel.initDataDeeplink(
+            email = email,
+            fullName = fullName,
+            avatarUrl = picture,
+            token = token,
+            provider = provider,
+            isSignUp = isSignUp
+        )
     }
 
     LaunchedEffect(key1 = true) {

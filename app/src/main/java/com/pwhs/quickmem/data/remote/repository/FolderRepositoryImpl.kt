@@ -31,6 +31,9 @@ class FolderRepositoryImpl @Inject constructor(
         createFolderRequestModel: CreateFolderRequestModel
     ): Flow<Resources<CreateFolderResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.createFolder(
@@ -49,6 +52,9 @@ class FolderRepositoryImpl @Inject constructor(
         folderId: String
     ): Flow<Resources<GetFolderResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getFolderById(token = token, id = folderId)
@@ -66,6 +72,9 @@ class FolderRepositoryImpl @Inject constructor(
         updateFolderRequestModel: UpdateFolderRequestModel
     ): Flow<Resources<UpdateFolderResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response =
@@ -89,6 +98,9 @@ class FolderRepositoryImpl @Inject constructor(
         studySetId: String?
     ): Flow<Resources<List<GetFolderResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getFoldersByOwnerId(
@@ -107,6 +119,9 @@ class FolderRepositoryImpl @Inject constructor(
 
     override suspend fun deleteFolder(token: String, folderId: String): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.deleteFolder(token = token, id = folderId)
@@ -123,6 +138,9 @@ class FolderRepositoryImpl @Inject constructor(
         addFolderToClassRequestModel: AddFolderToClassRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.addFolderToClass(
@@ -142,19 +160,24 @@ class FolderRepositoryImpl @Inject constructor(
         title: String,
         page: Int?
     ): Flow<PagingData<GetFolderResponseModel>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                FolderPagingSource(
-                    folderRemoteDataSource = folderRemoteDataSource,
-                    token = token,
-                    title = title
-                )
+        return flow {
+            if (token.isEmpty()) {
+                return@flow
             }
-        ).flow
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    FolderPagingSource(
+                        folderRemoteDataSource = folderRemoteDataSource,
+                        token = token,
+                        title = title
+                    )
+                }
+            ).flow
+        }
     }
 
     override suspend fun getFolderByLinkCode(
@@ -162,6 +185,9 @@ class FolderRepositoryImpl @Inject constructor(
         code: String
     ): Flow<Resources<CreateFolderResponseModel>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getFolderByLinkCode(token = token, code = code)
@@ -178,6 +204,9 @@ class FolderRepositoryImpl @Inject constructor(
         saveRecentAccessFolderRequestModel: SaveRecentAccessFolderRequestModel
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.saveRecentFolder(
@@ -197,6 +226,9 @@ class FolderRepositoryImpl @Inject constructor(
         userId: String
     ): Flow<Resources<List<GetFolderResponseModel>>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 val response = apiService.getRecentFolder(token = token, userId = userId)
@@ -214,6 +246,9 @@ class FolderRepositoryImpl @Inject constructor(
         resetType: String
     ): Flow<Resources<Unit>> {
         return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
             emit(Resources.Loading())
             try {
                 apiService.resetProgressFolder(token = token, id = folderId, resetType = resetType)

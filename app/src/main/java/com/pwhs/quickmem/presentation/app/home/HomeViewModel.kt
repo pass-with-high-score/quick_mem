@@ -19,7 +19,6 @@ import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -66,29 +65,14 @@ class HomeViewModel @Inject constructor(
                 token to userId
             }.collect { (token, userId) ->
                 if (token?.isNotEmpty() == true && userId.isNotEmpty()) {
-                    val studySetsDeferred =
-                        async { getRecentAccessStudySets(token = token, userId = userId) }
-                    val foldersDeferred =
-                        async { getRecentAccessFolders(token = token, userId = userId) }
-                    val classesDeferred =
-                        async { getRecentAccessClasses(token = token, userId = userId) }
-                    val top5SubjectsDeferred = async { getTop5Subjects(token = token) }
-                    val streaksDeferred =
-                        async { getStreaksByUserId(token = token, userId = userId) }
-                    val customerInfoDeferred = async { getCustomerInfo() }
-                    val notificationsDeferred =
-                        async { loadNotifications(token = token, userId = userId) }
-                    val updateStreakDeferred =
-                        async { updateStreak(token = token, userId = userId) }
-
-                    studySetsDeferred.await()
-                    foldersDeferred.await()
-                    classesDeferred.await()
-                    top5SubjectsDeferred.await()
-                    streaksDeferred.await()
-                    customerInfoDeferred.await()
-                    notificationsDeferred.await()
-                    updateStreakDeferred.await()
+                    getRecentAccessStudySets(token = token, userId = userId)
+                    getRecentAccessFolders(token = token, userId = userId)
+                    getRecentAccessClasses(token = token, userId = userId)
+                    getTop5Subjects(token = token)
+                    getStreaksByUserId(token = token, userId = userId)
+                    getCustomerInfo()
+                    loadNotifications(token = token, userId = userId)
+                    updateStreak(token = token, userId = userId)
                 }
             }
         }
