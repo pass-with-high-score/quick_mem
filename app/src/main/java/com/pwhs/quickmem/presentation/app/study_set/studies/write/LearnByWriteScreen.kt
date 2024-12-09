@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,11 +24,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -42,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,6 +55,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -56,16 +63,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.WriteStatus
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 import com.pwhs.quickmem.presentation.app.study_set.studies.component.UnfinishedLearningBottomSheet
+import com.pwhs.quickmem.presentation.app.study_set.studies.write.component.ExpandableCard
 import com.pwhs.quickmem.presentation.app.study_set.studies.write.component.WriteFlashcardFinish
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.ShowImageDialog
@@ -78,6 +86,8 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.min
+import kotlin.random.Random
 
 @Destination<RootGraph>(
     navArgs = LearnByWriteArgs::class
@@ -127,11 +137,6 @@ fun LearnByWriteScreen(
             viewModel.onEvent(LearnByWriteUiAction.OnAnswer(id, status, answer))
         },
         isGetAll = uiState.isGetAll,
-        learnFrom = uiState.learnFrom,
-        isPlaySound = uiState.isPlaySound,
-        onChangeIsPlaySound = {
-            viewModel.onEvent(LearnByWriteUiAction.OnChangeIsPlaySound(it))
-        }
     )
 }
 
@@ -153,9 +158,6 @@ fun LearnByWrite(
     onContinueLearningClicked: () -> Unit = {},
     onSubmitAnswer: (String, WriteStatus, String) -> Unit = { _, _, _ -> },
     isGetAll: Boolean = false,
-    isPlaySound: Boolean = false,
-    onChangeIsPlaySound: (Boolean) -> Unit = { },
-    learnFrom: LearnFrom = LearnFrom.STUDY_SET
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -172,6 +174,13 @@ fun LearnByWrite(
         if (imeState.value) {
             scrollState.animateScrollTo(scrollState.viewportSize, tween(300))
         }
+    }
+    var isDontKnowButtonVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(writeQuestion) {
+        isDontKnowButtonVisible = false
+        delay(3000)
+        isDontKnowButtonVisible = true
     }
     Scaffold(
         topBar = {
@@ -204,29 +213,15 @@ fun LearnByWrite(
                 actions = {
                     if (!isEndOfList) {
                         IconButton(
-                            onClick = { onChangeIsPlaySound(!isPlaySound) }
+                            onClick = {
+                                showHintBottomSheet.value = true
+                            }
                         ) {
                             Icon(
-                                painter = if (isPlaySound) painterResource(id = R.drawable.ic_sound) else painterResource(
-                                    id = R.drawable.ic_volume_off
-                                ),
-                                contentDescription = "Sound",
-                                modifier = Modifier.size(22.dp)
+                                imageVector = Default.Lightbulb,
+                                contentDescription = "Hint",
+                                tint = studySetColor
                             )
-                        }
-                        if (learnFrom != LearnFrom.FOLDER && isGetAll) {
-                            IconButton(
-                                onClick = {
-                                    userAnswer = ""
-                                    onRestart()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Default.RestartAlt,
-                                    contentDescription = stringResource(R.string.txt_restart),
-                                    tint = studySetColor
-                                )
-                            }
                         }
                     }
                 }
@@ -264,8 +259,17 @@ fun LearnByWrite(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .verticalScroll(scrollState)
-                                .imePadding()
+                                .imePadding(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Text(
+                                text = stringResource(R.string.txt_click_to_icon_to_show_hint_if_you_feel_stuck),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                ),
+                                modifier = Modifier.padding(8.dp)
+                            )
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -287,9 +291,9 @@ fun LearnByWrite(
                                         style = MaterialTheme.typography.bodyMedium.copy(
                                             fontSize = when (writeQuestion?.definition?.length
                                                 ?: 0) {
-                                                in 0..10 -> 16.sp
-                                                in 11..20 -> 14.sp
-                                                else -> 12.sp
+                                                in 0..10 -> 18.sp
+                                                in 11..20 -> 16.sp
+                                                else -> 14.sp
                                             }
                                         ),
                                         modifier = Modifier
@@ -322,7 +326,6 @@ fun LearnByWrite(
                             ) {
                                 TextField(
                                     value = userAnswer,
-                                    maxLines = 1,
                                     keyboardActions = KeyboardActions(
                                         onDone = {
                                             userAnswer = ""
@@ -342,26 +345,28 @@ fun LearnByWrite(
                                         )
                                     },
                                     trailingIcon = {
-                                        TextButton(
-                                            onClick = {
-                                                debounceJob?.cancel()
-                                                debounceJob = scope.launch {
-                                                    delay(500)
-                                                    onSubmitAnswer(
-                                                        writeQuestion?.id ?: "",
-                                                        WriteStatus.SKIPPED,
-                                                        ""
-                                                    )
+                                        if (isDontKnowButtonVisible) {
+                                            TextButton(
+                                                onClick = {
+                                                    debounceJob?.cancel()
+                                                    debounceJob = scope.launch {
+                                                        delay(500)
+                                                        onSubmitAnswer(
+                                                            writeQuestion?.id ?: "",
+                                                            WriteStatus.SKIPPED,
+                                                            ""
+                                                        )
+                                                    }
                                                 }
-                                            }
-                                        ) {
-                                            Text(
-                                                text = stringResource(R.string.txt_don_t_know),
-                                                style = MaterialTheme.typography.bodyMedium.copy(
-                                                    color = studySetColor,
-                                                    fontWeight = FontWeight.Bold
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.txt_don_t_know),
+                                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                                        color = studySetColor,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
                                                 )
-                                            )
+                                            }
                                         }
                                     },
                                     onValueChange = {
@@ -378,14 +383,60 @@ fun LearnByWrite(
                                         .padding(horizontal = 8.dp),
                                 )
 
+                                fun isAnswerCorrect(
+                                    userAnswer: String,
+                                    correctAnswer: String
+                                ): Boolean {
+                                    return userAnswer.trim()
+                                        .equals(correctAnswer.trim(), ignoreCase = true)
+                                }
+
+                                fun levenshtein(a: String, b: String): Int {
+                                    val costs = IntArray(b.length + 1) { it }
+                                    for (i in 1..a.length) {
+                                        var lastValue = i - 1
+                                        for (j in 1..b.length) {
+                                            val newValue = min(
+                                                min(
+                                                    costs[j] + 1,
+                                                    lastValue + if (a[i - 1] == b[j - 1]) 0 else 1
+                                                ),
+                                                costs[j - 1] + 1
+                                            )
+                                            costs[j - 1] = lastValue
+                                            lastValue = newValue
+                                        }
+                                        costs[b.length] = lastValue
+                                    }
+                                    return costs[b.length]
+                                }
+
+                                fun isAnswerSimilar(
+                                    userAnswer: String,
+                                    correctAnswer: String,
+                                    threshold: Int = 2
+                                ): Boolean {
+                                    return levenshtein(
+                                        userAnswer.trim(),
+                                        correctAnswer.trim()
+                                    ) <= threshold
+                                }
+
                                 IconButton(
                                     onClick = {
                                         debounceJob?.cancel()
                                         debounceJob = scope.launch {
                                             delay(500)
-                                            if (userAnswer.isNotEmpty() && writeQuestion?.term == userAnswer) {
+                                            if (userAnswer.isNotEmpty() && isAnswerCorrect(
+                                                    userAnswer,
+                                                    writeQuestion?.term ?: ""
+                                                ) || isAnswerSimilar(
+                                                    userAnswer,
+                                                    writeQuestion?.term ?: ""
+                                                )
+                                            ) {
                                                 onSubmitAnswer(
-                                                    writeQuestion.id,
+                                                    writeQuestion?.id ?: "",
                                                     WriteStatus.CORRECT,
                                                     userAnswer
                                                 )
@@ -406,7 +457,8 @@ fun LearnByWrite(
                                             alpha = 0.5f
                                         ),
                                         contentColor = studySetColor
-                                    )
+                                    ),
+                                    modifier = Modifier.rotate(degrees = 90f)
                                 ) {
                                     Icon(
                                         imageVector = Default.ArrowCircleUp,
@@ -444,29 +496,143 @@ fun LearnByWrite(
                     }
                 )
             }
+            val revealCount = remember { mutableIntStateOf(0) }
+            val maxRevealCount = writeQuestion?.term?.length ?: 0
+            val revealedIndices = remember { mutableSetOf<Int>() }
+
+            fun generateHint(answer: String, revealCount: Int): String {
+                val indices = answer.indices.filter { answer[it] != ' ' && it !in revealedIndices }
+                    .shuffled(Random(System.currentTimeMillis()))
+                revealedIndices.addAll(indices.take(revealCount - revealedIndices.size))
+                return answer.mapIndexed { index, c ->
+                    if (c == ' ' || index in revealedIndices) c else '_'
+                }.joinToString("")
+            }
+
             if (showHintBottomSheet.value) {
+                val numOfWords = writeQuestion?.term?.split(" ")?.size ?: 0
+                val length = writeQuestion?.term?.length ?: 0
+                val hint =
+                    writeQuestion?.term?.let { generateHint(it, revealCount.intValue) } ?: ""
+
                 ModalBottomSheet(
                     sheetState = hintBottomSheetState,
-                    onDismissRequest = {
-                        showHintBottomSheet.value = false
-                    }
+                    onDismissRequest = { showHintBottomSheet.value = false }
                 ) {
-                    Column(
+                    LazyColumn(
                         modifier = Modifier
                             .padding(16.dp)
+                            .fillMaxWidth()
                     ) {
-                        Text(
-                            text = stringResource(R.string.txt_hint),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.txt_hint),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+
+                                IconButton(onClick = { /* AI Hint Action */ }) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_generative_ai),
+                                        contentDescription = stringResource(R.string.txt_ai_hint),
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                            }
+                        }
+
+                        item {
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
                             )
-                        )
-                        Text(
-                            text = writeQuestion?.hint ?: "",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = stringResource(R.string.txt_hint_from_answer),
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                            ExpandableCard(
+                                title = stringResource(R.string.txt_the_answer_has),
+                                content = {
+                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        Text(
+                                            text = stringResource(
+                                                R.string.txt_answer_has_words,
+                                                numOfWords
+                                            ),
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+
+                                        Text(
+                                            text = stringResource(
+                                                R.string.txt_answer_has_characters,
+                                                length
+                                            ),
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+
+                                        if (writeQuestion?.hint?.isNotEmpty() == true) {
+                                            Text(
+                                                text = stringResource(
+                                                    R.string.txt_hint_answer,
+                                                    writeQuestion.hint
+                                                ),
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                        }
+                                    }
+                                }
+                            )
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = stringResource(R.string.txt_random_letter),
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                            Text(
+                                text = hint,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+
+                            Button(
+                                onClick = {
+                                    if (revealCount.intValue < maxRevealCount) {
+                                        revealCount.value += 1
+                                    }
+                                },
+                                enabled = revealCount.intValue < maxRevealCount,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = stringResource(R.string.txt_show_more_hint))
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
+
             }
 
             if (showUnfinishedLearningBottomSheet) {

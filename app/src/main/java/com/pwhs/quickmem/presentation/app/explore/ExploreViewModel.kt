@@ -24,7 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -262,15 +261,15 @@ class ExploreViewModel @Inject constructor(
 
     private fun getUserCoin() {
         viewModelScope.launch {
-            appManager.userId.combine(appManager.userCoins) { userId, coins ->
-                _uiState.update {
-                    it.copy(
-                        ownerId = userId,
-                        coins = coins
-                    )
-                }
+            val coins = appManager.userCoins.firstOrNull() ?: 0
+            val userId = appManager.userId.firstOrNull() ?: ""
+            _uiState.update {
+                it.copy(
+                    coins = coins,
+                    ownerId = userId
+                )
             }
-
         }
+
     }
 }

@@ -462,4 +462,13 @@
     <string name="txt_time_spent_on_each_learning_type">Time spent on each learning type</string>
     <string name="txt_in_one_app">In one app.</string>
     <string name="txt_all_the_tools_for_learning_success">All the tools for \nlearning success.\n</string>
+    <string name="txt_hint_from_answer">Hint from answer:</string>
+    <string name="txt_the_answer_has">The answer has:</string>
+    <string name="txt_answer_has_words">Answer has %1$s words</string>
+    <string name="txt_answer_has_characters">Answer has %1$s characters</string>
+    <string name="txt_hint_answer">Hint: %1$s</string>
+    <string name="txt_show_more_hint">Show more hint</string>
+    <string name="txt_random_letter">Random letter:</string>
+    <string name="txt_ai_hint">AI hint</string>
+    <string name="txt_click_to_icon_to_show_hint_if_you_feel_stuck">Click the icon to show hint if you feel stuck</string>
 </resources>

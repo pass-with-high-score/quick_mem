@@ -123,15 +123,6 @@ class LearnByWriteViewModel @Inject constructor(
                 }
                 _uiEvent.trySend(LearnByWriteUiEvent.Back)
             }
-
-            is LearnByWriteUiAction.OnChangeIsPlaySound -> {
-                _uiState.update {
-                    it.copy(isPlaySound = event.isPlaySound)
-                }
-                viewModelScope.launch {
-                    appManager.saveIsPlaySound(event.isPlaySound)
-                }
-            }
         }
     }
 

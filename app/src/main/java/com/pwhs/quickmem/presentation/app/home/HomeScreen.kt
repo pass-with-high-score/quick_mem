@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.home
 import android.Manifest
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -366,7 +367,17 @@ private fun Home(
                 onClick = {
                     showStreakBottomSheet = true
                 },
-                shape = CircleShape
+                shape = CircleShape,
+                elevation = CardDefaults.elevatedCardElevation(
+                    defaultElevation = 8.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorScheme.surface
+                ),
+                border = BorderStroke(
+                    width = 2.dp,
+                    color = Color.White
+                )
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -533,7 +544,7 @@ private fun Home(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            items(items = classes, key = {it.id}) { classItem ->
+                            items(items = classes, key = { it.id }) { classItem ->
                                 ClassHomeItem(
                                     classItem = classItem,
                                     onClick = { onClassClicked(classItem) }

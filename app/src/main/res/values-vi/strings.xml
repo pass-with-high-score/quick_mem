@@ -460,4 +460,13 @@
     <string name="txt_time_spent_on_each_learning_type">Thời gian dành cho mỗi kiểu học</string>
     <string name="txt_in_one_app">Trong một ứng dụng.</string>
     <string name="txt_all_the_tools_for_learning_success">Tất cả các công cụ để\nthành công trong học tập.\n</string>
+    <string name="txt_hint_from_answer">Gợi ý từ câu trả lời:</string>
+    <string name="txt_the_answer_has">Câu trả lời có:</string>
+    <string name="txt_answer_has_words">Câu trả lời có %1$s từ</string>
+    <string name="txt_answer_has_characters">Câu trả lời có %1$s ký tự</string>
+    <string name="txt_hint_answer">Gợi ý: %1$s</string>
+    <string name="txt_show_more_hint">Hiển thị thêm gợi ý</string>
+    <string name="txt_random_letter">Random từng chữ:</string>
+    <string name="txt_ai_hint">Gợi ý AI:</string>
+    <string name="txt_click_to_icon_to_show_hint_if_you_feel_stuck">Nhấn vào biểu tượng để hiển thị gợi ý nếu bạn cảm thấy bí</string>
 </resources>
