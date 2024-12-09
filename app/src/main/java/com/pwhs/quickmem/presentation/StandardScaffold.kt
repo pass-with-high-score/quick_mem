@@ -37,11 +37,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.BottomSheetItem
-import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.CreateClassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
@@ -135,6 +135,7 @@ fun StandardScaffold(
                                         } else {
                                             stringResource(item.title)
                                         },
+                                        maxLines = 1,
                                         style = typography.bodySmall.copy(
                                             color = color,
                                             fontWeight = if (currentDestination?.route?.contains(
@@ -144,7 +145,8 @@ fun StandardScaffold(
                                                 FontWeight.Bold
                                             } else {
                                                 FontWeight.Normal
-                                            }
+                                            },
+                                            fontSize = 10.sp
                                         ),
                                     )
                                 },
@@ -159,9 +161,6 @@ fun StandardScaffold(
                                             return@NavigationBarItem
                                         }
                                         navigator.navigate(item.direction) {
-                                            popUpTo(NavGraphs.root) {
-                                                saveState = true
-                                            }
                                             launchSingleTop = true
                                             restoreState = true
                                         }

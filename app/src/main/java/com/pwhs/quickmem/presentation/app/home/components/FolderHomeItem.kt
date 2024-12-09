@@ -126,8 +126,12 @@ fun FolderHomeItem(
                         )
                         Text(
                             text = userResponseModel.username,
-                            style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                            color = colorScheme.onSurface
+                            style = typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = colorScheme.onSurface,
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }

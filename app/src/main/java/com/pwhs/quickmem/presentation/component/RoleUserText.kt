@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -34,24 +35,26 @@ fun RoleUserText(
             text = username,
             style = typography.bodySmall.copy(
                 fontWeight = FontWeight.Bold
-            )
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
         if (role == "TEACHER") {
-           Card (
-               colors = CardDefaults.cardColors(
-                   containerColor = MaterialTheme.colorScheme.secondary,
-                   contentColor = Color.White
-               ),
-               shape = MaterialTheme.shapes.large
-           ){
-               Text(
-                   text = stringResource(R.string.txt_teacher),
-                   style = typography.bodySmall.copy(
-                       fontWeight = FontWeight.Bold
-                   ),
-                   modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-               )
-           }
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = Color.White
+                ),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text(
+                    text = stringResource(R.string.txt_teacher),
+                    style = typography.bodySmall.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                )
+            }
         }
     }
 }

@@ -115,6 +115,8 @@ fun ClassHomeItem(
                     )
                     Text(
                         text = classItem?.owner?.username ?: "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )

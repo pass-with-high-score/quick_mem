@@ -36,8 +36,8 @@ class EditClassViewModel @Inject constructor(
         val classId: String = savedStateHandle["classId"] ?: ""
         val classTitle = savedStateHandle["classTitle"] ?: ""
         val classDescription = savedStateHandle["classDescription"] ?: ""
-        val allowSet: Boolean = savedStateHandle["allowSet"] ?: false
-        val allowMember: Boolean = savedStateHandle["allowMember"] ?: false
+        val allowSet: Boolean = savedStateHandle["isSetAllowed"] ?: false
+        val allowMember: Boolean = savedStateHandle["isMemberAllowed"] ?: false
 
         _uiState.update {
             it.copy(

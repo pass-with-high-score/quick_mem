@@ -57,7 +57,6 @@ import coil.request.ImageRequest
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.data.mapper.study_time.toStudyTimeModel
 import com.pwhs.quickmem.domain.model.study_time.GetStudyTimeByUserResponseModel
-import com.pwhs.quickmem.presentation.app.home.HomeViewModel
 import com.pwhs.quickmem.presentation.app.home.components.StreakCalendar
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
 import com.pwhs.quickmem.presentation.component.LearningBars
@@ -81,7 +80,6 @@ import java.time.LocalDate
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
-    homeViewModel: HomeViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     resultBackNavigator: ResultRecipient<ChangeAvatarScreenDestination, Boolean>
 ) {
@@ -100,7 +98,6 @@ fun ProfileScreen(
         }
     }
     val uiState by viewModel.uiState.collectAsState()
-    val homeState by homeViewModel.uiState.collectAsState()
     Profile(
         modifier = modifier,
         name = uiState.username,
@@ -120,8 +117,8 @@ fun ProfileScreen(
             viewModel.onEvent(ProfileUiAction.OnChangeCustomerInfo(customerInfo))
         },
         customerInfo = uiState.customerInfo,
-        streakCount = homeState.streakCount,
-        streakDates = homeState.streakDates,
+        streakCount = uiState.streakCount,
+        streakDates = uiState.streakDates,
         studyTime = uiState.studyTime
     )
 }

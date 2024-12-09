@@ -14,7 +14,7 @@ data class UpdateFolderResponseDto(
     val isPublic: Boolean,
     @SerializedName("studySetCount")
     val studySetCount: Int,
-    @SerializedName("owner")
+    @SerializedName("studySets")
     val studySets: List<GetStudySetResponseDto>,
     @SerializedName("linkShareCode")
     val linkShareCode: String? = null,

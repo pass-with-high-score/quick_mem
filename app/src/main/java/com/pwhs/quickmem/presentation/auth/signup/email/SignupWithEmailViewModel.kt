@@ -150,6 +150,12 @@ class SignupWithEmailViewModel @Inject constructor(
 
                             }
                         } else {
+                            _uiState.update {
+                                it.copy(
+                                    emailError = "Email is already registered",
+                                    isLoading = false
+                                )
+                            }
                             _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
                         }
                     }

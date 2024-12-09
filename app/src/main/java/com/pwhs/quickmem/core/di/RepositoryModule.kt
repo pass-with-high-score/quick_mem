@@ -3,6 +3,7 @@ package com.pwhs.quickmem.core.di
 import com.pwhs.quickmem.data.local.repository.SearchQueryRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.AuthRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.ClassRepositoryImpl
+import com.pwhs.quickmem.data.remote.repository.FirebaseRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.FlashCardRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.FolderRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.NotificationRepositoryImpl
@@ -13,6 +14,7 @@ import com.pwhs.quickmem.data.remote.repository.StudyTimeRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.UploadImageRepositoryImpl
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
+import com.pwhs.quickmem.domain.repository.FirebaseRepository
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
@@ -84,4 +86,9 @@ abstract class RepositoryModule {
     abstract fun bindReportRepository(
         reportRepositoryImpl: ReportRepositoryImpl
     ): ReportRepository
+
+    @Binds
+    abstract fun bindFirebaseRepository(
+        firebaseRepositoryImpl: FirebaseRepositoryImpl
+    ): FirebaseRepository
 }

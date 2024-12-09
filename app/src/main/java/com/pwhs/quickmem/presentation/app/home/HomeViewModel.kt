@@ -2,13 +2,16 @@ package com.pwhs.quickmem.presentation.app.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.messaging.FirebaseMessaging
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.notification.DeviceTokenRequestModel
 import com.pwhs.quickmem.domain.model.streak.StreakModel
 import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.ClassRepository
+import com.pwhs.quickmem.domain.repository.FirebaseRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
@@ -22,7 +25,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -39,6 +41,7 @@ class HomeViewModel @Inject constructor(
     private val folderRepository: FolderRepository,
     private val classRepository: ClassRepository,
     private val notificationRepository: NotificationRepository,
+    private val firebaseRepository: FirebaseRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager
 ) : ViewModel() {
@@ -55,25 +58,26 @@ class HomeViewModel @Inject constructor(
             val userId = appManager.userId.firstOrNull() ?: ""
             _uiState.value = HomeUiState(userId = userId)
             initData()
+            getFCMToken()
         }
     }
 
     private fun initData() {
         job?.cancel()
         job = viewModelScope.launch {
-            combine(tokenManager.accessToken, appManager.userId) { token, userId ->
-                token to userId
-            }.collect { (token, userId) ->
-                if (token?.isNotEmpty() == true && userId.isNotEmpty()) {
-                    getRecentAccessStudySets(token = token, userId = userId)
-                    getRecentAccessFolders(token = token, userId = userId)
-                    getRecentAccessClasses(token = token, userId = userId)
-                    getTop5Subjects(token = token)
-                    getStreaksByUserId(token = token, userId = userId)
-                    getCustomerInfo()
-                    loadNotifications(token = token, userId = userId)
-                    updateStreak(token = token, userId = userId)
-                }
+
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+
+            if (token.isNotEmpty() && userId.isNotEmpty()) {
+                getRecentAccessStudySets(token = token, userId = userId)
+                getRecentAccessFolders(token = token, userId = userId)
+                getRecentAccessClasses(token = token, userId = userId)
+                getTop5Subjects(token = token)
+                getStreaksByUserId(token = token, userId = userId)
+                getCustomerInfo()
+                loadNotifications(token = token, userId = userId)
+                updateStreak(token = token, userId = userId)
             }
         }
     }
@@ -351,6 +355,52 @@ class HomeViewModel @Inject constructor(
 
                     is Resources.Error -> {
                         _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Timber.w("Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            Purchases.sharedInstance.setPushToken(token)
+
+            // Send token to your server
+            sendTokenToServer(token)
+        }
+    }
+
+    private fun sendTokenToServer(token: String) {
+        viewModelScope.launch {
+            val userId = appManager.userId.firstOrNull() ?: ""
+            val deviceTokenRequest = DeviceTokenRequestModel(
+                userId = userId,
+                deviceToken = token
+            )
+
+            val accessToken = tokenManager.accessToken.firstOrNull() ?: ""
+            firebaseRepository.sendDeviceToken(
+                accessToken = accessToken,
+                deviceTokenRequest = deviceTokenRequest
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        // do nothing
+                    }
+
+                    is Resources.Success -> {
+                        // do nothing
+                    }
+
+                    is Resources.Error -> {
+                        // do nothing
                     }
                 }
             }

@@ -14,5 +14,6 @@ data class ProfileUiState(
     val streakCount: Int = 0,
     val streaks: List<StreakModel> = emptyList(),
     val streakDates: List<LocalDate> = emptyList(),
-    val studyTime: GetStudyTimeByUserResponseModel? = null
+    val studyTime: GetStudyTimeByUserResponseModel? = null,
+
 )

@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.streak.StreakModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.domain.repository.StreakRepository
 import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
@@ -21,10 +23,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.OffsetDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +37,8 @@ class ProfileViewModel @Inject constructor(
     private val appManager: AppManager,
     private val tokenManager: TokenManager,
     private val authRepository: AuthRepository,
-    private val studyTimeRepository: StudyTimeRepository
+    private val studyTimeRepository: StudyTimeRepository,
+    private val streakRepository: StreakRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -48,15 +54,14 @@ class ProfileViewModel @Inject constructor(
 
     private fun initData() {
         viewModelScope.launch {
-            combine(tokenManager.accessToken, appManager.userId) { token, userId ->
-                token to userId
-            }.collectLatest { (token, userId) ->
-                if (token?.isNotEmpty() == true && userId.isNotEmpty()) {
-                    loadProfile()
-                    getUserProfile(token = token, userId = userId)
-                    getCustomerInfo()
-                    getStudyTime(token = token, userId = userId)
-                }
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            if (token.isNotEmpty() && userId.isNotEmpty()) {
+                loadProfile()
+                getUserProfile(token = token, userId = userId)
+                getCustomerInfo()
+                getStudyTime(token = token, userId = userId)
+                getStreaksByUserId(token = token, userId = userId)
             }
         }
     }
@@ -190,5 +195,42 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun getStreaksByUserId(token: String, userId: String) {
+        viewModelScope.launch {
+            streakRepository.getStreaksByUserId(token, userId).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+
+                    is Resources.Success -> {
+                        val streaks = resource.data?.streaks ?: emptyList()
+                        val streakDates = calculateStreakDates(streaks)
+
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            streaks = streaks,
+                            streakDates = streakDates
+                        )
+                        Timber.d("Dates: $streakDates")
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun calculateStreakDates(streaks: List<StreakModel>): List<LocalDate> {
+        return streaks.flatMap { streak ->
+            val firstStreakDate = OffsetDateTime.parse(streak.date).toLocalDate()
+            (0 until streak.streakCount).map {
+                firstStreakDate.minusDays(it.toLong())
+            }
+        }.distinct()
     }
 }

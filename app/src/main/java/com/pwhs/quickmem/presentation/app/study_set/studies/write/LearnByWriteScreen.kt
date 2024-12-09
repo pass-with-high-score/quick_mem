@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.write
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -345,7 +346,9 @@ fun LearnByWrite(
                                         )
                                     },
                                     trailingIcon = {
-                                        if (isDontKnowButtonVisible) {
+                                        AnimatedVisibility(
+                                            visible = isDontKnowButtonVisible && userAnswer.isEmpty()
+                                        ) {
                                             TextButton(
                                                 onClick = {
                                                     debounceJob?.cancel()

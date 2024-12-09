@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -44,15 +43,13 @@ class LibraryViewModel @Inject constructor(
 
     private fun initData() {
         viewModelScope.launch {
-            combine(tokenManager.accessToken, appManager.userId) { token, userId ->
-                token to userId
-            }.collectLatest { (token, userId) ->
-                if (token?.isNotEmpty() == true && userId.isNotEmpty()) {
-                    getUserInfo()
-                    getStudySets(token = token, userId = userId)
-                    getClasses(token = token, userId = userId)
-                    getFolders(token = token, userId = userId)
-                }
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+            if (token.isNotEmpty() && userId.isNotEmpty()) {
+                getUserInfo()
+                getStudySets(token = token, userId = userId)
+                getClasses(token = token, userId = userId)
+                getFolders(token = token, userId = userId)
             }
         }
     }
