@@ -3,6 +3,8 @@ package com.pwhs.quickmem.presentation.app.study_set.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.data.enums.ResetType
 import com.pwhs.quickmem.core.datastore.AppManager
@@ -31,6 +33,7 @@ class StudySetDetailViewModel @Inject constructor(
     private val studyTimeRepository: StudyTimeRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
+    firebaseAnalytics: FirebaseAnalytics,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(StudySetDetailUiState())
@@ -44,6 +47,10 @@ class StudySetDetailViewModel @Inject constructor(
         _uiState.update { it.copy(id = id) }
         initData()
         saveRecentAccessStudySet(studySetId = id)
+        firebaseAnalytics.logEvent("open_study_set") {
+            param("study_set_id", id)
+            param("study_set_title", _uiState.value.title)
+        }
     }
 
     private fun initData() {

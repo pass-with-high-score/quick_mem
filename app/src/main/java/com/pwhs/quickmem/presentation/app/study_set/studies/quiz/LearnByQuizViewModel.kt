@@ -176,7 +176,10 @@ class LearnByQuizViewModel @Inject constructor(
 
                                 val flashCards = resource.data
                                 val currentCard = flashCards.firstOrNull()
-                                val randomAnswers = generateRandomAnswers(flashCards, currentCard)
+                                val randomAnswers = generateRandomAnswers(
+                                    flashCards = flashCards,
+                                    currentCard = currentCard,
+                                )
 
                                 _uiState.update {
                                     it.copy(
@@ -224,7 +227,10 @@ class LearnByQuizViewModel @Inject constructor(
 
                                 val flashCards = resource.data
                                 val currentCard = flashCards.firstOrNull()
-                                val randomAnswers = generateRandomAnswers(flashCards, currentCard)
+                                val randomAnswers = generateRandomAnswers(
+                                    flashCards = flashCards,
+                                    currentCard = currentCard,
+                                )
 
                                 _uiState.update {
                                     it.copy(
@@ -314,12 +320,13 @@ class LearnByQuizViewModel @Inject constructor(
 
     private fun generateRandomAnswers(
         flashCards: List<FlashCardResponseModel>,
-        currentCard: FlashCardResponseModel?
+        currentCard: FlashCardResponseModel?,
+        lastAnswer: String? = null
     ): List<RandomAnswer> {
         if (currentCard == null) return emptyList()
 
         val answers = flashCards
-            .filter { it.id != currentCard.id }
+            .filter { it.id != currentCard.id && it.definition != lastAnswer }
             .distinctBy { it.definition }
             .shuffled()
             .take(3)
@@ -346,7 +353,11 @@ class LearnByQuizViewModel @Inject constructor(
         nextFlashCard: FlashCardResponseModel?,
     ) {
         if (nextFlashCard != null && _uiState.value.currentCardIndex < _uiState.value.flashCardList.size - 1) {
-            val randomAnswers = generateRandomAnswers(_uiState.value.flashCardList, nextFlashCard)
+            val randomAnswers = generateRandomAnswers(
+                flashCards = _uiState.value.flashCardList,
+                currentCard = nextFlashCard,
+                lastAnswer = _uiState.value.currentFlashCard?.definition
+            )
             _uiState.update {
                 it.copy(
                     currentCardIndex = it.currentCardIndex + 1,

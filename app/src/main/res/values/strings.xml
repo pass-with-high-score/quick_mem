@@ -471,4 +471,17 @@
     <string name="txt_random_letter">Random letter:</string>
     <string name="txt_ai_hint">AI hint</string>
     <string name="txt_click_to_icon_to_show_hint_if_you_feel_stuck">Click the icon to show hint if you feel stuck</string>
+    <string name="label_google_oauth_callback">Google OAuth Callback</string>
+    <string name="label_facebook_oauth_callback">Facebook OAuth Callback</string>
+    <string name="label_share_folder">Share Folder Link</string>
+    <string name="label_share_study_set">Share Study-Set Link</string>
+    <string name="label_join_class">Join Class Link</string>
+    <string name="txt_currently_not_available">Currently not available</string>
+    <string name="txt_create_new_study_set">Create new study set</string>
+    <string name="txt_study_set_title">Study Set Title</string>
+    <string name="txt_enter_study_set_title">Enter Study Set Title</string>
+    <string name="txt_when_you_make_a_study_set_public_anyone_can_see_it_and_use_it">When you make a study set public, anyone can see it and use it.</string>
+    <string name="txt_study_set_created">Study Set Created</string>
+    <string name="txt_study_set_edited">Study Set Edited</string>
+    <string name="txt_current_flip_status">Current flip status</string>
 </resources>

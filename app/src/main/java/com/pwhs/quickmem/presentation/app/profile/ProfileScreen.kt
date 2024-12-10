@@ -84,6 +84,8 @@ fun ProfileScreen(
     resultBackNavigator: ResultRecipient<ChangeAvatarScreenDestination, Boolean>
 ) {
 
+    val uiState by viewModel.uiState.collectAsState()
+
     resultBackNavigator.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
@@ -97,7 +99,7 @@ fun ProfileScreen(
             }
         }
     }
-    val uiState by viewModel.uiState.collectAsState()
+
     Profile(
         modifier = modifier,
         name = uiState.username,

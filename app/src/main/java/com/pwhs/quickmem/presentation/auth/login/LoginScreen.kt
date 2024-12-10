@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.auth.login
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -47,26 +49,36 @@ fun LoginScreen(
     navigator: DestinationsNavigator,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    Timber.d("Run here")
+    val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 LoginUiEvent.LoginWithGoogle -> {
                     // open web view
-                    navigator.navigate(
-                        WebViewAppDestination(
-                            oAuthLink = "https://api.quickmem.app/auth/google",
-                        )
-                    )
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_currently_not_available),
+                        Toast.LENGTH_SHORT
+                    ).show()
+//                    navigator.navigate(
+//                        WebViewAppDestination(
+//                            oAuthLink = "https://api.quickmem.app/auth/google",
+//                        )
+//                    )
                 }
 
                 LoginUiEvent.LoginWithFacebook -> {
                     // open web view
-                    navigator.navigate(
-                        WebViewAppDestination(
-                            oAuthLink = "https://api.quickmem.app/auth/facebook",
-                        )
-                    )
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_currently_not_available),
+                        Toast.LENGTH_SHORT
+                    ).show()
+//                    navigator.navigate(
+//                        WebViewAppDestination(
+//                            oAuthLink = "https://api.quickmem.app/auth/facebook",
+//                        )
+//                    )
                 }
 
                 LoginUiEvent.LoginWithEmail -> {

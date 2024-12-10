@@ -50,7 +50,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:label="filter_react_native">
+            <intent-filter android:label="@string/label_google_oauth_callback">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -61,7 +61,7 @@
                     android:path="/google/callback"
                     android:scheme="quickmem" />
             </intent-filter>
-            <intent-filter android:label="filter_react_native">
+            <intent-filter android:label="@string/label_facebook_oauth_callback">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -72,7 +72,7 @@
                     android:path="/facebook/callback"
                     android:scheme="quickmem" />
             </intent-filter>
-            <intent-filter android:label="filter_react_native">
+            <intent-filter android:label="@string/label_share_folder">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -83,7 +83,7 @@
                     android:path="/folder"
                     android:scheme="quickmem" />
             </intent-filter>
-            <intent-filter android:label="filter_react_native">
+            <intent-filter android:label="@string/label_share_study_set">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -94,7 +94,7 @@
                     android:path="/study-set"
                     android:scheme="quickmem" />
             </intent-filter>
-            <intent-filter android:label="filter_react_native">
+            <intent-filter android:label="@string/label_join_class">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

@@ -58,6 +58,7 @@ class ProfileViewModel @Inject constructor(
             val userId = appManager.userId.firstOrNull() ?: ""
             if (token.isNotEmpty() && userId.isNotEmpty()) {
                 loadProfile()
+                updateStreak(token = token, userId = userId)
                 getUserProfile(token = token, userId = userId)
                 getCustomerInfo()
                 getStudyTime(token = token, userId = userId)
@@ -212,13 +213,41 @@ class ProfileViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             streaks = streaks,
-                            streakDates = streakDates
+                            streakDates = streakDates,
                         )
-                        Timber.d("Dates: $streakDates")
                     }
 
                     is Resources.Error -> {
                         _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateStreak(token: String, userId: String) {
+        viewModelScope.launch {
+            streakRepository.updateStreak(token, userId).collect { resource ->
+                when (resource) {
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                streakCount = resource.data?.streakCount ?: 0
+                            )
+                        }
+                    }
+
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
                     }
                 }
             }

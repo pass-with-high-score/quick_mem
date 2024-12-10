@@ -76,6 +76,7 @@ fun AddStudySetToClassItem(
                 modifier = Modifier
                     .padding(8.dp)
                     .background(Color.Transparent)
+                    .weight(1f)
             ) {
                 Text(
                     studySet.title,
@@ -197,7 +198,7 @@ private fun AddStudySetToClassItemPreview() {
                                 .fillMaxWidth(),
                             studySet = GetStudySetResponseModel(
                                 id = "1",
-                                title = "Study Set Title",
+                                title = "Study Set Title Study Set Title Study Set Title Study Set Title Study Set Title Study Set Title",
                                 flashcardCount = 10,
                                 color = ColorModel.defaultColors[0],
                                 subject = SubjectModel.defaultSubjects[0],

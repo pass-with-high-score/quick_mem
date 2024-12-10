@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.auth.signup
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,20 +57,23 @@ fun SignupScreen(
             when (event) {
                 SignupUiEvent.SignupWithGoogle -> {
                     // open web view
-                    navigator.navigate(
-                        WebViewAppDestination(
-                            oAuthLink = "https://api.quickmem.app/auth/google",
-                        )
-                    )
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_currently_not_available), Toast.LENGTH_SHORT).show()
+//                    navigator.navigate(
+//                        WebViewAppDestination(
+//                            oAuthLink = "https://api.quickmem.app/auth/google",
+//                        )
+//                    )
                 }
 
                 SignupUiEvent.SignupWithFacebook -> {
                     // open web view
-                    navigator.navigate(
-                        WebViewAppDestination(
-                            oAuthLink = "https://api.quickmem.app/auth/facebook",
-                        )
-                    )
+                    Toast.makeText(context, context.getString(R.string.txt_currently_not_available), Toast.LENGTH_SHORT).show()
+//                    navigator.navigate(
+//                        WebViewAppDestination(
+//                            oAuthLink = "https://api.quickmem.app/auth/facebook",
+//                        )
+//                    )
                 }
             }
         }

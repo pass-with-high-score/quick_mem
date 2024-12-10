@@ -242,7 +242,7 @@ fun AuthSocial(
             }
 
             AuthButton(
-                text = "Sign up",
+                text = stringResource(R.string.txt_sign_up),
                 onClick = onRegisterClick,
                 modifier = Modifier.padding(top = 16.dp)
             )

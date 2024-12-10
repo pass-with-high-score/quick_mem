@@ -68,6 +68,7 @@ fun AddStudySetToClassesItem(
                 modifier = Modifier
                     .padding(8.dp)
                     .background(Color.Transparent)
+                    .weight(1f)
             ) {
                 Row(
                     modifier = Modifier

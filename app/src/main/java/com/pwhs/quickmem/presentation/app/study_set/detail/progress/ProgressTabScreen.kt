@@ -97,7 +97,7 @@ fun ProgressTabScreen(
                                     color = color
                                 )
                                 Text(
-                                    text = "Current flip status",
+                                    text = stringResource(R.string.txt_current_flip_status),
                                     style = typography.titleMedium.copy(
                                         fontWeight = FontWeight.Bold,
                                     )

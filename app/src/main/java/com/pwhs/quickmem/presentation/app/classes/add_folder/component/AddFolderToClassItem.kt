@@ -68,6 +68,7 @@ fun AddFolderToClassItem(
                 modifier = Modifier
                     .padding(8.dp)
                     .background(Color.Transparent)
+                    .weight(1f)
             ) {
                 Row(
                     modifier = Modifier
@@ -165,7 +166,7 @@ private fun FolderItemPreview() {
                                 .fillMaxWidth(),
                             folder = GetFolderResponseModel(
                                 id = "1",
-                                title = "Study Set Title",
+                                title = "Folder Title Folder Title Folder Title Folder Title Folder Title Folder Title Folder Title",
                                 studySetCount = 10,
                                 owner = UserResponseModel(
                                     id = "1",
