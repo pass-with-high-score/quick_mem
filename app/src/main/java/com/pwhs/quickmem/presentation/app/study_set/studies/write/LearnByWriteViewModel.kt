@@ -54,8 +54,8 @@ class LearnByWriteViewModel @Inject constructor(
         val isGetAll = savedStateHandle.get<Boolean>("isGetAll") ?: false
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
-        val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 0
-        val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 0
+        val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 1
+        val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 1
         val folderId = savedStateHandle.get<String>("folderId") ?: ""
         val learnFrom = savedStateHandle.get<LearnFrom>("learnFrom") ?: LearnFrom.STUDY_SET
         _uiState.update {
@@ -66,8 +66,8 @@ class LearnByWriteViewModel @Inject constructor(
                 studySetId = studySetId,
                 studySetTitle = studySetTitle,
                 studySetDescription = studySetDescription,
-                studySetColor = ColorModel.defaultColors[studySetColorId],
-                studySetSubject = SubjectModel.defaultSubjects[studySetSubjectId],
+                studySetColor = ColorModel.defaultColors.first { it.id == studySetColorId },
+                studySetSubject = SubjectModel.defaultSubjects.first { it.id == studySetSubjectId },
                 startTime = System.currentTimeMillis()
             )
         }

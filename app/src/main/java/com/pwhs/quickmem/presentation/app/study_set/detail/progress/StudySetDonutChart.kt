@@ -47,15 +47,15 @@ fun StudySetDonutChart(
 ) {
     val total = (studySetsNotLearn + studySetsStillLearn + studySetsMastered).coerceAtLeast(0)
     val percentages = listOf(
-        studySetsNotLearn.coerceAtLeast(0).toFloat() / total,
+        studySetsMastered.coerceAtLeast(0).toFloat() / total,
         studySetsStillLearn.coerceAtLeast(0).toFloat() / total,
-        studySetsMastered.coerceAtLeast(0).toFloat() / total
+        studySetsNotLearn.coerceAtLeast(0).toFloat() / total,
     )
 
     val colors = listOf(
-        color.copy(alpha = 0.3f),
+        color,
         color.copy(alpha = 0.6f),
-        color
+        color.copy(alpha = 0.3f),
     )
 
     val animatedPercentage = percentages.map { target ->

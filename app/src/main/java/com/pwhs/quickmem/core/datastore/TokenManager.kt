@@ -7,9 +7,10 @@ import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import javax.inject.Inject
 
 
-class TokenManager(private val context: Context) {
+class TokenManager @Inject constructor(private val context: Context) {
 
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")

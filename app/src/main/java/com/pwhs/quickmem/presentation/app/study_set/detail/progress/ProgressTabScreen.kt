@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,86 +34,83 @@ fun ProgressTabScreen(
     studyTime: GetStudyTimeByStudySetResponseModel? = null,
     color: Color = MaterialTheme.colorScheme.primary
 ) {
-    Scaffold { innerPadding ->
-        Box(
-            modifier = modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                item {
-                    Text(
-                        text = stringResource(R.string.txt_your_progress),
-                        style = typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp
-                        )
+            item {
+                Text(
+                    text = stringResource(R.string.txt_your_progress),
+                    style = typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
                     )
-                }
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        when {
-                            totalStudySet == 0 -> {
-                                Text(
-                                    text = stringResource(R.string.txt_you_have_not_started_any_study_set_yet),
-                                    style = typography.bodyMedium.copy(
-                                        fontSize = 16.sp
-                                    )
+                )
+            }
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    when {
+                        totalStudySet == 0 -> {
+                            Text(
+                                text = stringResource(R.string.txt_you_have_not_started_any_study_set_yet),
+                                style = typography.bodyMedium.copy(
+                                    fontSize = 16.sp
                                 )
-                            }
+                            )
+                        }
 
-                            else -> {
-                                StudySetDonutChart(
-                                    color = color,
-                                    studySetsNotLearn = studySetsNotLearnCount,
-                                    studySetsStillLearn = studySetsStillLearningCount,
-                                    studySetsMastered = studySetsKnowCount
-                                )
-                                ProgressRow(
-                                    label = stringResource(R.string.txt_not_learned),
-                                    percentage = studySetsNotLearnCount * 100 / totalStudySet,
-                                    color = color.copy(alpha = 0.3f)
-                                )
+                        else -> {
+                            StudySetDonutChart(
+                                color = color,
+                                studySetsNotLearn = studySetsNotLearnCount,
+                                studySetsStillLearn = studySetsStillLearningCount,
+                                studySetsMastered = studySetsKnowCount
+                            )
+                            ProgressRow(
+                                label = stringResource(R.string.txt_not_learned),
+                                percentage = studySetsNotLearnCount * 100 / totalStudySet,
+                                color = color.copy(alpha = 0.3f)
+                            )
 
-                                ProgressRow(
-                                    label = stringResource(R.string.txt_still_learning),
-                                    percentage = studySetsStillLearningCount * 100 / totalStudySet,
-                                    color = color.copy(alpha = 0.6f)
-                                )
+                            ProgressRow(
+                                label = stringResource(R.string.txt_still_learning),
+                                percentage = studySetsStillLearningCount * 100 / totalStudySet,
+                                color = color.copy(alpha = 0.6f)
+                            )
 
-                                ProgressRow(
-                                    label = stringResource(R.string.txt_learn),
-                                    percentage = studySetsKnowCount * 100 / totalStudySet,
-                                    color = color
+                            ProgressRow(
+                                label = stringResource(R.string.txt_learn),
+                                percentage = studySetsKnowCount * 100 / totalStudySet,
+                                color = color
+                            )
+                            Text(
+                                text = stringResource(R.string.txt_current_flip_status),
+                                style = typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
                                 )
-                                Text(
-                                    text = stringResource(R.string.txt_current_flip_status),
-                                    style = typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                )
-                            }
+                            )
                         }
                     }
                 }
-                item {
-                    if (studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.flip != 0) {
-                        LearningBars(
-                            studyTime = studyTime?.toStudyTimeModel(),
-                            color = color,
-                            modifier = Modifier
-                                .height(300.dp)
-                        )
-                    }
+            }
+            item {
+                if (studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.flip != 0) {
+                    LearningBars(
+                        studyTime = studyTime?.toStudyTimeModel(),
+                        color = color,
+                        modifier = Modifier
+                            .height(300.dp)
+                    )
                 }
             }
         }

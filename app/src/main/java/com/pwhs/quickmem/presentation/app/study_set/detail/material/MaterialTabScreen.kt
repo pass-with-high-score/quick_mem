@@ -27,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -88,369 +87,366 @@ fun MaterialTabScreen(
     var learningMode by remember { mutableStateOf(LearnMode.NONE) }
     val context = LocalContext.current
 
-    Scaffold { innerPadding ->
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Center
-        ) {
-            when {
-                flashCards.isEmpty() -> {
-                    Column(
-                        horizontalAlignment = CenterHorizontally,
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.txt_add_your_material_to_get_started),
-                            style = typography.titleLarge.copy(
-                                fontWeight = Bold,
-                                color = colorScheme.onSurface
-                            ),
-                            modifier = Modifier.padding(16.dp),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = stringResource(R.string.txt_this_study_set_can_contain_flashcards_notes_and_files_on_certain_topic),
-                            textAlign = TextAlign.Center,
-                            style = typography.bodyMedium.copy(
-                                color = colorScheme.onSurface,
-                            ),
-                        )
-                        if (isOwner) {
-                            Button(
-                                onClick = onAddFlashCardClick,
-                                modifier = Modifier.padding(16.dp)
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Center
+    ) {
+        when {
+            flashCards.isEmpty() -> {
+                Column(
+                    horizontalAlignment = CenterHorizontally,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.txt_add_your_material_to_get_started),
+                        style = typography.titleLarge.copy(
+                            fontWeight = Bold,
+                            color = colorScheme.onSurface
+                        ),
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = stringResource(R.string.txt_this_study_set_can_contain_flashcards_notes_and_files_on_certain_topic),
+                        textAlign = TextAlign.Center,
+                        style = typography.bodyMedium.copy(
+                            color = colorScheme.onSurface,
+                        ),
+                    )
+                    if (isOwner) {
+                        Button(
+                            onClick = onAddFlashCardClick,
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = CenterVertically
                             ) {
-                                Row(
-                                    verticalAlignment = CenterVertically
-                                ) {
-                                    Icon(
-                                        Icons.Filled.Add,
-                                        contentDescription = stringResource(R.string.txt_add),
-                                        tint = colorScheme.background,
-                                        modifier = Modifier.padding(end = 8.dp)
+                                Icon(
+                                    Icons.Filled.Add,
+                                    contentDescription = stringResource(R.string.txt_add),
+                                    tint = colorScheme.background,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.txt_add_material),
+                                    style = typography.titleMedium.copy(
+                                        color = colorScheme.background
                                     )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                ) {
+                    if (!isOwner) {
+                        item {
+                            Column(
+                                horizontalAlignment = CenterHorizontally,
+                            ) {
+                                Button(
+                                    onClick = onMakeCopyClick,
+                                    modifier = Modifier.padding(16.dp),
+                                    shape = MaterialTheme.shapes.medium,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = studySetColor
+                                    )
+                                ) {
                                     Text(
-                                        text = stringResource(R.string.txt_add_material),
+                                        text = stringResource(R.string.txt_make_a_copy),
                                         style = typography.titleMedium.copy(
                                             color = colorScheme.background
                                         )
                                     )
                                 }
+
+                                Text(
+                                    text = stringResource(R.string.txt_you_can_not_edit_this_study_set_just_create_a_copy_of_it),
+                                    style = typography.bodyMedium.copy(
+                                        color = colorScheme.onSurface
+                                    ),
+                                    textAlign = TextAlign.Center,
+                                )
                             }
                         }
                     }
-                }
 
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = CenterHorizontally,
-                        verticalArrangement = Arrangement.Top,
-                    ) {
-                        if (!isOwner) {
-                            item {
-                                Column(
-                                    horizontalAlignment = CenterHorizontally,
-                                ) {
-                                    Button(
-                                        onClick = onMakeCopyClick,
-                                        modifier = Modifier.padding(16.dp),
-                                        shape = MaterialTheme.shapes.medium,
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = studySetColor
-                                        )
-                                    ) {
-                                        Text(
-                                            text = stringResource(R.string.txt_make_a_copy),
-                                            style = typography.titleMedium.copy(
-                                                color = colorScheme.background
-                                            )
-                                        )
-                                    }
-
-                                    Text(
-                                        text = stringResource(R.string.txt_you_can_not_edit_this_study_set_just_create_a_copy_of_it),
-                                        style = typography.bodyMedium.copy(
-                                            color = colorScheme.onSurface
-                                        ),
-                                        textAlign = TextAlign.Center,
+                    if (isOwner) {
+                        item {
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                items(items = flashCards, key = { it.id }) { flashCard ->
+                                    StudySetFlipCard(
+                                        frontText = flashCard.term,
+                                        backText = flashCard.definition,
+                                        backgroundColor = colorScheme.background,
+                                        backImage = flashCard.definitionImageURL,
                                     )
                                 }
                             }
                         }
 
-                        if (isOwner) {
-                            item {
-                                LazyRow(
-                                    modifier = Modifier.fillMaxWidth(),
-                                ) {
-                                    items(items = flashCards, key = { it.id }) { flashCard ->
-                                        StudySetFlipCard(
-                                            frontText = flashCard.term,
-                                            backText = flashCard.definition,
-                                            backgroundColor = colorScheme.background,
-                                            backImage = flashCard.definitionImageURL,
-                                        )
-                                    }
-                                }
-                            }
-
-                            item {
-                                Text(
-                                    text = stringResource(R.string.txt_choose_your_way_to_study),
-                                    style = typography.titleMedium.copy(
-                                        color = colorScheme.onSurface,
-                                        fontWeight = Bold
-                                    ),
-                                    modifier = Modifier.padding(16.dp)
-                                )
-                            }
-
-                            item {
-                                LearnModeCard(
-                                    title = stringResource(R.string.txt_flip_flashcards),
-                                    icon = R.drawable.ic_flipcard,
-                                    onClick = {
-                                        showGetAllDialog = true
-                                        learningMode = LearnMode.FLIP
-                                    },
-                                    color = studySetColor,
-                                    learningPercentage = learningPercentFlipped
-                                )
-                            }
-                            item {
-                                LearnModeCard(
-                                    title = stringResource(R.string.txt_quiz),
-                                    icon = R.drawable.ic_quiz,
-                                    onClick = {
-                                        showGetAllDialog = true
-                                        learningMode = LearnMode.QUIZ
-                                    },
-                                    color = studySetColor,
-                                    learningPercentage = learningPercentQuiz
-                                )
-                            }
-                            item {
-                                LearnModeCard(
-                                    title = stringResource(R.string.txt_true_false),
-                                    icon = R.drawable.ic_tf,
-                                    onClick = {
-                                        showGetAllDialog = true
-                                        learningMode = LearnMode.TRUE_FALSE
-                                    },
-                                    color = studySetColor,
-                                    learningPercentage = learningPercentTrueFalse
-                                )
-                            }
-                            item {
-                                LearnModeCard(
-                                    title = stringResource(R.string.txt_write),
-                                    icon = R.drawable.ic_write,
-                                    onClick = {
-                                        showGetAllDialog = true
-                                        learningMode = LearnMode.WRITE
-                                    },
-                                    color = studySetColor,
-                                    learningPercentage = learningPercentWrite
-                                )
-                            }
-                        }
-
                         item {
-                            Row(
-                                verticalAlignment = CenterVertically,
-                                horizontalArrangement = SpaceBetween,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.txt_terms),
-                                    style = typography.titleMedium.copy(
-                                        color = colorScheme.onSurface,
-                                        fontWeight = Bold
-                                    ),
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
-
-                        items(items = flashCards, key = { it.id }) { flashCards ->
-                            CardDetail(
-                                isOwner = isOwner,
-                                color = studySetColor,
-                                front = flashCards.term,
-                                back = flashCards.definition,
-                                isStarred = flashCards.isStarred,
-                                imageURL = flashCards.definitionImageURL,
-                                isAIGenerated = flashCards.isAIGenerated,
-                                onToggleStarClick = { isStarred ->
-                                    onToggleStarClick(flashCards.id, isStarred)
-                                },
-                                onMenuClick = {
-                                    (flashCards.hint
-                                        ?: context.getString(R.string.txt_there_is_no_hint_for_this_flashcard)).also {
-                                        hint = it
-                                    }
-                                    (flashCards.explanation
-                                        ?: context.getString(R.string.txt_there_is_no_explanation_for_this_flashcard)).also {
-                                        explanation = it
-                                    }
-                                    showMenu = true
-                                    studySetId = flashCards.id
-                                    onFlashCardClick(flashCards.id)
-                                }
+                            Text(
+                                text = stringResource(R.string.txt_choose_your_way_to_study),
+                                style = typography.titleMedium.copy(
+                                    color = colorScheme.onSurface,
+                                    fontWeight = Bold
+                                ),
+                                modifier = Modifier.padding(16.dp)
                             )
                         }
 
+                        item {
+                            LearnModeCard(
+                                title = stringResource(R.string.txt_flip_flashcards),
+                                icon = R.drawable.ic_flipcard,
+                                onClick = {
+                                    showGetAllDialog = true
+                                    learningMode = LearnMode.FLIP
+                                },
+                                color = studySetColor,
+                                learningPercentage = learningPercentFlipped
+                            )
+                        }
+                        item {
+                            LearnModeCard(
+                                title = stringResource(R.string.txt_quiz),
+                                icon = R.drawable.ic_quiz,
+                                onClick = {
+                                    showGetAllDialog = true
+                                    learningMode = LearnMode.QUIZ
+                                },
+                                color = studySetColor,
+                                learningPercentage = learningPercentQuiz
+                            )
+                        }
+                        item {
+                            LearnModeCard(
+                                title = stringResource(R.string.txt_true_false),
+                                icon = R.drawable.ic_tf,
+                                onClick = {
+                                    showGetAllDialog = true
+                                    learningMode = LearnMode.TRUE_FALSE
+                                },
+                                color = studySetColor,
+                                learningPercentage = learningPercentTrueFalse
+                            )
+                        }
+                        item {
+                            LearnModeCard(
+                                title = stringResource(R.string.txt_write),
+                                icon = R.drawable.ic_write,
+                                onClick = {
+                                    showGetAllDialog = true
+                                    learningMode = LearnMode.WRITE
+                                },
+                                color = studySetColor,
+                                learningPercentage = learningPercentWrite
+                            )
+                        }
                     }
+
+                    item {
+                        Row(
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.txt_terms),
+                                style = typography.titleMedium.copy(
+                                    color = colorScheme.onSurface,
+                                    fontWeight = Bold
+                                ),
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+
+                    items(items = flashCards, key = { it.id }) { flashCards ->
+                        CardDetail(
+                            isOwner = isOwner,
+                            color = studySetColor,
+                            front = flashCards.term,
+                            back = flashCards.definition,
+                            isStarred = flashCards.isStarred,
+                            imageURL = flashCards.definitionImageURL,
+                            isAIGenerated = flashCards.isAIGenerated,
+                            onToggleStarClick = { isStarred ->
+                                onToggleStarClick(flashCards.id, isStarred)
+                            },
+                            onMenuClick = {
+                                (flashCards.hint
+                                    ?: context.getString(R.string.txt_there_is_no_hint_for_this_flashcard)).also {
+                                    hint = it
+                                }
+                                (flashCards.explanation
+                                    ?: context.getString(R.string.txt_there_is_no_explanation_for_this_flashcard)).also {
+                                    explanation = it
+                                }
+                                showMenu = true
+                                studySetId = flashCards.id
+                                onFlashCardClick(flashCards.id)
+                            }
+                        )
+                    }
+
                 }
             }
         }
+    }
 
-        if (showMenu) {
-            ModalBottomSheet(
-                sheetState = menuBottomSheetState,
-                onDismissRequest = {
-                    showMenu = false
-                }
-            ) {
-                Column {
+    if (showMenu) {
+        ModalBottomSheet(
+            sheetState = menuBottomSheetState,
+            onDismissRequest = {
+                showMenu = false
+            }
+        ) {
+            Column {
+                ItemMenuBottomSheet(
+                    onClick = {
+                        showHint = true
+                        showMenu = false
+                    },
+                    icon = Filled.HelpOutline,
+                    title = stringResource(R.string.txt_hint)
+                )
+                ItemMenuBottomSheet(
+                    onClick = {
+                        showExplanation = true
+                        showMenu = false
+                    },
+                    icon = Filled.HelpOutline,
+                    title = stringResource(R.string.txt_explanation)
+                )
+                if (isOwner) {
                     ItemMenuBottomSheet(
                         onClick = {
-                            showHint = true
+                            onEditFlashCardClick()
                             showMenu = false
                         },
-                        icon = Filled.HelpOutline,
-                        title = stringResource(R.string.txt_hint)
+                        icon = Outlined.Edit,
+                        title = stringResource(R.string.txt_edit)
                     )
                     ItemMenuBottomSheet(
                         onClick = {
-                            showExplanation = true
+                            showAlertDialog = true
                             showMenu = false
                         },
-                        icon = Filled.HelpOutline,
-                        title = stringResource(R.string.txt_explanation)
-                    )
-                    if (isOwner) {
-                        ItemMenuBottomSheet(
-                            onClick = {
-                                onEditFlashCardClick()
-                                showMenu = false
-                            },
-                            icon = Outlined.Edit,
-                            title = stringResource(R.string.txt_edit)
-                        )
-                        ItemMenuBottomSheet(
-                            onClick = {
-                                showAlertDialog = true
-                                showMenu = false
-                            },
-                            icon = Default.DeleteOutline,
-                            title = stringResource(R.string.txt_delete),
-                            color = Color.Red,
-                        )
-                    }
-                }
-            }
-        }
-
-        if (showHint) {
-            ModalBottomSheet(
-                sheetState = hintBottomSheet,
-                onDismissRequest = {
-                    hint = ""
-                    showHint = false
-                }
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.txt_hint),
-                        style = typography.titleMedium.copy(
-                            color = colorScheme.onSurface,
-                            fontWeight = Bold
-                        ),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Text(
-                        text = hint,
-                        style = typography.bodyMedium.copy(
-                            color = colorScheme.onSurface,
-                        ),
-                        modifier = Modifier.padding(16.dp)
+                        icon = Default.DeleteOutline,
+                        title = stringResource(R.string.txt_delete),
+                        color = Color.Red,
                     )
                 }
             }
         }
+    }
 
-        if (showExplanation) {
-            ModalBottomSheet(
-                sheetState = explanationBottomSheet,
-                onDismissRequest = {
-                    hint = ""
-                    showExplanation = false
-                }
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.txt_explanation),
-                        style = typography.titleMedium.copy(
-                            color = colorScheme.onSurface,
-                            fontWeight = Bold
-                        ),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Text(
-                        text = explanation,
-                        style = typography.bodyMedium.copy(
-                            color = colorScheme.onSurface,
-                        ),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+    if (showHint) {
+        ModalBottomSheet(
+            sheetState = hintBottomSheet,
+            onDismissRequest = {
+                hint = ""
+                showHint = false
+            }
+        ) {
+            Column {
+                Text(
+                    text = stringResource(R.string.txt_hint),
+                    style = typography.titleMedium.copy(
+                        color = colorScheme.onSurface,
+                        fontWeight = Bold
+                    ),
+                    modifier = Modifier.padding(16.dp)
+                )
+                Text(
+                    text = hint,
+                    style = typography.bodyMedium.copy(
+                        color = colorScheme.onSurface,
+                    ),
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
+    }
 
-        if (showAlertDialog) {
-            QuickMemAlertDialog(
-                onDismissRequest = {
-                    showAlertDialog = false
-                },
-                onConfirm = {
-                    showAlertDialog = false
-                    onDeleteFlashCardClick()
-                },
-                title = stringResource(R.string.txt_delete_flashcard),
-                text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_flashcard),
-                confirmButtonTitle = stringResource(R.string.txt_delete),
-                dismissButtonTitle = stringResource(R.string.txt_cancel),
-                buttonColor = colorScheme.error,
-            )
+    if (showExplanation) {
+        ModalBottomSheet(
+            sheetState = explanationBottomSheet,
+            onDismissRequest = {
+                hint = ""
+                showExplanation = false
+            }
+        ) {
+            Column {
+                Text(
+                    text = stringResource(R.string.txt_explanation),
+                    style = typography.titleMedium.copy(
+                        color = colorScheme.onSurface,
+                        fontWeight = Bold
+                    ),
+                    modifier = Modifier.padding(16.dp)
+                )
+                Text(
+                    text = explanation,
+                    style = typography.bodyMedium.copy(
+                        color = colorScheme.onSurface,
+                    ),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
-        if (showGetAllDialog && flashCards.size > 10) {
-            QuickMemAlertDialog(
-                onDismissRequest = {
-                    showGetAllDialog = false
-                    onNavigateToLearn(learningMode, true)
-                    learningMode = LearnMode.NONE
-                },
-                onConfirm = {
-                    showGetAllDialog = false
-                    onNavigateToLearn(learningMode, false)
-                    learningMode = LearnMode.NONE
-                },
-                title = stringResource(R.string.txt_get_all),
-                text = stringResource(R.string.txt_are_you_sure_you_want_to_get_all_flashcards),
-                confirmButtonTitle = stringResource(R.string.txt_ok),
-                dismissButtonTitle = stringResource(R.string.txt_no_thanks),
-            )
-        } else {
-            onNavigateToLearn(learningMode, true)
-            learningMode = LearnMode.NONE
-        }
+    }
+
+    if (showAlertDialog) {
+        QuickMemAlertDialog(
+            onDismissRequest = {
+                showAlertDialog = false
+            },
+            onConfirm = {
+                showAlertDialog = false
+                onDeleteFlashCardClick()
+            },
+            title = stringResource(R.string.txt_delete_flashcard),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_delete_this_flashcard),
+            confirmButtonTitle = stringResource(R.string.txt_delete),
+            dismissButtonTitle = stringResource(R.string.txt_cancel),
+            buttonColor = colorScheme.error,
+        )
+    }
+    if (showGetAllDialog && flashCards.size > 10) {
+        QuickMemAlertDialog(
+            onDismissRequest = {
+                showGetAllDialog = false
+                onNavigateToLearn(learningMode, true)
+                learningMode = LearnMode.NONE
+            },
+            onConfirm = {
+                showGetAllDialog = false
+                onNavigateToLearn(learningMode, false)
+                learningMode = LearnMode.NONE
+            },
+            title = stringResource(R.string.txt_get_all),
+            text = stringResource(R.string.txt_are_you_sure_you_want_to_get_all_flashcards),
+            confirmButtonTitle = stringResource(R.string.txt_ok),
+            dismissButtonTitle = stringResource(R.string.txt_no_thanks),
+        )
+    } else {
+        onNavigateToLearn(learningMode, true)
+        learningMode = LearnMode.NONE
     }
 }
 

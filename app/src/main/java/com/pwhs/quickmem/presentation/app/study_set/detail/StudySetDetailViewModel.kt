@@ -33,7 +33,7 @@ class StudySetDetailViewModel @Inject constructor(
     private val studyTimeRepository: StudyTimeRepository,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
-    firebaseAnalytics: FirebaseAnalytics,
+    private val firebaseAnalytics: FirebaseAnalytics,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(StudySetDetailUiState())
@@ -97,6 +97,11 @@ class StudySetDetailViewModel @Inject constructor(
             }
 
             is StudySetDetailUiAction.NavigateToLearn -> {
+                firebaseAnalytics.logEvent("navigate_to_learn") {
+                    param("study_set_id", _uiState.value.id)
+                    param("study_set_title", _uiState.value.title)
+                    param("learn_mode", event.learnMode.mode)
+                }
                 when (event.learnMode) {
                     LearnMode.FLIP -> {
                         _uiEvent.trySend(StudySetDetailUiEvent.OnNavigateToFlipFlashcard(event.isGetAll))
@@ -157,7 +162,6 @@ class StudySetDetailViewModel @Inject constructor(
                     }
 
                     is Resources.Error -> {
-                        Timber.d("Error")
                         _uiState.update { it.copy(isLoading = false) }
                     }
                 }

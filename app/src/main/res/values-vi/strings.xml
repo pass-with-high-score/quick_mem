@@ -481,5 +481,5 @@
     <string name="txt_when_you_make_a_study_set_public_anyone_can_see_it_and_use_it">Khi bạn công khai bộ học, bất kỳ ai cũng có thể xem và sử dụng nó.</string>
     <string name="txt_study_set_created">Bộ học đã được tạo</string>
     <string name="txt_study_set_edited">Bộ học đã được chỉnh sửa</string>
-    <string name="txt_current_flip_status">Trạng thái lật hiện tại</string>
+    <string name="txt_current_flip_status">Quá trình học lật thẻ hiện tại</string>
 </resources>

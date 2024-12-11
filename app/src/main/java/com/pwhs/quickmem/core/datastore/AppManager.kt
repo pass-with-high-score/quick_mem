@@ -10,8 +10,9 @@ import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import javax.inject.Inject
 
-class AppManager(private val context: Context) {
+class AppManager @Inject constructor(private val context: Context) {
     companion object {
         val IS_FIRST_RUN = booleanPreferencesKey("IS_FIRST_RUN")
         val IS_LOGGED_IN = booleanPreferencesKey("IS_LOGGED_IN")

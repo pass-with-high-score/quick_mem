@@ -16,6 +16,7 @@ import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.data.dto.notification.DeviceTokenRequestDto
 import com.pwhs.quickmem.data.remote.ApiService
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -23,10 +24,14 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class AppFirebaseMessagingService : FirebaseMessagingService() {
-    private val tokenManager = TokenManager(this)
 
-    private val appManager = AppManager(this)
+    @Inject
+    lateinit var tokenManager: TokenManager
+
+    @Inject
+    lateinit var appManager: AppManager
 
     @Inject
     lateinit var apiService: ApiService
