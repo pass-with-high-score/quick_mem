@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.home.search_by_subject
 
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -87,9 +88,10 @@ fun SearchStudySetBySubjectScreen(
         icon = uiState.icon,
         studySetCount = uiState.studySetCount,
         isLoading = uiState.isLoading,
-        nameSubject = uiState.subject?.name ?: "",
+        nameSubject = uiState.subject?.subjectName ?: R.string.txt_general,
         colorSubject = uiState.subject?.color ?: Color.Blue,
-        descriptionSubject = uiState.subject?.description ?: "",
+        descriptionSubject = uiState.subject?.subjectDescription
+            ?: R.string.txt_general_subjects_that_do_not_fit_into_specific_categories,
         studySets = studySetItems,
         onNavigateBack = {
             resultBackNavigator.navigateBack(true)
@@ -108,11 +110,11 @@ fun SearchStudySetBySubject(
     modifier: Modifier = Modifier,
     studySets: LazyPagingItems<GetStudySetResponseModel>? = null,
     onStudySetClick: (GetStudySetResponseModel?) -> Unit = {},
-    nameSubject: String = "",
+    @StringRes nameSubject: Int = R.string.txt_general,
     colorSubject: Color,
     @DrawableRes icon: Int = R.drawable.ic_all,
     studySetCount: Int = 0,
-    descriptionSubject: String = "",
+    @StringRes descriptionSubject: Int = R.string.txt_general_subjects_that_do_not_fit_into_specific_categories,
     isLoading: Boolean = false,
     onNavigateBack: () -> Unit,
     onStudySetRefresh: () -> Unit = {},
@@ -126,11 +128,11 @@ fun SearchStudySetBySubject(
         topBar = {
             SearchStudySetBySubjectTopAppBar(
                 onNavigateBack = onNavigateBack,
-                name = nameSubject,
+                name = stringResource(nameSubject),
                 color = colorSubject,
                 icon = icon,
                 studySetCount = studySetCount,
-                description = descriptionSubject,
+                description = stringResource(descriptionSubject),
                 onAddStudySet = onAddStudySet
             )
         }

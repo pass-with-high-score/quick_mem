@@ -123,7 +123,7 @@ fun EditStudySet(
         mutableStateOf("")
     }
     val filteredSubjects = SubjectModel.defaultSubjects.filter {
-        it.name.contains(searchSubjectQuery, ignoreCase = true)
+        stringResource(it.subjectName).contains(searchSubjectQuery, ignoreCase = true)
     }
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()

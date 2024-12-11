@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,15 +48,15 @@ fun SubjectItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
-                    painter = painterResource(id = subject.iconRes!!),
-                    contentDescription = subject.name,
+                    painter = painterResource(id = subject.iconRes ?: R.drawable.ic_all),
+                    contentDescription = stringResource(subject.subjectName),
                     tint = subject.color!!,
                     modifier = Modifier
                         .size(35.dp)
                 )
 
                 Text(
-                    text = subject.name,
+                    text = stringResource(subject.subjectName),
                     style = typography.titleMedium.copy(
                         color = colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
@@ -69,8 +70,12 @@ fun SubjectItem(
 
                 Text(
                     text = when (subject.studySetCount) {
-                        1 -> "${subject.studySetCount} Study Set"
-                        else -> "${subject.studySetCount} Study Sets"
+                        0 -> stringResource(R.string.txt_no_study_sets)
+                        1 -> stringResource(R.string.txt_one_study_set)
+                        else -> stringResource(
+                            R.string.txt_study_sets_library,
+                            subject.studySetCount
+                        )
                     },
                     style = typography.bodyMedium.copy(
                         color = colorScheme.onSurface,
@@ -89,10 +94,10 @@ fun SubjectItemPreview() {
         onSearchStudySetBySubject = {},
         subject = SubjectModel(
             id = 1,
-            name = "All",
+            subjectName = R.string.txt_general,
             iconRes = R.drawable.ic_all,
             color = Color(0xFF7f60f9),
-            description = "Agriculture is the study of farming and cultivation of land."
+            subjectDescription = R.string.txt_general_subjects_that_do_not_fit_into_specific_categories,
         ),
     )
 }

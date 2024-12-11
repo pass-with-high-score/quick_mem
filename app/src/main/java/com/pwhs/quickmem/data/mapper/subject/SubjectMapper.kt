@@ -5,10 +5,9 @@ import com.pwhs.quickmem.domain.model.subject.SubjectModel
 
 fun SubjectResponseDto.toSubjectModel() = SubjectModel(
     id = id,
-    name = name,
+    subjectName = SubjectModel.defaultSubjects.first { it.id == id }.subjectName
 )
 
 fun SubjectModel.toSubjectResponseDto() = SubjectResponseDto(
     id = id,
-    name = name,
 )

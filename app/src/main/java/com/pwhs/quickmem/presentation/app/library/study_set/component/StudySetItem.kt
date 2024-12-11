@@ -17,7 +17,6 @@ import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.CardDefaults.elevatedCardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -105,7 +104,7 @@ fun StudySetItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = studySet?.subject?.name ?: SubjectModel.defaultSubjects[0].name,
+                        text =  stringResource(studySet?.subject?.subjectName ?: SubjectModel.defaultSubjects[0].subjectName),
                         style = typography.bodySmall.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f)
                         )

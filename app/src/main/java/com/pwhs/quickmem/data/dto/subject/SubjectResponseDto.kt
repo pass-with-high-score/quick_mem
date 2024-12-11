@@ -7,5 +7,5 @@ data class SubjectResponseDto(
     val id: Int,
 
     @SerializedName("name")
-    val name: String
+    val name: String? = null,
 )

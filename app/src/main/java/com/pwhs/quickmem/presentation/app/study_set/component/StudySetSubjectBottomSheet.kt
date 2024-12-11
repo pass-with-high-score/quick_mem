@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -98,15 +99,15 @@ fun StudySetSubjectBottomSheet(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
-                                painter = painterResource(id = subject.iconRes!!),
-                                contentDescription = subject.name,
+                                painter = painterResource(id = subject.iconRes ?: R.drawable.ic_all),
+                                contentDescription = stringResource(subject.subjectName),
                                 tint = subject.color!!,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
 
                             Text(
-                                text = subject.name,
+                                text = stringResource(subject.subjectName),
                                 style = typography.bodyMedium.copy(
                                     color = colorScheme.onSurface,
                                     fontWeight = FontWeight.Bold

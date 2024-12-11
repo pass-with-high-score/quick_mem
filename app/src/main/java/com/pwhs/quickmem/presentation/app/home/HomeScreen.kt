@@ -662,8 +662,8 @@ private fun HomeScreenPreview() {
         Home(
             subjects = listOf(
                 SubjectModel(
-                    1,
-                    "General",
+                    id = 1,
+                    subjectName = R.string.txt_general,
                     iconRes = R.drawable.ic_all,
                     color = Color(0xFF7f60f9),
                     studySetCount = 1

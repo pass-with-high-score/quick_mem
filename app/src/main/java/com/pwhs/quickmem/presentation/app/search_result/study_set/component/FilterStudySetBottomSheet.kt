@@ -45,7 +45,7 @@ fun FilterStudySetBottomSheet(
     var searchSubjectQuery by remember { mutableStateOf("") }
 
     val filteredSubjects = SubjectModel.defaultSubjects.filter {
-        it.name.contains(searchSubjectQuery, ignoreCase = true)
+        stringResource(it.subjectName).contains(searchSubjectQuery, ignoreCase = true)
     }
 
     LazyColumn(
