@@ -55,7 +55,7 @@ fun StudySetSubjectBottomSheet(
                     .fillMaxHeight(0.95f)
             ) {
                 Text(
-                    "Subjects",
+                    stringResource(R.string.txt_subjects),
                     style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                 )
                 OutlinedTextField(
@@ -70,7 +70,7 @@ fun StudySetSubjectBottomSheet(
                     value = searchSubjectQuery,
                     shape = RoundedCornerShape(10.dp),
                     onValueChange = onSearchQueryChange,
-                    placeholder = { Text("Try Arts") },
+                    placeholder = { Text(stringResource(R.string.txt_try_arts)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp),
@@ -123,7 +123,7 @@ fun StudySetSubjectBottomSheet(
                     item {
                         if (filteredSubjects.isEmpty()) {
                             Text(
-                                text = "No subjects found",
+                                text = stringResource(R.string.txt_no_subjects_found),
                                 style = typography.bodyMedium.copy(
                                     color = colorScheme.onSurface,
                                     fontWeight = FontWeight.Bold
