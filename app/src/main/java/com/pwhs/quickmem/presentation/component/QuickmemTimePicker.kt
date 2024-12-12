@@ -29,9 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.pwhs.quickmem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +77,7 @@ fun QuickmemTimePicker(
 
 @Composable
 fun AdvancedTimePickerDialog(
-    title: String = "Select Time",
+    title: String = stringResource(R.string.txt_select_time),
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     toggle: @Composable () -> Unit = {},
@@ -116,8 +118,16 @@ fun AdvancedTimePickerDialog(
                 ) {
                     toggle()
                     Spacer(modifier = Modifier.weight(1f))
-                    TextButton(onClick = onDismiss) { Text("Cancel") }
-                    TextButton(onClick = onConfirm) { Text("OK") }
+                    TextButton(onClick = onDismiss) {
+                        Text(
+                            stringResource(R.string.txt_cancel)
+                        )
+                    }
+                    TextButton(onClick = onConfirm) {
+                        Text(
+                            stringResource(R.string.txt_ok)
+                        )
+                    }
                 }
             }
         }

@@ -84,6 +84,7 @@ fun FlipFlashCardFinish(
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -252,7 +253,7 @@ fun FlipFlashCardFinish(
                 }
             }
             item {
-                if ( isEndOfList) {
+                if (isEndOfList) {
                     Button(
                         onClick = {
                             onRestartClicked()

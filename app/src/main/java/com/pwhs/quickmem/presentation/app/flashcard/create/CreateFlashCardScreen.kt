@@ -2,7 +2,6 @@ package com.pwhs.quickmem.presentation.app.flashcard.create
 
 import android.net.Uri
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -49,7 +47,7 @@ import com.pwhs.quickmem.presentation.app.flashcard.component.CardSelectImage
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextField
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextFieldContainer
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTopAppBar
-import com.pwhs.quickmem.presentation.component.BottomSheetItem
+import com.pwhs.quickmem.presentation.app.flashcard.component.FlashcardBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.ImageCompressor
@@ -351,68 +349,44 @@ fun CreateFlashCard(
                 }
 
                 item {
-                    Text(
-                        text = stringResource(R.string.txt_make_your_term_and_definition_as_clear_as_possible_you_can_add_hint_and_explanation_to_help_you_remember_better),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                item {
                     HorizontalDivider(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
                     )
-                    BannerAds(modifier = Modifier.fillMaxWidth())
+                }
+
+                item {
+                    Text(
+                        text = stringResource(R.string.txt_make_your_term_and_definition_as_clear_as_possible_you_can_add_hint_and_explanation_to_help_you_remember_better),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .padding(bottom = 32.dp),
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
+                    )
                 }
 
             }
+            BannerAds(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            )
             LoadingOverlay(isLoading = isLoading)
         }
 
         if (showBottomSheetSetting) {
-            ModalBottomSheet(
+            FlashcardBottomSheet(
                 onDismissRequest = {
                     showBottomSheetSetting = false
                 },
                 sheetState = bottomSheetSetting,
-                containerColor = Color.White
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    BottomSheetItem(
-                        title = stringResource(R.string.txt_hint_to_question),
-                        icon = R.drawable.ic_add,
-                        onClick = {
-                            onShowHintClicked(true)
-                            showBottomSheetSetting = false
-                        },
-                    )
-                    BottomSheetItem(
-                        title = stringResource(R.string.txt_explanation_to_answer),
-                        icon = R.drawable.ic_add,
-                        onClick = {
-                            onShowExplanationClicked(true)
-                            showBottomSheetSetting = false
-                        },
-                    )
-                    BottomSheetItem(
-                        title = stringResource(R.string.txt_draw_to_answer),
-                        icon = R.drawable.ic_art,
-                        onClick = {
-                            showBottomSheetSetting = false
-                        },
-                    )
-                }
-            }
+                onShowHintClicked = onShowHintClicked,
+                onShowExplanationClicked = onShowExplanationClicked
+            )
         }
     }
 }

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -138,6 +139,7 @@ fun LearnByWriteScreen(
             viewModel.onEvent(LearnByWriteUiAction.OnAnswer(id, status, answer))
         },
         isGetAll = uiState.isGetAll,
+        isGenerateHint = uiState.isGenerateHint
     )
 }
 
@@ -159,6 +161,7 @@ fun LearnByWrite(
     onContinueLearningClicked: () -> Unit = {},
     onSubmitAnswer: (String, WriteStatus, String) -> Unit = { _, _, _ -> },
     isGetAll: Boolean = false,
+    isGenerateHint: Boolean = false
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -554,8 +557,13 @@ fun LearnByWrite(
                             HorizontalDivider(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
                             )
+                           if (isGenerateHint) {
+                               LinearProgressIndicator(
+                                   color = studySetColor,
+                                   modifier = Modifier.fillMaxWidth()
+                               )
+                           }
                         }
 
                         item {
@@ -563,7 +571,7 @@ fun LearnByWrite(
 
                             Text(
                                 text = stringResource(R.string.txt_hint_from_answer),
-                                style = MaterialTheme.typography.bodyLarge.copy(
+                                style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
                                 modifier = Modifier.padding(bottom = 8.dp)
@@ -608,7 +616,7 @@ fun LearnByWrite(
 
                             Text(
                                 text = stringResource(R.string.txt_random_letter),
-                                style = MaterialTheme.typography.bodyLarge.copy(
+                                style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
                                 modifier = Modifier.padding(bottom = 8.dp)
@@ -627,7 +635,10 @@ fun LearnByWrite(
                                     }
                                 },
                                 enabled = revealCount.intValue < maxRevealCount,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = studySetColor
+                                )
                             ) {
                                 Text(text = stringResource(R.string.txt_show_more_hint))
                             }

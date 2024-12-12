@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.forgot_password.send_email
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,14 +59,6 @@ fun SendVerifyEmailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SendVerifyEmailUiEvent.SendEmailFailure -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.txt_email_verification_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
                 SendVerifyEmailUiEvent.SendEmailSuccess -> {
                     navigator.navigate(
                         VerifyEmailScreenDestination(
@@ -74,6 +67,11 @@ fun SendVerifyEmailScreen(
                             resetPasswordToken = uiState.value.resetPasswordToken
                         )
                     )
+                }
+
+                is SendVerifyEmailUiEvent.SendEmailFailure -> {
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -102,7 +100,7 @@ private fun SendVerifyEmail(
     isLoading: Boolean = false,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
-    emailError: String = "",
+    @StringRes emailError: Int? = null,
     onEmailChanged: (String) -> Unit = {},
     onResetClick: () -> Unit = {}
 ) {

@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
-import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.presentation.app.library.study_set.component.StudySetItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -140,11 +139,6 @@ fun ListStudySetScreen(
                                 placeholder = stringResource(R.string.txt_search_study_sets)
                             )
 
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         items(items = filterStudySets, key = { it.id }) { studySet ->
                             StudySetItem(

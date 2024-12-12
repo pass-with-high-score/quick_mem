@@ -1,9 +1,8 @@
 package com.pwhs.quickmem.presentation.auth.login.email
 
-import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.AuthProvider
 import com.pwhs.quickmem.core.data.enums.UserStatus
 import com.pwhs.quickmem.core.datastore.AppManager
@@ -33,10 +32,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginWithEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    application: Application,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginWithEmailUiState())
     val uiState = _uiState.asStateFlow()
@@ -48,9 +46,14 @@ class LoginWithEmailViewModel @Inject constructor(
         when (event) {
             is LoginWithEmailUiAction.EmailChanged -> {
                 if (!event.email.emailIsValid()) {
-                    _uiState.update { it.copy(email = event.email, emailError = "Invalid email") }
+                    _uiState.update {
+                        it.copy(
+                            email = event.email,
+                            emailError = R.string.txt_invalid_email
+                        )
+                    }
                 } else {
-                    _uiState.update { it.copy(email = event.email, emailError = "") }
+                    _uiState.update { it.copy(email = event.email, emailError = null) }
                 }
             }
 
@@ -59,11 +62,11 @@ class LoginWithEmailViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             password = event.password,
-                            passwordError = "Password is required"
+                            passwordError = R.string.txt_password_is_required
                         )
                     }
                 } else {
-                    _uiState.update { it.copy(password = event.password, passwordError = "") }
+                    _uiState.update { it.copy(password = event.password, passwordError = null) }
                 }
             }
 
@@ -71,7 +74,7 @@ class LoginWithEmailViewModel @Inject constructor(
                 if (validateInput()) {
                     login()
                 } else {
-                    Toast.makeText(getApplication(), "Invalid input", Toast.LENGTH_SHORT).show()
+                    _uiEvent.trySend(LoginWithEmailUiEvent.LoginFailure(R.string.txt_invalid_input))
                 }
             }
         }
@@ -85,11 +88,11 @@ class LoginWithEmailViewModel @Inject constructor(
                     is Resources.Error -> {
                         _uiState.update {
                             it.copy(
-                                emailError = "Email is not registered",
+                                emailError = R.string.txt_email_is_not_registered,
                                 isLoading = false
                             )
                         }
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
+                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure(R.string.txt_email_is_not_registered))
                     }
 
                     is Resources.Loading -> {
@@ -109,11 +112,11 @@ class LoginWithEmailViewModel @Inject constructor(
                                         _uiState.update {
                                             it.copy(
                                                 isLoading = false,
-                                                emailError = "Invalid email or password",
-                                                passwordError = "Invalid email or password"
+                                                emailError = R.string.txt_invalid_email_or_password,
+                                                passwordError = R.string.txt_invalid_email_or_password
                                             )
                                         }
-                                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
+                                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure(R.string.txt_invalid_email_or_password))
                                     }
 
                                     is Resources.Loading -> {
@@ -128,7 +131,7 @@ class LoginWithEmailViewModel @Inject constructor(
                                         } else if (login.data?.userStatus == UserStatus.BLOCKED.status) {
                                             _uiState.update {
                                                 it.copy(
-                                                    emailError = "Your account has been blocked",
+                                                    emailError = R.string.txt_your_account_has_been_blocked,
                                                     isLoading = false
                                                 )
                                             }
@@ -177,7 +180,7 @@ class LoginWithEmailViewModel @Inject constructor(
                         } else {
                             _uiState.update {
                                 it.copy(
-                                    emailError = "Email is not registered",
+                                    emailError = R.string.txt_email_is_not_registered,
                                     isLoading = false
                                 )
                             }
@@ -209,7 +212,7 @@ class LoginWithEmailViewModel @Inject constructor(
 
                     is Resources.Error -> {
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure)
+                        _uiEvent.send(LoginWithEmailUiEvent.LoginFailure(R.string.txt_error_occurred))
                     }
                 }
             }
@@ -221,16 +224,16 @@ class LoginWithEmailViewModel @Inject constructor(
         var isValid = true
 
         if (!uiState.value.email.validEmail() || uiState.value.email.isEmpty()) {
-            _uiState.update { it.copy(emailError = "Invalid email") }
+            _uiState.update { it.copy(emailError = R.string.txt_invalid_email) }
             isValid = false
         } else {
-            _uiState.update { it.copy(emailError = "") }
+            _uiState.update { it.copy(emailError = null) }
         }
         if (!uiState.value.password.strongPassword() || uiState.value.password.isEmpty()) {
-            _uiState.update { it.copy(passwordError = "Password is too weak!") }
+            _uiState.update { it.copy(passwordError = R.string.txt_password_is_too_weak_and_required) }
             isValid = false
         } else {
-            _uiState.update { it.copy(passwordError = "") }
+            _uiState.update { it.copy(passwordError = null) }
         }
 
         return isValid

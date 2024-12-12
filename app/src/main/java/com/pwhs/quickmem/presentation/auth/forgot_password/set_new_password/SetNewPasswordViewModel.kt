@@ -1,10 +1,9 @@
 package com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password
 
-import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.ResetPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -21,8 +20,7 @@ import javax.inject.Inject
 class SetNewPasswordViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
-    application: Application
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SetNewPasswordUiState())
     val uiState = _uiState.asStateFlow()
@@ -49,7 +47,7 @@ class SetNewPasswordViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         password = event.password,
-                        passwordError = if (event.password.isBlank()) "Please enter a new password" else ""
+                        passwordError = if (event.password.isBlank()) R.string.txt_please_enter_a_new_password else null
                     )
                 }
             }
@@ -58,7 +56,9 @@ class SetNewPasswordViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         confirmPassword = event.confirmPassword,
-                        confirmPasswordError = if (event.confirmPassword != uiState.value.password) "Passwords do not match" else ""
+                        confirmPasswordError = if (event.confirmPassword != uiState.value.password)
+                            R.string.txt_passwords_do_not_match
+                        else null
                     )
                 }
             }
@@ -67,7 +67,7 @@ class SetNewPasswordViewModel @Inject constructor(
                 if (validateInput()) {
                     resetPassword()
                 } else {
-                    Toast.makeText(getApplication(), "Invalid input", Toast.LENGTH_SHORT).show()
+                    _uiEvent.trySend(SetNewPasswordUiEvent.ResetFailure(R.string.txt_invalid_input))
                 }
             }
         }
@@ -79,8 +79,8 @@ class SetNewPasswordViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                passwordError = if (!passwordValid) "Please enter a new password" else "",
-                confirmPasswordError = if (!confirmPasswordValid) "Passwords do not match" else ""
+                passwordError = if (!passwordValid) R.string.txt_please_enter_a_new_password else null,
+                confirmPasswordError = if (!confirmPasswordValid) R.string.txt_passwords_do_not_match else null
             )
         }
 
@@ -102,7 +102,7 @@ class SetNewPasswordViewModel @Inject constructor(
                 when (resource) {
                     is Resources.Error -> {
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(SetNewPasswordUiEvent.ResetFailure)
+                        _uiEvent.send(SetNewPasswordUiEvent.ResetFailure(R.string.txt_error_occurred))
                     }
 
                     is Resources.Loading -> {

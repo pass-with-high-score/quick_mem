@@ -7,8 +7,8 @@ import com.pwhs.quickmem.domain.model.folder.UpdateFolderResponseModel
 
 fun UpdateFolderResponseModel.toDto() = UpdateFolderResponseDto(
     id = id,
-    title = title,
-    description = description,
+    title = title.trim(),
+    description = description.trim(),
     isPublic = isPublic,
     studySetCount = studySetCount,
     studySets = studySets.map { it.toDto() },
@@ -19,8 +19,8 @@ fun UpdateFolderResponseModel.toDto() = UpdateFolderResponseDto(
 
 fun UpdateFolderResponseDto.toModel() = UpdateFolderResponseModel(
     id = id,
-    title = title,
-    description = description,
+    title = title.trim(),
+    description = description.trim(),
     isPublic = isPublic,
     studySetCount = studySetCount,
     linkShareCode = linkShareCode,

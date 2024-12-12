@@ -75,106 +75,108 @@ fun StandardScaffold(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                NavigationBar(
-                    modifier = Modifier
-                        .shadow(4.dp, RoundedCornerShape(0.dp))
-                        .background(colorScheme.surface),
-                    containerColor = colorScheme.background,
-                    contentColor = colorScheme.onBackground,
-                    content = {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentDestination = navBackStackEntry?.destination
-                        items.forEach { item ->
-                            val isCurrentDestOnBackStack by navController.isRouteOnBackStackAsState(
-                                item.direction
-                            )
-                            val color by animateColorAsState(
-                                targetValue = if (currentDestination?.route?.contains(item.route) == true) {
-                                    colorScheme.primary
-                                } else {
-                                    colorScheme.onBackground
-                                },
-                                label = "color_anim"
-                            )
-                            val iconScale by animateFloatAsState(
-                                targetValue = if (currentDestination?.route?.contains(item.route) == true) {
-                                    1.2f
-                                } else {
-                                    1f
-                                },
-                                label = "scale_anim"
-                            )
-                            NavigationBarItem(
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = colorScheme.primary,
-                                    unselectedIconColor = colorScheme.onBackground,
-                                    selectedTextColor = colorScheme.primary,
-                                    unselectedTextColor = colorScheme.onBackground,
-                                    indicatorColor = Color.Transparent,
-                                ),
-                                icon = {
-                                    Icon(
-                                        modifier = if (item.route == "fab") {
-                                            Modifier
-                                                .size(40.dp)
-                                                .scale(iconScale)
-                                        } else {
-                                            Modifier
-                                                .size(25.dp)
-                                                .scale(iconScale)
-                                        },
-                                        painter = painterResource(id = item.icon),
-                                        contentDescription = stringResource(item.title),
-                                        tint = color
-                                    )
-                                },
-                                label = {
-                                    Text(
-                                        text = if (item.route == "fab") {
-                                            ""
-                                        } else {
-                                            stringResource(item.title)
-                                        },
-                                        maxLines = 1,
-                                        style = typography.bodySmall.copy(
-                                            color = color,
-                                            fontWeight = if (currentDestination?.route?.contains(
-                                                    item.route
-                                                ) == true
-                                            ) {
-                                                FontWeight.Bold
-                                            } else {
-                                                FontWeight.Normal
-                                            },
-                                            fontSize = 10.sp
-                                        ),
-                                    )
-                                },
-                                alwaysShowLabel = true,
-                                selected = currentDestination?.route?.contains(item.route) == true,
-                                onClick = {
-                                    if (item.route == "fab") {
-                                        showBottomSheetCreate = true
+                Column {
+                    NavigationBar(
+                        modifier = Modifier
+                            .shadow(4.dp, RoundedCornerShape(0.dp))
+                            .background(colorScheme.surface),
+                        containerColor = colorScheme.background,
+                        contentColor = colorScheme.onBackground,
+                        content = {
+                            val navBackStackEntry by navController.currentBackStackEntryAsState()
+                            val currentDestination = navBackStackEntry?.destination
+                            items.forEach { item ->
+                                val isCurrentDestOnBackStack by navController.isRouteOnBackStackAsState(
+                                    item.direction
+                                )
+                                val color by animateColorAsState(
+                                    targetValue = if (currentDestination?.route?.contains(item.route) == true) {
+                                        colorScheme.primary
                                     } else {
-                                        if (isCurrentDestOnBackStack) {
-                                            navigator.popBackStack(item.direction, false)
-                                            return@NavigationBarItem
-                                        }
-                                        navigator.navigate(item.direction) {
-                                            launchSingleTop = true
-                                            restoreState = true
+                                        colorScheme.onBackground
+                                    },
+                                    label = "color_anim"
+                                )
+                                val iconScale by animateFloatAsState(
+                                    targetValue = if (currentDestination?.route?.contains(item.route) == true) {
+                                        1.2f
+                                    } else {
+                                        1f
+                                    },
+                                    label = "scale_anim"
+                                )
+                                NavigationBarItem(
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = colorScheme.primary,
+                                        unselectedIconColor = colorScheme.onBackground,
+                                        selectedTextColor = colorScheme.primary,
+                                        unselectedTextColor = colorScheme.onBackground,
+                                        indicatorColor = Color.Transparent,
+                                    ),
+                                    icon = {
+                                        Icon(
+                                            modifier = if (item.route == "fab") {
+                                                Modifier
+                                                    .size(40.dp)
+                                                    .scale(iconScale)
+                                            } else {
+                                                Modifier
+                                                    .size(25.dp)
+                                                    .scale(iconScale)
+                                            },
+                                            painter = painterResource(id = item.icon),
+                                            contentDescription = stringResource(item.title),
+                                            tint = color
+                                        )
+                                    },
+                                    label = {
+                                        Text(
+                                            text = if (item.route == "fab") {
+                                                ""
+                                            } else {
+                                                stringResource(item.title)
+                                            },
+                                            maxLines = 1,
+                                            style = typography.bodySmall.copy(
+                                                color = color,
+                                                fontWeight = if (currentDestination?.route?.contains(
+                                                        item.route
+                                                    ) == true
+                                                ) {
+                                                    FontWeight.Bold
+                                                } else {
+                                                    FontWeight.Normal
+                                                },
+                                                fontSize = 10.sp
+                                            ),
+                                        )
+                                    },
+                                    alwaysShowLabel = true,
+                                    selected = currentDestination?.route?.contains(item.route) == true,
+                                    onClick = {
+                                        if (item.route == "fab") {
+                                            showBottomSheetCreate = true
+                                        } else {
+                                            if (isCurrentDestOnBackStack) {
+                                                navigator.popBackStack(item.direction, false)
+                                                return@NavigationBarItem
+                                            }
+                                            navigator.navigate(item.direction) {
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
                                         }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
 
         }
-    ) { paddingValues ->
-        content(paddingValues)
+    ) { innerPadding ->
+        content(innerPadding)
         if (showBottomSheetCreate) {
             ModalBottomSheet(
                 onDismissRequest = {
@@ -182,7 +184,6 @@ fun StandardScaffold(
                 },
                 sheetState = sheetSelectCreateState,
             ) {
-
                 Column(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),

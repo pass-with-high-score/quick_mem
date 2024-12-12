@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.component
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,7 +51,7 @@ fun AuthTextField(
     type: TextFieldType = TextFieldType.TEXT,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    error: String? = null,
+    @StringRes error: Int? = null,
     imeAction: ImeAction = ImeAction.Next,
     onDone: () -> Unit = {}
 ) {
@@ -59,7 +61,7 @@ fun AuthTextField(
     Column {
         TextField(
             value = value,
-            isError = error.isNullOrEmpty().not(),
+            isError = error != null,
             onValueChange = onValueChange,
             placeholder = {
                 Text(
@@ -129,7 +131,7 @@ fun AuthTextField(
                 focusedPlaceholderColor = colorScheme.onSurface,
                 cursorColor = colorScheme.onSurface,
                 errorContainerColor = Color.Transparent,
-                disabledIndicatorColor = if (!error.isNullOrEmpty()) colorScheme.error else colorScheme.onSurface,
+                disabledIndicatorColor = if (error != null) colorScheme.error else colorScheme.onSurface,
             ),
 
             modifier = modifier
@@ -144,15 +146,16 @@ fun AuthTextField(
             )
         )
 
-        Text(
-            text = error?.upperCaseFirstLetter() ?: type.name.lowercase().upperCaseFirstLetter(),
-            style = typography.bodyMedium.copy(
-                color = error?.let { colorScheme.error }
-                    ?: colorScheme.onSurface.copy(alpha = 0.6f),
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.padding(top = 4.dp)
-        )
+        error?.let {
+            Text(
+                text = stringResource(error),
+                style = typography.bodySmall.copy(
+                    color = colorScheme.error.copy(alpha = 0.6f),
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }
 

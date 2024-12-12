@@ -1,9 +1,8 @@
 package com.pwhs.quickmem.presentation.auth.forgot_password.send_email
 
-import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.SendResetPasswordRequestModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
@@ -20,8 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SendVerifyEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    application: Application
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SendVerifyEmailUiState())
     val uiState = _uiState.asStateFlow()
@@ -37,8 +35,8 @@ class SendVerifyEmailViewModel @Inject constructor(
                         email = event.email,
                         emailError = if (android.util.Patterns.EMAIL_ADDRESS.matcher(event.email)
                                 .matches()
-                        ) ""
-                        else "Invalid email address"
+                        ) null
+                        else R.string.txt_invalid_email_address
                     )
                 }
             }
@@ -47,7 +45,7 @@ class SendVerifyEmailViewModel @Inject constructor(
                 if (validateInput()) {
                     resetPassword()
                 } else {
-                    Toast.makeText(getApplication(), "Invalid input", Toast.LENGTH_SHORT).show()
+                    _uiEvent.trySend(SendVerifyEmailUiEvent.SendEmailFailure(R.string.txt_invalid_input))
                 }
             }
         }
@@ -55,7 +53,7 @@ class SendVerifyEmailViewModel @Inject constructor(
 
     private fun validateInput(): Boolean {
         val emailValid = android.util.Patterns.EMAIL_ADDRESS.matcher(uiState.value.email).matches()
-        _uiState.update { it.copy(emailError = if (emailValid) "" else "Invalid email address") }
+        _uiState.update { it.copy(emailError = if (emailValid) null else R.string.txt_invalid_email_address) }
         return emailValid
     }
 
@@ -67,7 +65,7 @@ class SendVerifyEmailViewModel @Inject constructor(
                     is Resources.Error -> {
                         Timber.e(checkEmail.message ?: "Unknown error")
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure)
+                        _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure(R.string.txt_error_occurred))
                     }
 
                     is Resources.Loading -> {
@@ -82,7 +80,7 @@ class SendVerifyEmailViewModel @Inject constructor(
                                         is Resources.Error -> {
                                             Timber.e(resource.message ?: "Unknown error")
                                             _uiState.update { it.copy(isLoading = false) }
-                                            _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure)
+                                            _uiEvent.send(SendVerifyEmailUiEvent.SendEmailFailure(R.string.txt_error_occurred))
                                         }
 
                                         is Resources.Loading -> {
@@ -105,7 +103,7 @@ class SendVerifyEmailViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    emailError = "Email not found"
+                                    emailError = R.string.txt_email_not_found
                                 )
                             }
                         }

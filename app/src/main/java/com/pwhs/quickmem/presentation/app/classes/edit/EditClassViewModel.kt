@@ -103,7 +103,7 @@ class EditClassViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(isLoading = false)
                         }
-                        _uiEvent.send(EditClassUiEvent.ShowError("Fail to Update"))
+                        _uiEvent.send(EditClassUiEvent.ShowError)
                     }
 
                     is Resources.Loading -> {

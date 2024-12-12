@@ -45,7 +45,8 @@ fun CreateClassScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is CreateClassUiEvent.ClassesCreated -> {
-                    Toast.makeText(context, "Class Created", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_class_created), Toast.LENGTH_SHORT).show()
                     navigator.navigateUp()
                     navigator.navigate(
                         ClassDetailScreenDestination(

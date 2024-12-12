@@ -5,10 +5,10 @@ import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
 
 fun UpdateStudySetResponseModel.toDto() = UpdateStudySetResponseDto(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     subjectId = subjectId,
-    title = title,
+    title = title.trim(),
     createdAt = createdAt,
     updatedAt = updatedAt,
     id = id
@@ -16,10 +16,10 @@ fun UpdateStudySetResponseModel.toDto() = UpdateStudySetResponseDto(
 
 fun UpdateStudySetResponseDto.toModel() = UpdateStudySetResponseModel(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     subjectId = subjectId,
-    title = title,
+    title = title.trim(),
     createdAt = createdAt,
     updatedAt = updatedAt,
     id = id

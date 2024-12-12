@@ -5,36 +5,36 @@ import com.pwhs.quickmem.domain.model.flashcard.StudySetFlashCardResponseModel
 
 fun StudySetFlashCardResponseDto.toModel() = StudySetFlashCardResponseModel(
     id = id,
-    term = term,
-    definition = definition,
+    term = term.trim(),
+    definition = definition.trim(),
     definitionImageURL = definitionImageURL,
-    hint = hint,
-    explanation = explanation,
+    hint = hint?.trim(),
+    explanation = explanation?.trim(),
     rating = rating,
     flipStatus = flipStatus,
     quizStatus = quizStatus,
     trueFalseStatus = trueFalseStatus,
     writeStatus = writeStatus,
+    isStarred = isStarred,
+    isAIGenerated = isAIGenerated,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    isStarred = isStarred,
-    isAIGenerated = isAIGenerated
 )
 
 fun StudySetFlashCardResponseModel.toDto() = StudySetFlashCardResponseDto(
     id = id,
-    term = term,
-    definition = definition,
+    term = term.trim(),
+    definition = definition.trim(),
     definitionImageURL = definitionImageURL,
-    hint = hint,
-    explanation = explanation,
+    hint = hint?.trim(),
+    explanation = explanation?.trim(),
     rating = rating,
     flipStatus = flipStatus,
     quizStatus = quizStatus,
     trueFalseStatus = trueFalseStatus,
     writeStatus = writeStatus,
+    isStarred = isStarred,
+    isAIGenerated = isAIGenerated,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    isStarred = isStarred,
-    isAIGenerated = isAIGenerated
 )

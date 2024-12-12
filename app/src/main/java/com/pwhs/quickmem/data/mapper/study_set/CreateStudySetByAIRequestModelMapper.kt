@@ -4,21 +4,21 @@ import com.pwhs.quickmem.data.dto.study_set.CreateStudySetByAIRequestDto
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetByAIRequestModel
 
 fun CreateStudySetByAIRequestModel.toDto() = CreateStudySetByAIRequestDto(
-    description = description,
+    description = description.trim(),
     difficulty = difficulty,
     language = language,
     numberOfFlashcards = numberOfFlashcards,
     questionType = questionType,
-    title = title,
+    title = title.trim(),
     userId = userId
 )
 
 fun CreateStudySetByAIRequestDto.toModel() = CreateStudySetByAIRequestModel(
-    description = description,
+    description = description.trim(),
     difficulty = difficulty,
     language = language,
     numberOfFlashcards = numberOfFlashcards,
     questionType = questionType,
-    title = title,
+    title = title.trim(),
     userId = userId
 )

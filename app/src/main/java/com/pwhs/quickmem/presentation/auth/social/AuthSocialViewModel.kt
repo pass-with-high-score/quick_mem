@@ -1,9 +1,8 @@
 package com.pwhs.quickmem.presentation.auth.social
 
-import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.AuthProvider
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
@@ -23,8 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthSocialViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    application: Application
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthSocialUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -36,23 +34,28 @@ class AuthSocialViewModel @Inject constructor(
             is AuthSocialUiAction.OnAvatarUrlChanged -> {
                 _uiState.value = _uiState.value.copy(avatarUrl = event.avatarUrl)
             }
+
             is AuthSocialUiAction.OnBirthDayChanged -> {
                 _uiState.value = _uiState.value.copy(birthDay = event.birthDay)
             }
+
             is AuthSocialUiAction.OnEmailChanged -> {
                 _uiState.value = _uiState.value.copy(email = event.email)
             }
+
             is AuthSocialUiAction.OnNameChanged -> {
                 _uiState.value = _uiState.value.copy(fullName = event.name)
             }
+
             is AuthSocialUiAction.OnRoleChanged -> {
                 _uiState.value = _uiState.value.copy(role = event.role)
             }
+
             is AuthSocialUiAction.Register -> {
                 if (validateInput()) {
                     authSocial()
                 } else {
-                    Toast.makeText(getApplication(), "Invalid input", Toast.LENGTH_SHORT).show()
+                    _uiEvent.trySend(AuthSocialUiEvent.SignUpFailure(R.string.txt_invalid_input))
                 }
             }
         }
@@ -98,7 +101,7 @@ class AuthSocialViewModel @Inject constructor(
                 when (resource) {
                     is Resources.Error -> {
                         Timber.e(resource.message)
-                        _uiEvent.send(AuthSocialUiEvent.SignUpFailure)
+                        _uiEvent.send(AuthSocialUiEvent.SignUpFailure(R.string.txt_error_occurred))
                     }
 
                     is Resources.Loading -> {
@@ -118,10 +121,10 @@ class AuthSocialViewModel @Inject constructor(
         var isValid = true
 
         if (uiState.value.birthDay.isEmpty()) {
-            _uiState.update { it.copy(birthdayError = "Birthday is required") }
+            _uiState.update { it.copy(birthdayError = R.string.txt_birthday_is_required) }
             isValid = false
         } else {
-            _uiState.update { it.copy(birthdayError = "") }
+            _uiState.update { it.copy(birthdayError = null) }
         }
 
         return isValid

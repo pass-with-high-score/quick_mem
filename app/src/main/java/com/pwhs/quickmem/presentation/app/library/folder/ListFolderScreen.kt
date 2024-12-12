@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
-import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.presentation.app.library.folder.component.FolderItem
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -136,11 +135,6 @@ fun ListFolderScreen(
                                     placeholder = stringResource(R.string.txt_search_folders),
                                 )
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         items(items = filterFolders, key = {it.id}) { folder ->
                             FolderItem(

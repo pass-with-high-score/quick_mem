@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,73 +27,70 @@ import com.pwhs.quickmem.R
 fun InviteClassBottomSheet(
     modifier: Modifier = Modifier,
     username: String,
-    errorMessage: String,
+    @StringRes errorMessage: Int?,
     onSubmitClick: () -> Unit = {},
-    showInviteClassBottomSheet: Boolean = false,
     onUsernameChanged: (String) -> Unit = {},
     sheetShowMoreState: SheetState = rememberModalBottomSheetState(),
     onDismissRequest: () -> Unit = {},
 ) {
-    if (showInviteClassBottomSheet) {
-        ModalBottomSheet(
-            modifier = modifier,
-            onDismissRequest = onDismissRequest,
-            sheetState = sheetShowMoreState
+    ModalBottomSheet(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetShowMoreState
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Column(
+            Text(
+                text = stringResource(R.string.txt_invite_members),
+                style = typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+            Text(
+                text = stringResource(R.string.txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below),
+                style = typography.bodyMedium,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+            ClassTextField(
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                value = username,
+                onValueChange = onUsernameChanged,
+                errorMessage = errorMessage,
+                placeholder = stringResource(R.string.txt_type_username_to_invite),
+            )
+            Button(
+                enabled = username.isNotEmpty() && username.length > 4,
+                onClick = onSubmitClick,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                    .fillMaxWidth(),
+                shape = shapes.medium
             ) {
                 Text(
-                    text = stringResource(R.string.txt_invite_members),
-                    style = typography.titleLarge.copy(
+                    text = stringResource(R.string.txt_submit),
+                    style = typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
+            }
+            OutlinedButton(
+                onClick = onDismissRequest,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = colorScheme.onSurface.copy(alpha = 0.6f)
+                ),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                shape = shapes.medium
+            ) {
                 Text(
-                    text = stringResource(R.string.txt_to_invite_members_to_this_class_add_their_quickmem_usernames_below),
-                    style = typography.bodyMedium,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-                ClassTextField(
-                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-                    value = username,
-                    onValueChange = onUsernameChanged,
-                    errorMessage = errorMessage,
-                    placeholder = stringResource(R.string.txt_type_username_to_invite),
-                )
-                Button(
-                    enabled = username.isNotEmpty() && username.length > 4,
-                    onClick = onSubmitClick,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = shapes.medium
-                ) {
-                    Text(
-                        text = stringResource(R.string.txt_submit),
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+                    text = stringResource(R.string.txt_cancel),
+                    style = typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
                     )
-                }
-                OutlinedButton(
-                    onClick = onDismissRequest,
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colorScheme.onSurface.copy(alpha = 0.6f)
-                    ),
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .fillMaxWidth(),
-                    shape = shapes.medium
-                ) {
-                    Text(
-                        text = stringResource(R.string.txt_cancel),
-                        style = typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
+                )
             }
         }
     }

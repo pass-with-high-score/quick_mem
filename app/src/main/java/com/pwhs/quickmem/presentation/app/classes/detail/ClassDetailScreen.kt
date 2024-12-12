@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.classes.detail
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -166,17 +167,25 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.OnJoinClass -> {
-                    Toast.makeText(context, "You are member in this class", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_you_are_member_in_this_class),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
 
                 is ClassDetailUiEvent.ShowError -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 ClassDetailUiEvent.ClassDeleted -> {
-                    Toast.makeText(context, "Class Deleted", Toast.LENGTH_SHORT).show()
-                    navigator.navigateUp()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_class_deleted), Toast.LENGTH_SHORT
+                    ).show()
+                    resultNavigator.navigateBack(true)
                 }
 
                 ClassDetailUiEvent.NavigateToEditClass -> {
@@ -201,7 +210,11 @@ fun ClassDetailScreen(
 
                 ClassDetailUiEvent.ExitClass -> {
                     viewModel.onEvent(ClassDetailUiAction.Refresh)
-                    Toast.makeText(context, "Exit Class", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_exit_class),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ClassDetailUiEvent.OnNavigateToRemoveMembers -> {
@@ -209,7 +222,10 @@ fun ClassDetailScreen(
                 }
 
                 ClassDetailUiEvent.InviteToClassSuccess -> {
-                    Toast.makeText(context, "Invite to class success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_invite_to_class_success), Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -309,7 +325,7 @@ fun ClassDetail(
     title: String = "",
     username: String = "",
     onUsernameChanged: (String) -> Unit = {},
-    errorMessage: String = "",
+    @StringRes errorMessage: Int? = null,
     isLoading: Boolean = false,
     isMember: Boolean = false,
     isAllowMember: Boolean = false,
@@ -364,7 +380,8 @@ fun ClassDetail(
                 },
                 onShareClicked = {
                     val link = AppConstant.BASE_URL + "class/join/" + linkShareCode
-                    val text = "Join class by link with me: $title\n$link"
+                    val text =
+                        context.getString(R.string.txt_join_class_by_link_with_me, title, link)
                     val sendIntent = Intent(Intent.ACTION_SEND).apply {
                         putExtra(Intent.EXTRA_TEXT, text)
                         type = "text/plain"
@@ -486,7 +503,6 @@ fun ClassDetail(
             username = username,
             errorMessage = errorMessage,
             onUsernameChanged = onUsernameChanged,
-            showInviteClassBottomSheet = showInviteClassBottomSheet,
             sheetShowMoreState = sheetShowMoreState,
             onDismissRequest = {
                 showInviteClassBottomSheet = false
@@ -494,9 +510,6 @@ fun ClassDetail(
             },
             onSubmitClick = {
                 onInviteClass()
-//                if (!isLoading && errorMessage.isEmpty()) {
-//                    showInviteClassBottomSheet = false
-//                }
             }
         )
     }

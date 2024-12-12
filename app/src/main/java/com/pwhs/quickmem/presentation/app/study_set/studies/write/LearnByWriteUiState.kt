@@ -27,13 +27,14 @@ data class LearnByTrueFalseUiState(
     val currentFlashCard: FlashCardResponseModel? = null,
     val learnFrom: LearnFrom = LearnFrom.STUDY_SET,
     val folderId: String = "",
+    val isGenerateHint: Boolean = false,
 )
 
 data class WriteQuestion(
-    val id: String = "",
-    val term: String = "",
-    val hint: String = "",
-    val definition: String = "",
-    val definitionImageUrl: String = "",
-    val userAnswer: String = "",
+    val id: String,
+    val term: String,
+    val definition: String,
+    val hint: String,
+    val definitionImageUrl: String,
+    val userAnswer: String
 )

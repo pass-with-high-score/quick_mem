@@ -5,32 +5,32 @@ import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
 
 fun FlashCardResponseDto.toModel() = FlashCardResponseModel(
     id = id,
-    term = term,
-    definition = definition,
+    term = term.trim(),
+    definition = definition.trim(),
     definitionImageURL = definitionImageURL,
-    hint = hint,
-    explanation = explanation,
+    hint = hint?.trim(),
+    explanation = explanation?.trim(),
     studySetId = studySetId,
     rating = rating,
-    createdAt = createdAt,
-    updatedAt = updatedAt,
     isStarred = isStarred,
     flipStatus = flipStatus,
-    quizStatus = quizStatus
+    quizStatus = quizStatus,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
 )
 
 fun FlashCardResponseModel.toDto() = FlashCardResponseDto(
     id = id,
-    term = term,
-    definition = definition,
+    term = term.trim(),
+    definition = definition.trim(),
     definitionImageURL = definitionImageURL,
-    hint = hint,
-    explanation = explanation,
+    hint = hint?.trim(),
+    explanation = explanation?.trim(),
     studySetId = studySetId,
     rating = rating,
-    createdAt = createdAt,
-    updatedAt = updatedAt,
     isStarred = isStarred,
     flipStatus = flipStatus,
-    quizStatus = quizStatus
+    quizStatus = quizStatus,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
 )

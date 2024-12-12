@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.social
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -84,14 +85,6 @@ fun AuthSocialScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                AuthSocialUiEvent.SignUpFailure -> {
-                    Toast.makeText(
-                        context,
-                        "Sign up failure",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
                 AuthSocialUiEvent.SignUpSuccess -> {
                     Timber.d("Sign up success")
                     navigator.popBackStack()
@@ -101,6 +94,11 @@ fun AuthSocialScreen(
                             launchSingleTop = true
                         }
                     }
+                }
+
+                is AuthSocialUiEvent.SignUpFailure -> {
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -131,7 +129,7 @@ fun AuthSocial(
     onNavigationIconClick: () -> Unit = {},
     onRegisterClick: () -> Unit = {},
     birthday: String = "",
-    birthdayError: String = "",
+   @StringRes birthdayError: Int? = null,
     onBirthdayChanged: (String) -> Unit = {},
     onRoleChanged: (UserRole) -> Unit = {},
 ) {

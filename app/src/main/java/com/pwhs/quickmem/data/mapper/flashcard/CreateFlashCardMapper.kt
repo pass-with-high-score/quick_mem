@@ -4,19 +4,19 @@ import com.pwhs.quickmem.data.dto.flashcard.CreateFlashCardDto
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
 
 fun CreateFlashCardDto.toModel() = CreateFlashCardModel(
-    term = term,
-    definition = definition,
+    term = term.trim(),
+    definition = definition.trim(),
     definitionImageURL = definitionImageURL,
-    hint = hint,
-    explanation = explanation,
+    hint = hint?.trim(),
+    explanation = explanation?.trim(),
     studySetId = studySetId,
 )
 
 fun CreateFlashCardModel.toDto() = CreateFlashCardDto(
-    term = term,
-    definition = definition,
+    term = term.trim(),
+    definition = definition.trim(),
     definitionImageURL = definitionImageURL,
-    hint = hint,
-    explanation = explanation,
+    hint = hint?.trim(),
+    explanation = explanation?.trim(),
     studySetId = studySetId,
 )

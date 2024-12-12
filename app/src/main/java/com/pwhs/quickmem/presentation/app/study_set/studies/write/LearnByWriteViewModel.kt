@@ -96,7 +96,6 @@ class LearnByWriteViewModel @Inject constructor(
             }
 
             is LearnByWriteUiAction.ContinueLearnWrongAnswer -> {
-                // reset all state
                 _uiState.update {
                     it.copy(
                         currentCardIndex = 0,
@@ -289,7 +288,8 @@ class LearnByWriteViewModel @Inject constructor(
                                         definition = it.currentFlashCard?.definition ?: "",
                                         definitionImageUrl = it.currentFlashCard?.definitionImageURL
                                             ?: "",
-                                        userAnswer = userAnswer
+                                        userAnswer = userAnswer,
+                                        hint = it.currentFlashCard?.hint ?: ""
                                     ) else it.listWrongAnswer
                                 )
                             }

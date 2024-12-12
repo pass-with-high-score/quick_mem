@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail.material
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -53,7 +54,18 @@ fun LearnModeCard(
         onClick = onClick,
         modifier = modifier
             .padding(horizontal = 16.dp)
-            .padding(bottom = 10.dp)
+            .padding(bottom = 10.dp),
+        border = BorderStroke(
+            1.dp,
+            when (learningPercentage) {
+                in 0..25 -> color.copy(alpha = 0.2f)
+                in 26..50 -> color.copy(alpha = 0.5f)
+                in 51..75 -> color.copy(alpha = 0.8f)
+                in 76..100 -> color
+                else -> Color.Transparent
+
+            }
+        )
     ) {
         Row(
             modifier = Modifier
@@ -80,7 +92,7 @@ fun LearnModeCard(
                 modifier = Modifier.weight(1f)
             )
             if (learningPercentage != null) {
-               Text(
+                Text(
                     text = "$learningPercentage%",
                     style = typography.bodyMedium.copy(
                         color = colorScheme.onSurface,
@@ -105,7 +117,7 @@ fun LearnModeCard(
 @Composable
 private fun LearnModeCardPreview() {
     QuickMemTheme {
-         LearnModeCard(
+        LearnModeCard(
             title = "Flip Flashcards",
             icon = R.drawable.ic_flipcard,
             leadingText = "Completed",

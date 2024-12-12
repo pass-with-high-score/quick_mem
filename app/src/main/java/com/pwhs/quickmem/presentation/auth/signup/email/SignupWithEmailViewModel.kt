@@ -1,9 +1,8 @@
 package com.pwhs.quickmem.presentation.auth.signup.email
 
-import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.AuthProvider
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -30,8 +29,7 @@ import javax.inject.Inject
 class SignupWithEmailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val appManager: AppManager,
-    application: Application
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SignUpWithEmailUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -45,19 +43,24 @@ class SignupWithEmailViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             birthday = event.birthday,
-                            birthdayError = "Birthday is required"
+                            birthdayError = R.string.txt_birthday_is_required
                         )
                     }
                 } else {
-                    _uiState.update { it.copy(birthday = event.birthday, birthdayError = "") }
+                    _uiState.update { it.copy(birthday = event.birthday, birthdayError = null) }
                 }
             }
 
             is SignUpWithEmailUiAction.EmailChanged -> {
                 if (!event.email.emailIsValid()) {
-                    _uiState.update { it.copy(email = event.email, emailError = "Invalid email") }
+                    _uiState.update {
+                        it.copy(
+                            email = event.email,
+                            emailError = R.string.txt_invalid_email
+                        )
+                    }
                 } else {
-                    _uiState.update { it.copy(email = event.email, emailError = "") }
+                    _uiState.update { it.copy(email = event.email, emailError = null) }
                 }
             }
 
@@ -66,11 +69,11 @@ class SignupWithEmailViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             password = event.password,
-                            passwordError = "Password is too weak!"
+                            passwordError = R.string.txt_password_is_too_weak_and_required
                         )
                     }
                 } else {
-                    _uiState.update { it.copy(password = event.password, passwordError = "") }
+                    _uiState.update { it.copy(password = event.password, passwordError = null) }
                 }
             }
 
@@ -82,7 +85,7 @@ class SignupWithEmailViewModel @Inject constructor(
                 if (validateInput()) {
                     signUp()
                 } else {
-                    Toast.makeText(getApplication(), "Invalid input", Toast.LENGTH_SHORT).show()
+                    _uiEvent.trySend(SignUpWithEmailUiEvent.SignUpFailure(R.string.txt_invalid_input))
                 }
             }
         }
@@ -96,11 +99,11 @@ class SignupWithEmailViewModel @Inject constructor(
                         Timber.e(resource.message)
                         _uiState.update {
                             it.copy(
-                                emailError = "Email is already registered",
+                                emailError = R.string.txt_email_is_already_registered,
                                 isLoading = false
                             )
                         }
-                        _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
+                        _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure(R.string.txt_email_is_already_registered))
                     }
 
                     is Resources.Loading -> {
@@ -131,10 +134,10 @@ class SignupWithEmailViewModel @Inject constructor(
                                         _uiState.update {
                                             it.copy(
                                                 isLoading = false,
-                                                emailError = signup.message ?: "Sign up failed"
+                                                emailError = R.string.txt_something_went_wrong
                                             )
                                         }
-                                        _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
+                                        _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure(R.string.txt_something_went_wrong))
                                     }
 
                                     is Resources.Loading -> {
@@ -152,11 +155,11 @@ class SignupWithEmailViewModel @Inject constructor(
                         } else {
                             _uiState.update {
                                 it.copy(
-                                    emailError = "Email is already registered",
+                                    emailError = R.string.txt_email_is_already_registered,
                                     isLoading = false
                                 )
                             }
-                            _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure)
+                            _uiEvent.send(SignUpWithEmailUiEvent.SignUpFailure(R.string.txt_email_is_already_registered))
                         }
                     }
                 }
@@ -168,22 +171,22 @@ class SignupWithEmailViewModel @Inject constructor(
         var isValid = true
 
         if (!uiState.value.email.validEmail() || uiState.value.email.isEmpty()) {
-            _uiState.update { it.copy(emailError = "Invalid email") }
+            _uiState.update { it.copy(emailError = R.string.txt_invalid_email) }
             isValid = false
         } else {
-            _uiState.update { it.copy(emailError = "") }
+            _uiState.update { it.copy(emailError = null) }
         }
         if (!uiState.value.password.strongPassword() || uiState.value.password.isEmpty()) {
-            _uiState.update { it.copy(passwordError = "Password is too weak!") }
+            _uiState.update { it.copy(passwordError = R.string.txt_password_is_too_weak_and_required) }
             isValid = false
         } else {
-            _uiState.update { it.copy(passwordError = "") }
+            _uiState.update { it.copy(passwordError = null) }
         }
         if (uiState.value.birthday.isEmpty()) {
-            _uiState.update { it.copy(birthdayError = "Birthday is required") }
+            _uiState.update { it.copy(birthdayError = R.string.txt_birthday_is_required) }
             isValid = false
         } else {
-            _uiState.update { it.copy(birthdayError = "") }
+            _uiState.update { it.copy(birthdayError = null) }
         }
 
         return isValid

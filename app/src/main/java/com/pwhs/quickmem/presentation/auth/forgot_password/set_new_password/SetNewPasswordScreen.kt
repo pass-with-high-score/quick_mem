@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.forgot_password.set_new_password
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,14 +62,6 @@ fun SetNewPasswordScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SetNewPasswordUiEvent.ResetFailure -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.txt_password_reset_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
                 SetNewPasswordUiEvent.ResetSuccess -> {
                     Toast.makeText(
                         context,
@@ -83,6 +76,11 @@ fun SetNewPasswordScreen(
                         launchSingleTop = true
                         restoreState = false
                     }
+                }
+
+                is SetNewPasswordUiEvent.ResetFailure -> {
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -117,8 +115,8 @@ private fun SetNewPassword(
     onNavigationIconClick: () -> Unit = {},
     password: String = "",
     confirmPassword: String = "",
-    passwordError: String = "",
-    confirmPasswordError: String = "",
+   @StringRes passwordError: Int? = null,
+   @StringRes confirmPasswordError: Int? = null,
     onPasswordChanged: (String) -> Unit = {},
     onConfirmPasswordChanged: (String) -> Unit = {},
     onSubmitClick: () -> Unit = {}

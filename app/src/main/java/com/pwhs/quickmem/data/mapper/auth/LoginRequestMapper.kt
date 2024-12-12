@@ -4,15 +4,15 @@ import com.pwhs.quickmem.data.dto.auth.LoginRequestDto
 import com.pwhs.quickmem.domain.model.auth.LoginRequestModel
 
 fun LoginRequestDto.toModel() = LoginRequestModel(
-    email = email,
-    password = password,
+    email = email?.trim(),
+    password = password?.trim(),
     authProvider = provider,
     idToken = idToken
 )
 
 fun LoginRequestModel.toDto() = LoginRequestDto(
-    email = email,
-    password = password,
+    email = email?.trim(),
+    password = password?.trim(),
     provider = authProvider,
     idToken = idToken
 )

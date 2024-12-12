@@ -5,18 +5,18 @@ import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 
 fun CreateStudySetRequestModel.toDto() = CreateStudySetRequestDto(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     ownerId = ownerId,
     subjectId = subjectId,
-    title = title
+    title = title.trim()
 )
 
 fun CreateStudySetRequestDto.toModel() = CreateStudySetRequestModel(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     ownerId = ownerId,
     subjectId = subjectId,
-    title = title
+    title = title.trim()
 )

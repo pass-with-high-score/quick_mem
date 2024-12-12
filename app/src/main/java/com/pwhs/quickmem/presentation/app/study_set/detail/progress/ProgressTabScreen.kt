@@ -48,8 +48,8 @@ fun ProgressTabScreen(
                     text = stringResource(R.string.txt_your_progress),
                     style = typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp
-                    )
+                    ),
+                    modifier = Modifier.padding(top = 16.dp)
                 )
             }
             item {

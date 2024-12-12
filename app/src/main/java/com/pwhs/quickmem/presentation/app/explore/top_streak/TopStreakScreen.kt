@@ -82,7 +82,7 @@ fun TopStreakScreen(
                         .fillMaxWidth()
                         .height(124.dp)
                         .padding(bottom = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(

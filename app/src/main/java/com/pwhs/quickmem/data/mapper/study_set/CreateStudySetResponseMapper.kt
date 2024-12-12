@@ -5,10 +5,10 @@ import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
 
 fun CreateStudySetResponseModel.toDto() = CreateStudySetResponseDto(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     subjectId = subjectId,
-    title = title,
+    title = title.trim(),
     createdAt = createdAt,
     updatedAt = updatedAt,
     isAIGenerated = isAIGenerated,
@@ -17,10 +17,10 @@ fun CreateStudySetResponseModel.toDto() = CreateStudySetResponseDto(
 
 fun CreateStudySetResponseDto.toModel() = CreateStudySetResponseModel(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     subjectId = subjectId,
-    title = title,
+    title = title.trim(),
     createdAt = createdAt,
     updatedAt = updatedAt,
     isAIGenerated = isAIGenerated,

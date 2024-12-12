@@ -4,23 +4,23 @@ import com.pwhs.quickmem.data.dto.auth.SignupRequestDto
 import com.pwhs.quickmem.domain.model.auth.SignupRequestModel
 
 fun SignupRequestDto.toModel() = SignupRequestModel(
-    avatarUrl = avatarUrl,
-    email = email,
-    username = username,
-    fullName = fullName,
+    avatarUrl = avatarUrl?.trim(),
+    email = email?.trim(),
+    username = username?.trim(),
+    fullName = fullName?.trim(),
     role = role,
     birthday = birthday,
-    password = password,
+    password = password?.trim(),
     authProvider = provider
 )
 
 fun SignupRequestModel.toDto() = SignupRequestDto(
-    avatarUrl = avatarUrl,
-    email = email,
-    username = username,
-    fullName = fullName,
+    avatarUrl = avatarUrl?.trim(),
+    email = email?.trim(),
+    username = username?.trim(),
+    fullName = fullName?.trim(),
     role = role,
     birthday = birthday,
-    password = password,
+    password = password?.trim(),
     provider = authProvider
 )

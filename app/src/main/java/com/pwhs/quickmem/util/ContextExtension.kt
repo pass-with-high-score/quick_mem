@@ -23,12 +23,10 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "au
 fun Context.bitmapToUri(bitmap: ImageBitmap): Uri {
     val file = File(this.cacheDir, "image_${System.currentTimeMillis()}.png")
     return try {
-        // Save the bitmap to the file
         val outputStream = FileOutputStream(file)
         bitmap.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         outputStream.flush()
         outputStream.close()
-        // Return the Uri for the file
         Uri.fromFile(file)
     } catch (e: IOException) {
         e.printStackTrace()

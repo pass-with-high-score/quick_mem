@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.login.email
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -65,13 +66,6 @@ fun LoginWithEmailScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                LoginWithEmailUiEvent.LoginFailure -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.txt_login_failure), Toast.LENGTH_SHORT
-                    ).show()
-                }
-
                 LoginWithEmailUiEvent.LoginSuccess -> {
                     Toast.makeText(
                         context,
@@ -90,6 +84,13 @@ fun LoginWithEmailScreen(
                     navigator.navigate(
                         SendVerifyEmailScreenDestination()
                     )
+                }
+
+                is LoginWithEmailUiEvent.LoginFailure -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(event.message), Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -120,10 +121,10 @@ private fun LoginWithEmail(
     isLoading: Boolean = false,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
-    emailError: String = "",
+    @StringRes emailError: Int? = null,
     onEmailChanged: (String) -> Unit = {},
     password: String = "",
-    passwordError: String = "",
+    @StringRes passwordError: Int? = null,
     onPasswordChanged: (String) -> Unit = {},
     onLoginClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}

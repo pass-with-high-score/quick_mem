@@ -13,11 +13,11 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 
 fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
     color = color?.toColorModel(),
-    description = description,
+    description = description?.trim(),
     id = id,
     isPublic = isPublic,
     subject = subject?.toSubjectModel(),
-    title = title,
+    title = title.trim(),
     createdAt = createdAt,
     updatedAt = updatedAt,
     flashcardCount = flashcardCount,
@@ -30,11 +30,11 @@ fun GetStudySetResponseDto.toModel() = GetStudySetResponseModel(
 
 fun GetStudySetResponseModel.toDto() = GetStudySetResponseDto(
     color = color?.toColorResponseDto(),
-    description = description,
+    description = description?.trim(),
     id = id,
     isPublic = isPublic,
     subject = subject?.toSubjectResponseDto(),
-    title = title,
+    title = title.trim(),
     createdAt = createdAt,
     updatedAt = updatedAt,
     flashcardCount = flashcardCount,

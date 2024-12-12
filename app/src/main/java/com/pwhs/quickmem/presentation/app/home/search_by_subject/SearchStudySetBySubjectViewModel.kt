@@ -10,6 +10,7 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.StudySetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +35,8 @@ class SearchStudySetBySubjectViewModel @Inject constructor(
 
     private val _uiEvent = Channel<SearchStudySetBySubjectUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    private var job: Job? = null
 
     private val _studySetState: MutableStateFlow<PagingData<GetStudySetResponseModel>> =
         MutableStateFlow(PagingData.empty())
@@ -60,8 +62,8 @@ class SearchStudySetBySubjectViewModel @Inject constructor(
     fun onEvent(event: SearchStudySetBySubjectUiAction) {
         when (event) {
             SearchStudySetBySubjectUiAction.RefreshStudySets -> {
-                viewModelScope.launch {
-                    Timber.d("Refresh study sets")
+                job?.cancel()
+                job = viewModelScope.launch {
                     delay(500)
                     searchStudySetBySubject()
                 }
@@ -73,13 +75,13 @@ class SearchStudySetBySubjectViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             try {
-                _uiState.update { it.copy(isLoading = true) }
                 studySetRepository.getStudySetBySubjectId(
                     token = token,
                     subjectId = _uiState.value.id,
                     page = 1
                 ).distinctUntilChanged()
                     .onStart {
+                        _uiState.update { it.copy(isLoading = true) }
                         _studySetState.value = PagingData.empty()
                     }
                     .cachedIn(viewModelScope)

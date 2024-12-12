@@ -79,6 +79,7 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.revenuecat.purchases.CustomerInfo
 import timber.log.Timber
+import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination<RootGraph>
@@ -409,10 +410,31 @@ fun Setting(
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
+                            val date = customerInfo?.latestExpirationDate
+                            val now = Date().time
+                            val diff = date?.time?.minus(now) ?: 0
+                            val seconds = diff / 1000
+                            val minutes = seconds / 60
+                            val hours = minutes / 60
+                            val days = hours / 24
+
                             SettingItem(
                                 title = stringResource(R.string.txt_expiration_date),
-                                subtitle = customerInfo?.latestExpirationDate?.toFormattedString()
-                                    ?: stringResource(R.string.txt_no_subscription),
+                                subtitle = when {
+                                    days > 0 -> stringResource(R.string.txt_days_left, days)
+                                    hours > 0 -> stringResource(R.string.txt_hours_left, hours)
+                                    minutes > 0 -> stringResource(
+                                        R.string.txt_minutes_left,
+                                        minutes
+                                    )
+
+                                    seconds > 0 -> stringResource(
+                                        R.string.txt_seconds_left,
+                                        seconds
+                                    )
+
+                                    else -> stringResource(R.string.txt_expired)
+                                },
                             )
                             SettingItem(
                                 title = stringResource(R.string.txt_plan),

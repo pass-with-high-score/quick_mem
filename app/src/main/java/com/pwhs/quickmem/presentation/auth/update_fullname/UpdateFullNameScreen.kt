@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.update_fullname
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -20,13 +19,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -45,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.auth.component.AuthButton
+import com.pwhs.quickmem.presentation.auth.component.AuthTextField
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.gradientBackground
@@ -68,7 +64,7 @@ fun UpdateFullNameScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UpdateFullNameUIEvent.UpdateSuccess -> {
+                is UpdateFullNameUiEvent.UpdateSuccess -> {
                     navigator.navigate(HomeScreenDestination) {
                         popUpTo(UpdateFullNameScreenDestination) {
                             inclusive = true
@@ -76,10 +72,10 @@ fun UpdateFullNameScreen(
                     }
                 }
 
-                is UpdateFullNameUIEvent.ShowError -> {
+                is UpdateFullNameUiEvent.ShowError -> {
                     Toast.makeText(
                         context,
-                        uiState.errorMessage,
+                        context.getString(R.string.txt_error_occurred),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -92,10 +88,10 @@ fun UpdateFullNameScreen(
         fullName = uiState.fullName,
         isLoading = uiState.isLoading,
         onNameChanged = { name ->
-            viewModel.onEvent(UpdateFullNameUIAction.FullNameChanged(name))
+            viewModel.onEvent(UpdateFullNameUiAction.FullNameChanged(name))
         },
         onSubmitClick = {
-            viewModel.onEvent(UpdateFullNameUIAction.Submit)
+            viewModel.onEvent(UpdateFullNameUiAction.Submit)
         },
         onSkipClick = {
             navigator.navigate(HomeScreenDestination) {
@@ -117,7 +113,7 @@ fun UpdateFullName(
     onSubmitClick: () -> Unit = {},
     onSkipClick: () -> Unit = {},
     isLoading: Boolean = false,
-    errorMessage: String? = null
+    @StringRes errorMessage: Int? = null
 ) {
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
@@ -168,43 +164,18 @@ fun UpdateFullName(
                     .imePadding(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextField(
+                AuthTextField(
                     value = fullName,
                     onValueChange = onNameChanged,
-                    label = { Text(stringResource(R.string.txt_full_name)) },
+                    label = stringResource(R.string.txt_full_name),
+                    iconId = R.drawable.ic_person,
+                    contentDescription = stringResource(R.string.txt_full_name),
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
-                        .padding(top = 140.dp)
                         .padding(vertical = 16.dp),
-                    shape = shapes.medium,
-                    supportingText = {
-                        errorMessage?.let {
-                            Text(
-                                text = it,
-                                style = typography.bodyMedium.copy(
-                                    color = colorScheme.error,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                    },
-                    colors = colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        disabledTextColor = colorScheme.onSurface,
-                        disabledPlaceholderColor = colorScheme.onSurface,
-                        focusedTextColor = colorScheme.onSurface,
-                        focusedPlaceholderColor = colorScheme.onSurface,
-                        cursorColor = colorScheme.onSurface,
-                        errorContainerColor = Color.Transparent,
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { onSubmitClick() }
-                    )
+                    imeAction = ImeAction.Done,
+                    onDone = onSubmitClick,
+                    error = errorMessage
                 )
                 AuthButton(
                     text = stringResource(R.string.txt_submit),

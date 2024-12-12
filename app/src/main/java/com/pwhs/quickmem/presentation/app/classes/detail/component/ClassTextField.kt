@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
@@ -10,6 +11,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
@@ -18,7 +20,7 @@ fun ClassTextField(
     placeholder: String = "",
     value: String = "",
     onValueChange: (String) -> Unit = {},
-    errorMessage: String = "",
+    @StringRes errorMessage: Int? = null,
 ) {
     TextField(
         modifier = modifier
@@ -42,13 +44,15 @@ fun ClassTextField(
             errorContainerColor = Color.White,
         ),
         shape = shapes.medium,
-        isError = errorMessage.isNotEmpty(),
+        isError = errorMessage != null,
         supportingText = {
-            Text(
-                text = errorMessage,
-                color = colorScheme.error,
-                style = typography.bodyMedium
-            )
+            errorMessage?.let {
+                Text(
+                    text = stringResource(it),
+                    color = colorScheme.error,
+                    style = typography.bodyMedium
+                )
+            }
         }
     )
 }

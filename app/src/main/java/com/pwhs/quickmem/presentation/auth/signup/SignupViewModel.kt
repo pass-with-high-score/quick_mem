@@ -1,7 +1,6 @@
 package com.pwhs.quickmem.presentation.auth.signup
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,8 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    application: Application
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SignupUiState())
     val uiState = _uiState.asStateFlow()
 

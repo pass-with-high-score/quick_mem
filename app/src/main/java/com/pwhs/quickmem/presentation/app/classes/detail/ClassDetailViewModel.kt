@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.classes.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -120,7 +121,7 @@ class ClassDetailViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         username = event.username,
-                        errorMessage = ""
+                        errorMessage = null
                     )
                 }
             }
@@ -169,7 +170,7 @@ class ClassDetailViewModel @Inject constructor(
                                 )
                             }
                         } ?: run {
-                            _uiEvent.send(ClassDetailUiEvent.ShowError("Class not found"))
+                            _uiEvent.send(ClassDetailUiEvent.ShowError(R.string.txt_class_not_found))
                         }
                     }
                 }
@@ -437,7 +438,7 @@ class ClassDetailViewModel @Inject constructor(
             if (username.isEmpty()) {
                 _uiState.update {
                     it.copy(
-                        errorMessage = "Username cannot be empty"
+                        errorMessage = R.string.txt_username_cannot_be_empty
                     )
                 }
                 return@launch
@@ -445,7 +446,7 @@ class ClassDetailViewModel @Inject constructor(
             if (username.length < 4) {
                 _uiState.update {
                     it.copy(
-                        errorMessage = "Username must be at least 4 characters"
+                        errorMessage = R.string.txt_username_must_be_at_least_4_characters
                     )
                 }
                 return@launch
@@ -474,7 +475,7 @@ class ClassDetailViewModel @Inject constructor(
                         if (_uiState.value.isInvited) {
                             _uiState.update {
                                 it.copy(
-                                    errorMessage = "",
+                                    errorMessage = null,
                                     username = ""
                                 )
                             }
@@ -482,7 +483,7 @@ class ClassDetailViewModel @Inject constructor(
                         } else {
                             _uiState.update {
                                 it.copy(
-                                    errorMessage = resource.data?.message ?: "An error occurred"
+                                    errorMessage = R.string.txt_error_occurred
                                 )
                             }
                         }
@@ -491,13 +492,13 @@ class ClassDetailViewModel @Inject constructor(
                     is Resources.Error -> {
                         _uiState.update {
                             it.copy(
-                                errorMessage = resource.message ?: "An error occurred",
+                                errorMessage = R.string.txt_error_occurred,
                                 isLoading = false
                             )
                         }
                         _uiEvent.send(
                             ClassDetailUiEvent.ShowError(
-                                resource.message ?: "An error occurred"
+                                R.string.txt_error_occurred
                             )
                         )
                         Timber.d("Error")

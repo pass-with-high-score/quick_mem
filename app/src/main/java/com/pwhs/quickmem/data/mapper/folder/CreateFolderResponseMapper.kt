@@ -5,8 +5,8 @@ import com.pwhs.quickmem.domain.model.folder.CreateFolderResponseModel
 
 fun CreateFolderResponseModel.toDto() = CreateFolderResponseDto(
     id = id,
-    title = title,
-    description = description,
+    title = title.trim(),
+    description = description.trim(),
     isPublic = isPublic,
     linkShareCode = linkShareCode,
     createdAt = createdAt,
@@ -15,8 +15,8 @@ fun CreateFolderResponseModel.toDto() = CreateFolderResponseDto(
 
 fun CreateFolderResponseDto.toModel() = CreateFolderResponseModel(
     id = id,
-    title = title,
-    description = description,
+    title = title.trim(),
+    description = description.trim(),
     isPublic = isPublic,
     linkShareCode = linkShareCode,
     createdAt = createdAt,

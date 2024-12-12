@@ -47,7 +47,7 @@ fun BottomSheetItem(
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = title,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(20.dp),
                 colorFilter = ColorFilter.tint(colorScheme.onSurface),
             )
             Text(

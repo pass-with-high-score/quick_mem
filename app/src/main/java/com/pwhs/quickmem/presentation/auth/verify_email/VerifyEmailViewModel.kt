@@ -1,8 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.verify_email
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -33,8 +32,7 @@ class VerifyEmailViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
     private val tokenManager: TokenManager,
     private val appManager: AppManager,
-    application: Application
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(VerifyEmailUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -131,7 +129,6 @@ class VerifyEmailViewModel @Inject constructor(
                             appManager.saveUserRole(resource.data?.role ?: "")
                             appManager.saveIsLoggedIn(true)
                             _uiState.update { it.copy(isLoading = false) }
-                            Timber.d("Navigate to verify success")
                             Purchases.sharedInstance.apply {
                                 setEmail(resource.data?.email)
                                 setDisplayName(resource.data?.fullName)

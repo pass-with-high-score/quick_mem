@@ -9,8 +9,8 @@ import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 
 fun GetFolderResponseDto.toModel() = GetFolderResponseModel(
     id = id,
-    title = title,
-    description = description,
+    title = title.trim(),
+    description = description.trim(),
     isPublic = isPublic,
     studySetCount = studySetCount,
     owner = owner.toModel(),
@@ -23,8 +23,8 @@ fun GetFolderResponseDto.toModel() = GetFolderResponseModel(
 
 fun GetFolderResponseModel.toDto() = GetFolderResponseDto(
     id = id,
-    title = title,
-    description = description,
+    title = title.trim(),
+    description = description.trim(),
     isPublic = isPublic,
     studySetCount = studySetCount,
     owner = owner.toDto(),

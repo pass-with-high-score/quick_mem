@@ -5,18 +5,18 @@ import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 
 fun UpdateStudySetRequestModel.toDto() = UpdateStudySetRequestDto(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     ownerId = ownerId,
     subjectId = subjectId,
-    title = title
+    title = title.trim()
 )
 
 fun UpdateStudySetRequestDto.toModel() = UpdateStudySetRequestModel(
     colorId = colorId,
-    description = description,
+    description = description.trim(),
     isPublic = isPublic,
     ownerId = ownerId,
     subjectId = subjectId,
-    title = title
+    title = title.trim()
 )

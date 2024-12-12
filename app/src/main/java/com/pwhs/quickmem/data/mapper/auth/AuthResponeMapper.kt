@@ -5,11 +5,11 @@ import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 
 fun AuthResponseDto.toModel() = AuthResponseModel(
     id = id,
-    fullName = fullName,
-    email = email,
-    username = username,
+    fullName = fullName?.trim(),
+    email = email?.trim(),
+    username = username?.trim(),
     role = role,
-    avatarUrl = avatarUrl,
+    avatarUrl = avatarUrl?.trim(),
     birthday = birthday,
     accessToken = accessToken,
     refreshToken = refreshToken,
@@ -18,5 +18,5 @@ fun AuthResponseDto.toModel() = AuthResponseModel(
     coin = coin,
     bannedAt = bannedAt,
     userStatus = userStatus,
-    bannedReason = bannedReason
+    bannedReason = bannedReason?.trim()
 )

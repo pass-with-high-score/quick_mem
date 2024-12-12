@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.auth.signup.email
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -67,13 +68,6 @@ fun SignupWithEmailScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                SignUpWithEmailUiEvent.SignUpFailure -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.txt_sign_up_failure),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
                 SignUpWithEmailUiEvent.SignUpSuccess -> {
                     navigator.navigate(
@@ -83,6 +77,14 @@ fun SignupWithEmailScreen(
                             resetPasswordToken = ""
                         )
                     )
+                }
+
+                is SignUpWithEmailUiEvent.SignUpFailure -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(event.message),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
@@ -124,13 +126,13 @@ private fun SignupWithEmail(
     isLoading: Boolean = false,
     onNavigationIconClick: () -> Unit = {},
     email: String = "",
-    emailError: String = "",
+    @StringRes emailError: Int? = null,
     onEmailChanged: (String) -> Unit = {},
     password: String = "",
-    passwordError: String = "",
+    @StringRes passwordError: Int? = null,
     onPasswordChanged: (String) -> Unit = {},
     birthday: String = "",
-    birthdayError: String = "",
+    @StringRes birthdayError: Int? = null,
     onBirthdayChanged: (String) -> Unit = {},
     onRoleChanged: (UserRole) -> Unit = {},
     onSignUpClick: () -> Unit = {}
@@ -189,7 +191,7 @@ private fun SignupWithEmail(
                     onValueChange = onBirthdayChanged,
                     label = stringResource(R.string.txt_select_your_birthday),
                     iconId = R.drawable.ic_calendar,
-                    contentDescription = "Birthday",
+                    contentDescription = stringResource(R.string.txt_select_your_birthday),
                     readOnly = true,
                     enabled = false,
                     onClick = { isDatePickerVisible = true },
@@ -201,7 +203,7 @@ private fun SignupWithEmail(
                     onValueChange = onEmailChanged,
                     label = stringResource(R.string.txt_example_email_com),
                     iconId = R.drawable.ic_email,
-                    contentDescription = "Email",
+                    contentDescription = stringResource(R.string.txt_email),
                     type = TextFieldType.EMAIL,
                     error = emailError
                 )

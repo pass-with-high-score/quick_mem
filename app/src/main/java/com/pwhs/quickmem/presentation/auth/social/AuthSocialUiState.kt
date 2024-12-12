@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.auth.social
 
+import androidx.annotation.StringRes
 import com.pwhs.quickmem.core.data.enums.AuthProvider
 import com.pwhs.quickmem.core.data.enums.UserRole
 
@@ -9,7 +10,7 @@ data class AuthSocialUiState(
     val provider: AuthProvider? = null,
     val email: String = "",
     val birthDay: String = "",
-    val birthdayError: String = "",
+    @StringRes val birthdayError: Int? = null,
     val avatarUrl: String = "",
     val role: UserRole = UserRole.STUDENT,
     val fullName: String = "",

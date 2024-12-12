@@ -16,6 +16,7 @@ import com.pwhs.quickmem.domain.repository.StudySetRepository
 import com.pwhs.quickmem.domain.repository.StudyTimeRepository
 import com.pwhs.quickmem.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,6 +43,8 @@ class StudySetDetailViewModel @Inject constructor(
     private val _uiEvent = Channel<StudySetDetailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    private var job: Job? = null
+
     init {
         val id: String = savedStateHandle["id"] ?: ""
         _uiState.update { it.copy(id = id) }
@@ -61,7 +64,10 @@ class StudySetDetailViewModel @Inject constructor(
     fun onEvent(event: StudySetDetailUiAction) {
         when (event) {
             is StudySetDetailUiAction.Refresh -> {
-                initData()
+                job?.cancel()
+                job = viewModelScope.launch {
+                    initData()
+                }
             }
 
             is StudySetDetailUiAction.OnIdOfFlashCardSelectedChanged -> {

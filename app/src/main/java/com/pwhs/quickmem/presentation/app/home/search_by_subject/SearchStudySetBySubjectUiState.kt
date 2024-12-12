@@ -9,5 +9,5 @@ data class SearchStudySetBySubjectUiState (
     val subject: SubjectModel? = null,
     val studySetCount: Int = 0,
     @DrawableRes val icon: Int = R.drawable.ic_all,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )

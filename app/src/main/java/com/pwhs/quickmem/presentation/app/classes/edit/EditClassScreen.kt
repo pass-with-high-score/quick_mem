@@ -52,7 +52,8 @@ fun EditClassScreen(
                 }
 
                 is EditClassUiEvent.ShowError -> {
-                    Toast.makeText(context, "Update class error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_update_class_failed), Toast.LENGTH_SHORT).show()
                 }
             }
         }

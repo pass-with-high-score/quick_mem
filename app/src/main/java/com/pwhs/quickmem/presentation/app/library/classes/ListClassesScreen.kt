@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
-import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.classes.component.ClassItem
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -136,11 +135,6 @@ fun ListClassesScreen(
                                     placeholder = stringResource(R.string.txt_search_classes),
                                 )
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         items(items = filterClass, key = {it.id}) { classItem ->
                             ClassItem(
