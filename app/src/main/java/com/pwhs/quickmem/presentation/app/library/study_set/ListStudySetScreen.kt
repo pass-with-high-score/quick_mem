@@ -88,14 +88,14 @@ fun ListStudySetScreen(
                         if (isOwner) {
                             AsyncImage(
                                 model = avatarUrl,
-                                contentDescription = "User avatar",
+                                contentDescription = stringResource(R.string.txt_user_avatar),
                                 modifier = Modifier
                                     .size(60.dp)
                                     .clip(CircleShape),
                                 contentScale = ContentScale.Crop
                             )
                             Text(
-                                text = "Hello, $username",
+                                text = stringResource(R.string.txt_hello, username),
                                 style = typography.titleLarge.copy(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 24.sp

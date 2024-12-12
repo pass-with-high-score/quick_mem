@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.classes.add_folder
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -35,7 +36,7 @@ class AddFolderToClassViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddFolderToClassUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<AddFolderToClassUIEvent>()
+    private val _uiEvent = Channel<AddFolderToClassUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
@@ -59,15 +60,18 @@ class AddFolderToClassViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: AddFolderToClassUIAction) {
+    fun onEvent(event: AddFolderToClassUiAction) {
         when (event) {
-            AddFolderToClassUIAction.AddFolderToClass -> {
+            AddFolderToClassUiAction.AddFolderToClass -> {
                 doneClick()
             }
 
-            is AddFolderToClassUIAction.ToggleFolderImport -> {
-                Timber.d("Toggle folder Import: ${event.folderId}")
+            is AddFolderToClassUiAction.ToggleFolderImport -> {
                 toggleFolderImport(event.folderId)
+            }
+
+            AddFolderToClassUiAction.RefreshFolders -> {
+                getFolders()
             }
         }
     }
@@ -86,7 +90,7 @@ class AddFolderToClassViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(isLoading = false)
                             }
-                            _uiEvent.send(AddFolderToClassUIEvent.StudySetAddedToClass)
+                            _uiEvent.send(AddFolderToClassUiEvent.StudySetAddedToClass)
                         }
 
                         is Resources.Error -> {
@@ -94,8 +98,8 @@ class AddFolderToClassViewModel @Inject constructor(
                                 it.copy(isLoading = false)
                             }
                             _uiEvent.send(
-                                AddFolderToClassUIEvent.ShowError(
-                                    resources.message ?: "An error occurred"
+                                AddFolderToClassUiEvent.ShowError(
+                                    R.string.txt_error_occurred
                                 )
                             )
                         }
@@ -120,8 +124,8 @@ class AddFolderToClassViewModel @Inject constructor(
             ).collectLatest { resources ->
                 when (resources) {
                     is Resources.Success -> {
-                        _uiState.update {
-                            it.copy(
+                        _uiState.update { uiState1 ->
+                            uiState1.copy(
                                 isLoading = false,
                                 folders = resources.data ?: emptyList(),
                                 folderImportedIds = resources.data?.filter { it.isImported == true }
@@ -135,8 +139,8 @@ class AddFolderToClassViewModel @Inject constructor(
                             it.copy(isLoading = false)
                         }
                         _uiEvent.send(
-                            AddFolderToClassUIEvent.ShowError(
-                                resources.message ?: "An error occurred"
+                            AddFolderToClassUiEvent.ShowError(
+                                R.string.txt_error_occurred
                             )
                         )
                     }

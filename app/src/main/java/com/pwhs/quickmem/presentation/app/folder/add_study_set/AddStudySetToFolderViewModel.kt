@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.folder.add_study_set
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +35,6 @@ class AddStudySetToFolderViewModel @Inject constructor(
 
     init {
         val folderId: String = savedStateHandle["folderId"] ?: ""
-        Timber.d("AddStudySetViewModel: $folderId")
         _uiState.update { it.copy(folderId = folderId) }
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: return@launch
@@ -56,12 +55,16 @@ class AddStudySetToFolderViewModel @Inject constructor(
 
     fun onEvent(event: AddStudySetToFolderUiAction) {
         when (event) {
-            AddStudySetToFolderUiAction.AddStudySetToFolder -> {
+            is AddStudySetToFolderUiAction.AddStudySetToFolder -> {
                 doneClick()
             }
 
             is AddStudySetToFolderUiAction.ToggleStudySetImport -> {
                 toggleStudySetImport(event.studySetId)
+            }
+
+            is AddStudySetToFolderUiAction.RefreshStudySets -> {
+                getStudySets()
             }
         }
     }
@@ -94,7 +97,7 @@ class AddStudySetToFolderViewModel @Inject constructor(
                             }
                             _uiEvent.send(
                                 AddStudySetToFolderUiEvent.Error(
-                                    resources.message ?: "An error occurred"
+                                    R.string.txt_error_occurred
                                 )
                             )
                         }
@@ -133,7 +136,7 @@ class AddStudySetToFolderViewModel @Inject constructor(
                         }
                         _uiEvent.send(
                             AddStudySetToFolderUiEvent.Error(
-                                resources.message ?: "An error occurred"
+                                R.string.txt_error_occurred
                             )
                         )
                     }

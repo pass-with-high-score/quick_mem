@@ -29,8 +29,11 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Destination<RootGraph>(
     navArgs = AddFolderToClassArgs::class
@@ -41,19 +44,40 @@ fun AddFolderToClassScreen(
     navigator: DestinationsNavigator,
     viewModel: AddFolderToClassViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
+    resultAddFolderToClass: ResultRecipient<FolderDetailScreenDestination, Boolean>
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
+    resultAddFolderToClass.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(AddFolderToClassUiAction.RefreshFolders)
+                }
+            }
+        }
+
+    }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is AddFolderToClassUIEvent.ShowError -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                is AddFolderToClassUiEvent.ShowError -> {
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
 
-                AddFolderToClassUIEvent.StudySetAddedToClass -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                AddFolderToClassUiEvent.StudySetAddedToClass -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_add_folder_to_class_successfully),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
@@ -69,7 +93,7 @@ fun AddFolderToClassScreen(
         userAvatar = uiState.userAvatar,
         username = uiState.username,
         onDoneClick = {
-            viewModel.onEvent(AddFolderToClassUIAction.AddFolderToClass)
+            viewModel.onEvent(AddFolderToClassUiAction.AddFolderToClass)
         },
         onNavigateCancel = {
             navigator.navigateUp()
@@ -80,7 +104,7 @@ fun AddFolderToClassScreen(
             )
         },
         onAddFolderToClass = {
-            viewModel.onEvent(AddFolderToClassUIAction.ToggleFolderImport(it))
+            viewModel.onEvent(AddFolderToClassUiAction.ToggleFolderImport(it))
         }
     )
 }

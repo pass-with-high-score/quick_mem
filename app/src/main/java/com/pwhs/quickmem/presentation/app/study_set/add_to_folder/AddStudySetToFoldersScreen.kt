@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +30,10 @@ import com.ramcosta.composedestinations.generated.destinations.CreateFolderScree
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import com.pwhs.quickmem.R
+import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Destination<RootGraph>(
     navArgs = AddStudySetToFoldersArgs::class
@@ -39,20 +44,39 @@ fun AddStudySetToFoldersScreen(
     navigator: DestinationsNavigator,
     viewModel: AddStudySetToFoldersViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
-
-    ) {
+    resultAddStudySetToFolders: ResultRecipient<FolderDetailScreenDestination, Boolean>
+) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultAddStudySetToFolders.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(AddStudySetToFoldersUiAction.RefreshFolders)
+                }
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AddStudySetToFoldersUiEvent.Error -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 is AddStudySetToFoldersUiEvent.StudySetAddedToFolders -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_add_study_set_to_folder_successfully),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
@@ -103,7 +127,7 @@ fun AddStudySetToFolders(
             AddStudySetToFoldersTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
-                title = "Add to folder"
+                title = stringResource(R.string.txt_add_to_folder)
             )
         },
         floatingActionButton = {
@@ -114,7 +138,7 @@ fun AddStudySetToFolders(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Create folder"
+                    contentDescription = stringResource(R.string.txt_add_folder)
                 )
             }
         }

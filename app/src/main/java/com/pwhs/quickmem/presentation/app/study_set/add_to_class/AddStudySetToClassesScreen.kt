@@ -27,10 +27,13 @@ import com.pwhs.quickmem.presentation.app.study_set.add_to_folder.component.AddS
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFolderScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Destination<RootGraph>(
     navArgs = AddStudySetToClassesArgs::class
@@ -41,21 +44,38 @@ fun AddStudySetToClassesScreen(
     navigator: DestinationsNavigator,
     viewModel: AddStudySetToClassesViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
-
-    ) {
+    resultAddStudySetToClasses: ResultRecipient<ClassDetailScreenDestination, Boolean>
+) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultAddStudySetToClasses.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(AddStudySetToClassesUiAction.RefreshClasses)
+                }
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AddStudySetToClassesUiEvent.Error -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 is AddStudySetToClassesUiEvent.StudySetAddedToClasses -> {
-                    Toast.makeText(context,
-                        context.getString(R.string.txt_add_to_class_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_add_to_class_success), Toast.LENGTH_SHORT
+                    ).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }
@@ -80,6 +100,9 @@ fun AddStudySetToClassesScreen(
         },
         onAddStudySetToClasses = {
             viewModel.onEvent(AddStudySetToClassesUiAction.ToggleStudySetImport(it))
+        },
+        onRefresh = {
+            viewModel.onEvent(AddStudySetToClassesUiAction.RefreshClasses)
         }
     )
 }
@@ -94,6 +117,7 @@ fun AddStudySetToFolders(
     classImportedIds: List<String> = emptyList(),
     onAddStudySetToClasses: (String) -> Unit = {},
     isLoading: Boolean = false,
+    onRefresh: () -> Unit = {}
 ) {
     Scaffold(
         containerColor = colorScheme.background,
@@ -113,7 +137,7 @@ fun AddStudySetToFolders(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Create class"
+                    contentDescription = stringResource(R.string.txt_add_folder)
                 )
             }
         }
@@ -129,6 +153,7 @@ fun AddStudySetToFolders(
                     classes = classes,
                     classImportedIds = classImportedIds,
                     onAddStudySetToClasses = onAddStudySetToClasses,
+                    onClassRefresh = onRefresh,
                 )
             }
             LoadingOverlay(isLoading = isLoading)

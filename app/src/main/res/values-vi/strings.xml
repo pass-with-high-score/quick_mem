@@ -168,8 +168,8 @@
     <string name="txt_delete_study_set">Xóa bộ học</string>
     <string name="txt_are_you_sure_you_want_to_delete_this_study_set">Bạn có chắc chắn muốn xóa bộ học này không?</string>
     <string name="txt_delete">Xóa</string>
-    <string name="txt_reset_progress">Đặt lại tiến trình</string>
-    <string name="txt_are_you_sure_you_want_to_reset_the_progress_of_this_study_set">Bạn có chắc chắn muốn đặt lại tiến trình của bộ học này không?</string>
+    <string name="txt_reset_progress">Xoá toàn bộ tiến trình học</string>
+    <string name="txt_are_you_sure_you_want_to_reset_the_progress_of_this_study_set">Bạn có chắc chắn muốn xoá toàn bộ tiến trình học của bộ học này không?</string>
     <string name="txt_reset">Đặt lại</string>
     <string name="txt_your_progress">Tiến trình của bạn</string>
     <string name="txt_you_have_not_started_any_study_set_yet">Bạn chưa bắt đầu bất kỳ bộ học nào</string>
@@ -263,7 +263,7 @@
     <string name="txt_bronze_medal">Huy chương đồng</string>
     <string name="txt_top_10_highest_streak_leaderboard">Bảng xếp hạng 10 chuỗi thành tích cao nhất</string>
     <string name="txt_streak_leaderboard_motivation">Duy trì chuỗi để leo bảng xếp hạng!</string>
-    <string name="txt_create">Tạo</string>
+    <string name="txt_create_study_set_with_ai_minus_one">Tạo (-1)</string>
     <string name="txt_warning_ai_not_gen">Cảnh báo: AI có thể không tạo thẻ học chính xác hoặc đầy đủ. Hãy kiểm tra lại nếu bạn thấy cần thiết.</string>
     <string name="txt_title_required">Tiêu đề (bắt buộc)</string>
     <string name="txt_description_optional">Mô tả (tùy chọn)</string>
@@ -587,4 +587,14 @@
     <string name="txt_username_cannot_be_empty">Tên người dùng không được để trống</string>
     <string name="txt_class_created">Lớp đã được tạo</string>
     <string name="txt_update_class_failed">Cập nhật lớp thất bại</string>
+    <string name="txt_hello">Xin chào, %1$s</string>
+    <string name="txt_add_folder_to_class_successfully">Thêm thư mục vào lớp thành công</string>
+    <string name="txt_verify">Xác minh</string>
+    <string name="txt_you_need_at_least_1_coin_to_create_a_study_set">Bạn cần ít nhất 1 xu để tạo một bộ học</string>
+    <string name="txt_title_is_required">Tiêu đề là bắt buộc</string>
+    <string name="txt_too_many_requests_please_wait_1_minute">Quá nhiều yêu cầu, vui lòng đợi 1 phút</string>
+    <string name="txt_you_have_earned_1_coin">Bạn đã kiếm được 1 xu</string>
+    <string name="txt_unlimited">Unlimited</string>
+    <string name="txt_add_study_set_to_class_successfully">Thêm bộ học vào lớp thành công</string>
+    <string name="txt_add_study_set_to_folder_successfully">Thêm bộ học vào thư mục thành công</string>
 </resources>

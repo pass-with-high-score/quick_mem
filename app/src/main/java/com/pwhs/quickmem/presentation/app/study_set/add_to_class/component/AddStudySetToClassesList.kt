@@ -114,7 +114,7 @@ fun AddStudySetToClassesList(
                         } else {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_group),
-                                contentDescription = "Empty class",
+                                contentDescription = stringResource(R.string.txt_no_classes_found)
                             )
                             Text(
                                 text = stringResource(R.string.txt_no_classes_found),

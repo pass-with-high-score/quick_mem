@@ -172,6 +172,7 @@ fun UpdateFullName(
                     contentDescription = stringResource(R.string.txt_full_name),
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
+                        .padding(top = 40.dp)
                         .padding(vertical = 16.dp),
                     imeAction = ImeAction.Done,
                     onDone = onSubmitClick,

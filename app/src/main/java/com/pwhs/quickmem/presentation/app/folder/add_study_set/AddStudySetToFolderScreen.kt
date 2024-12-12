@@ -30,6 +30,9 @@ import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScr
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.pwhs.quickmem.R
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Destination<RootGraph>(
     navArgs = AddStudySetToFolderArgs::class
@@ -40,20 +43,39 @@ fun AddStudySetToFolderScreen(
     navigator: DestinationsNavigator,
     viewModel: AddStudySetToFolderViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
-
-    ) {
+    resultAddStudySetToFolder: ResultRecipient<StudySetDetailScreenDestination, Boolean>
+) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultAddStudySetToFolder.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(AddStudySetToFolderUiAction.RefreshStudySets)
+                }
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AddStudySetToFolderUiEvent.Error -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 is AddStudySetToFolderUiEvent.StudySetAddedToFolder -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_add_study_set_to_folder_successfully),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }

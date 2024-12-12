@@ -45,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.core.data.enums.UserRole
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
@@ -215,7 +216,7 @@ private fun UserDetail(
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.txt_back)
                         )
                     }
                 },
@@ -263,7 +264,7 @@ private fun UserDetail(
                         fontWeight = FontWeight.Bold
                     )
                 )
-                if (role == "TEACHER") {
+                if (role == UserRole.TEACHER.name) {
                     Text(
                         text = stringResource(R.string.txt_teacher),
                         style = typography.bodySmall.copy(

@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.classes.add_study_set
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -61,6 +62,10 @@ class AddStudySetToClassViewModel @Inject constructor(
             is AddStudySetToClassUiAction.ToggleStudySetImport -> {
                 toggleStudySetImport(event.studySetId)
             }
+
+            is AddStudySetToClassUiAction.RefreshStudySets -> {
+                getStudySets()
+            }
         }
     }
 
@@ -91,7 +96,7 @@ class AddStudySetToClassViewModel @Inject constructor(
                             }
                             _uiEvent.send(
                                 AddStudySetToClassUiEvent.Error(
-                                    resources.message ?: "An error occurred"
+                                    R.string.txt_error_occurred
                                 )
                             )
                         }
@@ -131,7 +136,7 @@ class AddStudySetToClassViewModel @Inject constructor(
                         }
                         _uiEvent.send(
                             AddStudySetToClassUiEvent.Error(
-                                resources.message ?: "An error occurred"
+                                R.string.txt_error_occurred
                             )
                         )
                     }

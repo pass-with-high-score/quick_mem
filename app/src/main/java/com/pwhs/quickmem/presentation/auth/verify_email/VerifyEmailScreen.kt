@@ -304,7 +304,7 @@ private fun VerifyEmail(
                 }
 
                 AuthButton(
-                    text = "Verify",
+                    text = stringResource(R.string.txt_verify),
                     onClick = onVerifyClick,
                     modifier = Modifier
                         .padding(top = 20.dp, bottom = 15.dp)

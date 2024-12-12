@@ -28,8 +28,11 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Destination<RootGraph>(
     navArgs = AddStudySetToClassArgs::class
@@ -40,20 +43,38 @@ fun AddStudySetToClassScreen(
     navigator: DestinationsNavigator,
     viewModel: AddStudySetToClassViewModel = hiltViewModel(),
     resultNavigator: ResultBackNavigator<Boolean>,
-
-    ) {
+    resultAddStudySetToClass: ResultRecipient<StudySetDetailScreenDestination, Boolean>
+) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    resultAddStudySetToClass.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.onEvent(AddStudySetToClassUiAction.RefreshStudySets)
+                }
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AddStudySetToClassUiEvent.Error -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT).show()
                 }
 
                 is AddStudySetToClassUiEvent.StudySetAddedToClass -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_add_study_set_to_class_successfully),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     resultNavigator.setResult(true)
                     navigator.navigateUp()
                 }

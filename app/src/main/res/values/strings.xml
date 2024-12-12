@@ -265,7 +265,7 @@
     <string name="txt_bronze_medal">Bronze Medal</string>
     <string name="txt_top_10_highest_streak_leaderboard">Top 10 highest streak leaderboard</string>
     <string name="txt_streak_leaderboard_motivation">Keep up the streak to climb the leaderboard!</string>
-    <string name="txt_create">Create</string>
+    <string name="txt_create_study_set_with_ai_minus_one">Create (-1)</string>
     <string name="txt_warning_ai_not_gen">Warning: AI may not generate accurate or complete flashcards. Please review if unsure.</string>
     <string name="txt_title_required">Title (required)</string>
     <string name="txt_description_optional">Description (optional)</string>
@@ -589,4 +589,15 @@
     <string name="txt_username_cannot_be_empty">Username cannot be empty</string>
     <string name="txt_class_created">Class Created</string>
     <string name="txt_update_class_failed">Update class failed</string>
+    <string name="txt_hello">Hello, %1$s</string>
+    <string name="txt_add_folder_to_class_successfully">Add folder to class successfully</string>
+    <string name="txt_verify">Verify</string>
+    <string name="txt_you_need_at_least_1_coin_to_create_a_study_set">You need at least 1 coin to create a study set</string>
+    <string name="txt_title_is_required">Title is required</string>
+    <string name="txt_too_many_requests_please_wait_1_minute">Too many requests, please wait 1 minute</string>
+    <string name="txt_you_have_earned_1_coin">You have earned 1 coin</string>
+    <string name="txt_create_study_set_with_ai" translatable="false">Create \nUnlimited</string>
+    <string name="txt_unlimited">Unlimited</string>
+    <string name="txt_add_study_set_to_class_successfully">Add study set to class successfully</string>
+    <string name="txt_add_study_set_to_folder_successfully">Add study set to folder successfully</string>
 </resources>

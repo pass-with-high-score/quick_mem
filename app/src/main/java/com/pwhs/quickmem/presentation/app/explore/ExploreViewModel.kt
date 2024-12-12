@@ -1,9 +1,9 @@
 package com.pwhs.quickmem.presentation.app.explore
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.CoinAction
 import com.pwhs.quickmem.core.data.enums.DifficultyLevel
 import com.pwhs.quickmem.core.data.enums.QuestionType
@@ -93,7 +93,7 @@ class ExploreViewModel @Inject constructor(
             is ExploreUiAction.OnCreateStudySet -> {
                 if (uiState.value.title.isEmpty()) {
                     _uiState.update {
-                        it.copy(errorMessage = "Title is required")
+                        it.copy(errorMessage = R.string.txt_title_is_required)
                     }
                 } else {
                     createStudySet()
@@ -135,7 +135,7 @@ class ExploreViewModel @Inject constructor(
 
                             is Resources.Error -> {
                                 _uiState.update { it.copy(isLoading = false) }
-                                _uiEvent.send(ExploreUiEvent.Error(resource.message ?: ""))
+                                _uiEvent.send(ExploreUiEvent.Error(R.string.txt_error_occurred))
                             }
                         }
                     }
@@ -170,7 +170,7 @@ class ExploreViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                errorMessage = "",
+                                errorMessage = null,
                                 title = "",
                                 description = "",
                                 numberOfFlashcards = 10,
@@ -180,7 +180,7 @@ class ExploreViewModel @Inject constructor(
                             )
                         }
                         if (_uiState.value.customerInfo?.activeSubscriptions?.isNotEmpty() == false) {
-                            updateCoins(coinAction = CoinAction.SUBTRACT, coin = 1)
+                            updateCoins(coinAction = CoinAction.SUBTRACT)
                         }
                         _uiEvent.send(
                             ExploreUiEvent.CreatedStudySet(
@@ -193,10 +193,10 @@ class ExploreViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                errorMessage = resource.message ?: ""
+                                errorMessage = R.string.txt_error_occurred
                             )
                         }
-                        _uiEvent.send(ExploreUiEvent.Error(resource.message ?: ""))
+                        _uiEvent.send(ExploreUiEvent.Error(R.string.txt_error_occurred))
                     }
                 }
             }
@@ -219,8 +219,7 @@ class ExploreViewModel @Inject constructor(
             ).collect { coin ->
                 when (coin) {
                     is Resources.Error -> {
-                        Timber.e("Too many requests, please wait 1 minute")
-                        _uiEvent.send(ExploreUiEvent.Error("Too many requests, please wait 1 minute"))
+                        _uiEvent.send(ExploreUiEvent.Error(R.string.txt_too_many_requests_please_wait_1_minute))
                     }
 
                     is Resources.Loading -> {
@@ -232,11 +231,7 @@ class ExploreViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(coins = coin.data?.coins ?: 0)
                         }
-                        Toast.makeText(
-                            getApplication(),
-                            "You have earned 1 coin",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        _uiEvent.trySend(ExploreUiEvent.EarnedCoins(R.string.txt_you_have_earned_1_coin))
                     }
                 }
             }

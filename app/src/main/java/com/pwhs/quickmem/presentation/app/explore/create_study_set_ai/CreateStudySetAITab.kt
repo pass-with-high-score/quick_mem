@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.explore.create_study_set_ai
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -66,7 +67,7 @@ fun CreateStudySetAITab(
     language: String = "",
     questionType: QuestionType = QuestionType.MULTIPLE_CHOICE,
     difficultyLevel: DifficultyLevel = DifficultyLevel.EASY,
-    errorMessage: String = "",
+    @StringRes errorMessage: Int? = null,
     onTitleChange: (String) -> Unit = {},
     onDescriptionChange: (String) -> Unit = {},
     onNumberOfFlashcardsChange: (Int) -> Unit = {},
@@ -74,6 +75,7 @@ fun CreateStudySetAITab(
     onQuestionTypeChange: (QuestionType) -> Unit = {},
     onDifficultyLevelChange: (DifficultyLevel) -> Unit = {},
     onCreateStudySet: () -> Unit = {},
+    isPlus: Boolean = false,
 ) {
     val sheetLanguageState = rememberModalBottomSheetState()
     var showBottomSheetLanguage by remember {
@@ -91,20 +93,29 @@ fun CreateStudySetAITab(
             if (title.isNotEmpty()) {
                 FloatingActionButton(
                     onClick = onCreateStudySet,
+                    shape = MaterialTheme.shapes.large,
+                    containerColor = colorScheme.primary,
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(5.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_sparkling),
-                            contentDescription = stringResource(R.string.txt_create),
+                            contentDescription = stringResource(R.string.txt_create_study_set_with_ai_minus_one),
                         )
                         Text(
-                            text = stringResource(R.string.txt_create),
-                            style = typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            )
+                            text = when (isPlus) {
+                                false -> stringResource(R.string.txt_create_study_set_with_ai_minus_one)
+                                else -> stringResource(
+                                    R.string.txt_create_study_set_with_ai,
+                                )
+                            },
+                            style = typography.bodySmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            ),
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }
@@ -136,14 +147,16 @@ fun CreateStudySetAITab(
                     shape = MaterialTheme.shapes.medium,
                     value = title,
                     maxLines = 2,
-                    isError = errorMessage.isNotEmpty(),
+                    isError = errorMessage != null,
                     supportingText = {
-                        Text(
-                            text = errorMessage,
-                            style = typography.bodyMedium.copy(
-                                color = colorScheme.error,
+                        errorMessage?.let {
+                            Text(
+                                text = stringResource(it),
+                                style = typography.bodyMedium.copy(
+                                    color = colorScheme.error,
+                                )
                             )
-                        )
+                        }
                     },
                     colors = colors(
                         focusedContainerColor = Color.White,

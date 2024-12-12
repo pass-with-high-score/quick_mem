@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.explore
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -71,16 +72,27 @@ fun ExploreScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is ExploreUiEvent.Error -> {
-
-                }
-
                 is ExploreUiEvent.CreatedStudySet -> {
                     navigator.navigate(
                         StudySetDetailScreenDestination(
                             id = event.studySetId,
                         )
                     )
+                }
+
+                is ExploreUiEvent.EarnedCoins -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(event.message),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is ExploreUiEvent.Error -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(event.message),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -152,7 +164,7 @@ fun Explore(
     onDifficultyLevelChange: (DifficultyLevel) -> Unit = {},
     onCreateStudySet: () -> Unit = {},
     onEarnCoins: () -> Unit = {},
-    errorMessage: String = "",
+   @StringRes errorMessage: Int? = null,
     coins: Int = 0,
     customerInfo: CustomerInfo? = null,
 ) {
@@ -194,7 +206,7 @@ fun Explore(
                         ) {
                             Text(
                                 text = when (customerInfo?.activeSubscriptions?.isNotEmpty()) {
-                                    true -> "Unlimited"
+                                    true -> stringResource(R.string.txt_unlimited)
                                     false -> coins.toString()
                                     else -> "0"
                                 },
@@ -275,16 +287,17 @@ fun Explore(
                         onDifficultyLevelChange = onDifficultyLevelChange,
                         errorMessage = errorMessage,
                         onCreateStudySet = {
-                            if (coins > 0) {
+                            if (coins > 0 || customerInfo?.activeSubscriptions?.isNotEmpty() == true) {
                                 onCreateStudySet()
                             } else {
                                 Toast.makeText(
                                     context,
-                                    "You need at least 1 coin to create a study set",
+                                    context.getString(R.string.txt_you_need_at_least_1_coin_to_create_a_study_set),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                        }
+                        },
+                        isPlus = customerInfo?.activeSubscriptions?.isNotEmpty() == true
                     )
 
                     ExploreTabEnum.TOP_STREAK.index -> TopStreakScreen(

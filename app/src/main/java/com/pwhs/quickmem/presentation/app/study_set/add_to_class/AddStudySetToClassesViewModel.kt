@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.add_to_class
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -56,12 +57,16 @@ class AddStudySetToClassesViewModel @Inject constructor(
 
     fun onEvent(event: AddStudySetToClassesUiAction) {
         when (event) {
-            AddStudySetToClassesUiAction.AddStudySetToClasses -> {
+            is AddStudySetToClassesUiAction.AddStudySetToClasses -> {
                 doneClick()
             }
 
             is AddStudySetToClassesUiAction.ToggleStudySetImport -> {
                 toggleClassesImport(event.classId)
+            }
+
+            is AddStudySetToClassesUiAction.RefreshClasses -> {
+                getClasses()
             }
         }
     }
@@ -92,7 +97,7 @@ class AddStudySetToClassesViewModel @Inject constructor(
                         }
                         _uiEvent.send(
                             AddStudySetToClassesUiEvent.Error(
-                                resources.message ?: "An error occurred"
+                                R.string.txt_error_occurred
                             )
                         )
                     }
@@ -108,7 +113,7 @@ class AddStudySetToClassesViewModel @Inject constructor(
     }
 
     private fun doneClick() {
-        viewModelScope.launch{
+        viewModelScope.launch {
             val addStudySetToClassesRequestModel = AddStudySetToClassesRequestModel(
                 studySetId = _uiState.value.studySetId,
                 classIds = _uiState.value.classImportedIds
@@ -132,7 +137,7 @@ class AddStudySetToClassesViewModel @Inject constructor(
                         }
                         _uiEvent.send(
                             AddStudySetToClassesUiEvent.Error(
-                                resources.message ?: "An error occurred"
+                               R.string.txt_error_occurred
                             )
                         )
                     }

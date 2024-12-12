@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.study_set.add_to_folder
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -56,12 +57,16 @@ class AddStudySetToFoldersViewModel @Inject constructor(
 
     fun onEvent(event: AddStudySetToFoldersUiAction) {
         when (event) {
-            AddStudySetToFoldersUiAction.AddStudySetToFolders -> {
+            is AddStudySetToFoldersUiAction.AddStudySetToFolders -> {
                 doneClick()
             }
 
             is AddStudySetToFoldersUiAction.ToggleStudySetImport -> {
                 toggleFolderImport(event.folderId)
+            }
+
+            is AddStudySetToFoldersUiAction.RefreshFolders -> {
+                getFolders()
             }
         }
     }
@@ -92,7 +97,7 @@ class AddStudySetToFoldersViewModel @Inject constructor(
                         }
                         _uiEvent.send(
                             AddStudySetToFoldersUiEvent.Error(
-                                resources.message ?: "An error occurred"
+                                R.string.txt_error_occurred
                             )
                         )
                     }
@@ -132,7 +137,7 @@ class AddStudySetToFoldersViewModel @Inject constructor(
                         }
                         _uiEvent.send(
                             AddStudySetToFoldersUiEvent.Error(
-                                resources.message ?: "An error occurred"
+                                R.string.txt_error_occurred
                             )
                         )
                     }
