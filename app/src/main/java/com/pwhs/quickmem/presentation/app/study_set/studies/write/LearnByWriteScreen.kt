@@ -110,7 +110,10 @@ fun LearnByWriteScreen(
                 }
 
                 LearnByWriteUiEvent.Finished -> {
-                    Toast.makeText(context, "Finished", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_you_have_finished), Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -139,7 +142,12 @@ fun LearnByWriteScreen(
             viewModel.onEvent(LearnByWriteUiAction.OnAnswer(id, status, answer))
         },
         isGetAll = uiState.isGetAll,
-        isGenerateHint = uiState.isGenerateHint
+        isGenerateHint = uiState.isGenerateHint,
+        onCreateHintByAI = {
+            viewModel.onEvent(
+                LearnByWriteUiAction.OnCreateHintByAI
+            )
+        }
     )
 }
 
@@ -161,7 +169,8 @@ fun LearnByWrite(
     onContinueLearningClicked: () -> Unit = {},
     onSubmitAnswer: (String, WriteStatus, String) -> Unit = { _, _, _ -> },
     isGetAll: Boolean = false,
-    isGenerateHint: Boolean = false
+    isGenerateHint: Boolean = false,
+    onCreateHintByAI: () -> Unit = {}
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -210,7 +219,7 @@ fun LearnByWrite(
                     ) {
                         Icon(
                             imageVector = Default.Clear,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.txt_back),
                         )
                     }
                 },
@@ -223,7 +232,7 @@ fun LearnByWrite(
                         ) {
                             Icon(
                                 imageVector = Default.Lightbulb,
-                                contentDescription = "Hint",
+                                contentDescription = stringResource(R.string.txt_hint),
                                 tint = studySetColor
                             )
                         }
@@ -307,7 +316,7 @@ fun LearnByWrite(
                                     if (writeQuestion?.definitionImageUrl?.isNotEmpty() == true) {
                                         AsyncImage(
                                             model = writeQuestion.definitionImageUrl,
-                                            contentDescription = "Definition Image",
+                                            contentDescription = stringResource(R.string.txt_definition_image),
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .size(80.dp)
@@ -468,7 +477,7 @@ fun LearnByWrite(
                                 ) {
                                     Icon(
                                         imageVector = Default.ArrowCircleUp,
-                                        contentDescription = "Submit",
+                                        contentDescription = stringResource(R.string.txt_submit),
                                     )
                                 }
                             }
@@ -543,7 +552,7 @@ fun LearnByWrite(
                                     )
                                 )
 
-                                IconButton(onClick = { /* AI Hint Action */ }) {
+                                IconButton(onClick = onCreateHintByAI) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_generative_ai),
                                         contentDescription = stringResource(R.string.txt_ai_hint),
@@ -558,12 +567,20 @@ fun LearnByWrite(
                                 modifier = Modifier
                                     .fillMaxWidth()
                             )
-                           if (isGenerateHint) {
-                               LinearProgressIndicator(
-                                   color = studySetColor,
-                                   modifier = Modifier.fillMaxWidth()
-                               )
-                           }
+                            if (isGenerateHint) {
+                                LinearProgressIndicator(
+                                    color = studySetColor,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            writeQuestion?.aiHint?.let {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                            }
                         }
 
                         item {

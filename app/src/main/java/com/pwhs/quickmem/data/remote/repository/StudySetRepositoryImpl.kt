@@ -21,6 +21,8 @@ import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetByAIRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.CreateWriteHintAIRequestModel
+import com.pwhs.quickmem.domain.model.study_set.CreateWriteHintAIResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.SaveRecentAccessStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
@@ -50,7 +52,10 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                val response = apiService.createStudySet(token, createStudySetRequestModel.toDto())
+                val response = apiService.createStudySet(
+                    token = token,
+                    createStudySetRequestDto = createStudySetRequestModel.toDto()
+                )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 emit(Resources.Error(e.toString()))
@@ -68,7 +73,7 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                val response = apiService.getStudySetById(token, studySetId)
+                val response = apiService.getStudySetById(token = token, id = studySetId)
                 response.flashcards = response.flashcards?.sortedByDescending { it.createdAt }
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
@@ -90,7 +95,12 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                val response = apiService.getStudySetsByOwnerId(token, ownerId, classId, folderId)
+                val response = apiService.getStudySetsByOwnerId(
+                    token = token,
+                    ownerId = ownerId,
+                    classId = classId,
+                    folderId = folderId
+                )
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -111,7 +121,11 @@ class StudySetRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 val response =
-                    apiService.updateStudySet(token, studySetId, updateStudySetRequestModel.toDto())
+                    apiService.updateStudySet(
+                        token = token,
+                        id = studySetId,
+                        updateStudySetRequestDto = updateStudySetRequestModel.toDto()
+                    )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -130,7 +144,7 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                apiService.deleteStudySet(token, studySetId)
+                apiService.deleteStudySet(token = token, id = studySetId)
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -150,7 +164,11 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                apiService.resetStudySetProgress(token, studySetId, resetType)
+                apiService.resetStudySetProgress(
+                    token = token,
+                    id = studySetId,
+                    resetType = resetType
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -169,7 +187,10 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                apiService.addStudySetToFolder(token, addStudySetToFolderRequestModel.toDto())
+                apiService.addStudySetToFolder(
+                    token = token,
+                    addStudySetToFolderRequestDto = addStudySetToFolderRequestModel.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -188,7 +209,10 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                apiService.addStudySetToClass(token, addStudySetToClassRequestModel.toDto())
+                apiService.addStudySetToClass(
+                    token = token,
+                    addStudySetToClassRequestDto = addStudySetToClassRequestModel.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -207,7 +231,10 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                apiService.addStudySetToFolders(token, addStudySetToFoldersRequestModel.toDto())
+                apiService.addStudySetToFolders(
+                    token = token,
+                    addStudySetToFoldersRequestDto = addStudySetToFoldersRequestModel.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -226,7 +253,10 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                apiService.addStudySetToClasses(token, addStudySetToClassesRequestModel.toDto())
+                apiService.addStudySetToClasses(
+                    token = token,
+                    addStudySetToClassesRequestDto = addStudySetToClassesRequestModel.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -255,14 +285,14 @@ class StudySetRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = {
                 StudySetPagingSource(
-                    studySetRemoteDataSource,
-                    token,
-                    title,
-                    size,
-                    creatorType,
-                    colorId,
-                    subjectId,
-                    isAIGenerated
+                    studySetRemoteDataSource = studySetRemoteDataSource,
+                    token = token,
+                    title = title,
+                    size = size,
+                    creatorType = creatorType,
+                    colorId = colorId,
+                    subjectId = subjectId,
+                    isAIGenerated = isAIGenerated
                 )
             }
         ).flow
@@ -279,7 +309,7 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                val response = apiService.getStudySetByLinkCode(token, code)
+                val response = apiService.getStudySetByLinkCode(token = token, code = code)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -301,7 +331,7 @@ class StudySetRepositoryImpl @Inject constructor(
             try {
                 val request =
                     MakeACopyStudySetRequestDto(studySetId = studySetId, newOwnerId = newOwnerId)
-                val response = apiService.duplicateStudySet(token, request)
+                val response = apiService.duplicateStudySet(token = token, request = request)
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -319,7 +349,7 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                val response = apiService.getTop5Subject(token)
+                val response = apiService.getTop5Subject(token = token)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -343,9 +373,9 @@ class StudySetRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = {
                 StudySetBySubjectPagingSource(
-                    searchStudySetBySubjectRemoteDataSource,
-                    token,
-                    subjectId,
+                    searchStudySetBySubjectRemoteDataSource = searchStudySetBySubjectRemoteDataSource,
+                    token = token,
+                    subjectId = subjectId,
                 )
             }
         ).flow
@@ -362,7 +392,10 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                apiService.saveRecentStudySet(token, saveRecentAccessStudySetRequestModel.toDto())
+                apiService.saveRecentStudySet(
+                    token = token,
+                    saveRecentAccessStudySetRequestDto = saveRecentAccessStudySetRequestModel.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -381,7 +414,7 @@ class StudySetRepositoryImpl @Inject constructor(
             }
             emit(Resources.Loading())
             try {
-                val response = apiService.getRecentStudySet(token, userId)
+                val response = apiService.getRecentStudySet(token = token, userId = userId)
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -401,7 +434,33 @@ class StudySetRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 val response =
-                    apiService.createStudySetByAI(token, createStudySetByAIRequestModel.toDto())
+                    apiService.createStudySetByAI(
+                        token = token,
+                        createStudySetRequestDto = createStudySetByAIRequestModel.toDto()
+                    )
+                emit(Resources.Success(response.toModel()))
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.toString()))
+            }
+        }
+    }
+
+    override suspend fun createWriteHintAI(
+        token: String,
+        createWriteHintAIRequestModel: CreateWriteHintAIRequestModel
+    ): Flow<Resources<CreateWriteHintAIResponseModel>> {
+        return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
+            try {
+                val response =
+                    apiService.createWriteHintAI(
+                        token = token,
+                        createWriteHintAIModel = createWriteHintAIRequestModel.toDto()
+                    )
                 emit(Resources.Success(response.toModel()))
             } catch (e: Exception) {
                 Timber.e(e)

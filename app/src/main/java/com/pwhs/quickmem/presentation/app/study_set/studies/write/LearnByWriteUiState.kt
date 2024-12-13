@@ -36,5 +36,6 @@ data class WriteQuestion(
     val definition: String,
     val hint: String,
     val definitionImageUrl: String,
-    val userAnswer: String
+    val userAnswer: String,
+    val aiHint: String? = null,
 )

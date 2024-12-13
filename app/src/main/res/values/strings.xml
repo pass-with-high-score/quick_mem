@@ -606,4 +606,6 @@
     <string name="txt_subjects">Subjects</string>
     <string name="txt_try_arts">Try Arts</string>
     <string name="txt_no_subjects_found">No subjects found</string>
+    <string name="txt_you_have_finished">You have finished</string>
+    <string name="txt_definition_image">Definition image</string>
 </resources>

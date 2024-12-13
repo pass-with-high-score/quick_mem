@@ -72,6 +72,8 @@ import com.pwhs.quickmem.data.dto.study_set.AddStudySetToFoldersRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetByAIRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.CreateStudySetResponseDto
+import com.pwhs.quickmem.data.dto.study_set.CreateWriteHintAIRequestDto
+import com.pwhs.quickmem.data.dto.study_set.CreateWriteHintAIResponseDto
 import com.pwhs.quickmem.data.dto.study_set.GetStudySetResponseDto
 import com.pwhs.quickmem.data.dto.study_set.MakeACopyStudySetRequestDto
 import com.pwhs.quickmem.data.dto.study_set.SaveRecentAccessStudySetRequestDto
@@ -296,6 +298,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body createStudySetRequestDto: CreateStudySetByAIRequestDto
     ): CreateStudySetResponseDto
+
+    @POST("study-set/ai/write-hint")
+    suspend fun createWriteHintAI(
+        @Header("Authorization") token: String,
+        @Body createWriteHintAIModel: CreateWriteHintAIRequestDto
+    ): CreateWriteHintAIResponseDto
 
     // subject
     @GET("study-set/top-subject")

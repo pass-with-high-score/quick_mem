@@ -603,4 +603,6 @@
     <string name="txt_subjects">Môn học</string>
     <string name="txt_try_arts">Thử môn Nghệ thuật</string>
     <string name="txt_no_subjects_found">Không tìm thấy môn học nào</string>
+    <string name="txt_you_have_finished">Bạn đã hoàn thành</string>
+    <string name="txt_definition_image">Hình ảnh định nghĩa</string>
 </resources>

@@ -9,6 +9,8 @@ import com.pwhs.quickmem.domain.model.study_set.AddStudySetToFoldersRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetByAIRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.CreateStudySetResponseModel
+import com.pwhs.quickmem.domain.model.study_set.CreateWriteHintAIRequestModel
+import com.pwhs.quickmem.domain.model.study_set.CreateWriteHintAIResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.study_set.SaveRecentAccessStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
@@ -119,4 +121,9 @@ interface StudySetRepository {
         token: String,
         createStudySetByAIRequestModel: CreateStudySetByAIRequestModel
     ): Flow<Resources<CreateStudySetResponseModel>>
+
+    suspend fun createWriteHintAI(
+        token: String,
+        createWriteHintAIRequestModel: CreateWriteHintAIRequestModel
+    ): Flow<Resources<CreateWriteHintAIResponseModel>>
 }

@@ -15,6 +15,7 @@ import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.flashcard.FlashCardResponseModel
+import com.pwhs.quickmem.domain.model.study_set.CreateWriteHintAIRequestModel
 import com.pwhs.quickmem.domain.model.study_time.CreateStudyTimeModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
@@ -58,8 +59,8 @@ class LearnByWriteViewModel @Inject constructor(
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 1
         val folderId = savedStateHandle.get<String>("folderId") ?: ""
         val learnFrom = savedStateHandle.get<LearnFrom>("learnFrom") ?: LearnFrom.STUDY_SET
-        _uiState.update {
-            it.copy(
+        _uiState.update { state ->
+            state.copy(
                 folderId = folderId,
                 learnFrom = learnFrom,
                 isGetAll = isGetAll,
@@ -121,6 +122,10 @@ class LearnByWriteViewModel @Inject constructor(
                     sendCompletedStudyTime()
                 }
                 _uiEvent.trySend(LearnByWriteUiEvent.Back)
+            }
+
+            is LearnByWriteUiAction.OnCreateHintByAI -> {
+                createHintByAI()
             }
         }
     }
@@ -414,5 +419,53 @@ class LearnByWriteViewModel @Inject constructor(
     private fun playIncorrectSound() {
         val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.wrong)
         mediaPlayer.start()
+    }
+
+    private fun createHintByAI(
+    ) {
+        viewModelScope.launch {
+            val flashcardId: String = _uiState.value.writeQuestion?.id ?: ""
+            val question: String = _uiState.value.writeQuestion?.term ?: ""
+            val answer: String = _uiState.value.writeQuestion?.definition ?: ""
+            val studySetTitle: String = _uiState.value.studySetTitle
+            val studySetDescription: String = _uiState.value.studySetDescription
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val createFlashCardModel = CreateWriteHintAIRequestModel(
+                flashcardId = flashcardId,
+                studySetTitle = studySetTitle.ifEmpty { "No title" },
+                studySetDescription = studySetDescription.ifEmpty { "No description" },
+                question = question,
+                answer = answer
+            )
+            studySetRepository.createWriteHintAI(
+                token = token,
+                createWriteHintAIRequestModel = createFlashCardModel
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        Timber.e(resource.message)
+                        _uiState.update {
+                            it.copy(
+                                isGenerateHint = false,
+                                writeQuestion = it.writeQuestion?.copy(aiHint = resource.message)
+                            )
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update { it.copy(isGenerateHint = true) }
+                    }
+
+                    is Resources.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isGenerateHint = false,
+                                writeQuestion = it.writeQuestion?.copy(aiHint = resource.data?.aiHint)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
