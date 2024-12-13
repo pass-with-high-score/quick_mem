@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -96,7 +95,6 @@ class FlipFlashCardViewModel @Inject constructor(
             }
 
             is FlipFlashCardUiAction.OnUpdateCardIndex -> {
-                Timber.d("OnUpdateCardIndex: ${event.index}")
                 _uiState.update {
                     it.copy(
                         currentCardIndex = it.currentCardIndex + 1,
@@ -167,11 +165,11 @@ class FlipFlashCardViewModel @Inject constructor(
                 )
             }
 
-            FlipFlashCardUiAction.OnRestartClicked -> {
+            is FlipFlashCardUiAction.OnRestartClicked -> {
                 restartStudySet()
             }
 
-            FlipFlashCardUiAction.OnContinueLearningClicked -> {
+            is FlipFlashCardUiAction.OnContinueLearningClicked -> {
                 _uiState.update {
                     it.copy(
                         isEndOfList = false,
@@ -206,6 +204,13 @@ class FlipFlashCardViewModel @Inject constructor(
                     appManager.saveIsPlaySound(event.isPlaySound)
                 }
             }
+
+            is FlipFlashCardUiAction.OnSwapCard -> {
+                _uiState.update {
+                    it.copy(isSwapCard = !it.isSwapCard)
+                }
+                restartStudySet()
+            }
         }
     }
 
@@ -216,13 +221,17 @@ class FlipFlashCardViewModel @Inject constructor(
             val folderId = _uiState.value.folderId
             val learnFrom = _uiState.value.learnFrom
             val isGetAll = _uiState.value.isGetAll
+            val isSwapCard = _uiState.value.isSwapCard
+            val isRandomCard = _uiState.value.isRandomCard
             when (learnFrom) {
                 LearnFrom.STUDY_SET -> {
                     flashCardRepository.getFlashCardsByStudySetId(
                         token = token,
                         studySetId = studySetId,
                         learnMode = LearnMode.FLIP,
-                        isGetAll = isGetAll
+                        isGetAll = isGetAll,
+                        isSwapped = isSwapCard,
+                        isRandom = isRandomCard,
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {
@@ -261,7 +270,9 @@ class FlipFlashCardViewModel @Inject constructor(
                         token = token,
                         folderId = folderId,
                         learnMode = LearnMode.FLIP,
-                        isGetAll = isGetAll
+                        isGetAll = isGetAll,
+                        isSwapped = isSwapCard,
+                        isRandom = isRandomCard,
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {

@@ -147,7 +147,11 @@ fun LearnByWriteScreen(
             viewModel.onEvent(
                 LearnByWriteUiAction.OnCreateHintByAI
             )
-        }
+        },
+        onSwapCard = {
+            viewModel.onEvent(LearnByWriteUiAction.OnSwapCard)
+        },
+        isSwapCard = uiState.isSwapCard
     )
 }
 
@@ -170,7 +174,9 @@ fun LearnByWrite(
     onSubmitAnswer: (String, WriteStatus, String) -> Unit = { _, _, _ -> },
     isGetAll: Boolean = false,
     isGenerateHint: Boolean = false,
-    onCreateHintByAI: () -> Unit = {}
+    onCreateHintByAI: () -> Unit = {},
+    onSwapCard: () -> Unit = {},
+    isSwapCard: Boolean = false,
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -225,6 +231,15 @@ fun LearnByWrite(
                 },
                 actions = {
                     if (!isEndOfList) {
+                        IconButton(
+                            onClick = onSwapCard
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_swap_card),
+                                contentDescription = stringResource(R.string.txt_swap_card),
+                                tint = if (isSwapCard) studySetColor.copy(alpha = 0.5f) else studySetColor,
+                            )
+                        }
                         IconButton(
                             onClick = {
                                 showHintBottomSheet.value = true

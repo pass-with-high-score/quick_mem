@@ -27,6 +27,8 @@ data class LearnByTrueFalseUiState(
     val currentFlashCard: FlashCardResponseModel? = null,
     val learnFrom: LearnFrom = LearnFrom.STUDY_SET,
     val folderId: String = "",
+    val isSwapCard: Boolean = false,
+    val isRandomCard: Boolean = false,
 )
 
 data class TrueFalseQuestion(

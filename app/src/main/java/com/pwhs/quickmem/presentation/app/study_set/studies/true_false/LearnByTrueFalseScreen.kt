@@ -116,10 +116,10 @@ fun LearnByTrueFalseScreen(
         },
         isGetAll = uiState.isGetAll,
         learnFrom = uiState.learnFrom,
-        isPlaySound = uiState.isPlaySound,
-        onChangeIsPlaySound = {
-            viewModel.onEvent(LearnByTrueFalseUiAction.OnChangeIsPlaySound(it))
-        }
+        onSwapCard = {
+            viewModel.onEvent(LearnByTrueFalseUiAction.OnSwapCard)
+        },
+        isSwapCard = uiState.isSwapCard
     )
 }
 
@@ -141,9 +141,9 @@ fun LearnByTrueFalse(
     listWrongAnswer: List<TrueFalseQuestion> = emptyList(),
     onContinueLearningClicked: () -> Unit = {},
     isGetAll: Boolean = false,
-    isPlaySound: Boolean = false,
-    onChangeIsPlaySound: (Boolean) -> Unit = {},
-    learnFrom: LearnFrom = LearnFrom.FOLDER
+    learnFrom: LearnFrom = LearnFrom.FOLDER,
+    onSwapCard: () -> Unit = {},
+    isSwapCard: Boolean = false,
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
     var definitionImageUri by remember { mutableStateOf("") }
@@ -181,14 +181,12 @@ fun LearnByTrueFalse(
                 actions = {
                     if (!isEndOfList) {
                         IconButton(
-                            onClick = { onChangeIsPlaySound(!isPlaySound) }
+                            onClick = onSwapCard
                         ) {
                             Icon(
-                                painter = if (isPlaySound) painterResource(id = R.drawable.ic_sound) else painterResource(
-                                    id = R.drawable.ic_volume_off
-                                ),
-                                contentDescription = "Sound",
-                                modifier = Modifier.size(22.dp)
+                                painter = painterResource(R.drawable.ic_swap_card),
+                                contentDescription = stringResource(R.string.txt_swap_card),
+                                tint = if (isSwapCard) studySetColor.copy(alpha = 0.5f) else studySetColor,
                             )
                         }
                         if (learnFrom != LearnFrom.FOLDER && isGetAll) {

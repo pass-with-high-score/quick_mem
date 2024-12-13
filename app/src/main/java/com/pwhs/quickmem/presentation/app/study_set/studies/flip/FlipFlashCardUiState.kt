@@ -26,4 +26,6 @@ data class FlipFlashCardUiState(
     val isSwipingRight: Boolean = false,
     val countKnown: Int = 0,
     val countStillLearning: Int = 0,
+    val isSwapCard: Boolean = false,
+    val isRandomCard: Boolean = false,
 )

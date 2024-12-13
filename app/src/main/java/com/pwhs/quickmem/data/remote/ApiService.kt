@@ -330,7 +330,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Query("learnMode") learnMode: String,
-        @Query("isGetAll") isGetAll: Boolean
+        @Query("isGetAll") isGetAll: Boolean,
+        @Query("isSwapped") isSwapped: Boolean? = null,
+        @Query("isRandom") isRandom: Boolean? = null
     ): List<FlashCardResponseDto>
 
     @POST("flashcard")
@@ -399,7 +401,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Query("learnMode") learnMode: String,
-        @Query("isGetAll") isGetAll: Boolean
+        @Query("isGetAll") isGetAll: Boolean,
+        @Query("isSwapped") isSwapped: Boolean? = null,
+        @Query("isRandom") isRandom: Boolean? = null
     ): List<FlashCardResponseDto>
 
     // Folder

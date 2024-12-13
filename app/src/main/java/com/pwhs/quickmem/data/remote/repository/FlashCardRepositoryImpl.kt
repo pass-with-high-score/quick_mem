@@ -261,7 +261,9 @@ class FlashCardRepositoryImpl @Inject constructor(
         token: String,
         studySetId: String,
         learnMode: LearnMode,
-        isGetAll: Boolean
+        isGetAll: Boolean,
+        isSwapped: Boolean,
+        isRandom: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>> {
         return flow {
             if (token.isEmpty()) {
@@ -273,7 +275,9 @@ class FlashCardRepositoryImpl @Inject constructor(
                     token = token,
                     id = studySetId,
                     learnMode = learnMode.mode,
-                    isGetAll = isGetAll
+                    isGetAll = isGetAll,
+                    isSwapped = isSwapped,
+                    isRandom = isRandom
                 )
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: HttpException) {
@@ -290,7 +294,9 @@ class FlashCardRepositoryImpl @Inject constructor(
         token: String,
         folderId: String,
         learnMode: LearnMode,
-        isGetAll: Boolean
+        isGetAll: Boolean,
+        isSwapped: Boolean,
+        isRandom: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>> {
         return flow {
             if (token.isEmpty()) {
@@ -302,7 +308,9 @@ class FlashCardRepositoryImpl @Inject constructor(
                     token = token,
                     id = folderId,
                     learnMode = learnMode.mode,
-                    isGetAll = isGetAll
+                    isGetAll = isGetAll,
+                    isSwapped = isSwapped,
+                    isRandom = isRandom
                 )
                 emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: HttpException) {

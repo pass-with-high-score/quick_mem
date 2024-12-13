@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
@@ -121,10 +120,10 @@ fun LearnByQuizScreen(
         },
         isGetAll = uiState.isGetAll,
         learnFrom = uiState.learnFrom,
-        isPlaySound = uiState.isPlaySound,
-        onChangeIsPlaySound = {
-            viewModel.onEvent(LearnByQuizUiAction.OnChangeIsPlaySound(it))
-        }
+        onSwapCard = {
+            viewModel.onEvent(LearnByQuizUiAction.OnSwapCard)
+        },
+        isSwapCard = uiState.isSwapCard
     )
 }
 
@@ -148,9 +147,9 @@ fun LearnByQuiz(
     onContinueLearningClicked: () -> Unit = {},
     onRestartClicked: () -> Unit = {},
     isGetAll: Boolean = false,
-    isPlaySound: Boolean = false,
     learnFrom: LearnFrom = LearnFrom.STUDY_SET,
-    onChangeIsPlaySound: (Boolean) -> Unit = {}
+    onSwapCard: () -> Unit = {},
+    isSwapCard: Boolean = false,
 ) {
     var canResetState by remember { mutableStateOf(false) }
     val showHintBottomSheet = remember { mutableStateOf(false) }
@@ -191,14 +190,12 @@ fun LearnByQuiz(
                 actions = {
                     if (!isEndOfList) {
                         IconButton(
-                            onClick = { onChangeIsPlaySound(!isPlaySound) }
+                            onClick = onSwapCard
                         ) {
                             Icon(
-                                painter = if (isPlaySound) painterResource(id = R.drawable.ic_sound) else painterResource(
-                                    id = R.drawable.ic_volume_off
-                                ),
-                                contentDescription = "Sound",
-                                modifier = Modifier.size(22.dp)
+                                painter = painterResource(R.drawable.ic_swap_card),
+                                contentDescription = stringResource(R.string.txt_swap_card),
+                                tint = if (isSwapCard) studySetColor.copy(alpha = 0.5f) else studySetColor,
                             )
                         }
                         if (!flashCard?.hint.isNullOrEmpty()) {

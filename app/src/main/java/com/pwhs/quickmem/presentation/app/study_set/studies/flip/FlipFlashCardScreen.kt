@@ -95,10 +95,6 @@ fun FlipFlashCardScreen(
         isSwipingLeft = uiState.isSwipingLeft,
         isSwipingRight = uiState.isSwipingRight,
         isEndOfList = uiState.isEndOfList,
-        isPlaySound = uiState.isPlaySound,
-        onChangeIsPlaySound = {
-            viewModel.onEvent(FlipFlashCardUiAction.OnChangeIsPlaySound(it))
-        },
         learningTime = uiState.learningTime,
         onEndSessionClick = {
             viewModel.onEvent(FlipFlashCardUiAction.OnBackClicked)
@@ -134,7 +130,11 @@ fun FlipFlashCardScreen(
             viewModel.onEvent(FlipFlashCardUiAction.OnContinueLearningClicked)
         },
         isGetAll = uiState.isGetAll,
-        learnFrom = uiState.learnFrom
+        learnFrom = uiState.learnFrom,
+        onSwapCard = {
+            viewModel.onEvent(FlipFlashCardUiAction.OnSwapCard)
+        },
+        isSwapCard = uiState.isSwapCard
     )
 }
 
@@ -151,8 +151,6 @@ fun FlipFlashCard(
     isSwipingLeft: Boolean = false,
     isSwipingRight: Boolean = false,
     isEndOfList: Boolean = false,
-    isPlaySound: Boolean = false,
-    onChangeIsPlaySound: (Boolean) -> Unit = { },
     learningTime: Long = 0L,
     onEndSessionClick: () -> Unit = { },
     onUpdatedCardIndex: (Int) -> Unit = { },
@@ -163,7 +161,9 @@ fun FlipFlashCard(
     onRestartClicked: () -> Unit = { },
     onContinueLearningClicked: () -> Unit = { },
     isGetAll: Boolean = false,
-    learnFrom: LearnFrom = LearnFrom.STUDY_SET
+    learnFrom: LearnFrom = LearnFrom.STUDY_SET,
+    onSwapCard: () -> Unit = {},
+    isSwapCard: Boolean = false,
 ) {
     var showHintBottomSheet by remember {
         mutableStateOf(false)
@@ -212,9 +212,10 @@ fun FlipFlashCard(
                 },
                 shouldShowRestart = !isEndOfList,
                 isGetAll = isGetAll,
-                isPlaySound = isPlaySound,
-                onChangeIsPlaySound = onChangeIsPlaySound,
-                learnFrom = learnFrom
+                learnFrom = learnFrom,
+                isSwapCard = isSwapCard,
+                onSwapCard = onSwapCard,
+                studySetColor = studySetColor
             )
         }
     ) { innerPadding ->

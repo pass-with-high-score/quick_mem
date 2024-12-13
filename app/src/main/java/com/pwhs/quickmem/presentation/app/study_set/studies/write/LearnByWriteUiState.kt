@@ -28,6 +28,8 @@ data class LearnByTrueFalseUiState(
     val learnFrom: LearnFrom = LearnFrom.STUDY_SET,
     val folderId: String = "",
     val isGenerateHint: Boolean = false,
+    val isSwapCard: Boolean = false,
+    val isRandomCard: Boolean = false,
 )
 
 data class WriteQuestion(

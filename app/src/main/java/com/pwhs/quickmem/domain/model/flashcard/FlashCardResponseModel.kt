@@ -3,6 +3,7 @@ package com.pwhs.quickmem.domain.model.flashcard
 data class FlashCardResponseModel(
     val id: String,
     val term: String,
+    val termImageURL: String?,
     val definition: String,
     val definitionImageURL: String?,
     val hint: String?,

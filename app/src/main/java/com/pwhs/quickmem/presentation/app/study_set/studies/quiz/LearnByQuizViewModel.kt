@@ -59,8 +59,8 @@ class LearnByQuizViewModel @Inject constructor(
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 1
         val folderId = savedStateHandle.get<String>("folderId") ?: ""
         val learnFrom = savedStateHandle.get<LearnFrom>("learnFrom") ?: LearnFrom.STUDY_SET
-        _uiState.update {
-            it.copy(
+        _uiState.update { state ->
+            state.copy(
                 studySetId = studySetId,
                 folderId = folderId,
                 learnFrom = learnFrom,
@@ -80,7 +80,7 @@ class LearnByQuizViewModel @Inject constructor(
             }
         }
 
-        getFlashCard()
+        onRestart()
     }
 
     fun onEvent(event: LearnByQuizUiAction) {
@@ -133,6 +133,13 @@ class LearnByQuizViewModel @Inject constructor(
                     appManager.saveIsPlaySound(event.isPlaySound)
                 }
             }
+
+            is LearnByQuizUiAction.OnSwapCard -> {
+                _uiState.update {
+                    it.copy(isSwapCard = !it.isSwapCard)
+                }
+                onRestart()
+            }
         }
     }
 
@@ -143,13 +150,17 @@ class LearnByQuizViewModel @Inject constructor(
             val folderId = _uiState.value.folderId
             val learnFrom = _uiState.value.learnFrom
             val isGetAll = _uiState.value.isGetAll
+            val isSwapCard = _uiState.value.isSwapCard
+            val isRandomCard = _uiState.value.isRandomCard
             when (learnFrom) {
                 LearnFrom.STUDY_SET -> {
                     flashCardRepository.getFlashCardsByStudySetId(
                         token = token,
                         studySetId = studySetId,
                         learnMode = LearnMode.QUIZ,
-                        isGetAll = isGetAll
+                        isGetAll = isGetAll,
+                        isSwapped = isSwapCard,
+                        isRandom = isRandomCard,
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {
@@ -200,7 +211,9 @@ class LearnByQuizViewModel @Inject constructor(
                         token = token,
                         folderId = folderId,
                         learnMode = LearnMode.QUIZ,
-                        isGetAll = isGetAll
+                        isGetAll = isGetAll,
+                        isSwapped = isSwapCard,
+                        isRandom = isRandomCard,
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {

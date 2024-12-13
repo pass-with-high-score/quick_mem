@@ -127,6 +127,13 @@ class LearnByWriteViewModel @Inject constructor(
             is LearnByWriteUiAction.OnCreateHintByAI -> {
                 createHintByAI()
             }
+
+            LearnByWriteUiAction.OnSwapCard -> {
+                _uiState.update {
+                    it.copy(isSwapCard = !it.isSwapCard)
+                }
+                onRestart()
+            }
         }
     }
 
@@ -137,13 +144,17 @@ class LearnByWriteViewModel @Inject constructor(
             val folderId = _uiState.value.folderId
             val learnFrom = _uiState.value.learnFrom
             val isGetAll = _uiState.value.isGetAll
+            val isSwapCard = _uiState.value.isSwapCard
+            val isRandomCard = _uiState.value.isRandomCard
             when (learnFrom) {
                 LearnFrom.STUDY_SET -> {
                     flashCardRepository.getFlashCardsByStudySetId(
                         token = token,
                         studySetId = studySetId,
                         learnMode = LearnMode.WRITE,
-                        isGetAll = isGetAll
+                        isGetAll = isGetAll,
+                        isSwapped = isSwapCard,
+                        isRandom = isRandomCard
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {
@@ -191,7 +202,9 @@ class LearnByWriteViewModel @Inject constructor(
                         token = token,
                         folderId = folderId,
                         learnMode = LearnMode.WRITE,
-                        isGetAll = isGetAll
+                        isGetAll = isGetAll,
+                        isSwapped = isSwapCard,
+                        isRandom = isRandomCard
                     ).collect { resource ->
                         when (resource) {
                             is Resources.Error -> {

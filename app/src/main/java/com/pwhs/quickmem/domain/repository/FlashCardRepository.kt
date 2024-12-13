@@ -65,13 +65,17 @@ interface FlashCardRepository {
         token: String,
         studySetId: String,
         learnMode: LearnMode,
-        isGetAll: Boolean
+        isGetAll: Boolean,
+        isSwapped: Boolean,
+        isRandom: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>>
 
     suspend fun getFlashCardsByFolderId(
         token: String,
         folderId: String,
         learnMode: LearnMode,
-        isGetAll: Boolean
+        isGetAll: Boolean,
+        isSwapped: Boolean,
+        isRandom: Boolean
     ): Flow<Resources<List<FlashCardResponseModel>>>
 }

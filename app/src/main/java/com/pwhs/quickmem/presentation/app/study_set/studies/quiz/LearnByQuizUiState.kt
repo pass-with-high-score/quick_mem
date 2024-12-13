@@ -29,4 +29,6 @@ data class LearnFlashCardUiState(
     val randomAnswers: List<RandomAnswer> = emptyList(),
     val nextFlashCard: FlashCardResponseModel? = null,
     val currentFlashCard: FlashCardResponseModel? = null,
+    val isSwapCard: Boolean = false,
+    val isRandomCard: Boolean = false,
 )

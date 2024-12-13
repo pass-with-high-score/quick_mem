@@ -14,4 +14,5 @@ sealed class LearnByWriteUiAction {
     data object RestartLearn : LearnByWriteUiAction()
     data object OnBackClicked : LearnByWriteUiAction()
     data object OnCreateHintByAI : LearnByWriteUiAction()
+    data object OnSwapCard : LearnByWriteUiAction()
 }

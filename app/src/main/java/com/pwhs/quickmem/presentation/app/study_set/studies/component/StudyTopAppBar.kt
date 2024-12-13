@@ -1,6 +1,5 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.component
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.RestartAlt
@@ -8,15 +7,16 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
@@ -32,9 +32,10 @@ fun StudyTopAppBar(
     onRestartClicked: () -> Unit = {},
     shouldShowRestart: Boolean = true,
     isGetAll: Boolean = false,
-    isPlaySound: Boolean = false,
-    onChangeIsPlaySound: (Boolean) -> Unit = {},
-    learnFrom: LearnFrom
+    learnFrom: LearnFrom,
+    isSwapCard: Boolean = false,
+    onSwapCard: () -> Unit = {},
+    studySetColor: Color = MaterialTheme.colorScheme.primary
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -61,14 +62,12 @@ fun StudyTopAppBar(
         actions = {
             if (shouldShowRestart) {
                 IconButton(
-                    onClick = { onChangeIsPlaySound(!isPlaySound) }
+                    onClick = onSwapCard
                 ) {
                     Icon(
-                        painter = if (isPlaySound) painterResource(id = R.drawable.ic_sound) else painterResource(
-                            id = R.drawable.ic_volume_off
-                        ),
-                        contentDescription = "Sound",
-                        modifier = Modifier.size(22.dp)
+                        painter = painterResource(R.drawable.ic_swap_card),
+                        contentDescription = stringResource(R.string.txt_swap_card),
+                        tint = if (isSwapCard) studySetColor.copy(alpha = 0.5f) else studySetColor,
                     )
                 }
                 if (learnFrom != LearnFrom.FOLDER && isGetAll) {
