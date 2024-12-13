@@ -217,11 +217,11 @@ fun SearchResult(
 ) {
     var showFilterBottomSheet by remember { mutableStateOf(false) }
     val tabTitles = listOf(
-        "All Result",
-        "Study Set",
-        "Folder",
-        "Class",
-        "User"
+        stringResource(R.string.txt_all_result),
+        stringResource(R.string.txt_study_set),
+        stringResource(R.string.txt_folder),
+        stringResource(R.string.txt_class),
+        stringResource(R.string.txt_user)
     )
     Scaffold(
         containerColor = colorScheme.background,

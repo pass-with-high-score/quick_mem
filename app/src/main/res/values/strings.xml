@@ -600,4 +600,10 @@
     <string name="txt_unlimited">Unlimited</string>
     <string name="txt_add_study_set_to_class_successfully">Add study set to class successfully</string>
     <string name="txt_add_study_set_to_folder_successfully">Add study set to folder successfully</string>
+    <string name="txt_all_result">All Result</string>
+    <string name="txt_user">User</string>
+    <string name="txt_color">Color</string>
+    <string name="txt_subjects">Subjects</string>
+    <string name="txt_try_arts">Try Arts</string>
+    <string name="txt_no_subjects_found">No subjects found</string>
 </resources>

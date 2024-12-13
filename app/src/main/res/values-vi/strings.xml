@@ -597,4 +597,10 @@
     <string name="txt_unlimited">Unlimited</string>
     <string name="txt_add_study_set_to_class_successfully">Thêm bộ học vào lớp thành công</string>
     <string name="txt_add_study_set_to_folder_successfully">Thêm bộ học vào thư mục thành công</string>
+    <string name="txt_all_result">Tất cả kết quả</string>
+    <string name="txt_user">Người dùng</string>
+    <string name="txt_color">Màu sắc</string>
+    <string name="txt_subjects">Môn học</string>
+    <string name="txt_try_arts">Thử môn Nghệ thuật</string>
+    <string name="txt_no_subjects_found">Không tìm thấy môn học nào</string>
 </resources>
