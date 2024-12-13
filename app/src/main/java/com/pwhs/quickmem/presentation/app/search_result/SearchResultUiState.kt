@@ -2,8 +2,8 @@ package com.pwhs.quickmem.presentation.app.search_result
 
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultSizeEnum
 
 data class SearchResultUiState(
     val query: String = "",

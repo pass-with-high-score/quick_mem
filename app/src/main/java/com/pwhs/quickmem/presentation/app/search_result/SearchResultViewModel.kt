@@ -16,8 +16,8 @@ import com.pwhs.quickmem.domain.repository.AuthRepository
 import com.pwhs.quickmem.domain.repository.ClassRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.StudySetRepository
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultSizeEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

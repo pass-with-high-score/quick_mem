@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.search_result.study_set.enum
+package com.pwhs.quickmem.presentation.app.search_result.study_set.enums
 
 enum class SearchResultSizeEnum(val title: String, val query: String) {
     ALL(title = "All", query = "all"),

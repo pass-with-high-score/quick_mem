@@ -49,6 +49,9 @@ fun TrueFalseButton(
         border = BorderStroke(
             width = 2.dp,
             color = if (isTrue) correctColor else incorrectColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp
         )
     ) {
         Box(
@@ -71,6 +74,6 @@ fun TrueFalseButton(
 @Composable
 private fun TrueFalseButtonPreview() {
     QuickMemTheme {
-        TrueFalseButton(title = "True")
+        TrueFalseButton(title = "True", isTrue = true)
     }
 }

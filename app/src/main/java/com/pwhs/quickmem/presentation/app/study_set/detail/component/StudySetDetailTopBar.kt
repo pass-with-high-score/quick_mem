@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -90,12 +91,12 @@ fun StudySetDetailTopAppBar(
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.clickable { onNavigateToUserDetail() }
                 ) {
                     AsyncImage(
                         model = userResponse.avatarUrl,
-                        contentDescription = "User Avatar",
+                        contentDescription = stringResource(R.string.txt_user_avatar),
                         modifier = Modifier
                             .size(30.dp)
                             .clip(CircleShape)
@@ -105,12 +106,10 @@ fun StudySetDetailTopAppBar(
                         style = typography.bodyMedium.copy(
                             color = colorScheme.secondary
                         ),
-                        modifier = Modifier.padding(start = 8.dp)
                     )
                     VerticalDivider(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .size(16.dp)
+                            .height(16.dp)
                     )
                     Text(
                         when (flashCardCount) {
@@ -129,7 +128,7 @@ fun StudySetDetailTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
         ),
-        expandedHeight = if(isAIGenerated) 165.dp else 120.dp,
+        expandedHeight = if (isAIGenerated) 165.dp else 120.dp,
         collapsedHeight = 56.dp,
         navigationIcon = {
             IconButton(

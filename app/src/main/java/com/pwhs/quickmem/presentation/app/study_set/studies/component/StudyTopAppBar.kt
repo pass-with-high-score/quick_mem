@@ -76,7 +76,8 @@ fun StudyTopAppBar(
                     ) {
                         Icon(
                             imageVector = Default.RestartAlt,
-                            contentDescription = stringResource(R.string.txt_restart)
+                            contentDescription = stringResource(R.string.txt_restart),
+                            tint = studySetColor
                         )
                     }
                 }

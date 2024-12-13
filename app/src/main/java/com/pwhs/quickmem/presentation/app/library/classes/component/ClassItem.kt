@@ -79,41 +79,40 @@ fun ClassItem(
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = when (classItem?.memberCount) {
                         0 -> stringResource(R.string.txt_no_members)
                         1 -> stringResource(R.string.txt_one_member)
-                        else -> stringResource(R.string.txt_nums_members, classItem?.memberCount ?: 0)
+                        else -> stringResource(
+                            R.string.txt_nums_members,
+                            classItem?.memberCount ?: 0
+                        )
                     },
                     style = typography.bodyMedium
                 )
                 VerticalDivider(
                     modifier = Modifier
-                        .height(16.dp)
-                        .padding(horizontal = 8.dp),
+                        .height(16.dp),
                     thickness = 1.dp,
                     color = colorScheme.onSurface.copy(alpha = 0.12f)
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    AsyncImage(
-                        model = classItem?.owner?.avatarUrl,
-                        contentDescription = stringResource(R.string.txt_user_avatar),
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
+
+                AsyncImage(
+                    model = classItem?.owner?.avatarUrl,
+                    contentDescription = stringResource(R.string.txt_user_avatar),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+                if (classItem != null) {
+                    RoleUserText(
+                        username = classItem.owner.username,
+                        role = classItem.owner.role,
                     )
-                    if (classItem != null) {
-                        RoleUserText(
-                            username = classItem.owner.username,
-                            role = classItem.owner.role,
-                        )
-                    }
                 }
             }
         }

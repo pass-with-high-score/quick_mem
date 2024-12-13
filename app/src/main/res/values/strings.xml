@@ -468,7 +468,7 @@
     <string name="txt_answer_has_characters">Answer has %1$s characters</string>
     <string name="txt_hint_answer">Hint: %1$s</string>
     <string name="txt_show_more_hint">Show more hint</string>
-    <string name="txt_random_letter">Random letter:</string>
+    <string name="txt_random_character">Random character:</string>
     <string name="txt_ai_hint">AI hint</string>
     <string name="txt_click_to_icon_to_show_hint_if_you_feel_stuck">Click the icon to show hint if you feel stuck</string>
     <string name="label_google_oauth_callback">Google OAuth Callback</string>
@@ -609,4 +609,7 @@
     <string name="txt_you_have_finished">You have finished</string>
     <string name="txt_definition_image">Definition image</string>
     <string name="txt_swap_card">Swap card</string>
+    <string name="txt_select_an_answer">Select an answer:</string>
+    <string name="txt_flashcard_explanation">Explanation: %1$s</string>
+    <string name="txt_term_image">Term image</string>
 </resources>

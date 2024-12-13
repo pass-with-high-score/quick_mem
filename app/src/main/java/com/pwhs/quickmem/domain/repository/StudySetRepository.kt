@@ -16,8 +16,8 @@ import com.pwhs.quickmem.domain.model.study_set.SaveRecentAccessStudySetRequestM
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetRequestModel
 import com.pwhs.quickmem.domain.model.study_set.UpdateStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.GetTop5SubjectResponseModel
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultSizeEnum
 import kotlinx.coroutines.flow.Flow
 
 interface StudySetRepository {

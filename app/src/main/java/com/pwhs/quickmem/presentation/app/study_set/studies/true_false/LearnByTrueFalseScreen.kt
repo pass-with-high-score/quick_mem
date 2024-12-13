@@ -43,6 +43,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,7 +82,11 @@ fun LearnByTrueFalseScreen(
                 }
 
                 LearnByTrueFalseUiEvent.Finished -> {
-                    Toast.makeText(context, "Finished", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_finished),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -146,7 +151,7 @@ fun LearnByTrueFalse(
     isSwapCard: Boolean = false,
 ) {
     var isImageViewerOpen by remember { mutableStateOf(false) }
-    var definitionImageUri by remember { mutableStateOf("") }
+    var imageUri by remember { mutableStateOf("") }
     var showUnfinishedLearningBottomSheet by remember { mutableStateOf(false) }
     val unFinishedLearningBottomSheetState = rememberModalBottomSheetState()
 
@@ -195,7 +200,7 @@ fun LearnByTrueFalse(
                             ) {
                                 Icon(
                                     imageVector = Default.RestartAlt,
-                                    contentDescription = "Restart",
+                                    contentDescription = stringResource(R.string.txt_restart),
                                     tint = studySetColor
                                 )
                             }
@@ -241,7 +246,10 @@ fun LearnByTrueFalse(
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         color = studySetColor
                                     ),
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .fillMaxWidth(),
+                                    textAlign = TextAlign.Center
                                 )
                             }
                             item {
@@ -262,23 +270,50 @@ fun LearnByTrueFalse(
                                         modifier = Modifier
                                             .fillMaxSize()
                                             .padding(8.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-
                                     ) {
                                         Text(
-                                            text = randomQuestion?.term ?: "",
-                                            style = MaterialTheme.typography.titleLarge.copy(
-                                                fontSize = when (randomQuestion?.term?.length
-                                                    ?: 0) {
-                                                    in 0..10 -> 24.sp
-                                                    in 11..20 -> 20.sp
-                                                    else -> 16.sp
-                                                }
+                                            text = "${stringResource(R.string.txt_term)}:",
+                                            style = MaterialTheme.typography.titleSmall.copy(
+                                                color = MaterialTheme.colorScheme.onSurface.copy(
+                                                    alpha = 0.5f
+                                                )
                                             ),
-                                            color = studySetColor,
-                                            modifier = Modifier.padding(8.dp)
+                                            modifier = Modifier.padding(8.dp),
                                         )
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center,
+                                            modifier = Modifier.fillMaxSize()
+                                        ) {
+                                            if (randomQuestion?.termImageUrl?.isNotEmpty() == true) {
+                                                AsyncImage(
+                                                    model = randomQuestion.termImageUrl,
+                                                    contentDescription = stringResource(R.string.txt_term_image),
+                                                    contentScale = ContentScale.Crop,
+                                                    modifier = Modifier
+                                                        .size(80.dp)
+                                                        .clickable {
+                                                            isImageViewerOpen = true
+                                                            imageUri = randomQuestion.termImageUrl
+                                                        }
+                                                )
+                                            }
+                                            Text(
+                                                text = randomQuestion?.term ?: "",
+                                                style = MaterialTheme.typography.titleLarge.copy(
+                                                    fontSize = when (randomQuestion?.term?.length
+                                                        ?: 0) {
+                                                        in 0..10 -> 24.sp
+                                                        in 11..20 -> 20.sp
+                                                        else -> 16.sp
+                                                    },
+                                                    textAlign = TextAlign.Center
+                                                ),
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .fillMaxWidth(),
+                                            )
+                                        }
                                     }
                                 }
                                 Spacer(modifier = Modifier.padding(8.dp))
@@ -299,35 +334,49 @@ fun LearnByTrueFalse(
                                         modifier = Modifier
                                             .fillMaxSize()
                                             .padding(8.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
                                     ) {
-                                        if (randomQuestion?.definitionImageUrl?.isNotEmpty() == true) {
-                                            AsyncImage(
-                                                model = randomQuestion.definitionImageUrl,
-                                                contentDescription = "Definition Image",
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier
-                                                    .size(80.dp)
-                                                    .clickable {
-                                                        isImageViewerOpen = true
-                                                        definitionImageUri =
-                                                            randomQuestion.definitionImageUrl
-                                                    }
+                                        Text(
+                                            text = "${stringResource(R.string.txt_definition)}:",
+                                            style = MaterialTheme.typography.titleSmall.copy(
+                                                color = MaterialTheme.colorScheme.onSurface.copy(
+                                                    alpha = 0.5f
+                                                )
+                                            ),
+                                            modifier = Modifier.padding(8.dp),
+                                        )
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center,
+                                            modifier = Modifier.fillMaxSize()
+                                        ) {
+                                            if (randomQuestion?.definitionImageUrl?.isNotEmpty() == true) {
+                                                AsyncImage(
+                                                    model = randomQuestion.definitionImageUrl,
+                                                    contentDescription = stringResource(R.string.txt_definition_image),
+                                                    contentScale = ContentScale.Crop,
+                                                    modifier = Modifier
+                                                        .size(80.dp)
+                                                        .clickable {
+                                                            isImageViewerOpen = true
+                                                            imageUri =
+                                                                randomQuestion.definitionImageUrl
+                                                        }
+                                                )
+                                            }
+                                            Text(
+                                                text = randomQuestion?.definition ?: "",
+                                                style = MaterialTheme.typography.titleLarge.copy(
+                                                    fontSize = when (randomQuestion?.term?.length
+                                                        ?: 0) {
+                                                        in 0..10 -> 24.sp
+                                                        in 11..20 -> 20.sp
+                                                        else -> 16.sp
+                                                    },
+                                                    textAlign = TextAlign.Center
+                                                ),
+                                                modifier = Modifier.padding(8.dp),
                                             )
                                         }
-                                        Text(
-                                            text = randomQuestion?.definition ?: "",
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontSize = when (randomQuestion?.definition?.length
-                                                    ?: 0) {
-                                                    in 0..10 -> 16.sp
-                                                    in 11..20 -> 14.sp
-                                                    else -> 12.sp
-                                                }
-                                            ),
-                                            modifier = Modifier.padding(8.dp)
-                                        )
                                     }
                                 }
                             }
@@ -388,10 +437,10 @@ fun LearnByTrueFalse(
             // Image Viewer Dialog
             if (isImageViewerOpen) {
                 ShowImageDialog(
-                    definitionImageUri = definitionImageUri,
+                    definitionImageUri = imageUri,
                     onDismissRequest = {
                         isImageViewerOpen = false
-                        definitionImageUri = ""
+                        imageUri = ""
                     }
                 )
             }

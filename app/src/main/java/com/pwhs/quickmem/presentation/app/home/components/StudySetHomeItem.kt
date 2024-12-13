@@ -91,7 +91,7 @@ fun StudySetHomeItem(
                                 style = typography.bodySmall.toSpanStyle()
                                     .copy(fontWeight = FontWeight.Normal)
                             ) {
-                                append(" Flashcards")
+                                append(" ${stringResource(R.string.txt_flashcards)}")
                             }
                         }
                     }
@@ -101,7 +101,10 @@ fun StudySetHomeItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text =  stringResource(studySet?.subject?.subjectName ?: SubjectModel.defaultSubjects[0].subjectName),
+                        text = stringResource(
+                            studySet?.subject?.subjectName
+                                ?: SubjectModel.defaultSubjects[0].subjectName
+                        ),
                         style = typography.bodySmall.copy(
                             color = colorScheme.onSurface.copy(alpha = 0.6f)
                         )

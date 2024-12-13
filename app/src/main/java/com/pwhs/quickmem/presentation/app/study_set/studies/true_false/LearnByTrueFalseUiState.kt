@@ -34,6 +34,7 @@ data class LearnByTrueFalseUiState(
 data class TrueFalseQuestion(
     val id: String = "",
     val term: String = "",
+    val termImageUrl: String = "",
     val definition: String = "",
     val definitionImageUrl: String = "",
     val originalDefinition: String = "",

@@ -86,16 +86,25 @@ fun StudySetDonutChart(
                 val strokeWidth = 45f
 
                 var startAngle = -90f
-                animatedPercentage.forEachIndexed { index, percentage ->
-                    val sweepAngle = percentage * 360f
-                    drawArc(
-                        color = colors[index],
-                        startAngle = startAngle,
-                        sweepAngle = sweepAngle,
-                        useCenter = false,
-                        style = Stroke(width = strokeWidth)
+                if (total > 0) {
+                    animatedPercentage.forEachIndexed { index, percentage ->
+                        val sweepAngle = percentage * 360f
+                        drawArc(
+                            color = colors[index],
+                            startAngle = startAngle,
+                            sweepAngle = sweepAngle,
+                            useCenter = false,
+                            style = Stroke(width = strokeWidth)
+                        )
+                        startAngle += sweepAngle
+                    }
+                } else {
+                    drawCircle(
+                        color = color,
+                        radius = radius - strokeWidth / 2,
+                        center = center,
+                        style = Stroke(width = strokeWidth),
                     )
-                    startAngle += sweepAngle
                 }
 
                 drawOval(

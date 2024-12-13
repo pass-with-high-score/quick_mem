@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.presentation.component.ShowImageDialog
 
 @Composable
 fun calculateDynamicFontSize(text: String): androidx.compose.ui.unit.TextUnit {
@@ -52,6 +54,8 @@ fun StudySetFlipCard(
 
     var isFlipped by remember { mutableStateOf(false) }
     var isAnimationFinished by remember { mutableStateOf(true) }
+    var isImageViewerOpen by remember { mutableStateOf(false) }
+    var questionImageUri by remember { mutableStateOf("") }
 
     val frontTextSize = calculateDynamicFontSize(frontText)
     val backTextSize = calculateDynamicFontSize(backText)
@@ -105,10 +109,12 @@ fun StudySetFlipCard(
             ) {
                 Text(
                     text = frontText,
-                    fontSize = frontTextSize,
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.onBackground,
-                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = backTextSize,
+                        color = colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                    ),
                     maxLines = 10,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -127,10 +133,14 @@ fun StudySetFlipCard(
                 if (backText.isNotEmpty()) {
                     Text(
                         text = backText,
-                        fontSize = backTextSize,
-                        fontWeight = FontWeight.Normal,
-                        color = colorScheme.onBackground,
-                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = frontTextSize,
+                            color = colorScheme.onBackground,
+                            textAlign = when {
+                                backImage != null -> TextAlign.Start
+                                else -> TextAlign.Center
+                            }
+                        ),
                         maxLines = 10,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
@@ -144,12 +154,26 @@ fun StudySetFlipCard(
                             modifier = Modifier
                                 .width(100.dp)
                                 .height(100.dp)
-                                .padding(8.dp),
+                                .padding(8.dp)
+                                .clickable {
+                                    isImageViewerOpen = true
+                                    questionImageUri = it
+                                },
                             contentScale = ContentScale.Crop
                         )
                     }
                 }
             }
         }
+    }
+
+    if (isImageViewerOpen) {
+        ShowImageDialog(
+            definitionImageUri = questionImageUri,
+            onDismissRequest = {
+                isImageViewerOpen = false
+                questionImageUri = ""
+            }
+        )
     }
 }

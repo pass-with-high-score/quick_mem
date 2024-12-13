@@ -108,29 +108,22 @@ fun FolderItem(
                     )
                     VerticalDivider(
                         modifier = Modifier
-                            .height(16.dp)
-                            .padding(horizontal = 8.dp),
-                        thickness = 1.dp,
+                            .height(16.dp),
                         color = colorScheme.onSurface.copy(alpha = 0.12f)
                     )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        AsyncImage(
-                            model = userResponseModel.avatarUrl,
-                            contentDescription = stringResource(R.string.txt_user_avatar),
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clip(CircleShape)
-                                .background(colorScheme.primary.copy(alpha = 0.1f)),
-                            contentScale = ContentScale.Crop
-                        )
-                        RoleUserText(
-                            username = userResponseModel.username,
-                            role = userResponseModel.role,
-                        )
-                    }
+                    AsyncImage(
+                        model = userResponseModel.avatarUrl,
+                        contentDescription = stringResource(R.string.txt_user_avatar),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(colorScheme.primary.copy(alpha = 0.1f)),
+                        contentScale = ContentScale.Crop
+                    )
+                    RoleUserText(
+                        username = userResponseModel.username,
+                        role = userResponseModel.role,
+                    )
                 }
             }
 

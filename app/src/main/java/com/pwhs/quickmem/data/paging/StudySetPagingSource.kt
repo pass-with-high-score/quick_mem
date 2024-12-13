@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.pwhs.quickmem.domain.datasource.StudySetRemoteDataSource
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultSizeEnum
 import retrofit2.HttpException
 import java.io.IOException
 

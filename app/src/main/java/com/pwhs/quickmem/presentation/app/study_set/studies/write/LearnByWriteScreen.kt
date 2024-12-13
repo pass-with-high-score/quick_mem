@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -239,6 +240,17 @@ fun LearnByWrite(
                                 contentDescription = stringResource(R.string.txt_swap_card),
                                 tint = if (isSwapCard) studySetColor.copy(alpha = 0.5f) else studySetColor,
                             )
+                        }
+                        if (isGetAll) {
+                            IconButton(
+                                onClick = onRestart
+                            ) {
+                                Icon(
+                                    imageVector = Default.RestartAlt,
+                                    contentDescription = stringResource(R.string.txt_restart),
+                                    tint = studySetColor
+                                )
+                            }
                         }
                         IconButton(
                             onClick = {
@@ -578,10 +590,12 @@ fun LearnByWrite(
                         }
 
                         item {
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            )
+                            if (!isGenerateHint) {
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                )
+                            }
                             if (isGenerateHint) {
                                 LinearProgressIndicator(
                                     color = studySetColor,
@@ -647,7 +661,7 @@ fun LearnByWrite(
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
-                                text = stringResource(R.string.txt_random_letter),
+                                text = stringResource(R.string.txt_random_character),
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 ),

@@ -347,7 +347,7 @@ class LearnByQuizViewModel @Inject constructor(
                 RandomAnswer(
                     answer = it.definition,
                     isCorrect = false,
-                    imageURL = it.definitionImageURL ?: ""
+                    answerImage = it.definitionImageURL ?: ""
                 )
             }
             .toMutableList()
@@ -356,7 +356,7 @@ class LearnByQuizViewModel @Inject constructor(
             RandomAnswer(
                 answer = currentCard.definition,
                 isCorrect = true,
-                imageURL = currentCard.definitionImageURL ?: ""
+                answerImage = currentCard.definitionImageURL ?: ""
             )
         )
         return answers.shuffled()

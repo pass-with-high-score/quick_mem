@@ -1,7 +1,12 @@
 package com.pwhs.quickmem.presentation.app.search_result.study_set.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,8 +21,8 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.presentation.app.search_result.component.TopBarSearch
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultSizeEnum
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetColorInput
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetSubjectBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetSubjectInput
@@ -48,100 +53,99 @@ fun FilterStudySetBottomSheet(
         stringResource(it.subjectName).contains(searchSubjectQuery, ignoreCase = true)
     }
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding()
-            .padding(16.dp)
-    ) {
-        item {
+    Scaffold(
+        topBar = {
             TopBarSearch(
                 title = stringResource(R.string.txt_filters),
                 onNavigateBack = onNavigateBack,
                 onResetClick = onResetClick
             )
         }
-
-        item { Spacer(modifier = Modifier.height(16.dp)) }
-
-        item {
-            FilterSection(
-                title = stringResource(R.string.txt_number_of_terms),
-                options = SearchResultSizeEnum.entries.map { it.title },
-                selectedOption = sizeModel.title,
-                onOptionSelected = { selectedContent ->
-                    val selectedSize =
-                        SearchResultSizeEnum.entries.first { it.title == selectedContent }
-                    onSizeChange(selectedSize)
-                }
-            )
-        }
-
-        item {
-            FilterSection(
-                title = stringResource(R.string.txt_created_by),
-                options = SearchResultCreatorEnum.entries.map { it.title },
-                selectedOption = creatorTypeModel.title,
-                onOptionSelected = {
-                    val selectedCreator =
-                        SearchResultCreatorEnum.entries.first { entry -> entry.title == it }
-                    onCreatorChange(selectedCreator)
-                }
-            )
-        }
-
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(R.string.txt_ai_generated),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Switch(
-                    checked = isAiGenerated,
-                    onCheckedChange = { onIsAiGeneratedChange(it) },
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+            item {
+                FilterSection(
+                    title = stringResource(R.string.txt_number_of_terms),
+                    options = SearchResultSizeEnum.entries.map { it.title },
+                    selectedOption = sizeModel.title,
+                    onOptionSelected = { selectedContent ->
+                        val selectedSize =
+                            SearchResultSizeEnum.entries.first { it.title == selectedContent }
+                        onSizeChange(selectedSize)
+                    }
                 )
             }
-        }
 
-        item {
-            StudySetSubjectInput(
-                subjectModel = subjectModel,
-                onShowBottomSheet = {
-                    showBottomSheetCreate = true
-                }
-            )
-        }
-        item {
-            StudySetColorInput(
-                colorModel = colorModel,
-                onColorChange = onColorChange
-            )
-        }
-
-        item { Spacer(modifier = Modifier.height(8.dp)) }
-
-        item {
-            Button(
-                onClick = onApplyClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-                    .height(50.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.txt_apply),
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+            item {
+                FilterSection(
+                    title = stringResource(R.string.txt_created_by),
+                    options = SearchResultCreatorEnum.entries.map { it.title },
+                    selectedOption = creatorTypeModel.title,
+                    onOptionSelected = {
+                        val selectedCreator =
+                            SearchResultCreatorEnum.entries.first { entry -> entry.title == it }
+                        onCreatorChange(selectedCreator)
+                    }
                 )
+            }
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(R.string.txt_ai_generated),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Switch(
+                        checked = isAiGenerated,
+                        onCheckedChange = { onIsAiGeneratedChange(it) },
+                    )
+                }
+            }
+
+            item {
+                StudySetSubjectInput(
+                    subjectModel = subjectModel,
+                    onShowBottomSheet = {
+                        showBottomSheetCreate = true
+                    }
+                )
+            }
+            item {
+                StudySetColorInput(
+                    colorModel = colorModel,
+                    onColorChange = onColorChange
+                )
+            }
+
+            item { Spacer(modifier = Modifier.height(8.dp)) }
+
+            item {
+                Button(
+                    onClick = onApplyClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                        .height(50.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.txt_apply),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

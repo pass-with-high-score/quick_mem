@@ -1,7 +1,10 @@
 package com.pwhs.quickmem.presentation.app.study_set.studies.quiz
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -159,6 +162,14 @@ fun LearnByQuiz(
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     var debounceJob: Job? = null
+    var isButtonVisible by remember { mutableStateOf(true) }
+
+    LaunchedEffect(currentCardIndex) {
+        isButtonVisible = false
+        delay(1500)
+        isButtonVisible = true
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -205,8 +216,8 @@ fun LearnByQuiz(
                                 }
                             ) {
                                 Icon(
-                                    imageVector = Default.LightMode,
-                                    contentDescription = "Hint",
+                                    imageVector = Default.Lightbulb,
+                                    contentDescription = stringResource(R.string.txt_hint),
                                     tint = studySetColor
                                 )
                             }
@@ -217,7 +228,7 @@ fun LearnByQuiz(
                             ) {
                                 Icon(
                                     imageVector = Default.RestartAlt,
-                                    contentDescription = "Restart",
+                                    contentDescription = stringResource(R.string.txt_restart),
                                     tint = studySetColor
                                 )
                             }
@@ -227,7 +238,11 @@ fun LearnByQuiz(
             )
         },
         floatingActionButton = {
-            if (!isEndOfList) {
+            AnimatedVisibility(
+                visible = !isEndOfList && isButtonVisible,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 FloatingActionButton(
                     onClick = {
                         debounceJob?.cancel()
@@ -245,9 +260,10 @@ fun LearnByQuiz(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.NavigateNext,
-                        contentDescription = "Next Flash Card"
+                        contentDescription = stringResource(R.string.txt_next),
                     )
                 }
+
             }
         }
     ) { innerPadding ->

@@ -4,8 +4,8 @@ import com.pwhs.quickmem.data.mapper.study_set.toModel
 import com.pwhs.quickmem.data.remote.ApiService
 import com.pwhs.quickmem.domain.datasource.StudySetRemoteDataSource
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultSizeEnum
 import timber.log.Timber
 
 class StudySetRemoteDataSourceImpl(

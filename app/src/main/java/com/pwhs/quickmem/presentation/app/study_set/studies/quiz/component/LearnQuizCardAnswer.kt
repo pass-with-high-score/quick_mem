@@ -46,7 +46,11 @@ fun LearnQuizCardAnswer(
         modifier = modifier.fillMaxWidth(),
         enabled = !isSelected,
         border = BorderStroke(
-            width = if (isCorrect || isIncorrect) 2.dp else 0.dp,
+            width = when {
+                isCorrect -> 2.dp
+                isIncorrect -> 2.dp
+                else -> 0.5.dp
+            },
             color = when {
                 isCorrect -> correctColor
                 isIncorrect -> incorrectColor
@@ -92,13 +96,13 @@ fun LearnQuizCardAnswer(
                     else -> MaterialTheme.colorScheme.onSurface
                 }
             )
-            if (randomAnswer.imageURL.isNotEmpty()) {
+            if (randomAnswer.answerImage.isNotEmpty()) {
                 AsyncImage(
-                    model = randomAnswer.imageURL,
+                    model = randomAnswer.answerImage,
                     contentDescription = null,
                     modifier = Modifier.clickable {
                         isImageViewerOpen = true
-                        definitionImageUri = randomAnswer.imageURL
+                        definitionImageUri = randomAnswer.answerImage
                     }
                 )
             }

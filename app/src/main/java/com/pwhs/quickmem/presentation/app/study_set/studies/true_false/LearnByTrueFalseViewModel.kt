@@ -58,8 +58,8 @@ class LearnByTrueFalseViewModel @Inject constructor(
         val studySetSubjectId = savedStateHandle.get<Int>("studySetSubjectId") ?: 1
         val folderId = savedStateHandle.get<String>("folderId") ?: ""
         val learnFrom = savedStateHandle.get<LearnFrom>("learnFrom") ?: LearnFrom.STUDY_SET
-        _uiState.update {
-            it.copy(
+        _uiState.update { state ->
+            state.copy(
                 folderId = folderId,
                 learnFrom = learnFrom,
                 studySetId = studySetId,
@@ -338,10 +338,10 @@ class LearnByTrueFalseViewModel @Inject constructor(
         val filteredFlashCards = flashCards.filter { it.id != currentCard.id }
 
         if (filteredFlashCards.isEmpty()) {
-            // Handle the case where there are no other flashcards to choose from
             return TrueFalseQuestion(
                 id = currentCard.id,
                 term = currentCard.term,
+                termImageUrl = currentCard.termImageURL ?: "",
                 definition = currentCard.definition,
                 definitionImageUrl = currentCard.definitionImageURL ?: "",
                 isRandom = false,
@@ -351,13 +351,11 @@ class LearnByTrueFalseViewModel @Inject constructor(
         }
 
         val randomFlashCard = filteredFlashCards.random()
-        Timber.d("Random: $random")
-        Timber.d("Definition: ${randomFlashCard.definition}")
-        Timber.d("Definition Image Url: ${randomFlashCard.definitionImageURL}")
 
         return TrueFalseQuestion(
             id = currentCard.id,
             term = currentCard.term,
+            termImageUrl = currentCard.termImageURL ?: "",
             definition = if (random) randomFlashCard.definition else currentCard.definition,
             definitionImageUrl = if (random) randomFlashCard.definitionImageURL
                 ?: "" else currentCard.definitionImageURL ?: "",

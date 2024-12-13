@@ -206,10 +206,21 @@ class FlipFlashCardViewModel @Inject constructor(
             }
 
             is FlipFlashCardUiAction.OnSwapCard -> {
+                // reset other status
                 _uiState.update {
-                    it.copy(isSwapCard = !it.isSwapCard)
+                    it.copy(
+                        isSwapCard = !it.isSwapCard,
+                        isRandomCard = false,
+                        isEndOfList = false,
+                        countKnown = 0,
+                        countStillLearning = 0,
+                        currentCardIndex = 0,
+                        startTime = System.currentTimeMillis(),
+                        flashCardList = emptyList()
+                    )
                 }
-                restartStudySet()
+
+                getFlashCard()
             }
         }
     }
@@ -339,90 +350,91 @@ class FlipFlashCardViewModel @Inject constructor(
         val learnFrom = _uiState.value.learnFrom
         when (learnFrom) {
             LearnFrom.STUDY_SET -> {
+
                 viewModelScope.launch {
                     val token = tokenManager.accessToken.firstOrNull() ?: ""
                     studySetRepository.resetProgress(
                         token = token,
                         studySetId = _uiState.value.studySetId,
                         resetType = ResetType.FLIP_STATUS.type
-                    )
-                        .collect { resource ->
-                            when (resource) {
-                                is Resources.Error -> {
-                                    _uiState.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            isEndOfList = true,
-                                            learningTime = 0,
-                                        )
-                                    }
-                                }
-
-                                is Resources.Loading -> {
-                                    _uiState.update { it.copy(isLoading = true) }
-                                }
-
-                                is Resources.Success -> {
-                                    _uiState.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            isEndOfList = false,
-                                            countKnown = 0,
-                                            countStillLearning = 0,
-                                            currentCardIndex = 0,
-                                            startTime = System.currentTimeMillis(),
-                                            flashCardList = emptyList()
-                                        )
-                                    }
-                                    getFlashCard()
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isEndOfList = true,
+                                        learningTime = 0,
+                                    )
                                 }
                             }
+
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
+
+                            is Resources.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isEndOfList = false,
+                                        countKnown = 0,
+                                        countStillLearning = 0,
+                                        currentCardIndex = 0,
+                                        startTime = System.currentTimeMillis(),
+                                        flashCardList = emptyList()
+                                    )
+                                }
+                                getFlashCard()
+                            }
                         }
+                    }
                 }
             }
 
             LearnFrom.FOLDER -> {
+
                 viewModelScope.launch {
                     val token = tokenManager.accessToken.firstOrNull() ?: ""
                     folderRepository.resetProgress(
                         token = token,
                         folderId = _uiState.value.folderId,
                         resetType = ResetType.FLIP_STATUS.type
-                    )
-                        .collect { resource ->
-                            when (resource) {
-                                is Resources.Error -> {
-                                    _uiState.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            isEndOfList = true,
-                                            learningTime = 0,
-                                        )
-                                    }
-                                }
-
-                                is Resources.Loading -> {
-                                    _uiState.update { it.copy(isLoading = true) }
-                                }
-
-                                is Resources.Success -> {
-                                    _uiState.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            isEndOfList = false,
-                                            countKnown = 0,
-                                            countStillLearning = 0,
-                                            currentCardIndex = 0,
-                                            startTime = System.currentTimeMillis(),
-                                            flashCardList = emptyList()
-                                        )
-                                    }
-                                    getFlashCard()
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isEndOfList = true,
+                                        learningTime = 0,
+                                    )
                                 }
                             }
+
+                            is Resources.Loading -> {
+                                _uiState.update { it.copy(isLoading = true) }
+                            }
+
+                            is Resources.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isEndOfList = false,
+                                        countKnown = 0,
+                                        countStillLearning = 0,
+                                        currentCardIndex = 0,
+                                        startTime = System.currentTimeMillis(),
+                                        flashCardList = emptyList()
+                                    )
+                                }
+                                getFlashCard()
+                            }
                         }
+                    }
                 }
             }
+
 
             LearnFrom.CLASS -> TODO()
         }

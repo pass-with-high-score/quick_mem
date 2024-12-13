@@ -46,8 +46,8 @@ import com.pwhs.quickmem.presentation.app.search_result.component.TopBarSearchRe
 import com.pwhs.quickmem.presentation.app.search_result.folder.ListResultFolderScreen
 import com.pwhs.quickmem.presentation.app.search_result.study_set.ListResultStudySetScreen
 import com.pwhs.quickmem.presentation.app.search_result.study_set.component.FilterStudySetBottomSheet
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultCreatorEnum
-import com.pwhs.quickmem.presentation.app.search_result.study_set.enum.SearchResultSizeEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultCreatorEnum
+import com.pwhs.quickmem.presentation.app.search_result.study_set.enums.SearchResultSizeEnum
 import com.pwhs.quickmem.presentation.app.search_result.user.ListResultUserScreen
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme

@@ -104,6 +104,7 @@ fun FlipFlashCardFinish(
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
                 )
             }

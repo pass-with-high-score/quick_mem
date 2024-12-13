@@ -94,7 +94,7 @@ fun StudySetItem(
                                 style = typography.bodySmall.toSpanStyle()
                                     .copy(fontWeight = FontWeight.Normal)
                             ) {
-                                append(" Flashcards")
+                                append(" ${stringResource(R.string.txt_flashcards)}")
                             }
                         }
                     }
