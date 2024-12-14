@@ -609,4 +609,5 @@
     <string name="txt_select_an_answer">Chọn đáp án đúng:</string>
     <string name="txt_flashcard_explanation">Giải thích: %1$s</string>
     <string name="txt_term_image">Ảnh thuật ngữ</string>
+    <string name="txt_no_users_found">Không tìm thấy người dùng nào</string>
 </resources>

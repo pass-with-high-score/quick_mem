@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +40,7 @@ import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
 import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
+import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.search_result.all_result.ListAllResultScreen
 import com.pwhs.quickmem.presentation.app.search_result.classes.ListResultClassesScreen
 import com.pwhs.quickmem.presentation.app.search_result.component.SearchResultEnum
@@ -240,11 +242,12 @@ fun SearchResult(
         }
     ) { innerPadding ->
 
-        Box {
+        Box(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(innerPadding)
             ) {
                 ScrollableTabRow(
                     selectedTabIndex = tabIndex,
@@ -314,6 +317,11 @@ fun SearchResult(
                     )
                 }
             }
+            BannerAds(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+            )
             LoadingOverlay(
                 isLoading = isLoading
             )
