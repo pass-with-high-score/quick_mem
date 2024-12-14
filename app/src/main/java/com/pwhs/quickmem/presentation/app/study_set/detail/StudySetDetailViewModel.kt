@@ -20,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -186,22 +187,7 @@ class StudySetDetailViewModel @Inject constructor(
             studySetRepository.saveRecentAccessStudySet(
                 token,
                 saveRecentAccessStudySetRequestModel
-            )
-                .collect { resource ->
-                    when (resource) {
-                        is Resources.Loading -> {
-                            Timber.d("Loading")
-                        }
-
-                        is Resources.Success -> {
-                            Timber.d("Success")
-                        }
-
-                        is Resources.Error -> {
-                            Timber.d("Error")
-                        }
-                    }
-                }
+            ).collect()
         }
     }
 

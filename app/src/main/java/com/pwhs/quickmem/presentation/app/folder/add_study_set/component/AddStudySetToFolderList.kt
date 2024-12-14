@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.folder.add_study_set.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -70,14 +71,14 @@ fun AddStudySetToFolderList(
                 ) {
                     AsyncImage(
                         model = avatarUrl,
-                        contentDescription = "User avatar",
+                        contentDescription = stringResource(id = R.string.txt_user_avatar),
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = "Hello, $username",
+                        text = stringResource(R.string.txt_hello, username),
                         style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp
@@ -128,7 +129,7 @@ fun AddStudySetToFolderList(
                             }
                         }
                     }
-                    items(items = filterStudySets, key = {it.id}) { studySet ->
+                    items(items = filterStudySets, key = { it.id }) { studySet ->
                         AddStudySetToFolderItem(
                             studySet = studySet,
                             onAddStudySetToFolder = {
@@ -136,6 +137,9 @@ fun AddStudySetToFolderList(
                             },
                             isAdded = studySetImportedIds.contains(studySet.id)
                         )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.padding(60.dp))
                     }
                 }
             }
@@ -177,7 +181,7 @@ private fun AddStudySetToFolderListPreview() {
 }
 
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun AddStudySetToFolderListPreviewEmpty() {
     QuickMemTheme {

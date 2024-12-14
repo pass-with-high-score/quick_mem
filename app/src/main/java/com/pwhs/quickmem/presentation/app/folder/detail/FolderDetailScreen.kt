@@ -4,6 +4,7 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -37,6 +38,7 @@ import com.pwhs.quickmem.core.data.enums.LearnFrom
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.utils.AppConstant
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
+import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailStudySetList
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderDetailTopAppBar
 import com.pwhs.quickmem.presentation.app.folder.detail.component.FolderMenuBottomSheet
@@ -130,8 +132,7 @@ fun FolderDetailScreen(
                 }
 
                 is FolderDetailUiEvent.ShowError -> {
-                    Timber.d("ShowError: ${event.message}")
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT).show()
                 }
 
                 FolderDetailUiEvent.FolderDeleted -> {
@@ -334,7 +335,7 @@ fun FolderDetail(
             ) {
                 FolderDetailStudySetList(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(horizontal = 16.dp),
                     studySets = studySets,
                     onStudySetClick = onStudySetClick,
@@ -342,6 +343,11 @@ fun FolderDetail(
                     isOwner = isOwner
                 )
             }
+            BannerAds(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+            )
             LoadingOverlay(
                 isLoading = isLoading
             )

@@ -118,7 +118,7 @@ fun ProgressTabScreen(
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun PressTabScreen() {
     MaterialTheme {

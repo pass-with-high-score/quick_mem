@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -48,7 +48,6 @@ fun FolderDetailStudySetList(
                     horizontalAlignment = CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(top = 100.dp)
                 ) {
                     Text(
@@ -65,13 +64,13 @@ fun FolderDetailStudySetList(
                             onClick = onAddFlashCardClick
                         ) {
                             Row(
-                                verticalAlignment = CenterVertically
+                                verticalAlignment = CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 Icon(
                                     Icons.Filled.Add,
                                     contentDescription = stringResource(R.string.txt_add_folders),
                                     tint = colorScheme.background,
-                                    modifier = Modifier.padding(end = 8.dp)
                                 )
                                 Text(
                                     text = stringResource(R.string.txt_add_study_set),
@@ -95,6 +94,9 @@ fun FolderDetailStudySetList(
                             studySet = studySet,
                             onStudySetClick = { onStudySetClick(studySet.id) }
                         )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.padding(60.dp))
                     }
                 }
             }

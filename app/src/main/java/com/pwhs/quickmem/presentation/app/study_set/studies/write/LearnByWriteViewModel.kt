@@ -246,7 +246,9 @@ class LearnByWriteViewModel @Inject constructor(
                     }
                 }
 
-                LearnFrom.CLASS -> TODO()
+                LearnFrom.CLASS -> {
+                    // TODO: get flash card by class
+                }
             }
         }
     }

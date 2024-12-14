@@ -19,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -412,21 +413,7 @@ class ClassDetailViewModel @Inject constructor(
             val saveRecentAccessClassRequestModel =
                 SaveRecentAccessClassRequestModel(userId, classId)
             classRepository.saveRecentAccessClass(token, saveRecentAccessClassRequestModel)
-                .collectLatest { resource ->
-                    when (resource) {
-                        is Resources.Loading -> {
-                            Timber.d("Loading")
-                        }
-
-                        is Resources.Success -> {
-                            Timber.d("Success")
-                        }
-
-                        is Resources.Error -> {
-                            Timber.d("Error")
-                        }
-                    }
-                }
+                .collect()
         }
     }
 
@@ -501,7 +488,6 @@ class ClassDetailViewModel @Inject constructor(
                                 R.string.txt_error_occurred
                             )
                         )
-                        Timber.d("Error")
                     }
                 }
             }

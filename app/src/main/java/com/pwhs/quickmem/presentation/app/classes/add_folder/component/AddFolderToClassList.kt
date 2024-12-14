@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
-import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -74,7 +73,7 @@ fun AddFolderToClassList(
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = "Hello, $username",
+                        text = stringResource(R.string.txt_hello, username),
                         style = typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp
@@ -132,11 +131,6 @@ fun AddFolderToClassList(
                                 )
                             }
                         }
-                    }
-                    item {
-                        BannerAds(
-                            modifier = Modifier.padding(8.dp)
-                        )
                     }
                     item {
                         Spacer(modifier = Modifier.padding(60.dp))

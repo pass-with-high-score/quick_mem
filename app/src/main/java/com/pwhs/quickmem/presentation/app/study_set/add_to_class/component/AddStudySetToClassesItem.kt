@@ -78,7 +78,7 @@ fun AddStudySetToClassesItem(
                 ) {
                     Icon(
                         imageVector = Outlined.Groups,
-                        contentDescription = "Class Icon"
+                        contentDescription = stringResource(R.string.txt_class_icon),
                     )
                     Text(
                         text = classItem.title,
@@ -111,7 +111,7 @@ fun AddStudySetToClassesItem(
                     ) {
                         AsyncImage(
                             model = classItem.owner.avatarUrl,
-                            contentDescription = "User Avatar",
+                            contentDescription = stringResource(R.string.txt_avatar),
                             modifier = Modifier
                                 .size(24.dp)
                                 .clip(CircleShape),
@@ -138,7 +138,7 @@ fun AddStudySetToClassesItem(
             ) {
                 Icon(
                     painter = painterResource(if (isAdded) R.drawable.ic_check_circle else R.drawable.ic_add_circle),
-                    contentDescription = if (isAdded) "Check Icon" else "Add Icon",
+                    contentDescription = stringResource(R.string.txt_create_a_class),
                     modifier = Modifier.size(26.dp),
                     tint = colorScheme.onSurface
                 )

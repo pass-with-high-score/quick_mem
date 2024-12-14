@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
@@ -25,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -219,7 +221,7 @@ class HomeViewModel @Inject constructor(
                     is Resources.Error -> _uiState.update {
                         it.copy(
                             isLoading = false,
-                            error = result.message ?: "Failed to load notifications"
+                            error = R.string.txt_failed_to_load_notifications
                         )
                     }
                 }
@@ -243,7 +245,7 @@ class HomeViewModel @Inject constructor(
 
                     is Resources.Error -> {
                         _uiState.update {
-                            it.copy(error = result.message ?: "Failed to mark notification as read")
+                            it.copy(error = R.string.txt_failed_to_mark_notification_as_read)
                         }
                     }
 
@@ -389,21 +391,7 @@ class HomeViewModel @Inject constructor(
             firebaseRepository.sendDeviceToken(
                 accessToken = accessToken,
                 deviceTokenRequest = deviceTokenRequest
-            ).collect { resource ->
-                when (resource) {
-                    is Resources.Loading -> {
-                        // do nothing
-                    }
-
-                    is Resources.Success -> {
-                        // do nothing
-                    }
-
-                    is Resources.Error -> {
-                        // do nothing
-                    }
-                }
-            }
+            ).collect()
         }
     }
 }

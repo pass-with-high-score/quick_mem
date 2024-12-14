@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
-import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.library.component.SearchTextField
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
@@ -87,7 +86,7 @@ fun AddStudySetToClassesList(
                         if (isOwner) {
                             Icon(
                                 imageVector = Icons.Outlined.GroupAdd,
-                                contentDescription = "Folder",
+                                contentDescription = stringResource(R.string.txt_group_study_materials_to_save_time_and_share_with_other_quickmem_members),
                                 modifier = Modifier.size(60.dp),
                                 tint = colorScheme.primary
                             )
@@ -160,11 +159,6 @@ fun AddStudySetToClassesList(
                                     )
                                 }
                             }
-                        }
-                        item {
-                            BannerAds(
-                                modifier = Modifier.padding(8.dp)
-                            )
                         }
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))

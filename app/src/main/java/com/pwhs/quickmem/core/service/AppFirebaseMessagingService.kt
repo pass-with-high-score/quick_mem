@@ -66,7 +66,8 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             .let { Timber.d("Message data payload: ${remoteMessage.data}") }
         CoroutineScope(Dispatchers.IO).launch {
             val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
-            if (isPushNotificationsEnabled) {
+            val isLogged = appManager.isLoggedIn.firstOrNull() ?: false
+            if (isPushNotificationsEnabled && isLogged) {
                 remoteMessage.notification?.let {
                     showNotification(it.title, it.body, remoteMessage.data)
                 }

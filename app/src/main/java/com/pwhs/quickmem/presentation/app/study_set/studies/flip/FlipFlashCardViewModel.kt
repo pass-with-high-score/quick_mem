@@ -317,7 +317,9 @@ class FlipFlashCardViewModel @Inject constructor(
                     }
                 }
 
-                LearnFrom.CLASS -> TODO()
+                LearnFrom.CLASS -> {
+                    // TODO(): Implement this
+                }
             }
         }
     }
@@ -331,18 +333,7 @@ class FlipFlashCardViewModel @Inject constructor(
             val flipStatus =
                 if (isRight) FlipCardStatus.KNOW.name else FlipCardStatus.STILL_LEARNING.name
             flashCardRepository.updateFlipFlashCard(token, flashCardId, flipStatus)
-                .collect { resource ->
-                    when (resource) {
-                        is Resources.Error -> {
-                        }
-
-                        is Resources.Loading -> {
-                        }
-
-                        is Resources.Success -> {
-                        }
-                    }
-                }
+                .collect()
         }
     }
 
@@ -436,7 +427,9 @@ class FlipFlashCardViewModel @Inject constructor(
             }
 
 
-            LearnFrom.CLASS -> TODO()
+            LearnFrom.CLASS -> {
+                // TODO(): Implement this
+            }
         }
     }
 
@@ -470,7 +463,9 @@ class FlipFlashCardViewModel @Inject constructor(
                 // TODO(): Implement this
             }
 
-            LearnFrom.CLASS -> TODO()
+            LearnFrom.CLASS -> {
+                // TODO(): Implement this
+            }
         }
     }
 }

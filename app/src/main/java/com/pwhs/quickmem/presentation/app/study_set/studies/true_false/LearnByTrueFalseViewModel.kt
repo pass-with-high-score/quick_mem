@@ -252,7 +252,9 @@ class LearnByTrueFalseViewModel @Inject constructor(
                     }
                 }
 
-                LearnFrom.CLASS -> TODO()
+                LearnFrom.CLASS -> {
+                    // TODO: get flash cards by class
+                }
             }
         }
     }

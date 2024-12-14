@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.folder.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.enums.LearnMode
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -15,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -54,7 +56,7 @@ class FolderDetailViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = true) }
                     deleteFolder()
                 } else {
-                    _uiEvent.trySend(ShowError("You can't delete this folder"))
+                    _uiEvent.trySend(ShowError(R.string.txt_you_can_t_delete_this_folder))
                 }
             }
 
@@ -62,7 +64,7 @@ class FolderDetailViewModel @Inject constructor(
                 if (_uiState.value.isOwner) {
                     _uiEvent.trySend(NavigateToEditFolder)
                 } else {
-                    _uiEvent.trySend(ShowError("You can't edit this folder"))
+                    _uiEvent.trySend(ShowError(R.string.txt_you_can_t_edit_this_folder))
                 }
             }
 
@@ -104,7 +106,8 @@ class FolderDetailViewModel @Inject constructor(
                     is Resources.Success -> {
                         resource.data?.let { data ->
                             val isOwner = appManager.userId.firstOrNull() == data.owner.id
-                            val totalFlashCards = calculateTotalFlashCards(data.studySets ?: emptyList())
+                            val totalFlashCards =
+                                calculateTotalFlashCards(data.studySets ?: emptyList())
                             _uiState.update {
                                 it.copy(
                                     title = data.title,
@@ -122,7 +125,7 @@ class FolderDetailViewModel @Inject constructor(
                                 )
                             }
                         } ?: run {
-                            _uiEvent.send(ShowError("Folder not found"))
+                            _uiEvent.send(ShowError(R.string.txt_folder_not_found))
                         }
                         Timber.d("")
                     }
@@ -139,19 +142,17 @@ class FolderDetailViewModel @Inject constructor(
     private fun deleteFolder() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: run {
-                _uiEvent.send(ShowError("Please login again!"))
+                _uiEvent.send(ShowError(R.string.txt_please_login_again))
                 return@launch
             }
             folderRepository.deleteFolder(token, _uiState.value.id).collectLatest { resource ->
                 when (resource) {
                     is Resources.Loading -> {
-                        Timber.d("Loading")
                         _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
                         resource.data?.let {
-                            Timber.d("Folder deleted")
                             _uiState.update { it.copy(isLoading = false) }
                             _uiEvent.send(FolderDeleted)
                         }
@@ -177,21 +178,7 @@ class FolderDetailViewModel @Inject constructor(
                 folderId = folderId
             )
             folderRepository.saveRecentAccessFolder(token, saveRecentAccessFolderRequestModel)
-                .collectLatest { resource ->
-                    when (resource) {
-                        is Resources.Loading -> {
-                            Timber.d("Loading")
-                        }
-
-                        is Resources.Success -> {
-                            Timber.d("Recent access folder saved")
-                        }
-
-                        is Resources.Error -> {
-                            Timber.e(resource.message)
-                        }
-                    }
-                }
+                .collect()
         }
     }
 

@@ -6,6 +6,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -28,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -66,6 +69,7 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import timber.log.Timber
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.ads.BannerAds
 
 @Composable
 @Destination<RootGraph>(
@@ -86,7 +90,7 @@ fun ClassDetailScreen(
     resultAddFolderToClass.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
-                Timber.d("AddFolderToClassScreen was canceled")
+                // Do nothing
             }
 
             is NavResult.Value -> {
@@ -100,7 +104,7 @@ fun ClassDetailScreen(
     resultAddStudySetToClass.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
-                Timber.d("AddStudySetToClassScreen was canceled")
+                // Do nothing
             }
 
             is NavResult.Value -> {
@@ -127,7 +131,7 @@ fun ClassDetailScreen(
     resultStudySetDetail.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
-                Timber.d("StudySetDetailScreen was canceled")
+                // Do nothing
             }
 
             is NavResult.Value -> {
@@ -142,7 +146,7 @@ fun ClassDetailScreen(
     resultFolderDetail.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
-                Timber.d("FolderDetailScreen was canceled")
+                // Do nothing
             }
 
             is NavResult.Value -> {
@@ -171,8 +175,7 @@ fun ClassDetailScreen(
                         context,
                         context.getString(R.string.txt_you_are_member_in_this_class),
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
 
                 is ClassDetailUiEvent.ShowError -> {
@@ -429,6 +432,7 @@ fun ClassDetail(
                     }
                     when (tabIndex) {
                         ClassDetailEnums.STUDY_SETS.index -> StudySetsTabScreen(
+                            modifier = Modifier.fillMaxSize(),
                             onAddStudySetClicked = onNavigateAddStudySets,
                             studySets = studySets,
                             onStudySetItemClicked = onStudySetItemClicked,
@@ -437,6 +441,7 @@ fun ClassDetail(
                         )
 
                         ClassDetailEnums.FOLDERS.index -> FoldersTabScreen(
+                            modifier = Modifier.fillMaxSize(),
                             onAddFoldersClicked = onNavigateAddFolder,
                             folder = folders,
                             onFolderItemClicked = onFolderItemClicked,
@@ -445,6 +450,7 @@ fun ClassDetail(
                         )
 
                         ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
+                            modifier = Modifier.fillMaxSize(),
                             member = members,
                             onMembersItemClicked = {
                                 onNavigateToUserDetail(it.id)
@@ -458,7 +464,11 @@ fun ClassDetail(
 
                 }
             }
-
+            BannerAds(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+            )
             LoadingOverlay(
                 isLoading = isLoading
             )

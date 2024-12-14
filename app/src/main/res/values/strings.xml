@@ -613,4 +613,10 @@
     <string name="txt_flashcard_explanation">Explanation: %1$s</string>
     <string name="txt_term_image">Term image</string>
     <string name="txt_no_users_found">No users found</string>
+    <string name="txt_you_can_t_delete_this_folder">You can\'t delete this folder</string>
+    <string name="txt_you_can_t_edit_this_folder">You can\'t edit this folder</string>
+    <string name="txt_folder_not_found">Folder not found</string>
+    <string name="txt_please_login_again">Please login again!</string>
+    <string name="txt_failed_to_mark_notification_as_read">Failed to mark notification as read</string>
+    <string name="txt_failed_to_load_notifications">Failed to load notifications</string>
 </resources>

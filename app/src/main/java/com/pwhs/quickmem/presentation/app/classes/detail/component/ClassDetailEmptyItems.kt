@@ -1,7 +1,5 @@
-package com.pwhs.quickmem.presentation.app.classes.detail.folders.component
+package com.pwhs.quickmem.presentation.app.classes.detail.component
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,53 +14,52 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @Composable
-fun ClassDetailEmptyFolder(
+fun ClassDetailEmptyItems(
     modifier: Modifier = Modifier,
+    isOwner: Boolean,
     title: String = "",
     subtitle: String = "",
     buttonTitle: String = "",
-    onAddFolderClicked: () -> Unit = {},
+    onAddClick: () -> Unit = {},
 ) {
-    Box(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
+            .padding(top = 40.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = title,
-                style = typography.titleLarge,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = subtitle,
-                style = typography.bodyMedium.copy(
-                    color = colorScheme.onSurface.copy(alpha = 0.6f)
-                ),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+        Text(
+            text = title,
+            style = typography.titleLarge,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = subtitle,
+            style = typography.bodyMedium.copy(
+                color = colorScheme.onSurface.copy(alpha = 0.6f)
+            ),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        if (isOwner) {
             Button(
-                onClick = onAddFolderClicked,
+                onClick = onAddClick,
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         Icons.Filled.Add,
-                        contentDescription = buttonTitle,
+                        contentDescription = stringResource(R.string.txt_add_new_study_set_to_class),
                         tint = colorScheme.background,
                         modifier = Modifier.padding(end = 8.dp)
                     )
@@ -83,10 +80,11 @@ fun ClassDetailEmptyFolder(
 @Composable
 private fun ClassDetailEmptyPreview() {
     QuickMemTheme {
-        ClassDetailEmptyFolder(
+        ClassDetailEmptyItems(
             title = "This class has no sets",
             subtitle = "Add flashcard sets to share them with your class.",
             buttonTitle = "Add study sets",
+            isOwner = true
         )
     }
 }

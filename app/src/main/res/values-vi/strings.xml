@@ -610,4 +610,10 @@
     <string name="txt_flashcard_explanation">Giải thích: %1$s</string>
     <string name="txt_term_image">Ảnh thuật ngữ</string>
     <string name="txt_no_users_found">Không tìm thấy người dùng nào</string>
+    <string name="txt_you_can_t_delete_this_folder">Bạn không thể xóa thư mục này</string>
+    <string name="txt_you_can_t_edit_this_folder">Bạn không thể chỉnh sửa thư mục này</string>
+    <string name="txt_folder_not_found">Không tìm thấy thư mục</string>
+    <string name="txt_please_login_again">Vui lòng đăng nhập lại!</string>
+    <string name="txt_failed_to_mark_notification_as_read">Đánh dấu thông báo là đã đọc thất bại</string>
+    <string name="txt_failed_to_load_notifications">Tải thông báo thất bại</string>
 </resources>

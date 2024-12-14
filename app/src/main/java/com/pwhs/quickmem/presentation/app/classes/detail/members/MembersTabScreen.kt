@@ -1,11 +1,9 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.members
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,38 +24,33 @@ fun MembersTabScreen(
     onAddMembersClicked: () -> Unit = {},
     onDeletedClicked: (String) -> Unit = {}
 ) {
-    Scaffold { innerPadding ->
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-        ) {
-            when {
-                member.isEmpty() -> {
-                    ClassDetailEmpty(
-                        modifier = Modifier.padding(innerPadding),
-                        title = stringResource(R.string.txt_this_class_has_no_members),
-                        subtitle = stringResource(R.string.txt_add_members_to_share_them_with_your_class),
-                        buttonTitle = stringResource(R.string.txt_add_members),
-                        onAddClick = onAddMembersClicked,
-                        isOwner = isOwner
+    when {
+        member.isEmpty() -> {
+            ClassDetailEmpty(
+                modifier = modifier,
+                title = stringResource(R.string.txt_this_class_has_no_members),
+                subtitle = stringResource(R.string.txt_add_members_to_share_them_with_your_class),
+                buttonTitle = stringResource(R.string.txt_add_members),
+                onAddClick = onAddMembersClicked,
+                isOwner = isOwner
+            )
+        }
+
+        else -> {
+            LazyColumn(
+                modifier = modifier,
+            ) {
+                items(items = member, key = { it.id }) { member ->
+                    ClassMemberItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        classMemberModel = member,
+                        onClicked = onMembersItemClicked,
+                        canDelete = isOwner,
+                        onDeleteClicked = onDeletedClicked,
                     )
                 }
-
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                    ) {
-                        items(items = member, key = {it.id}) { member ->
-                            ClassMemberItem(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                classMemberModel = member,
-                                onClicked = onMembersItemClicked,
-                                canDelete = isOwner,
-                                onDeleteClicked = onDeletedClicked,
-                            )
-                        }
-                    }
+                item {
+                    Spacer(modifier = Modifier.padding(60.dp))
                 }
             }
         }

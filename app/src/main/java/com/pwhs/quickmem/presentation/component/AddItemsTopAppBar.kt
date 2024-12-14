@@ -1,4 +1,4 @@
-package com.pwhs.quickmem.presentation.app.classes.add_study_set.component
+package com.pwhs.quickmem.presentation.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -18,12 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.ui.theme.QuickMemTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddStudySetToClassTopAppBar(
+fun AddItemsTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
     onNavigateCancel: () -> Unit,
@@ -85,11 +85,11 @@ fun AddStudySetToClassTopAppBar(
 
 @Preview
 @Composable
-fun AddStudySetTopAppBarPreview() {
+fun AddStudySetToClassesTopAppBarPreview() {
     QuickMemTheme {
         Scaffold(
             topBar = {
-                AddStudySetToClassTopAppBar(
+                AddItemsTopAppBar(
                     title = "Add to folder",
                     onNavigateCancel = {},
                     onDoneClick = {}

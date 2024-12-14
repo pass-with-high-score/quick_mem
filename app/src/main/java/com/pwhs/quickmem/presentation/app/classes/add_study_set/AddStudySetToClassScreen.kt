@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.presentation.app.classes.add_study_set.component.AddStudySetToClassList
-import com.pwhs.quickmem.presentation.app.classes.add_study_set.component.AddStudySetToClassTopAppBar
+import com.pwhs.quickmem.presentation.component.AddItemsTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -123,7 +123,7 @@ fun AddStudySetToClass(
         containerColor = colorScheme.background,
         modifier = modifier,
         topBar = {
-            AddStudySetToClassTopAppBar(
+            AddItemsTopAppBar(
                 onDoneClick = onDoneClick,
                 onNavigateCancel = onNavigateCancel,
                 title = stringResource(R.string.txt_add_study_set)

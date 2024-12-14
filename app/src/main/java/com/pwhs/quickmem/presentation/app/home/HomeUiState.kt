@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.home
 
+import androidx.annotation.StringRes
 import com.pwhs.quickmem.domain.model.classes.GetClassByOwnerResponseModel
 import com.pwhs.quickmem.domain.model.folder.GetFolderResponseModel
 import com.pwhs.quickmem.domain.model.notification.GetNotificationResponseModel
@@ -17,12 +18,12 @@ data class HomeUiState(
     val notificationCount: Int = 0,
     val customerInfo: CustomerInfo? = null,
     val notifications: List<GetNotificationResponseModel> = emptyList(),
-    val error: String? = null,
+    @StringRes val error: Int? = null,
     val streaks: List<StreakModel> = emptyList(),
     val streakDates: List<LocalDate> = emptyList(),
     val top5Subjects: List<GetTop5SubjectResponseModel> = emptyList(),
     val subjects: List<SubjectModel> = emptyList(),
-    val studySets : List<GetStudySetResponseModel> = emptyList(),
-    val folders : List<GetFolderResponseModel> = emptyList(),
-    val classes : List<GetClassByOwnerResponseModel> = emptyList(),
+    val studySets: List<GetStudySetResponseModel> = emptyList(),
+    val folders: List<GetFolderResponseModel> = emptyList(),
+    val classes: List<GetClassByOwnerResponseModel> = emptyList(),
 )
