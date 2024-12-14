@@ -23,9 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,25 +32,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.classes.GetClassDetailResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.settings.component.SettingCard
 import com.pwhs.quickmem.presentation.app.settings.component.SettingItem
 import com.pwhs.quickmem.presentation.app.settings.component.SettingTitleSection
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
-import com.pwhs.quickmem.util.ads.AdsUtil.interstitialAds
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
-import timber.log.Timber
-import com.pwhs.quickmem.R
 
 @Destination<RootGraph>(
     navArgs = JoinClassArgs::class
@@ -92,8 +83,10 @@ fun JoinClassScreen(
                 }
 
                 JoinClassUiEvent.UnAuthorized -> {
-                    Toast.makeText(context,
-                        context.getString(R.string.txt_unauthorized), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_unauthorized), Toast.LENGTH_SHORT
+                    ).show()
                     navigator.navigate(NavGraphs.root) {
                         popUpTo(NavGraphs.root) {
                             saveState = false
@@ -104,8 +97,10 @@ fun JoinClassScreen(
                 }
 
                 JoinClassUiEvent.NotFound -> {
-                    Toast.makeText(context,
-                        context.getString(R.string.txt_class_not_found), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_class_not_found), Toast.LENGTH_SHORT
+                    ).show()
                     navigator.navigate(NavGraphs.root) {
                         popUpTo(NavGraphs.root) {
                             saveState = false
@@ -152,21 +147,6 @@ fun JoinClass(
     onBackHome: () -> Unit = {},
     onOwnerClick: () -> Unit = {}
 ) {
-    var customer: CustomerInfo? by remember { mutableStateOf(null) }
-    val context = LocalContext.current
-    LaunchedEffect(key1 = true) {
-        Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
-            override fun onError(error: PurchasesError) {
-                Timber.e("Error getting customer info: $error")
-            }
-
-            override fun onReceived(customerInfo: CustomerInfo) {
-                Timber.d("Customer info: $customerInfo")
-                customer = customerInfo
-            }
-
-        })
-    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -199,7 +179,7 @@ fun JoinClass(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             SettingItem(
-                                title = "Name",
+                                title = stringResource(R.string.txt_title),
                                 subtitle = classDetailResponseModel?.title ?: "",
                                 showArrow = false
                             )
@@ -244,12 +224,7 @@ fun JoinClass(
 
                 item {
                     Button(
-                        onClick = {
-                            val isSubscribed = customer?.activeSubscriptions?.isNotEmpty() == true
-                            interstitialAds(context, isSubscribed) {
-                                onJoinClass()
-                            }
-                        },
+                        onClick = onJoinClass,
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(text = stringResource(R.string.txt_join_class))

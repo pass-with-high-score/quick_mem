@@ -27,20 +27,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.component.ShowImageDialog
 
 @Composable
-fun calculateDynamicFontSize(text: String): androidx.compose.ui.unit.TextUnit {
+fun calculateDynamicFontSize(text: String): TextUnit {
     return when {
-        text.length <= 20 -> 24.sp
         text.length <= 50 -> 20.sp
-        else -> 16.sp
+        text.length <= 100 -> 18.sp
+        text.length <= 150 -> 16.sp
+        text.length <= 200 -> 14.sp
+        else -> 12.sp
     }
 }
 
@@ -136,6 +142,7 @@ fun StudySetFlipCard(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = frontTextSize,
                             color = colorScheme.onBackground,
+                            fontWeight = FontWeight.Normal,
                             textAlign = when {
                                 backImage != null -> TextAlign.Start
                                 else -> TextAlign.Center
@@ -149,7 +156,10 @@ fun StudySetFlipCard(
                 backImage?.let {
                     if (it.isNotEmpty()) {
                         AsyncImage(
-                            model = it,
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(it)
+                                .error(R.drawable.ic_image_error)
+                                .build(),
                             contentDescription = null,
                             modifier = Modifier
                                 .width(100.dp)

@@ -26,7 +26,7 @@ android {
         try {
             file(rootProject.file("local.properties")).inputStream()
                 .use { localProperties.load(it) }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             println("local.properties not found, using default values")
         }
 

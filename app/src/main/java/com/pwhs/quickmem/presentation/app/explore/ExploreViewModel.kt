@@ -180,7 +180,14 @@ class ExploreViewModel @Inject constructor(
                             )
                         }
                         if (_uiState.value.customerInfo?.activeSubscriptions?.isNotEmpty() == false) {
-                            updateCoins(coinAction = CoinAction.SUBTRACT)
+                            updateCoins(
+                                coinAction = CoinAction.SUBTRACT,
+                                coin = when (uiState.value.numberOfFlashcards) {
+                                    in 1..10 -> 1
+                                    in 11..20 -> 2
+                                    else -> 3
+                                }
+                            )
                         }
                         _uiEvent.send(
                             ExploreUiEvent.CreatedStudySet(

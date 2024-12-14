@@ -102,11 +102,26 @@ fun CreateStudySetAITab(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_sparkling),
-                            contentDescription = stringResource(R.string.txt_create_study_set_with_ai_minus_one),
+                            contentDescription = "Create",
                         )
                         Text(
                             text = when (isPlus) {
-                                false -> stringResource(R.string.txt_create_study_set_with_ai_minus_one)
+                                false -> when (numberOfFlashcards) {
+                                    in 1..10 -> stringResource(
+                                        R.string.txt_create_study_set_ai_now,
+                                        1
+                                    )
+
+                                    in 11..20 -> stringResource(
+                                        R.string.txt_create_study_set_ai_now,
+                                        2
+                                    )
+
+                                    else -> {
+                                        stringResource(R.string.txt_create_study_set_ai_now, 3)
+                                    }
+                                }
+
                                 else -> stringResource(
                                     R.string.txt_create_study_set_with_ai,
                                 )

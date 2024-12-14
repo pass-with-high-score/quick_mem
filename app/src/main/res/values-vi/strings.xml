@@ -263,7 +263,6 @@
     <string name="txt_bronze_medal">Huy chương đồng</string>
     <string name="txt_top_10_highest_streak_leaderboard">Bảng xếp hạng 10 chuỗi thành tích cao nhất</string>
     <string name="txt_streak_leaderboard_motivation">Duy trì chuỗi để leo bảng xếp hạng!</string>
-    <string name="txt_create_study_set_with_ai_minus_one">Tạo (-1)</string>
     <string name="txt_warning_ai_not_gen">Cảnh báo: AI có thể không tạo thẻ học chính xác hoặc đầy đủ. Hãy kiểm tra lại nếu bạn thấy cần thiết.</string>
     <string name="txt_title_required">Tiêu đề (bắt buộc)</string>
     <string name="txt_description_optional">Mô tả (tùy chọn)</string>
@@ -616,4 +615,7 @@
     <string name="txt_please_login_again">Vui lòng đăng nhập lại!</string>
     <string name="txt_failed_to_mark_notification_as_read">Đánh dấu thông báo là đã đọc thất bại</string>
     <string name="txt_failed_to_load_notifications">Tải thông báo thất bại</string>
+    <string name="txt_refresh">Tải lại</string>
+    <string name="txt_coin">Xu</string>
+    <string name="txt_create_study_set_ai_now">Tạo (-%1$s)</string>
 </resources>

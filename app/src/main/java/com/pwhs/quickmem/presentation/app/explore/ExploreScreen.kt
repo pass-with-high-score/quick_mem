@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,7 +57,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination.invoke
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
 
@@ -87,6 +87,7 @@ fun ExploreScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
                 is ExploreUiEvent.Error -> {
                     Toast.makeText(
                         context,
@@ -164,7 +165,7 @@ fun Explore(
     onDifficultyLevelChange: (DifficultyLevel) -> Unit = {},
     onCreateStudySet: () -> Unit = {},
     onEarnCoins: () -> Unit = {},
-   @StringRes errorMessage: Int? = null,
+    @StringRes errorMessage: Int? = null,
     coins: Int = 0,
     customerInfo: CustomerInfo? = null,
 ) {
@@ -174,7 +175,7 @@ fun Explore(
         stringResource(R.string.txt_top_streak),
     )
     val context = LocalContext.current
-
+    var isGettingAds by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -195,7 +196,7 @@ fun Explore(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
-                                contentDescription = "Refresh",
+                                contentDescription = stringResource(R.string.txt_refresh),
                             )
                         }
                     } else {
@@ -216,22 +217,25 @@ fun Explore(
                             )
                             Image(
                                 painter = painterResource(id = R.drawable.ic_coin),
-                                contentDescription = "Coins",
+                                contentDescription = stringResource(R.string.txt_coin),
                                 modifier = Modifier.size(24.dp),
                                 contentScale = ContentScale.Crop
                             )
                             if (customerInfo?.activeSubscriptions?.isNotEmpty() == false) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
-                                    contentDescription = "Add",
+                                    contentDescription = stringResource(R.string.txt_add),
                                     tint = colorScheme.primary,
                                     modifier = Modifier
                                         .size(24.dp)
                                         .clickable {
+                                            isGettingAds = true
                                             AdsUtil.rewardedInterstitialAd(
                                                 context,
-                                                onEarnCoins
-                                            )
+                                            ) {
+                                                onEarnCoins()
+                                                isGettingAds = false
+                                            }
                                         },
                                 )
                             }
@@ -312,7 +316,7 @@ fun Explore(
                     )
                 }
             }
-            LoadingOverlay(isLoading = isLoading)
+            LoadingOverlay(isLoading = isLoading || isGettingAds)
         }
     }
 }
