@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
-import com.mr0xf00.easycrop.ImagePicker
 import com.pwhs.quickmem.R
 
 @Composable
@@ -43,7 +42,7 @@ fun CardSelectImage(
     definitionImageUri: Uri?,
     definitionImageUrl: String?,
     onDeleteImage: () -> Unit,
-    imagePicker: ImagePicker,
+    onChooseImage: () -> Unit
 ) {
     // State for showing the image viewer dialog
     var isImageViewerOpen by remember { mutableStateOf(false) }
@@ -59,16 +58,16 @@ fun CardSelectImage(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
+        onClick = {
+            if (definitionImageUri != null || !definitionImageUrl.isNullOrEmpty()) {
+                isImageViewerOpen = true // Open image viewer when clicked
+            } else {
+                onChooseImage()
+            }
+        }
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.clickable {
-                if (definitionImageUri != null || !definitionImageUrl.isNullOrEmpty()) {
-                    isImageViewerOpen = true // Open image viewer when clicked
-                } else {
-                    imagePicker.pick(mimetype = "image/*")
-                }
-            }
         ) {
             Column(
                 modifier = Modifier

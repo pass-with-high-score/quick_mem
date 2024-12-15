@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -589,17 +588,14 @@ private fun Home(
             sheetState = streakBottomSheet,
         ) {
             Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxHeight(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LottieAnimation(
                     composition = composition,
                     progress = { progress },
                     modifier = Modifier
-                        .width(150.dp)
-                        .height(150.dp)
+                        .width(100.dp)
+                        .height(100.dp)
                 )
                 Text(
                     text = streakCount.toString(),
@@ -622,7 +618,6 @@ private fun Home(
                 )
                 Text(
                     text = stringResource(R.string.txt_practice_every_day),
-                    modifier = Modifier.padding(top = 16.dp)
                 )
                 StreakCalendar(
                     currentDate = currentDate,

@@ -271,9 +271,9 @@ fun CreateFlashCard(
                             .padding(16.dp),
                         onUploadImage = onUploadImage,
                         definitionImageUri = definitionImageUri,
-                        imagePicker = imagePicker,
                         definitionImageUrl = definitionImageURL,
-                        onDeleteImage = onDeleteImage
+                        onDeleteImage = onDeleteImage,
+                        onChooseImage = {}
                     )
                 }
                 item {

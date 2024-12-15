@@ -7,6 +7,7 @@ import com.pwhs.quickmem.data.remote.repository.FirebaseRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.FlashCardRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.FolderRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.NotificationRepositoryImpl
+import com.pwhs.quickmem.data.remote.repository.PixaBayRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.ReportRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StreakRepositoryImpl
 import com.pwhs.quickmem.data.remote.repository.StudySetRepositoryImpl
@@ -18,6 +19,7 @@ import com.pwhs.quickmem.domain.repository.FirebaseRepository
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.domain.repository.NotificationRepository
+import com.pwhs.quickmem.domain.repository.PixaBayRepository
 import com.pwhs.quickmem.domain.repository.ReportRepository
 import com.pwhs.quickmem.domain.repository.SearchQueryRepository
 import com.pwhs.quickmem.domain.repository.StreakRepository
@@ -91,4 +93,9 @@ abstract class RepositoryModule {
     abstract fun bindFirebaseRepository(
         firebaseRepositoryImpl: FirebaseRepositoryImpl
     ): FirebaseRepository
+
+    @Binds
+    abstract fun bindPixaBayRepository(
+        pixaBayRepositoryImpl: PixaBayRepositoryImpl
+    ): PixaBayRepository
 }

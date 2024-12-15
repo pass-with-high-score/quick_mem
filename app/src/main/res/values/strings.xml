@@ -621,4 +621,9 @@
     <string name="txt_refresh">Refresh</string>
     <string name="txt_coin">Coin</string>
     <string name="txt_create_study_set_ai_now">Create (-%1$s)</string>
+    <string name="image_description">Image</string>
+    <string name="txt_try_cat">Try \"Cats\"</string>
+    <string name="txt_please_enter_a_keyword_to_search_images">Please enter a keyword to search images</string>
+    <string name="txt_import_from_gallery">Import from gallery</string>
+    <string name="txt_search_image">Search image</string>
 </resources>

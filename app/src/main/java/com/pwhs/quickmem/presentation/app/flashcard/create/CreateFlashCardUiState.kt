@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.flashcard.create
 
 import android.net.Uri
 import com.pwhs.quickmem.domain.model.flashcard.CreateFlashCardModel
+import com.pwhs.quickmem.domain.model.pixabay.SearchImageResponseModel
 
 data class CreateFlashCardUiState(
     val studySetId: String = "",
@@ -15,6 +16,9 @@ data class CreateFlashCardUiState(
     val showExplanation: Boolean = false,
     val isCreated: Boolean = false,
     val isLoading: Boolean = false,
+    val queryImage: String = "",
+    val searchImageResponseModel: SearchImageResponseModel? = null,
+    val isSearchImageLoading: Boolean = false,
 )
 
 fun CreateFlashCardUiState.toCreateFlashCardModel(): CreateFlashCardModel {

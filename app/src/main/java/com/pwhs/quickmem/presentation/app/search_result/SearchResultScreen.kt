@@ -183,9 +183,9 @@ fun SearchResultScreen(
 
 @Composable
 fun SearchResult(
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     query: String = "",
-    modifier: Modifier = Modifier,
     tabIndex: Int,
     onTabSelected: (Int) -> Unit,
     colorModel: ColorModel? = ColorModel.defaultColors.first(),

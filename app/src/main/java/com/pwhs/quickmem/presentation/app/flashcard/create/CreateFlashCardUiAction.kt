@@ -18,4 +18,6 @@ sealed class CreateFlashCardUiAction {
     data class ShowExplanationClicked(val showExplanation: Boolean) : CreateFlashCardUiAction()
     data class UploadImage(val imageUri: Uri) : CreateFlashCardUiAction()
     data class RemoveImage(val imageURL: String) : CreateFlashCardUiAction()
+    data class OnQueryImageChanged(val query: String) : CreateFlashCardUiAction()
+    data class OnDefinitionImageChanged(val definitionImageUrl: String) : CreateFlashCardUiAction()
 }

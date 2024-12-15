@@ -18,4 +18,5 @@ sealed class EditFlashCardUiAction {
     data class ShowExplanationClicked(val showExplanation: Boolean) : EditFlashCardUiAction()
     data class UploadImage(val imageUri: Uri) : EditFlashCardUiAction()
     data class RemoveImage(val imageURL: String) : EditFlashCardUiAction()
+    data class OnQueryImageChanged(val query: String) : EditFlashCardUiAction()
 }

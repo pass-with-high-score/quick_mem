@@ -18,16 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.pwhs.quickmem.R
 
 @Composable
 fun ShowImageDialog(
     modifier: Modifier = Modifier,
     definitionImageUri: String,
     onDismissRequest: () -> Unit,
-    title: String = "Close",
+    title: String = stringResource(id = R.string.txt_close),
     color: Color = MaterialTheme.colorScheme.primary
 ) {
     Dialog(onDismissRequest = {
@@ -48,7 +50,7 @@ fun ShowImageDialog(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     AsyncImage(
                         model = definitionImageUri,
-                        contentDescription = "Full Image",
+                        contentDescription = stringResource(id = R.string.image_description),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),

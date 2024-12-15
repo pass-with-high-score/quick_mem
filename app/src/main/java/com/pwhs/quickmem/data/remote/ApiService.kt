@@ -61,6 +61,7 @@ import com.pwhs.quickmem.data.dto.notification.GetNotificationResponseDto
 import com.pwhs.quickmem.data.dto.notification.MarkNotificationReadRequestDto
 import com.pwhs.quickmem.data.dto.notification.DeviceTokenRequestDto
 import com.pwhs.quickmem.data.dto.flashcard.WriteStatusFlashCardDto
+import com.pwhs.quickmem.data.dto.pixabay.SearchImageResponseDto
 import com.pwhs.quickmem.data.dto.report.CreateReportRequestDto
 import com.pwhs.quickmem.data.dto.streak.GetStreakDto
 import com.pwhs.quickmem.data.dto.streak.GetTopStreakResponseDto
@@ -656,5 +657,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body createReportRequestDto: CreateReportRequestDto
     )
+
+    // PixaBay
+    @GET("pixabay/search")
+    suspend fun searchImage(
+        @Header("Authorization") token: String,
+        @Query("query") query: String,
+    ): SearchImageResponseDto
 
 }

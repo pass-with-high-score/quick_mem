@@ -618,4 +618,9 @@
     <string name="txt_refresh">Tải lại</string>
     <string name="txt_coin">Xu</string>
     <string name="txt_create_study_set_ai_now">Tạo (-%1$s)</string>
+    <string name="image_description">Hình ảnh</string>
+    <string name="txt_try_cat">Thử \"Mèo\"</string>
+    <string name="txt_please_enter_a_keyword_to_search_images">Vui lòng nhập từ khóa để tìm kiếm hình ảnh</string>
+    <string name="txt_import_from_gallery">Nhập từ thư viện</string>
+    <string name="txt_search_image">Tìm kiếm hình ảnh</string>
 </resources>

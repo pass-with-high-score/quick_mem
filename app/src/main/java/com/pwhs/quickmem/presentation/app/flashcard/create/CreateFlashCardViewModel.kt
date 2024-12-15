@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
+import com.pwhs.quickmem.domain.repository.PixaBayRepository
 import com.pwhs.quickmem.domain.repository.UploadImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +26,7 @@ class CreateFlashCardViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val flashCardRepository: FlashCardRepository,
     private val uploadImageRepository: UploadImageRepository,
+    private val pixaBayRepository: PixaBayRepository,
     private val tokenManager: TokenManager,
     application: Application
 ) : AndroidViewModel(application) {
@@ -32,6 +35,8 @@ class CreateFlashCardViewModel @Inject constructor(
 
     private val _uiEvent = Channel<CreateFlashCardUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    private var job: Job? = null
 
     init {
         val studySetId: String = savedStateHandle["studySetId"] ?: ""
@@ -45,7 +50,11 @@ class CreateFlashCardViewModel @Inject constructor(
             }
 
             is CreateFlashCardUiAction.FlashCardDefinitionImageChanged -> {
-                _uiState.update { it.copy(definitionImageUri = event.definitionImageUri) }
+                _uiState.update {
+                    it.copy(
+                        definitionImageUri = event.definitionImageUri,
+                    )
+                }
             }
 
             is CreateFlashCardUiAction.FlashCardExplanationChanged -> {
@@ -137,6 +146,63 @@ class CreateFlashCardViewModel @Inject constructor(
                                 }
                             }
                         }
+                }
+            }
+
+            is CreateFlashCardUiAction.OnQueryImageChanged -> {
+                _uiState.update {
+                    it.copy(
+                        queryImage = event.query,
+                        isSearchImageLoading = true
+                    )
+                }
+                if (event.query.length < 3) {
+                    return
+                }
+
+                job?.cancel()
+                job = viewModelScope.launch {
+                    pixaBayRepository.searchImages(
+                        token = tokenManager.accessToken.firstOrNull() ?: "",
+                        query = event.query
+                    ).collect { resource ->
+                        when (resource) {
+                            is Resources.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        searchImageResponseModel = resource.data,
+                                        isSearchImageLoading = false
+                                    )
+                                }
+                            }
+
+                            is Resources.Error -> {
+                                Timber.e("Error: ${resource.message}")
+                                _uiState.update {
+                                    it.copy(
+                                        searchImageResponseModel = null,
+                                        isSearchImageLoading = false
+                                    )
+                                }
+                            }
+
+                            is Resources.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        isSearchImageLoading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            is CreateFlashCardUiAction.OnDefinitionImageChanged -> {
+                _uiState.update {
+                    it.copy(
+                        definitionImageURL = event.definitionImageUrl,
+                    )
                 }
             }
         }

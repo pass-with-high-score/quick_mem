@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,12 +62,10 @@ class EditFlashCardViewModel @Inject constructor(
             }
 
             is EditFlashCardUiAction.FlashCardExplanationChanged -> {
-                Timber.d("Explanation: ${event.explanation}")
                 _uiState.update { it.copy(explanation = event.explanation) }
             }
 
             is EditFlashCardUiAction.FlashCardHintChanged -> {
-                Timber.d("Hint: ${event.hint}")
                 _uiState.update { it.copy(hint = event.hint) }
             }
 
@@ -102,7 +99,6 @@ class EditFlashCardViewModel @Inject constructor(
                         .collect { resource ->
                             when (resource) {
                                 is Resources.Success -> {
-                                    Timber.d("Success: ${resource.data}")
                                     _uiState.update {
                                         it.copy(
                                             definitionImageURL = resource.data!!.url,
@@ -112,7 +108,6 @@ class EditFlashCardViewModel @Inject constructor(
                                 }
 
                                 is Resources.Error -> {
-                                    Timber.e("Error: ${resource.message}")
                                     _uiState.update { it.copy(isLoading = false) }
                                 }
 
@@ -133,7 +128,6 @@ class EditFlashCardViewModel @Inject constructor(
                         .collect { resource ->
                             when (resource) {
                                 is Resources.Success -> {
-                                    Timber.d("Success: ${resource.data}")
                                     _uiState.update {
                                         it.copy(
                                             definitionImageURL = "",
@@ -144,7 +138,6 @@ class EditFlashCardViewModel @Inject constructor(
                                 }
 
                                 is Resources.Error -> {
-                                    Timber.e("Error: ${resource.message}")
                                     _uiState.update { it.copy(isLoading = false) }
                                 }
 
@@ -157,15 +150,16 @@ class EditFlashCardViewModel @Inject constructor(
                         }
                 }
             }
+
+            is EditFlashCardUiAction.OnQueryImageChanged -> {
+            }
         }
     }
 
     private fun saveFlashCard() {
-        Timber.d("Saving flashcard: url: ${_uiState.value.definitionImageURL}")
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val editFlashCardModel = _uiState.value.toEditFlashCardModel()
-            Timber.d("EditFlashCardModel: $editFlashCardModel")
             flashCardRepository.updateFlashCard(
                 token,
                 _uiState.value.flashcardId,
@@ -173,17 +167,14 @@ class EditFlashCardViewModel @Inject constructor(
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
-                        Timber.e("Error: ${resource.message}")
                         _uiState.update { it.copy(isLoading = false) }
                     }
 
                     is Resources.Loading -> {
-                        Timber.d("Loading")
                         _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is Resources.Success -> {
-                        Timber.d("FlashCard saved: ${resource.data}")
                         _uiState.update {
                             it.copy(
                                 term = "",
