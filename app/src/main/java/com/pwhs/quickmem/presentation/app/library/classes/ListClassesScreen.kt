@@ -58,7 +58,7 @@ fun ListClassesScreen(
     val filterClass = classes.filter {
         searchQuery.trim().takeIf { query -> query.isNotEmpty() }?.let { query ->
             it.title.contains(query, ignoreCase = true)
-        } ?: true
+        } != false
     }
     Scaffold(
         modifier = modifier.fillMaxSize(),

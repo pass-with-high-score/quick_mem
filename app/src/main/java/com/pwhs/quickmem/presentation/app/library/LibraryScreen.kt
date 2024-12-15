@@ -24,7 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -52,7 +51,6 @@ import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScr
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
-import timber.log.Timber
 
 @Composable
 @Destination<RootGraph>
@@ -70,7 +68,6 @@ fun LibraryScreen(
     resultStudySetDetail.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
-                Timber.d("StudySetDetailScreen was canceled")
             }
 
             is NavResult.Value -> {
@@ -84,7 +81,6 @@ fun LibraryScreen(
     resultClassDetail.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
-                Timber.d("ClassDetailScreen was canceled")
             }
 
             is NavResult.Value -> {
@@ -98,7 +94,6 @@ fun LibraryScreen(
     resultFolderDetail.onNavResult { result ->
         when (result) {
             NavResult.Canceled -> {
-                Timber.d("FolderDetailScreen was canceled")
             }
 
             is NavResult.Value -> {

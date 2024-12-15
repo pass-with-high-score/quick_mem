@@ -322,7 +322,7 @@
     <string name="txt_add_members_to_share_them_with_your_class">Add members to share them with your class.</string>
     <string name="txt_add_members">Add Members</string>
     <string name="txt_add_new_study_set_to_class">Add new study set to class</string>
-    <string name="txt_this_class_has_no_sets">This class has no sets</string>
+    <string name="txt_this_class_has_no_study_sets">This class has no study sets</string>
     <string name="txt_add_flashcard_sets_to_share_them_with_your_class">Add flashcard sets to share them with your class.</string>
     <string name="txt_add_study_sets">Add study sets</string>
     <string name="txt_members">Members</string>
@@ -626,4 +626,7 @@
     <string name="txt_please_enter_a_keyword_to_search_images">Please enter a keyword to search images</string>
     <string name="txt_import_from_gallery">Import from gallery</string>
     <string name="txt_search_image">Search image</string>
+    <string name="txt_no_hint">No hint</string>
+    <string name="txt_no_explanation">No explanation</string>
+    <string name="txt_no_members_found">No members found</string>
 </resources>

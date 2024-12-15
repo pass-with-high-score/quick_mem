@@ -376,7 +376,7 @@ fun MaterialTabScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 Text(
-                    text = hint,
+                    text = hint.takeIf { it.isNotEmpty() } ?: stringResource(R.string.txt_no_hint),
                     style = typography.bodyMedium.copy(
                         color = colorScheme.onSurface,
                     ),
@@ -404,7 +404,8 @@ fun MaterialTabScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 Text(
-                    text = explanation,
+                    text = explanation.takeIf { it.isNotEmpty() }
+                        ?: stringResource(R.string.txt_no_explanation),
                     style = typography.bodyMedium.copy(
                         color = colorScheme.onSurface,
                     ),

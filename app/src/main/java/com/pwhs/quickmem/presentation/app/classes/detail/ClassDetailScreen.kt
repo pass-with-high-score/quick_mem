@@ -67,7 +67,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
-import timber.log.Timber
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.presentation.ads.BannerAds
 
@@ -443,7 +442,7 @@ fun ClassDetail(
                         ClassDetailEnums.FOLDERS.index -> FoldersTabScreen(
                             modifier = Modifier.fillMaxSize(),
                             onAddFoldersClicked = onNavigateAddFolder,
-                            folder = folders,
+                            folders = folders,
                             onFolderItemClicked = onFolderItemClicked,
                             isOwner = isOwner,
                             onDeleteFolderClicked = onDeleteFolderClick
@@ -451,7 +450,7 @@ fun ClassDetail(
 
                         ClassDetailEnums.MEMBERS.index -> MembersTabScreen(
                             modifier = Modifier.fillMaxSize(),
-                            member = members,
+                            members = members,
                             onMembersItemClicked = {
                                 onNavigateToUserDetail(it.id)
                             },

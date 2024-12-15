@@ -196,6 +196,9 @@ fun LearnByWrite(
         }
     }
     var isDontKnowButtonVisible by remember { mutableStateOf(false) }
+    val revealCount = remember { mutableIntStateOf(0) }
+    val maxRevealCount = writeQuestion?.term?.length ?: 0
+    val revealedIndices = remember { mutableSetOf<Int>() }
 
     LaunchedEffect(writeQuestion) {
         isDontKnowButtonVisible = false
@@ -393,6 +396,8 @@ fun LearnByWrite(
                                                     debounceJob?.cancel()
                                                     debounceJob = scope.launch {
                                                         delay(500)
+                                                        revealCount.intValue = 0
+                                                        revealedIndices.clear()
                                                         onSubmitAnswer(
                                                             writeQuestion?.id ?: "",
                                                             WriteStatus.SKIPPED,
@@ -469,6 +474,8 @@ fun LearnByWrite(
                                         debounceJob?.cancel()
                                         debounceJob = scope.launch {
                                             delay(500)
+                                            revealCount.intValue = 0
+                                            revealedIndices.clear()
                                             if (userAnswer.isNotEmpty() && isAnswerCorrect(
                                                     userAnswer,
                                                     writeQuestion?.term ?: ""
@@ -538,9 +545,6 @@ fun LearnByWrite(
                     }
                 )
             }
-            val revealCount = remember { mutableIntStateOf(0) }
-            val maxRevealCount = writeQuestion?.term?.length ?: 0
-            val revealedIndices = remember { mutableSetOf<Int>() }
 
             fun generateHint(answer: String, revealCount: Int): String {
                 val indices = answer.indices.filter { answer[it] != ' ' && it !in revealedIndices }
@@ -677,7 +681,7 @@ fun LearnByWrite(
                             Button(
                                 onClick = {
                                     if (revealCount.intValue < maxRevealCount) {
-                                        revealCount.value += 1
+                                        revealCount.intValue += 1
                                     }
                                 },
                                 enabled = revealCount.intValue < maxRevealCount,

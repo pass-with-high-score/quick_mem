@@ -320,7 +320,7 @@
     <string name="txt_add_members_to_share_them_with_your_class">Thêm thành viên để chia sẻ với lớp của bạn.</string>
     <string name="txt_add_members">Thêm thành viên</string>
     <string name="txt_add_new_study_set_to_class">Thêm bộ học mới vào lớp</string>
-    <string name="txt_this_class_has_no_sets">Lớp này chưa có bộ học nào</string>
+    <string name="txt_this_class_has_no_study_sets">Lớp này chưa có bộ học nào</string>
     <string name="txt_add_flashcard_sets_to_share_them_with_your_class">Thêm các bộ flashcard để chia sẻ với lớp của bạn.</string>
     <string name="txt_add_study_sets">Thêm bộ học</string>
     <string name="txt_members">Thành viên</string>
@@ -623,4 +623,7 @@
     <string name="txt_please_enter_a_keyword_to_search_images">Vui lòng nhập từ khóa để tìm kiếm hình ảnh</string>
     <string name="txt_import_from_gallery">Nhập từ thư viện</string>
     <string name="txt_search_image">Tìm kiếm hình ảnh</string>
+    <string name="txt_no_hint">Thẻ chưa có gợi ý</string>
+    <string name="txt_no_explanation">Thẻ chưa có giải thích</string>
+    <string name="txt_no_members_found">Không tìm thấy thành viên nào</string>
 </resources>
