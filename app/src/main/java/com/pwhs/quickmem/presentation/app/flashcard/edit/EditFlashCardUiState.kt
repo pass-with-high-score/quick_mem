@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.flashcard.edit
 
 import android.net.Uri
 import com.pwhs.quickmem.domain.model.flashcard.EditFlashCardModel
+import com.pwhs.quickmem.domain.model.pixabay.SearchImageResponseModel
 
 data class EditFlashCardUiState(
     val flashcardId: String = "",
@@ -14,6 +15,9 @@ data class EditFlashCardUiState(
     val explanation: String? = null,
     val showExplanation: Boolean = false,
     val isLoading: Boolean = false,
+    val queryImage: String = "",
+    val searchImageResponseModel: SearchImageResponseModel? = null,
+    val isSearchImageLoading: Boolean = false,
 )
 
 fun EditFlashCardUiState.toEditFlashCardModel(): EditFlashCardModel {

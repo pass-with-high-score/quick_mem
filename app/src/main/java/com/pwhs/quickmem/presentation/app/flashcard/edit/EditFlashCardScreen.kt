@@ -45,12 +45,14 @@ import com.mr0xf00.easycrop.rememberImageCropper
 import com.mr0xf00.easycrop.rememberImagePicker
 import com.mr0xf00.easycrop.ui.ImageCropperDialog
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.pixabay.SearchImageResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.flashcard.component.CardSelectImage
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextField
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextFieldContainer
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTopAppBar
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashcardBottomSheet
+import com.pwhs.quickmem.presentation.app.flashcard.component.FlashcardSelectImageBottomSheet
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.ImageCompressor
@@ -82,7 +84,6 @@ fun EditFlashCardScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 EditFlashCardUiEvent.FlashCardSaved -> {
-                    Timber.d("Flashcard saved")
                     Toast.makeText(
                         context,
                         context.getString(R.string.txt_flashcard_saved), Toast.LENGTH_SHORT
@@ -92,7 +93,6 @@ fun EditFlashCardScreen(
                 }
 
                 EditFlashCardUiEvent.FlashCardSaveError -> {
-                    Timber.d("Flashcard save error")
                     Toast.makeText(
                         context,
                         context.getString(R.string.txt_flashcard_save_error), Toast.LENGTH_SHORT
@@ -100,7 +100,6 @@ fun EditFlashCardScreen(
                 }
 
                 EditFlashCardUiEvent.LoadImage -> {
-                    Timber.d("Load image")
                 }
             }
         }
@@ -173,7 +172,14 @@ fun EditFlashCardScreen(
         },
         onSaveFlashCardClicked = {
             viewModel.onEvent(EditFlashCardUiAction.SaveFlashCard)
-        }
+        },
+        queryImage = uiState.queryImage,
+        searchImageResponseModel = uiState.searchImageResponseModel,
+        onQueryImageChanged = { viewModel.onEvent(EditFlashCardUiAction.OnQueryImageChanged(it)) },
+        onDefinitionImageUrlChanged = {
+            viewModel.onEvent(EditFlashCardUiAction.OnDefinitionImageChanged(it))
+        },
+        isSearchImageLoading = uiState.isSearchImageLoading
     )
 }
 
@@ -203,6 +209,11 @@ fun CreateFlashCard(
     onDeleteImage: () -> Unit = {},
     onNavigationBack: () -> Unit = {},
     onSaveFlashCardClicked: () -> Unit = {},
+    queryImage: String = "",
+    searchImageResponseModel: SearchImageResponseModel? = null,
+    onQueryImageChanged: (String) -> Unit = {},
+    onDefinitionImageUrlChanged: (String) -> Unit = {},
+    isSearchImageLoading: Boolean = false,
 ) {
 
     val bottomSheetSetting = rememberModalBottomSheetState()
@@ -241,6 +252,12 @@ fun CreateFlashCard(
         )
     }
 
+    var showSearchImageBottomSheet by remember {
+        mutableStateOf(false)
+    }
+
+    val searchImageBottomSheet = rememberModalBottomSheetState()
+
 
     Scaffold(
         topBar = {
@@ -273,7 +290,9 @@ fun CreateFlashCard(
                         definitionImageUri = definitionImageUri,
                         definitionImageUrl = definitionImageURL,
                         onDeleteImage = onDeleteImage,
-                        onChooseImage = {}
+                        onChooseImage = {
+                            showSearchImageBottomSheet = true
+                        }
                     )
                 }
                 item {
@@ -411,6 +430,24 @@ fun CreateFlashCard(
                 sheetState = bottomSheetSetting,
                 onShowHintClicked = onShowHintClicked,
                 onShowExplanationClicked = onShowExplanationClicked
+            )
+        }
+        if (showSearchImageBottomSheet) {
+            FlashcardSelectImageBottomSheet(
+                modifier = Modifier,
+                searchImageBottomSheet = searchImageBottomSheet,
+                onDismissRequest = {
+                    showSearchImageBottomSheet = false
+                },
+                queryImage = queryImage,
+                searchImageResponseModel = searchImageResponseModel,
+                onQueryImageChanged = onQueryImageChanged,
+                isSearchImageLoading = isSearchImageLoading,
+                onDefinitionImageUrlChanged = {
+                    onDefinitionImageUrlChanged(it)
+                    onDefinitionImageChanged(null)
+                },
+                imagePicker = imagePicker
             )
         }
     }
