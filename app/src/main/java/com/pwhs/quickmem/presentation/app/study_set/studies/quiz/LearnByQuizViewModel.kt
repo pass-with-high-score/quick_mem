@@ -136,9 +136,16 @@ class LearnByQuizViewModel @Inject constructor(
 
             is LearnByQuizUiAction.OnSwapCard -> {
                 _uiState.update {
-                    it.copy(isSwapCard = !it.isSwapCard)
+                    it.copy(
+                        isSwapCard = !it.isSwapCard,
+                        currentCardIndex = 0,
+                        learningTime = 0,
+                        isEndOfList = false,
+                        wrongAnswerCount = 0,
+                        listWrongAnswer = emptyList()
+                    )
                 }
-                onRestart()
+                getFlashCard()
             }
         }
     }

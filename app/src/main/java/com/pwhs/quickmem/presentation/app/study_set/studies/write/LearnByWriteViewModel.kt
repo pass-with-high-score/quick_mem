@@ -52,7 +52,7 @@ class LearnByWriteViewModel @Inject constructor(
 
     init {
         val studySetId = savedStateHandle.get<String>("studySetId") ?: ""
-        val isGetAll = savedStateHandle.get<Boolean>("isGetAll") ?: false
+        val isGetAll = savedStateHandle.get<Boolean>("isGetAll") == true
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 1
@@ -73,7 +73,7 @@ class LearnByWriteViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
+            val isPlaySound = appManager.isPlaySound.firstOrNull() == true
             _uiState.update { it.copy(isPlaySound = isPlaySound) }
         }
 
@@ -130,9 +130,15 @@ class LearnByWriteViewModel @Inject constructor(
 
             LearnByWriteUiAction.OnSwapCard -> {
                 _uiState.update {
-                    it.copy(isSwapCard = !it.isSwapCard)
+                    it.copy(
+                        isSwapCard = !it.isSwapCard,
+                        currentCardIndex = 0,
+                        learningTime = 0,
+                        wrongAnswerCount = 0,
+                        listWrongAnswer = emptyList()
+                    )
                 }
-                onRestart()
+                getFlashCard()
             }
         }
     }
