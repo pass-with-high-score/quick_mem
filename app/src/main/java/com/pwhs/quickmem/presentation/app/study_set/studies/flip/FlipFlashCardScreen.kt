@@ -214,7 +214,10 @@ fun FlipFlashCard(
                 isGetAll = isGetAll,
                 learnFrom = learnFrom,
                 isSwapCard = isSwapCard,
-                onSwapCard = onSwapCard,
+                onSwapCard = {
+                    onSwapCard()
+                    stackState.reset()
+                },
                 studySetColor = studySetColor
             )
         }

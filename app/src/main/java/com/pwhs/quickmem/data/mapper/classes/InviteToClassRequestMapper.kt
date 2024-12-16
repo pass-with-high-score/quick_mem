@@ -5,10 +5,10 @@ import com.pwhs.quickmem.domain.model.classes.InviteToClassRequestModel
 
 fun InviteToClassRequestModel.toDto() = InviteToClassRequestDto(
     classId = classId,
-    username = username
+    username = username,
 )
 
 fun InviteToClassRequestDto.toModel() = InviteToClassRequestModel(
     classId = classId,
-    username = username
+    username = username,
 )

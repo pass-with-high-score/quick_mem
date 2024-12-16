@@ -5,10 +5,12 @@ import com.pwhs.quickmem.domain.model.classes.InviteToClassResponseModel
 
 fun InviteToClassResponseDto.toModel() = InviteToClassResponseModel(
     message = message,
-    status = status
+    status = status,
+    inviteStatus = inviteStatus
 )
 
 fun InviteToClassResponseModel.toDto() = InviteToClassResponseDto(
     message = message,
-    status = status
+    status = status,
+    inviteStatus = inviteStatus
 )

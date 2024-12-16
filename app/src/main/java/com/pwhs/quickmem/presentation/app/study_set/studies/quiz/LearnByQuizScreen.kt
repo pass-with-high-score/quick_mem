@@ -201,7 +201,10 @@ fun LearnByQuiz(
                 actions = {
                     if (!isEndOfList) {
                         IconButton(
-                            onClick = onSwapCard
+                            onClick = {
+                                onSwapCard()
+                                canResetState = !canResetState
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_swap_card),

@@ -196,7 +196,7 @@ fun ClassDetailScreen(
                             classId = uiState.id,
                             classTitle = uiState.title,
                             classDescription = uiState.description,
-                            isMemberAllowed = uiState.allowSet,
+                            isMemberAllowed = uiState.isAllowManage,
                             isSetAllowed = uiState.allowMember
                         )
                     )
@@ -315,7 +315,8 @@ fun ClassDetailScreen(
         },
         onDeleteFolderClick = {
             viewModel.onEvent(ClassDetailUiAction.OnDeleteFolderInClass(it))
-        }
+        },
+        isAllowManage = uiState.isAllowManage,
     )
 }
 
@@ -331,6 +332,7 @@ fun ClassDetail(
     isLoading: Boolean = false,
     isMember: Boolean = false,
     isAllowMember: Boolean = false,
+    isAllowManage: Boolean = false,
     linkShareCode: String = "",
     userResponseModel: UserResponseModel = UserResponseModel(),
     studySets: List<GetStudySetResponseModel> = emptyList(),
@@ -549,6 +551,7 @@ fun ClassDetail(
         isOwner = isOwner,
         isMember = isMember,
         isAllowMember = isAllowMember,
+        isAllowManage = isAllowManage,
         onJoinClass = {
             onJoinClass()
             showMoreBottomSheet = false

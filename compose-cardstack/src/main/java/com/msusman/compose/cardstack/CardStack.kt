@@ -50,7 +50,7 @@ fun <T> CardStack(
     onSwiped: (Int, Direction) -> Unit = { _, _ -> },
     onChange: (Direction) -> Unit = { _ -> },
     items: List<T>,
-    content: @Composable (item: T) -> Unit
+    content: @Composable (item: T) -> Unit,
 ) {
     Log.d("CardStack", "visibleCount: $visibleCount")
     require(visibleCount in 1 until items.size + 1) {

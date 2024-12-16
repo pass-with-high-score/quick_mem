@@ -31,6 +31,7 @@ fun ClassDetailBottomSheet(
     isOwner: Boolean,
     isMember: Boolean,
     isAllowMember: Boolean,
+    isAllowManage: Boolean,
     onAddStudySetToClass: () -> Unit = {},
     onAddFolderToClass: () -> Unit = {},
     onEditClass: () -> Unit = {},
@@ -53,7 +54,7 @@ fun ClassDetailBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (isOwner || isMember) {
+                if (isOwner || (isMember && isAllowManage)) {
                     ItemMenuBottomSheet(
                         onClick = onAddStudySetToClass,
                         icon = Outlined.ContentCopy,

@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -73,7 +74,7 @@ class FlipFlashCardViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
+            val isPlaySound = appManager.isPlaySound.firstOrNull() == true
             _uiState.update {
                 it.copy(isPlaySound = isPlaySound)
             }
@@ -95,6 +96,9 @@ class FlipFlashCardViewModel @Inject constructor(
             }
 
             is FlipFlashCardUiAction.OnUpdateCardIndex -> {
+                Timber.d("currentCardIndexxxx: ${_uiState.value.currentCardIndex}")
+                Timber.d("flashCardList size: ${_uiState.value.flashCardList.size}")
+                Timber.d("isEndOfList: ${_uiState.value.isEndOfList}")
                 _uiState.update {
                     it.copy(
                         currentCardIndex = it.currentCardIndex + 1,
@@ -102,6 +106,7 @@ class FlipFlashCardViewModel @Inject constructor(
                 }
                 if (event.index == _uiState.value.flashCardList.size - 1) {
                     _uiState.update {
+                        Timber.d("isEndOfList: true")
                         it.copy(
                             isEndOfList = true,
                             learningTime = System.currentTimeMillis() - it.startTime
@@ -211,11 +216,10 @@ class FlipFlashCardViewModel @Inject constructor(
                     it.copy(
                         isSwapCard = !it.isSwapCard,
                         isRandomCard = false,
-                        isEndOfList = false,
                         countKnown = 0,
                         countStillLearning = 0,
                         currentCardIndex = 0,
-                        startTime = System.currentTimeMillis(),
+                        studySetCardCount = 0,
                         flashCardList = emptyList()
                     )
                 }

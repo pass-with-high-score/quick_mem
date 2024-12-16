@@ -1,6 +1,7 @@
 package com.pwhs.quickmem.presentation.app.classes.detail.component
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
@@ -46,12 +47,14 @@ fun ClassTextField(
         shape = shapes.medium,
         isError = errorMessage != null,
         supportingText = {
-            errorMessage?.let {
-                Text(
-                    text = stringResource(it),
-                    color = colorScheme.error,
-                    style = typography.bodyMedium
-                )
+            Column {
+                errorMessage?.let {
+                    Text(
+                        text = stringResource(it),
+                        color = colorScheme.error,
+                        style = typography.bodyMedium
+                    )
+                }
             }
         }
     )

@@ -6,5 +6,5 @@ data class InviteToClassRequestDto(
     @SerializedName("classId")
     val classId: String,
     @SerializedName("username")
-    val username: String
+    val username: String,
 )

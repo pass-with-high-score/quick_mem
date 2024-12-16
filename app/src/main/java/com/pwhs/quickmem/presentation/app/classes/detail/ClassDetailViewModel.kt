@@ -125,6 +125,15 @@ class ClassDetailViewModel @Inject constructor(
                         errorMessage = null
                     )
                 }
+                if (event.username == _uiState.value.userResponseModel.username) {
+                    _uiState.update {
+                        it.copy(
+                            errorMessage = R.string.txt_you_can_not_invite_yourself,
+                            isInvited = false
+                        )
+                    }
+                    return
+                }
             }
 
             ClassDetailUiAction.OnInviteClass -> {
@@ -151,8 +160,7 @@ class ClassDetailViewModel @Inject constructor(
                         resource.data?.let { data ->
                             val isOwner = data.owner.id == appManager.userId.firstOrNull()
                             val isMember =
-                                data.members?.any { it.id == appManager.userId.firstOrNull() }
-                                    ?: false
+                                data.members?.any { it.id == appManager.userId.firstOrNull() } == true
                             _uiState.update {
                                 it.copy(
                                     title = data.title,
@@ -162,7 +170,7 @@ class ClassDetailViewModel @Inject constructor(
                                     isLoading = false,
                                     isMember = isMember,
                                     isOwner = isOwner,
-                                    allowSet = data.allowSetManagement,
+                                    isAllowManage = data.allowSetManagement,
                                     allowMember = data.allowMemberManagement,
                                     userResponseModel = data.owner,
                                     folders = data.folders ?: emptyList(),
@@ -453,26 +461,21 @@ class ClassDetailViewModel @Inject constructor(
                     }
 
                     is Resources.Success -> {
+                        Timber.d("Invite to class success status: ${resource.data?.inviteStatus}")
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                isInvited = resource.data?.status == true
+                                isInvited = resource.data?.status == true,
+                                errorMessage = when(resource.data?.inviteStatus) {
+                                    "ALREADY_MEMBER" -> R.string.txt_this_user_is_already_a_member
+                                    "IS_OWNER" -> R.string.txt_this_user_is_owner
+                                    "ALREADY_INVITED" -> R.string.txt_this_user_is_already_invited
+                                    "USER_NOT_VERIFIED" -> R.string.txt_this_user_is_not_verified
+                                    "NOT_FOUND" -> R.string.txt_user_not_found
+                                    "ALREADY_JOINED" -> R.string.txt_this_user_is_already_joined
+                                    else -> null
+                                }
                             )
-                        }
-                        if (_uiState.value.isInvited) {
-                            _uiState.update {
-                                it.copy(
-                                    errorMessage = null,
-                                    username = ""
-                                )
-                            }
-                            _uiEvent.send(ClassDetailUiEvent.InviteToClassSuccess)
-                        } else {
-                            _uiState.update {
-                                it.copy(
-                                    errorMessage = R.string.txt_error_occurred
-                                )
-                            }
                         }
                     }
 

@@ -626,4 +626,11 @@
     <string name="txt_no_hint">Thẻ chưa có gợi ý</string>
     <string name="txt_no_explanation">Thẻ chưa có giải thích</string>
     <string name="txt_no_members_found">Không tìm thấy thành viên nào</string>
+    <string name="txt_you_can_not_invite_yourself">Bạn không thể mời chính bạn</string>
+    <string name="txt_this_user_is_already_a_member">Người dùng này đã là thành viên</string>
+    <string name="txt_this_user_is_owner">Người dùng này là chủ sở hữu</string>
+    <string name="txt_this_user_is_already_invited">Người dùng này đã được mời</string>
+    <string name="txt_this_user_is_not_verified">Người dùng này chưa được xác minh</string>
+    <string name="txt_user_not_found">Không tìm thấy người dùng</string>
+    <string name="txt_this_user_is_already_joined">Người dùng này đã tham gia lớp học</string>
 </resources>
