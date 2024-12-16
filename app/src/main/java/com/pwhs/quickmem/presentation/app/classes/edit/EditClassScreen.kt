@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -23,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.component.CreateTextField
 import com.pwhs.quickmem.presentation.component.CreateTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -52,8 +55,10 @@ fun EditClassScreen(
                 }
 
                 is EditClassUiEvent.ShowError -> {
-                    Toast.makeText(context,
-                        context.getString(R.string.txt_update_class_failed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_update_class_failed), Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -123,10 +128,11 @@ fun EditClass(
             )
         }
     ) { innerPadding ->
-        Box {
+        Box(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()
                     .verticalScroll(scrollState)
@@ -157,6 +163,13 @@ fun EditClass(
                     onCheckedChange = onAllowSetManagementChange
                 )
             }
+
+            BannerAds(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            )
 
             LoadingOverlay(
                 isLoading = isLoading

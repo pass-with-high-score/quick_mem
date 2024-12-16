@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.model.subject.SubjectModel
+import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetColorInput
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetSubjectBottomSheet
 import com.pwhs.quickmem.presentation.app.study_set.component.StudySetSubjectInput
@@ -144,10 +147,11 @@ fun EditStudySet(
             )
         }
     ) { innerPadding ->
-        Box {
+        Box(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()
                     .verticalScroll(scrollState)
@@ -184,11 +188,17 @@ fun EditStudySet(
                 )
 
             }
+            BannerAds(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            )
+            LoadingOverlay(
+                isLoading = isLoading,
+                color = colorModel?.hexValue?.toColor()
+            )
         }
-        LoadingOverlay(
-            isLoading = isLoading,
-            color = colorModel?.hexValue?.toColor()
-        )
 
         StudySetSubjectBottomSheet(
             showBottomSheet = showBottomSheetEdit,
