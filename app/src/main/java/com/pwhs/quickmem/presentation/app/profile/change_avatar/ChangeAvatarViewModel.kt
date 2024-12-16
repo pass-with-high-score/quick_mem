@@ -113,9 +113,23 @@ class ChangeAvatarViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
+            val userAvatarUrl = appManager.userAvatarUrl.firstOrNull() ?: ""
 
             if (token.isEmpty() || userId.isEmpty()) {
                 _uiState.update { it.copy(isLoading = false) }
+                return@launch
+            }
+
+            // check if link avatar is the same as the current avatar
+            if (userAvatarUrl.contains(avatarId)) {
+                _uiEvent.send(
+                    ChangeAvatarUiEvent.AvatarUpdated(_uiState.value.selectedAvatarUrl ?: "")
+                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false
+                    )
+                }
                 return@launch
             }
 
