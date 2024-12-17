@@ -232,10 +232,14 @@ fun Explore(
                                             isGettingAds = true
                                             AdsUtil.rewardedInterstitialAd(
                                                 context,
-                                            ) {
-                                                onEarnCoins()
-                                                isGettingAds = false
-                                            }
+                                                onAdLoadFailedToLoad = {
+                                                    isGettingAds = false
+                                                },
+                                                onAdWatched = {
+                                                    onEarnCoins()
+                                                    isGettingAds = false
+                                                }
+                                            )
                                         },
                                 )
                             }

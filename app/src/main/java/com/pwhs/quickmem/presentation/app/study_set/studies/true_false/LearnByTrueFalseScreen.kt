@@ -218,13 +218,13 @@ fun LearnByTrueFalse(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val currentProgress by animateFloatAsState(
-                    targetValue = currentCardIndex.toFloat() / flashCardList.size.toFloat()
+                    targetValue = currentCardIndex.toFloat() / flashCardList.size.toFloat().coerceAtLeast(1f)
                 )
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
                     progress = {
                         when (isEndOfList) {
-                            false -> currentProgress
+                            false -> currentProgress.coerceAtLeast(0f)
                             true -> 1f
                         }
                     },
