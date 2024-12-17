@@ -9,9 +9,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.pwhs.quickmem.MainActivity
 import com.pwhs.quickmem.R
-import com.pwhs.quickmem.core.data.alarm.StudyAlarm
 import timber.log.Timber
-import java.time.LocalDateTime
 
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -27,7 +25,7 @@ class AlarmReceiver : BroadcastReceiver() {
         }
 
         Timber.d("Alarm received")
-        val message = intent.getStringExtra("EXTRA_MESSAGE") ?: return
+        val message = intent.getIntExtra("EXTRA_MESSAGE", R.string.txt_it_s_time_to_study)
         Timber.d("Message: $message")
 
         val notificationManager =
@@ -36,7 +34,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val channel = NotificationChannel(
             channelId,
-            "Daily Notifications",
+            context.getString(R.string.txt_daily_notifications),
             NotificationManager.IMPORTANCE_HIGH
         )
         notificationManager.createNotificationChannel(channel)
@@ -53,21 +51,13 @@ class AlarmReceiver : BroadcastReceiver() {
         )
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle("Daily Reminder")
-            .setContentText(message)
+            .setContentTitle(context.getString(R.string.txt_daily_reminder))
+            .setContentText(context.getString(message))
             .setSmallIcon(R.drawable.ic_bear)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .build()
 
         notificationManager.notify(1, notification)
-
-        val alarmScheduler = AndroidAlarmScheduler(context)
-        val scheduleTime = LocalDateTime.now().plusDays(1)
-        val studyAlarm = StudyAlarm(
-            message = "Daily reminder",
-            time = scheduleTime
-        )
-        alarmScheduler.schedule(studyAlarm)
     }
 }

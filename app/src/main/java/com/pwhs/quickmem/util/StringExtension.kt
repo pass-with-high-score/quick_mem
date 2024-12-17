@@ -2,9 +2,11 @@ package com.pwhs.quickmem.util
 
 import androidx.compose.ui.graphics.Color
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -70,15 +72,26 @@ fun String.calculateTimeAgo(): String {
             else -> "${duration.toDays()}d"
         }
     } catch (e: Exception) {
+        Timber.e(e)
         "N/A"
     }
 }
 
+
 fun String.toLocalDateTime(): LocalDateTime? {
     return try {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-        LocalDateTime.parse(this, formatter)
+        val time = if (this.contains("T")) {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+            LocalDateTime.parse(this, formatter)
+        } else {
+            val formatter = DateTimeFormatter.ofPattern("HH:mm")
+            val localTime = LocalTime.parse(this, formatter)
+            LocalDateTime.now().withHour(localTime.hour).withMinute(localTime.minute).withSecond(0).withNano(0)
+        }
+        Timber.d("Time: $time")
+        time
     } catch (e: Exception) {
+        Timber.e(e)
         null
     }
 }

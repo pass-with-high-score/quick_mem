@@ -34,9 +34,10 @@ class AndroidAlarmScheduler @Inject constructor(
 
         val timeInMillis = item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
 
-        alarmManager.setExactAndAllowWhileIdle(
+        alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             timeInMillis,
+            AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
     }

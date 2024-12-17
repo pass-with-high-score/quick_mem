@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.settings
 
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.alarm.StudyAlarm
 import com.revenuecat.purchases.CustomerInfo
 import java.time.LocalDateTime
@@ -22,7 +23,7 @@ data class SettingUiState(
     val customerInfo: CustomerInfo? = null,
     val studyAlarm: StudyAlarm = StudyAlarm(
         time = LocalDateTime.now(),
-        message = "Study time"
+        message = R.string.txt_it_s_time_to_study
     ),
     val isStudyAlarmEnabled: Boolean = false,
     val timeStudyAlarm: String = ""

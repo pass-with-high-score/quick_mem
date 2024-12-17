@@ -3,6 +3,7 @@ package com.pwhs.quickmem.presentation.app.settings
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pwhs.quickmem.R
 import com.pwhs.quickmem.core.data.alarm.StudyAlarm
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
@@ -114,13 +115,14 @@ class SettingsViewModel @Inject constructor(
 
             is SettingUiAction.OnChangeTimeStudyAlarm -> {
                 viewModelScope.launch {
+                    scheduler.cancel(_uiState.value.studyAlarm)
                     _uiState.update {
                         it.copy(
                             timeStudyAlarm = event.timeStudyAlarm,
                             studyAlarm = StudyAlarm(
                                 time = event.timeStudyAlarm.toLocalDateTime()
                                     ?: LocalDateTime.now(),
-                                message = "It's time to study!"
+                                message = R.string.txt_it_s_time_to_study
                             )
                         )
                     }
@@ -148,12 +150,12 @@ class SettingsViewModel @Inject constructor(
                 val username = appManager.username.firstOrNull() ?: ""
                 val role = appManager.userRole.firstOrNull() ?: ""
                 val email = appManager.userEmail.firstOrNull() ?: ""
-                val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() ?: false
+                val isPushNotificationsEnabled = appManager.pushNotifications.firstOrNull() == true
                 val isAppPushNotificationsEnabled =
-                    appManager.appPushNotifications.firstOrNull() ?: false
-                val enabledStudySchedule = appManager.enabledStudySchedule.firstOrNull() ?: false
+                    appManager.appPushNotifications.firstOrNull() == true
+                val enabledStudySchedule = appManager.enabledStudySchedule.firstOrNull() == true
                 val timeStudySchedule = appManager.timeStudySchedule.firstOrNull() ?: ""
-                val isPlaySound = appManager.isPlaySound.firstOrNull() ?: false
+                val isPlaySound = appManager.isPlaySound.firstOrNull() == true
                 _uiState.update {
                     it.copy(
                         userId = userId,
@@ -205,7 +207,7 @@ class SettingsViewModel @Inject constructor(
                     is Resources.Success -> {
                         _uiState.update {
                             it.copy(
-                                canChangeInfo = resource.data?.success ?: false,
+                                canChangeInfo = resource.data?.success == true,
                                 isLoading = false,
                                 password = "",
                                 errorMessage = ""
