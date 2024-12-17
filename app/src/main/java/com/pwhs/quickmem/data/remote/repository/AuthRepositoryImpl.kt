@@ -12,7 +12,6 @@ import com.pwhs.quickmem.data.mapper.user.toDto
 import com.pwhs.quickmem.data.mapper.user.toModel
 import com.pwhs.quickmem.data.paging.UserPagingSource
 import com.pwhs.quickmem.data.remote.ApiService
-import com.pwhs.quickmem.data.remote.EmailService
 import com.pwhs.quickmem.domain.datasource.UserRemoteDataResource
 import com.pwhs.quickmem.domain.model.auth.AuthResponseModel
 import com.pwhs.quickmem.domain.model.auth.ChangePasswordRequestModel
@@ -54,7 +53,6 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
-    private val emailService: EmailService,
     private val userRemoteDataResource: UserRemoteDataResource
 ) : AuthRepository {
     override suspend fun checkEmailValidity(email: String): Flow<Resources<Boolean>> {
@@ -62,7 +60,7 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             try {
                 val emailDto = EmailRequestDto(email)
-                val response = emailService.checkEmail(emailDto)
+                val response = apiService.checkEmail(BuildConfig.EMAIL_VERIFICATION_URL, emailDto)
                 if (response.isReachable == "safe" || response.isReachable == "risky") {
                     emit(Resources.Success(true))
                 } else {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -39,9 +40,10 @@ fun OnboardingPageView(page: OnboardingPage) {
     }
 
    BoxWithConstraints {
-       if(maxHeight > 720.dp) {
+       if(this.maxHeight > 720.dp) {
            Column(
                modifier = Modifier
+                   .fillMaxWidth()
                    .padding(16.dp)
                    .height(400.dp)
                    .graphicsLayer(alpha = alpha),
@@ -71,6 +73,7 @@ fun OnboardingPageView(page: OnboardingPage) {
        } else {
            Column(
                modifier = Modifier
+                   .fillMaxWidth()
                    .padding(16.dp)
                    .height(200.dp)
                    .graphicsLayer(alpha = alpha),

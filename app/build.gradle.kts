@@ -32,7 +32,7 @@ android {
 
         val baseUrl: String = localProperties.getProperty("BASE_URL") ?: "https://api.quickmem.app/"
         val emailVerificationUrl: String = localProperties.getProperty("EMAIL_VERIFICATION_URL")
-            ?: "https://checkemail.quickmem.app/"
+            ?: "https://checkemail.quickmem.app/v0/check_email"
         val bannerAdsId: String =
             localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-5725743620724195/1415385680"
         val interstitialAdsId: String = localProperties.getProperty("INTERSTITIAL_ADS_ID")
@@ -99,12 +99,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.compose.charts)
     implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.auth)
-    implementation(libs.play.services.auth)
-
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.play.services.auth)
-    implementation(libs.googleid)
 
     implementation(libs.play.services.ads)
 
@@ -122,12 +116,9 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.work)
-    // Ktor
-    implementation(libs.bundles.ktor)
     // Coil
     implementation(libs.coil.kt.coil.compose)
     // Compose Destination
-    implementation(libs.accompanist.flowlayout)
     implementation(libs.compose.destination.animation.core)
     implementation(libs.compose.destination.core)
     ksp(libs.compose.destination.ksp)

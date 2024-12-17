@@ -14,13 +14,10 @@ import java.time.LocalDate
 data class HomeUiState(
     val isLoading: Boolean = false,
     val userId: String = "",
-    val streakCount: Int = 0,
     val notificationCount: Int = 0,
     val customerInfo: CustomerInfo? = null,
     val notifications: List<GetNotificationResponseModel> = emptyList(),
     @StringRes val error: Int? = null,
-    val streaks: List<StreakModel> = emptyList(),
-    val streakDates: List<LocalDate> = emptyList(),
     val top5Subjects: List<GetTop5SubjectResponseModel> = emptyList(),
     val subjects: List<SubjectModel> = emptyList(),
     val studySets: List<GetStudySetResponseModel> = emptyList(),

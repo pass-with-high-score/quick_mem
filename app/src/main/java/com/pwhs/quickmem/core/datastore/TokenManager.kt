@@ -19,12 +19,20 @@ class TokenManager @Inject constructor(private val context: Context) {
 
     val accessToken: Flow<String?> = context.dataStore.data
         .map { preferences ->
-            "Bearer ${preferences[ACCESS_TOKEN]}"
+            if (preferences[ACCESS_TOKEN] != null) {
+                "Bearer ${preferences[ACCESS_TOKEN]}"
+            } else {
+                null
+            }
         }
 
     val refreshToken: Flow<String?> = context.dataStore.data
         .map { preferences ->
-            "Bearer ${preferences[REFRESH_TOKEN]}"
+            if (preferences[REFRESH_TOKEN] != null) {
+                preferences[REFRESH_TOKEN]
+            } else {
+                null
+            }
         }
 
     suspend fun saveAccessToken(token: String) {

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -61,7 +62,7 @@ fun MaterialTabScreen(
     modifier: Modifier = Modifier,
     flashCards: List<StudySetFlashCardResponseModel> = emptyList(),
     isOwner: Boolean,
-    onFlashCardClick: (String) -> Unit = {},
+    onFlashcardClick: (String) -> Unit = {},
     onDeleteFlashCardClick: () -> Unit = {},
     onEditFlashCardClick: () -> Unit = {},
     onToggleStarClick: (String, Boolean) -> Unit = { _, _ -> },
@@ -77,7 +78,7 @@ fun MaterialTabScreen(
     val menuBottomSheetState = rememberModalBottomSheetState()
     var showMenu by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
-    var studySetId by remember { mutableStateOf("") }
+    var flashCardSelectedId by remember { mutableStateOf("") }
     val hintBottomSheet = rememberModalBottomSheetState()
     var showHint by remember { mutableStateOf(false) }
     val explanationBottomSheet = rememberModalBottomSheetState()
@@ -276,30 +277,30 @@ fun MaterialTabScreen(
                         }
                     }
 
-                    items(items = flashCards, key = { it.id }) { flashCards ->
+                    items(items = flashCards, key = { it.id }) { flashCard ->
                         CardDetail(
                             isOwner = isOwner,
                             color = studySetColor,
-                            front = flashCards.term,
-                            back = flashCards.definition,
-                            isStarred = flashCards.isStarred,
-                            imageURL = flashCards.definitionImageURL,
-                            isAIGenerated = flashCards.isAIGenerated,
+                            front = flashCard.term,
+                            back = flashCard.definition,
+                            isStarred = flashCard.isStarred,
+                            imageURL = flashCard.definitionImageURL,
+                            isAIGenerated = flashCard.isAIGenerated,
                             onToggleStarClick = { isStarred ->
-                                onToggleStarClick(flashCards.id, isStarred)
+                                onToggleStarClick(flashCard.id, isStarred)
                             },
                             onMenuClick = {
-                                (flashCards.hint
+                                (flashCard.hint
                                     ?: context.getString(R.string.txt_there_is_no_hint_for_this_flashcard)).also {
                                     hint = it
                                 }
-                                (flashCards.explanation
+                                (flashCard.explanation
                                     ?: context.getString(R.string.txt_there_is_no_explanation_for_this_flashcard)).also {
                                     explanation = it
                                 }
                                 showMenu = true
-                                studySetId = flashCards.id
-                                onFlashCardClick(flashCards.id)
+                                flashCardSelectedId = flashCard.id
+                                onFlashcardClick(flashCard.id)
                             }
                         )
                     }
@@ -382,6 +383,7 @@ fun MaterialTabScreen(
                     ),
                     modifier = Modifier.padding(16.dp)
                 )
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }
@@ -411,6 +413,7 @@ fun MaterialTabScreen(
                     ),
                     modifier = Modifier.padding(16.dp)
                 )
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }

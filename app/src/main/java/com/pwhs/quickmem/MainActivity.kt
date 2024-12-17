@@ -29,8 +29,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject lateinit var tokenManager: TokenManager
-    @Inject lateinit var appManager: AppManager
+    @Inject
+    lateinit var tokenManager: TokenManager
+    @Inject
+    lateinit var appManager: AppManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -50,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 val token = tokenManager.accessToken.collectAsState(initial = null)
                 val isLogged = appManager.isLoggedIn.collectAsState(initial = false)
                 LaunchedEffect(key1 = token.value, key2 = isLogged.value) {
-                    if(isLogged.value && token.value == null) {
+                    if (isLogged.value && token.value == null) {
                         appManager.clearAllData()
                         navController.navigate(WelcomeScreenDestination) {
                             popUpTo(NavGraphs.root) {
@@ -69,13 +71,14 @@ class MainActivity : ComponentActivity() {
                         LibraryScreenDestination.route,
                         ProfileScreenDestination.route,
                     ),
-                ) {
-                    DestinationsNavHost(
-                        navGraph = NavGraphs.root,
-                        navController = navController,
-                        engine = navHostEngine,
-                    )
-                }
+                    content = {
+                        DestinationsNavHost(
+                            navGraph = NavGraphs.root,
+                            navController = navController,
+                            engine = navHostEngine,
+                        )
+                    }
+                )
             }
 
         }

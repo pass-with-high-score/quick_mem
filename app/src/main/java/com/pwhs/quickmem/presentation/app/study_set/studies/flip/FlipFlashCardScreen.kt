@@ -389,7 +389,7 @@ fun FlipFlashCard(
                     ) {
                         FlipFlashCardIconButton(
                             knownColor = stillLearningColor,
-                            contentDescription = "Swipe Left",
+                            contentDescription = stringResource(R.string.txt_swipe_left),
                             imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                             onClick = {
                                 stackState.swipe(Direction.Left)

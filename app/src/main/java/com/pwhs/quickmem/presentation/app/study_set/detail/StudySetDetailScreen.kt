@@ -511,7 +511,7 @@ fun StudySetDetail(
                         when (tabIndex) {
                             StudySetDetailEnum.MATERIAL.index -> MaterialTabScreen(
                                 flashCards = flashCards,
-                                onFlashCardClick = onFlashCardClick,
+                                onFlashcardClick = onFlashCardClick,
                                 onDeleteFlashCardClick = onDeleteFlashCard,
                                 onToggleStarClick = onToggleStarredFlashCard,
                                 onEditFlashCardClick = onEditFlashCard,
@@ -540,7 +540,7 @@ fun StudySetDetail(
                         when (tabIndex) {
                             StudySetDetailEnum.MATERIAL.index -> MaterialTabScreen(
                                 flashCards = flashCards,
-                                onFlashCardClick = onFlashCardClick,
+                                onFlashcardClick = onFlashCardClick,
                                 onDeleteFlashCardClick = onDeleteFlashCard,
                                 onToggleStarClick = onToggleStarredFlashCard,
                                 onEditFlashCardClick = onEditFlashCard,
