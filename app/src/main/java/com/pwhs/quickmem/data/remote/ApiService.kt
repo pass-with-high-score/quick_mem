@@ -86,6 +86,7 @@ import com.pwhs.quickmem.data.dto.study_time.GetStudyTimeByUserResponseDto
 import com.pwhs.quickmem.data.dto.subject.GetTop5SubjectResponseDto
 import com.pwhs.quickmem.data.dto.upload.DeleteImageDto
 import com.pwhs.quickmem.data.dto.upload.UploadImageResponseDto
+import com.pwhs.quickmem.data.dto.user.AvatarResponseDto
 import com.pwhs.quickmem.data.dto.user.SearchUserResponseDto
 import com.pwhs.quickmem.data.dto.user.UpdateCoinRequestDto
 import com.pwhs.quickmem.data.dto.user.UpdateCoinResponseDto
@@ -219,6 +220,11 @@ interface ApiService {
         @Header("Authorization") authToken: String,
         @Body deleteImageDto: DeleteImageDto
     )
+
+    @GET("auth/avatars")
+    suspend fun getAvatars(
+        @Header("Authorization") token: String
+    ): List<AvatarResponseDto>
 
     // Study Set
     @POST("study-set")

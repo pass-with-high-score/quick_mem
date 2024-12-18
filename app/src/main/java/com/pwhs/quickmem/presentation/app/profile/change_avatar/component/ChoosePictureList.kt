@@ -8,11 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.users.AvatarResponseModel
 
 @Composable
 fun ChoosePictureList(
     modifier: Modifier = Modifier,
-    avatarUrls: List<String> = emptyList(),
+    avatarUrls: List<AvatarResponseModel> = emptyList(),
     selectedAvatarUrl: String?,
     onImageSelected: (String) -> Unit
 ) {
@@ -41,10 +42,10 @@ fun ChoosePictureList(
 
         items(avatarUrls) { avatarUrl ->
             AvatarItem(
-                avatarUrl = avatarUrl,
-                isSelected = avatarUrl == selectedAvatarUrl,
+                avatarUrl = avatarUrl.url,
+                isSelected = avatarUrl.url == selectedAvatarUrl,
                 onSelected = {
-                    onImageSelected(avatarUrl)
+                    onImageSelected(avatarUrl.url)
                 }
             )
         }
