@@ -322,7 +322,6 @@ private fun VerifyEmail(
                     }
 
                 ) { targetCountdown ->
-                    Timber.d("Countdown: $targetCountdown")
                     if (targetCountdown == 0) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),

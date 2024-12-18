@@ -12,7 +12,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -63,12 +62,7 @@ class ChangeAvatarViewModel @Inject constructor(
             ChangeAvatarUiAction.SaveClicked -> {
                 val selectedAvatarUrl = _uiState.value.selectedAvatarUrl
                 if (selectedAvatarUrl != null) {
-                    val avatarId = extractAvatarIdFromUrl(selectedAvatarUrl)
-                    if (avatarId != null) {
-                        updateAvatar(avatarId)
-                    } else {
-                        _uiState.update { it.copy(isLoading = false) }
-                    }
+                    updateAvatar(selectedAvatarUrl)
                 } else {
                     _uiState.update { it.copy(isLoading = false) }
                 }
@@ -76,16 +70,10 @@ class ChangeAvatarViewModel @Inject constructor(
         }
     }
 
-    private fun extractAvatarIdFromUrl(url: String): String? {
-        val regex = """/avatar/(\d+)\.jpg""".toRegex()
-        val matchResult = regex.find(url)
-        val avatarId = matchResult?.groups?.get(1)?.value
-        return avatarId
-    }
-
     private fun getListAvatar() {
         viewModelScope.launch {
-            authRepository.getAvatar().collectLatest { resource ->
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            authRepository.getAvatar(token = token).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
                         _uiState.update { it.copy(isLoading = false) }

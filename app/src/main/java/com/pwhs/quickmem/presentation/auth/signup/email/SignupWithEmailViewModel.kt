@@ -112,7 +112,7 @@ class SignupWithEmailViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         if (resource.data == true) {
-                            val avatarUrl = Random().nextInt(18).toString()
+                            val avatarUrl = Random().nextInt(126).toString()
                             val username = uiState.value.email.getUsernameFromEmail()
                             val fullName = uiState.value.email.getNameFromEmail()
 

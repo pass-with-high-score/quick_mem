@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pwhs.quickmem.R
+import com.pwhs.quickmem.domain.model.users.AvatarResponseModel
 import com.pwhs.quickmem.presentation.app.profile.change_avatar.component.ChoosePictureList
 import com.pwhs.quickmem.presentation.app.profile.change_avatar.component.ChangeAvatarTopAppBar
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
@@ -71,7 +72,7 @@ fun ChangeAvatarScreen(
 fun ChangeAvatar(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
-    avatarUrls: List<String>,
+    avatarUrls: List<AvatarResponseModel>,
     selectedAvatarUrl: String?,
     onNavigateBack: () -> Unit,
     onSelectedPicture: (String) -> Unit,

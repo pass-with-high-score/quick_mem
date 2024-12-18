@@ -39,6 +39,7 @@ import com.pwhs.quickmem.domain.model.auth.UpdateUsernameResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyEmailResponseModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordRequestModel
 import com.pwhs.quickmem.domain.model.auth.VerifyPasswordResponseModel
+import com.pwhs.quickmem.domain.model.users.AvatarResponseModel
 import com.pwhs.quickmem.domain.model.users.SearchUserResponseModel
 import com.pwhs.quickmem.domain.model.users.UpdateCoinRequestModel
 import com.pwhs.quickmem.domain.model.users.UpdateCoinResponseModel
@@ -301,16 +302,12 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAvatar(): Flow<Resources<List<String>>> {
+    override suspend fun getAvatar(token: String): Flow<Resources<List<AvatarResponseModel>>> {
         return flow {
             emit(Resources.Loading())
             try {
-                val avatarUrls = mutableListOf<String>()
-                for (index in 1..18) {
-                    val imageUrl = "${BuildConfig.BASE_URL}public/images/avatar/$index.jpg"
-                    avatarUrls.add(imageUrl)
-                }
-                emit(Resources.Success(avatarUrls))
+                val response = apiService.getAvatars(token = token)
+                emit(Resources.Success(response.map { it.toModel() }))
             } catch (e: Exception) {
                 Timber.e(e)
                 emit(Resources.Error(e.toString()))
