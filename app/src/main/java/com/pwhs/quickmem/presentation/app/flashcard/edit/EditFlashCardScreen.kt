@@ -3,20 +3,12 @@ package com.pwhs.quickmem.presentation.app.flashcard.edit
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -47,11 +39,12 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.domain.model.pixabay.SearchImageResponseModel
 import com.pwhs.quickmem.presentation.ads.BannerAds
 import com.pwhs.quickmem.presentation.app.flashcard.component.CardSelectImage
-import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextField
+import com.pwhs.quickmem.presentation.app.flashcard.component.ExplanationCard
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTextFieldContainer
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashCardTopAppBar
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashcardBottomSheet
 import com.pwhs.quickmem.presentation.app.flashcard.component.FlashcardSelectImageBottomSheet
+import com.pwhs.quickmem.presentation.app.flashcard.component.HintCard
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.ImageCompressor
@@ -303,89 +296,21 @@ fun CreateFlashCard(
 
                     item {
                         if (showHint || hint.isNotEmpty()) {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                elevation = CardDefaults.elevatedCardElevation(
-                                    defaultElevation = 5.dp,
-                                    focusedElevation = 8.dp
-                                ),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = colorScheme.surface
-                                ),
-                            ) {
-                                Box(
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(16.dp)
-                                    ) {
-                                        FlashCardTextField(
-                                            value = hint,
-                                            onValueChange = onHintChanged,
-                                            hint = stringResource(R.string.txt_hint)
-                                        )
-                                    }
-
-                                    IconButton(
-                                        onClick = {
-                                            onShowHintClicked(false)
-                                            onHintChanged("")
-                                        },
-                                        modifier = Modifier.align(Alignment.TopEnd)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Clear,
-                                            contentDescription = "Close",
-                                        )
-                                    }
-                                }
-                            }
+                            HintCard(
+                                hint = hint,
+                                onHintChanged = onHintChanged,
+                                onShowHintClicked = onShowHintClicked
+                            )
                         }
                     }
 
                     item {
                         if (showExplanation || explanation.isNotEmpty()) {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                elevation = CardDefaults.elevatedCardElevation(
-                                    defaultElevation = 5.dp,
-                                    focusedElevation = 8.dp
-                                ),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = colorScheme.surface
-                                ),
-                            ) {
-                                Box(
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(16.dp)
-                                    ) {
-                                        FlashCardTextField(
-                                            value = explanation,
-                                            onValueChange = onExplanationChanged,
-                                            hint = stringResource(R.string.txt_explanation)
-                                        )
-                                    }
-
-                                    IconButton(
-                                        onClick = {
-                                            onShowExplanationClicked(false)
-                                            onExplanationChanged("")
-                                        },
-                                        modifier = Modifier.align(Alignment.TopEnd)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Clear,
-                                            contentDescription = "Close",
-                                        )
-                                    }
-                                }
-                            }
+                            ExplanationCard(
+                                explanation = explanation,
+                                onExplanationChanged = onExplanationChanged,
+                                onShowExplanationClicked = onShowExplanationClicked
+                            )
                         }
                     }
 
