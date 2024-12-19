@@ -10,7 +10,6 @@ jvmTarget = "17"
 accompanistPermissions = "0.36.0"
 agp = "8.6.0"
 datastorePreferences = "1.1.1"
-easycrop = "0.1.1"
 easyvalidationCore = "1.0.4"
 firebaseBom = "33.7.0"
 firebaseMessagingKtx = "24.1.0"
@@ -81,7 +80,6 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRunt
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
 compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
-easycrop = { module = "io.github.mr0xf00:easycrop", version.ref = "easycrop" }
 easyvalidation-core = { module = "com.wajahatkarim:easyvalidation-core", version.ref = "easyvalidationCore" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }

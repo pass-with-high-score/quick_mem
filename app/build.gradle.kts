@@ -88,7 +88,6 @@ android {
 dependencies {
     implementation(libs.purchases)
     implementation(libs.purchases.ui)
-    implementation(libs.easycrop)
     implementation(libs.accompanist.permissions)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
@@ -103,6 +102,7 @@ dependencies {
     implementation(libs.play.services.ads)
 
     implementation(projects.composeCardstack)
+    implementation(projects.easycrop)
     implementation(libs.lottie.compose)
 
     // Compose
