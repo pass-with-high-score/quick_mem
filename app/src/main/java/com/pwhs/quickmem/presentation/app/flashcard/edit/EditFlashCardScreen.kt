@@ -34,12 +34,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mr0xf00.easycrop.CropError
 import com.mr0xf00.easycrop.CropResult
-import com.mr0xf00.easycrop.CropperStyle
 import com.mr0xf00.easycrop.crop
 import com.mr0xf00.easycrop.rememberImageCropper
 import com.mr0xf00.easycrop.rememberImagePicker
@@ -242,15 +241,6 @@ fun CreateFlashCard(
     })
 
     val cropState = imageCropper.cropState
-    if (cropState != null) {
-        ImageCropperDialog(
-            state = cropState, style = CropperStyle(
-                backgroundColor = Color.Black.copy(alpha = 0.8f),
-                rectColor = Color.White,
-                overlay = Color.Black.copy(alpha = 0.5f),
-            )
-        )
-    }
 
     var showSearchImageBottomSheet by remember {
         mutableStateOf(false)
@@ -259,202 +249,212 @@ fun CreateFlashCard(
     val searchImageBottomSheet = rememberModalBottomSheetState()
 
 
-    Scaffold(
-        topBar = {
-            FlashCardTopAppBar(
-                onNavigationBack = onNavigationBack,
-                onSaveFlashCardClicked = onSaveFlashCardClicked,
-                enableSaveButton = term.isNotEmpty() && definition.isNotEmpty(),
-                onSettingsClicked = {
-                    showBottomSheetSetting = true
-                },
-                title = stringResource(R.string.txt_edit_flashcard)
-            )
-        },
-        modifier = modifier
-            .fillMaxSize()
-    ) { innerPadding ->
-        Box(contentAlignment = Alignment.TopCenter) {
-            LazyColumn(
-                modifier = modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-            ) {
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Scaffold(
+            topBar = {
+                FlashCardTopAppBar(
+                    onNavigationBack = onNavigationBack,
+                    onSaveFlashCardClicked = onSaveFlashCardClicked,
+                    enableSaveButton = term.isNotEmpty() && definition.isNotEmpty(),
+                    onSettingsClicked = {
+                        showBottomSheetSetting = true
+                    },
+                    title = stringResource(R.string.txt_edit_flashcard)
+                )
+            },
+            modifier = modifier
+                .fillMaxSize()
+        ) { innerPadding ->
+            Box(contentAlignment = Alignment.TopCenter) {
+                LazyColumn(
+                    modifier = modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                ) {
 
-                item {
-                    CardSelectImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        onUploadImage = onUploadImage,
-                        definitionImageUri = definitionImageUri,
-                        definitionImageUrl = definitionImageURL,
-                        onDeleteImage = onDeleteImage,
-                        onChooseImage = {
-                            showSearchImageBottomSheet = true
-                        }
-                    )
-                }
-                item {
-                    FlashCardTextFieldContainer(
-                        term = term,
-                        onTermChanged = onTermChanged,
-                        definition = definition,
-                        onDefinitionChanged = onDefinitionChanged
-                    )
-                }
-
-                item {
-                    if (showHint || hint.isNotEmpty()) {
-                        Card(
+                    item {
+                        CardSelectImage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
-                            elevation = CardDefaults.elevatedCardElevation(
-                                defaultElevation = 5.dp,
-                                focusedElevation = 8.dp
-                            ),
-                            colors = CardDefaults.cardColors(
-                                containerColor = colorScheme.surface
-                            ),
-                        ) {
-                            Box(
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(16.dp)
-                                ) {
-                                    FlashCardTextField(
-                                        value = hint,
-                                        onValueChange = onHintChanged,
-                                        hint = stringResource(R.string.txt_hint)
-                                    )
-                                }
+                            onUploadImage = onUploadImage,
+                            definitionImageUri = definitionImageUri,
+                            definitionImageUrl = definitionImageURL,
+                            onDeleteImage = onDeleteImage,
+                            onChooseImage = {
+                                showSearchImageBottomSheet = true
+                            }
+                        )
+                    }
+                    item {
+                        FlashCardTextFieldContainer(
+                            term = term,
+                            onTermChanged = onTermChanged,
+                            definition = definition,
+                            onDefinitionChanged = onDefinitionChanged
+                        )
+                    }
 
-                                IconButton(
-                                    onClick = {
-                                        onShowHintClicked(false)
-                                        onHintChanged("")
-                                    },
-                                    modifier = Modifier.align(Alignment.TopEnd)
+                    item {
+                        if (showHint || hint.isNotEmpty()) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                elevation = CardDefaults.elevatedCardElevation(
+                                    defaultElevation = 5.dp,
+                                    focusedElevation = 8.dp
+                                ),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = colorScheme.surface
+                                ),
+                            ) {
+                                Box(
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Clear,
-                                        contentDescription = "Close",
-                                    )
+                                    Column(
+                                        modifier = Modifier.padding(16.dp)
+                                    ) {
+                                        FlashCardTextField(
+                                            value = hint,
+                                            onValueChange = onHintChanged,
+                                            hint = stringResource(R.string.txt_hint)
+                                        )
+                                    }
+
+                                    IconButton(
+                                        onClick = {
+                                            onShowHintClicked(false)
+                                            onHintChanged("")
+                                        },
+                                        modifier = Modifier.align(Alignment.TopEnd)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Clear,
+                                            contentDescription = "Close",
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                item {
-                    if (showExplanation || explanation.isNotEmpty()) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            elevation = CardDefaults.elevatedCardElevation(
-                                defaultElevation = 5.dp,
-                                focusedElevation = 8.dp
-                            ),
-                            colors = CardDefaults.cardColors(
-                                containerColor = colorScheme.surface
-                            ),
-                        ) {
-                            Box(
-                                contentAlignment = Alignment.Center
+                    item {
+                        if (showExplanation || explanation.isNotEmpty()) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                elevation = CardDefaults.elevatedCardElevation(
+                                    defaultElevation = 5.dp,
+                                    focusedElevation = 8.dp
+                                ),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = colorScheme.surface
+                                ),
                             ) {
-                                Column(
-                                    modifier = Modifier.padding(16.dp)
+                                Box(
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    FlashCardTextField(
-                                        value = explanation,
-                                        onValueChange = onExplanationChanged,
-                                        hint = stringResource(R.string.txt_explanation)
-                                    )
-                                }
+                                    Column(
+                                        modifier = Modifier.padding(16.dp)
+                                    ) {
+                                        FlashCardTextField(
+                                            value = explanation,
+                                            onValueChange = onExplanationChanged,
+                                            hint = stringResource(R.string.txt_explanation)
+                                        )
+                                    }
 
-                                IconButton(
-                                    onClick = {
-                                        onShowExplanationClicked(false)
-                                        onExplanationChanged("")
-                                    },
-                                    modifier = Modifier.align(Alignment.TopEnd)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Clear,
-                                        contentDescription = "Close",
-                                    )
+                                    IconButton(
+                                        onClick = {
+                                            onShowExplanationClicked(false)
+                                            onExplanationChanged("")
+                                        },
+                                        modifier = Modifier.align(Alignment.TopEnd)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Clear,
+                                            contentDescription = "Close",
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                item {
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
-                }
+                    item {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        )
+                    }
 
-                item {
-                    Text(
-                        text = stringResource(R.string.txt_make_your_term_and_definition_as_clear_as_possible_you_can_add_hint_and_explanation_to_help_you_remember_better),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .padding(bottom = 32.dp),
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                    item {
+                        Text(
+                            text = stringResource(R.string.txt_make_your_term_and_definition_as_clear_as_possible_you_can_add_hint_and_explanation_to_help_you_remember_better),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .padding(bottom = 32.dp),
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
+                }
+                BannerAds(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp)
+                )
+                LoadingOverlay(isLoading = isLoading)
             }
-            BannerAds(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp)
-            )
-            LoadingOverlay(isLoading = isLoading)
-        }
 
-        if (showBottomSheetSetting) {
-            FlashcardBottomSheet(
-                onDismissRequest = {
-                    showBottomSheetSetting = false
-                },
-                sheetState = bottomSheetSetting,
-                onShowHintClicked = onShowHintClicked,
-                onShowExplanationClicked = onShowExplanationClicked
-            )
+            if (showBottomSheetSetting) {
+                FlashcardBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheetSetting = false
+                    },
+                    sheetState = bottomSheetSetting,
+                    onShowHintClicked = onShowHintClicked,
+                    onShowExplanationClicked = onShowExplanationClicked
+                )
+            }
+            if (showSearchImageBottomSheet) {
+                FlashcardSelectImageBottomSheet(
+                    modifier = Modifier,
+                    searchImageBottomSheet = searchImageBottomSheet,
+                    onDismissRequest = {
+                        showSearchImageBottomSheet = false
+                    },
+                    queryImage = queryImage,
+                    searchImageResponseModel = searchImageResponseModel,
+                    onQueryImageChanged = onQueryImageChanged,
+                    isSearchImageLoading = isSearchImageLoading,
+                    onDefinitionImageUrlChanged = {
+                        onDefinitionImageUrlChanged(it)
+                        onDefinitionImageChanged(null)
+                    },
+                    imagePicker = imagePicker
+                )
+            }
         }
-        if (showSearchImageBottomSheet) {
-            FlashcardSelectImageBottomSheet(
-                modifier = Modifier,
-                searchImageBottomSheet = searchImageBottomSheet,
-                onDismissRequest = {
-                    showSearchImageBottomSheet = false
-                },
-                queryImage = queryImage,
-                searchImageResponseModel = searchImageResponseModel,
-                onQueryImageChanged = onQueryImageChanged,
-                isSearchImageLoading = isSearchImageLoading,
-                onDefinitionImageUrlChanged = {
-                    onDefinitionImageUrlChanged(it)
-                    onDefinitionImageChanged(null)
-                },
-                imagePicker = imagePicker
+        if (cropState != null) {
+            ImageCropperDialog(
+                state = cropState
             )
         }
     }
+
 }
 
 
-@PreviewLightDark
+@Preview(showBackground = true)
 @Composable
 fun CreateFlashCardPreview() {
     QuickMemTheme {
