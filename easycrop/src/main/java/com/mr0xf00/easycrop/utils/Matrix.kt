@@ -18,6 +18,10 @@ internal fun Matrix.setScaleTranslate(sx: Float, sy: Float, tx: Float, ty: Float
 }
 
 internal fun Matrix.setRectToRect(src: Rect, dst: Rect) {
+    if (src.isEmpty || dst.isEmpty) {
+        setScaleTranslate(1f, 1f, 0f, 0f)
+        return
+    }
     val sx: Float = dst.width / src.width
     val tx = dst.left - src.left * sx
     val sy: Float = dst.height / src.height

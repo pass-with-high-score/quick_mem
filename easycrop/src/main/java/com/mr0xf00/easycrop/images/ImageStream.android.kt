@@ -9,11 +9,17 @@ internal fun interface ImageStream {
     fun openStream(): InputStream?
 }
 
-internal suspend fun Uri.toImageSrc(context: Context) = ImageStreamSrc(UriImageStream(this, context))
+internal suspend fun Uri.toImageSrc(context: Context) =
+    ImageStreamSrc(UriImageStream(this, context))
+
 internal suspend fun File.toImageSrc() = ImageStreamSrc(FileImageStream(this))
 
 internal data class FileImageStream(val file: File) : ImageStream {
-    override fun openStream(): InputStream = file.inputStream()
+    override fun openStream(): InputStream = try {
+        file.inputStream()
+    } catch (e: Exception) {
+        throw IllegalArgumentException("Failed to open file stream", e)
+    }
 }
 
 internal data class UriImageStream(val uri: Uri, val context: Context) : ImageStream {

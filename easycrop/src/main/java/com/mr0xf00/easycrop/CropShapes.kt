@@ -53,6 +53,10 @@ val StarCropShape = CropShape { rect ->
 }
 
 data class RoundRectCropShape(private val cornersPercent: Int) : CropShape {
+    init {
+        require(cornersPercent in 0..100) { "Corners percent must be in [0, 100]" }
+    }
+
     override fun asPath(rect: Rect): Path {
         val radius = CornerRadius(rect.minDimension * cornersPercent / 100f)
         return Path().apply { addRoundRect(RoundRect(rect = rect, radius)) }

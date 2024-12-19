@@ -45,21 +45,27 @@ internal fun CropperControls(
     CompositionLocalProvider(LocalVerticalControls provides isVertical) {
         ButtonsBar(modifier = modifier) {
             IconButton(onClick = { state.rotLeft() }) {
-                Icon(painterResource(id = R.drawable.rot_left), null)
+                Icon(painter = painterResource(id = R.drawable.rot_left), contentDescription = null)
             }
             IconButton(onClick = { state.rotRight() }) {
-                Icon(painterResource(id = R.drawable.rot_right), null)
+                Icon(
+                    painter = painterResource(id = R.drawable.rot_right),
+                    contentDescription = null
+                )
             }
             IconButton(onClick = { state.flipHorizontal() }) {
-                Icon(painterResource(id = R.drawable.flip_hor), null)
+                Icon(painter = painterResource(id = R.drawable.flip_hor), contentDescription = null)
             }
             IconButton(onClick = { state.flipVertical() }) {
-                Icon(painterResource(id = R.drawable.flip_ver), null)
+                Icon(painter = painterResource(id = R.drawable.flip_ver), contentDescription = null)
             }
             Box {
                 var menu by remember { mutableStateOf(false) }
                 IconButton(onClick = { menu = !menu }) {
-                    Icon(painterResource(id = R.drawable.resize), null)
+                    Icon(
+                        painter = painterResource(id = R.drawable.resize),
+                        contentDescription = null
+                    )
                 }
                 if (menu) AspectSelectionMenu(
                     onDismiss = { menu = false },
@@ -70,17 +76,19 @@ internal fun CropperControls(
                 )
             }
             LocalCropperStyle.current.shapes?.let { shapes ->
-                Box {
-                    var menu by remember { mutableStateOf(false) }
-                    IconButton(onClick = { menu = !menu }) {
-                        Icon(Icons.Default.Star, null)
+                if (shapes.isNotEmpty()) {
+                    Box {
+                        var menu by remember { mutableStateOf(false) }
+                        IconButton(onClick = { menu = !menu }) {
+                            Icon(imageVector = Icons.Default.Star, contentDescription = null)
+                        }
+                        if (menu) ShapeSelectionMenu(
+                            onDismiss = { menu = false },
+                            selected = state.shape,
+                            onSelect = { state.shape = it },
+                            shapes = shapes
+                        )
                     }
-                    if (menu) ShapeSelectionMenu(
-                        onDismiss = { menu = false },
-                        selected = state.shape,
-                        onSelect = { state.shape = it },
-                        shapes = shapes
-                    )
                 }
             }
         }
@@ -114,7 +122,6 @@ private fun ButtonsBar(
 }
 
 
-
 @Composable
 private fun ShapeSelectionMenu(
     onDismiss: () -> Unit,
@@ -124,7 +131,8 @@ private fun ShapeSelectionMenu(
 ) {
     OptionsPopup(onDismiss = onDismiss, optionCount = shapes.size) { i ->
         val shape = shapes[i]
-        ShapeItem(shape = shape, selected = selected == shape,
+        ShapeItem(
+            shape = shape, selected = selected == shape,
             onSelect = { onSelect(shape) })
     }
 }
@@ -144,15 +152,16 @@ private fun ShapeItem(
         onClick = onSelect
     ) {
         val shapeState by rememberUpdatedState(newValue = shape)
-        Box(modifier = Modifier
-            .size(20.dp)
-            .drawWithCache {
-                val path = shapeState.asPath(size.toRect())
-                val strokeWidth = 2.dp.toPx()
-                onDrawWithContent {
-                    drawPath(path = path, color = color, style = Stroke(strokeWidth))
-                }
-            })
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .drawWithCache {
+                    val path = shapeState.asPath(size.toRect())
+                    val strokeWidth = 2.dp.toPx()
+                    onDrawWithContent {
+                        drawPath(path = path, color = color, style = Stroke(strokeWidth))
+                    }
+                })
     }
 }
 
@@ -166,22 +175,24 @@ private fun AspectSelectionMenu(
     onLock: (Boolean) -> Unit
 ) {
     val aspects = LocalCropperStyle.current.aspects
-    OptionsPopup(onDismiss = onDismiss, optionCount = 1 + aspects.size) { i ->
-        val unselectedTint = LocalContentColor.current
-        val selectedTint = MaterialTheme.colorScheme.secondary
-        if (i == 0) IconButton(onClick = { onLock(!lock) }) {
-            Icon(
-                Icons.Default.Lock, null,
-                tint = if (lock) selectedTint else unselectedTint
-            )
-        } else {
-            val aspect = aspects[i - 1]
-            val isSelected = region.size.isAspect(aspect)
-            IconButton(onClick = { onRegion(region.setAspect(aspect)) }) {
-                Text(
-                    "${aspect.x}:${aspect.y}",
-                    color = if (isSelected) selectedTint else unselectedTint
+    if (aspects.isNotEmpty()) {
+        OptionsPopup(onDismiss = onDismiss, optionCount = 1 + aspects.size) { i ->
+            val unselectedTint = LocalContentColor.current
+            val selectedTint = MaterialTheme.colorScheme.secondary
+            if (i == 0) IconButton(onClick = { onLock(!lock) }) {
+                Icon(
+                    imageVector = Icons.Default.Lock, contentDescription = null,
+                    tint = if (lock) selectedTint else unselectedTint
                 )
+            } else {
+                val aspect = aspects[i - 1]
+                val isSelected = region.size.isAspect(aspect)
+                IconButton(onClick = { onRegion(region.setAspect(aspect)) }) {
+                    Text(
+                        "${aspect.x}:${aspect.y}",
+                        color = if (isSelected) selectedTint else unselectedTint
+                    )
+                }
             }
         }
     }

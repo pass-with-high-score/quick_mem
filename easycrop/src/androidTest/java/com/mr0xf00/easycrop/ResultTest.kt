@@ -59,7 +59,10 @@ class ResultTest {
     }
 
     private fun imageStream(name: String): ImageStream {
-        return ImageStream { javaClass.classLoader!!.getResourceAsStream(name) }
+        return ImageStream {
+            javaClass.classLoader?.getResourceAsStream(name)
+                ?: throw IllegalStateException("ClassLoader not found")
+        }
     }
 }
 

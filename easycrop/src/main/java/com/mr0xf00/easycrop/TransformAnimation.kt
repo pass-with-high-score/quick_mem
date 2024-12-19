@@ -16,8 +16,7 @@ internal fun animateImgTransform(target: ImgTransform): State<ImgTransform> {
                 current.value = (a.lerp(target, p))
             }
         } finally {
-            current.value = (target)
-            prev = target
+            current.value = target.also { prev = it }
         }
     }
     return current

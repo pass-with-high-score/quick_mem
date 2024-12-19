@@ -128,9 +128,13 @@ fun CreateFlashCardScreen(
             scope.launch {
                 val compressedImageBytes = imageCompressor.compressImage(uri, 200 * 1024L) // 200KB
                 val compressedImageUri = compressedImageBytes?.let {
-                    Uri.fromFile(File(context.cacheDir, "compressed_image.jpg").apply {
-                        writeBytes(it)
-                    })
+                    Uri.fromFile(
+                        File(
+                            context.cacheDir,
+                            "compressed_image_${System.currentTimeMillis()}.jpg"
+                        ).apply {
+                            writeBytes(it)
+                        })
                 }
                 viewModel.onEvent(
                     CreateFlashCardUiAction.FlashCardDefinitionImageChanged(

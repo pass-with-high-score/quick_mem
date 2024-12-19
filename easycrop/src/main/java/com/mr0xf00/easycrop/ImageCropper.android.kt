@@ -4,9 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.unit.IntSize
 import com.mr0xf00.easycrop.images.toImageSrc
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -59,7 +59,7 @@ private suspend fun <R> cacheUri(
 
 @OptIn(DelicateCoroutinesApi::class)
 private fun File.deleteInBackground() {
-    GlobalScope.launch(Dispatchers.IO) { runCatching { delete() } }
+    CoroutineScope(Dispatchers.IO).launch { runCatching { delete() } }
 }
 
 private suspend fun copy(src: Uri, dst: File, context: Context) = withContext(Dispatchers.IO) {

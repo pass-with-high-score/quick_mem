@@ -13,8 +13,8 @@ internal fun lerp(a: Float, b: Float, p: Float): Float = a + p * (b - a)
 internal fun lerp(a: Int, b: Int, p: Float) = lerp(a.toFloat(), b.toFloat(), p).roundToInt()
 
 internal fun lerpAngle(a: Int, b: Int, p: Float): Int {
-    val angleDist = (2 * ((b - a) % 360) % 360 - (b - a) % 360)
-    return (a + angleDist * p).roundToInt()
+    val diff = (((b - a + 180) % 360) - 180)
+    return (a + diff * p).roundToInt()
 }
 
 internal fun Int.next90() = (this + 90).angleRange()

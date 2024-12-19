@@ -14,16 +14,16 @@ data class DecodeParams(val sampleSize: Int, val subset: IntRect)
 data class DecodeResult(val params: DecodeParams, val bmp: ImageBitmap)
 
 internal fun calculateSampleSize(imgRegion: IntSize, view: IntSize): Int {
-    val imgArea = imgRegion.let { it.width.toDouble() * it.height }
-    val viewArea = view.let { it.width.toDouble() * it.height }
-    return (imgArea / viewArea).toFloat().align(2).coerceIn(1f, 32f).toInt()
+    val ratio =
+        (imgRegion.width.toDouble() / view.width) * (imgRegion.height.toDouble() / view.height)
+    return ratio.toFloat().align(2).coerceIn(1f, 32f).toInt()
 }
 
 private fun getImageSubset(
     view: IntSize, viewToImg: Matrix, imgRect: IntRect, align: Boolean
 ): IntRect {
     return viewToImg
-        .map(view.toSize().toRect()).let{ if(align) it.align(128) else it }
+        .map(view.toSize().toRect()).let { if (align) it.align(128) else it }
         .roundOut().intersect(imgRect)
 }
 

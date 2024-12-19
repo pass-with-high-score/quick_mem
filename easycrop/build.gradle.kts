@@ -6,7 +6,6 @@ plugins {
 android {
     namespace = "com.mr0xf00.easycrop"
     compileSdk = libs.versions.compileSdk.get().toInt()
-    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
