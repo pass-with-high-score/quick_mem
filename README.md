@@ -2,6 +2,14 @@
 
 **QuickMem** is an Android application designed to enhance learning through flashcards. It helps users efficiently memorize and review various subjects by offering a flashcard-based learning approach, similar to popular apps like Quizlet and Anki. The app is built using modern Android technologies, including Kotlin, Jetpack Compose, Dagger Hilt, and more, ensuring a smooth and engaging user experience.
 
+## Participate in Testing
+
+#### Step 1: Join the Google Group
+[Google Group - QuickMem](https://groups.google.com/g/quickmem)
+
+#### Step 2: Join the Closed Testing
+[Google Play Closed Testing - QuickMem](https://play.google.com/apps/testing/com.pwhs.quickmem)
+
 ## Features
 
 - **User Authentication & Onboarding**: Secure sign-up and sign-in process with user account management.
@@ -73,3 +81,4 @@ This project is part of my graduation project for the "Mobile Application Develo
 - [Retrofit](https://square.github.io/retrofit/) – Type-safe HTTP client for Android.
 - [Coil](https://coil-kt.github.io/coil/) – Image loading library for Android.
 - [Timber](https://github.com/JakeWharton/timber) – A logger for Android.
+
