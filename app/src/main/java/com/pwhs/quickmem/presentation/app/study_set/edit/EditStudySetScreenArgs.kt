@@ -1,6 +1,8 @@
 package com.pwhs.quickmem.presentation.app.study_set.edit
 
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class EditStudySetScreenArgs(
     val studySetId: String,
     val studySetTitle: String,

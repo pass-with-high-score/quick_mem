@@ -52,7 +52,7 @@ class FlipFlashCardViewModel @Inject constructor(
 
     init {
         val studySetId = savedStateHandle.get<String>("studySetId") ?: ""
-        val isGetAll = savedStateHandle.get<Boolean>("isGetAll") ?: false
+        val isGetAll = savedStateHandle.get<Boolean>("isGetAll") == true
         val studySetTitle = savedStateHandle.get<String>("studySetTitle") ?: ""
         val studySetDescription = savedStateHandle.get<String>("studySetDescription") ?: ""
         val studySetColorId = savedStateHandle.get<Int>("studySetColorId") ?: 1
@@ -96,9 +96,6 @@ class FlipFlashCardViewModel @Inject constructor(
             }
 
             is FlipFlashCardUiAction.OnUpdateCardIndex -> {
-                Timber.d("currentCardIndexxxx: ${_uiState.value.currentCardIndex}")
-                Timber.d("flashCardList size: ${_uiState.value.flashCardList.size}")
-                Timber.d("isEndOfList: ${_uiState.value.isEndOfList}")
                 _uiState.update {
                     it.copy(
                         currentCardIndex = it.currentCardIndex + 1,
