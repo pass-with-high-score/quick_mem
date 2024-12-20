@@ -48,7 +48,7 @@ jobs:
 #          path: checksum.txt
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build debug
 
 #      - name: Upload APK
 #        if: success()
