@@ -16,7 +16,7 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-        Purchases.logLevel = LogLevel.DEBUG
+        Purchases.logLevel = if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.ERROR
         Purchases.configure(
             PurchasesConfiguration.Builder(
                 context = this,

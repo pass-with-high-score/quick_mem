@@ -24,6 +24,11 @@ class AlarmReceiver : BroadcastReceiver() {
             Timber.d("Received an authorized broadcast action: $action")
         }
 
+        if (action == Intent.ACTION_BOOT_COMPLETED) {
+            Timber.d("Device boot completed")
+            return
+        }
+
         Timber.d("Alarm received")
         val message = intent.getIntExtra("EXTRA_MESSAGE", R.string.txt_it_s_time_to_study)
         Timber.d("Message: $message")

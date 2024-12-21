@@ -130,7 +130,8 @@ fun FolderDetailScreen(
                 }
 
                 is FolderDetailUiEvent.ShowError -> {
-                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.message), Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 FolderDetailUiEvent.FolderDeleted -> {
@@ -143,50 +144,53 @@ fun FolderDetailScreen(
                             studySetId = "",
                             studySetTitle = "",
                             studySetDescription = "",
-                            studySetColorId = 0,
-                            studySetSubjectId = 0,
+                            studySetColorId = 1,
+                            studySetSubjectId = 1,
                             folderId = uiState.id,
                             learnFrom = LearnFrom.FOLDER,
                             isGetAll = event.isGetAll
                         )
                     )
                 }
+
                 is FolderDetailUiEvent.OnNavigateToQuiz -> {
                     navigator.navigate(
                         LearnByQuizScreenDestination(
                             studySetId = "",
                             studySetTitle = "",
                             studySetDescription = "",
-                            studySetColorId = 0,
-                            studySetSubjectId = 0,
+                            studySetColorId = 1,
+                            studySetSubjectId = 1,
                             folderId = uiState.id,
                             learnFrom = LearnFrom.FOLDER,
                             isGetAll = event.isGetAll
                         )
                     )
                 }
+
                 is FolderDetailUiEvent.OnNavigateToTrueFalse -> {
                     navigator.navigate(
                         LearnByTrueFalseScreenDestination(
                             studySetId = "",
                             studySetTitle = "",
                             studySetDescription = "",
-                            studySetColorId = 0,
-                            studySetSubjectId = 0,
+                            studySetColorId = 1,
+                            studySetSubjectId = 1,
                             folderId = uiState.id,
                             learnFrom = LearnFrom.FOLDER,
                             isGetAll = event.isGetAll
                         )
                     )
                 }
+
                 is FolderDetailUiEvent.OnNavigateToWrite -> {
                     navigator.navigate(
                         LearnByWriteScreenDestination(
                             studySetId = "",
                             studySetTitle = "",
                             studySetDescription = "",
-                            studySetColorId = 0,
-                            studySetSubjectId = 0,
+                            studySetColorId = 1,
+                            studySetSubjectId = 1,
                             folderId = uiState.id,
                             learnFrom = LearnFrom.FOLDER,
                             isGetAll = event.isGetAll
