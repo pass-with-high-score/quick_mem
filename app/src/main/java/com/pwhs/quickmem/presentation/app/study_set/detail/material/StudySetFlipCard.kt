@@ -116,8 +116,11 @@ fun StudySetFlipCard(
                 Text(
                     text = frontText,
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = backTextSize,
+                        fontWeight = when {
+                            frontText.length <= 50 -> FontWeight.Bold
+                            else -> FontWeight.Normal
+                        },
+                        fontSize = frontTextSize,
                         color = colorScheme.onBackground,
                         textAlign = TextAlign.Center,
                     ),
@@ -140,9 +143,12 @@ fun StudySetFlipCard(
                     Text(
                         text = backText,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = frontTextSize,
+                            fontSize = backTextSize,
                             color = colorScheme.onBackground,
-                            fontWeight = FontWeight.Normal,
+                            fontWeight = when {
+                                backText.length <= 50 -> FontWeight.Bold
+                                else -> FontWeight.Normal
+                            },
                             textAlign = when {
                                 backImage != null -> TextAlign.Start
                                 else -> TextAlign.Center

@@ -273,7 +273,7 @@ fun SettingsScreen(
         onNavigateToPrivacyPolicy = {
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+                Uri.parse("https://pass-with-high-score.github.io/quickmem-term-policy/policy")
             )
             try {
                 context.startActivity(intent)
@@ -284,7 +284,7 @@ fun SettingsScreen(
         onNavigateToTermsOfService = {
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://pass-with-high-score.github.io/QuickMem-Services/")
+                Uri.parse("https://pass-with-high-score.github.io/quickmem-term-policy/services")
             )
             try {
                 context.startActivity(intent)

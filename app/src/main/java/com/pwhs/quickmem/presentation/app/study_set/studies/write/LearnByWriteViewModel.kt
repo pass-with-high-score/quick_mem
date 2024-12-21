@@ -427,18 +427,18 @@ class LearnByWriteViewModel @Inject constructor(
     private fun playCompleteSound() {
         val isPlaySound = _uiState.value.isPlaySound
         if (isPlaySound) {
-            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.finish)
+            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.audio_study_complete)
             mediaPlayer.start()
         }
     }
 
     private fun playCorrectSound() {
-        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.correct)
+        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.audio_correct)
         mediaPlayer.start()
     }
 
     private fun playIncorrectSound() {
-        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.wrong)
+        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.audio_wrong)
         mediaPlayer.start()
     }
 
