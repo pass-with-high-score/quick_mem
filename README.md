@@ -44,12 +44,28 @@
 
 2. Open the project in Android Studio.
 
-3. Build the project:
+3. Add the following lines to your `local.properties` file:
+   ```properties
+   BASE_URL="https://your-server-url.com"
+   EMAIL_VERIFICATION_URL="https://your-server-url.com/verify-email"
+   BANNER_ADS_ID="your-banner-ads-id"
+   INTERSTITIAL_ADS_ID="your-interstitial-ads-id"
+   REWARD_ADS_ID="your-reward-ads-id"
+   REWARDED_INTERSTITIAL_ADS_ID="your-rewarded-interstitial-ads-id"
+   ONESIGNAL_APP_ID="your-onesignal-app-id"(optional)
+   REVENUECAT_API_KEY="your-revenuecat-api-key"
+   RELEASE_STORE_FILE="your-release-store-file"
+   RELEASE_KEY_ALIAS="your-release-key-alias"
+   RELEASE_STORE_PASSWORD="your-release-store-password"
+   RELEASE_KEY_PASSWORD="your-release-key-password"
+   ```
+
+4. Build the project:
    ```sh
    ./gradlew build
    ```
 
-4. Run the app on an emulator or a physical device.
+5. Run the app on an emulator or a physical device.
 
 ## Usage
 

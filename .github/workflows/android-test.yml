@@ -1,0 +1,83 @@
+name: Android Build and Test
+
+on:
+  push:
+    branches:
+      - main
+      - "feat/*"
+      - "fix/*"
+  pull_request:
+    branches:
+      - main
+      - "feat/*"
+      - "fix/*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Cache Gradle files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Create local.properties file
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          EMAIL_VERIFICATION_URL: ${{ secrets.EMAIL_VERIFICATION_URL }}
+          BANNER_ADS_ID: ${{ secrets.BANNER_ADS_ID }}
+          INTERSTITIAL_ADS_ID: ${{ secrets.INTERSTITIAL_ADS_ID }}
+          REWARD_ADS_ID: ${{ secrets.REWARD_ADS_ID }}
+          REWARDED_INTERSTITIAL_ADS_ID: ${{ secrets.REWARDED_INTERSTITIAL_ADS_ID }}
+          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+          RELEASE_STORE_FILE: ${{ secrets.RELEASE_STORE_FILE }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          echo "BASE_URL=$BASE_URL" >> $GITHUB_WORKSPACE/local.properties
+          echo "EMAIL_VERIFICATION_URL=$EMAIL_VERIFICATION_URL" >> $GITHUB_WORKSPACE/local.properties
+          echo "BANNER_ADS_ID=$BANNER_ADS_ID" >> $GITHUB_WORKSPACE/local.properties
+          echo "INTERSTITIAL_ADS_ID=$INTERSTITIAL_ADS_ID" >> $GITHUB_WORKSPACE/local.properties
+          echo "REWARD_ADS_ID=$REWARD_ADS_ID" >> $GITHUB_WORKSPACE/local.properties
+          echo "REWARDED_INTERSTITIAL_ADS_ID=$REWARDED_INTERSTITIAL_ADS_ID" >> $GITHUB_WORKSPACE/local.properties
+          echo "ONESIGNAL_APP_ID=$ONESIGNAL_APP_ID" >> $GITHUB_WORKSPACE/local.properties
+          echo "REVENUECAT_API_KEY=$REVENUECAT_API_KEY" >> $GITHUB_WORKSPACE/local.properties
+          echo "RELEASE_STORE_FILE=$RELEASE_STORE_FILE" >> $GITHUB_WORKSPACE/local.properties
+          echo "RELEASE_KEY_ALIAS=$RELEASE_KEY_ALIAS" >> $GITHUB_WORKSPACE/local.properties
+          echo "RELEASE_STORE_PASSWORD=$RELEASE_STORE_PASSWORD" >> $GITHUB_WORKSPACE/local.properties
+          echo "RELEASE_KEY_PASSWORD=$RELEASE_KEY_PASSWORD" >> $GITHUB_WORKSPACE/local.properties
+
+
+      - name: Build Debug APK
+        run: ./gradlew buildDebug
+
+      - name: Send Telegram Notification on Success
+        if: success()
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="🎉 <b>Release Build and Deploy Successful!</b> 🎉%0A<b>Project</b>: 🚀 <a href='https://github.com/${{ github.repository }}'>${{ github.repository }}</a>%0A<b>Committer</b>: 👤 ${{ github.actor }}%0A<b>Message</b>: 💬 ${{ github.event.head_commit.message }}%0A<b>Branch</b>: 🌿 <code>${{ github.ref_name }}</code>%0A<b>Workflow</b>: 📄 <a href='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'>Details</a>" \
+            -d parse_mode="HTML"
+
+      - name: Send Telegram Notification on Failure
+        if: failure()
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="⚠️ <b>Release Build Failed!</b> ⚠️%0A<b>Project</b>: 🚀 <a href='https://github.com/${{ github.repository }}'>${{ github.repository }}</a>%0A<b>Committer</b>: 👤 ${{ github.actor }}%0A<b>Message</b>: 💬 ${{ github.event.head_commit.message }}%0A<b>Branch</b>: 🌿 <code>${{ github.ref_name }}</code>%0A<b>Workflow</b>: 📄 <a href='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'>Details</a>%0A<b>Error Details</b>: ❌ Check logs for more information." \
+            -d parse_mode="HTML"

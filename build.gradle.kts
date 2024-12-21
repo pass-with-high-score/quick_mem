@@ -10,3 +10,16 @@ plugins {
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.google.crashlytics) apply false
 }
+
+tasks.register("buildRelease") {
+    group = "distribution"
+    description = "Build the app for distribution (release version)"
+
+    dependsOn(":app:assembleRelease") // Build release APK from the app module
+}
+
+tasks.register("buildDebug") {
+    group = "build"
+    description = "Build the app for testing (debug version)"
+    dependsOn(":app:assembleDebug") // Build debug APK
+}

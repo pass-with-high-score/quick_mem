@@ -30,22 +30,17 @@ android {
             println("local.properties not found, using default values")
         }
 
-        val baseUrl: String = localProperties.getProperty("BASE_URL") ?: "https://api.quickmem.app/"
+        val baseUrl: String = localProperties.getProperty("BASE_URL")
         val emailVerificationUrl: String = localProperties.getProperty("EMAIL_VERIFICATION_URL")
-            ?: "https://checkemail.quickmem.app/v0/check_email"
         val bannerAdsId: String =
-            localProperties.getProperty("BANNER_ADS_ID") ?: "ca-app-pub-5725743620724195/1415385680"
+            localProperties.getProperty("BANNER_ADS_ID")
         val interstitialAdsId: String = localProperties.getProperty("INTERSTITIAL_ADS_ID")
-            ?: "ca-app-pub-5725743620724195/5715891999"
         val rewardAdsId: String =
-            localProperties.getProperty("REWARD_ADS_ID") ?: "ca-app-pub-5725743620724195/5188260450"
+            localProperties.getProperty("REWARD_ADS_ID")
         val rewardedInterstitialAdsId: String =
             localProperties.getProperty("REWARDED_INTERSTITIAL_ADS_ID")
-                ?: "ca-app-pub-5725743620724195/6760705307"
         val oneSignalAppId: String = localProperties.getProperty("ONESIGNAL_APP_ID")
-            ?: "b2f7f966-d8cc-11e4-bed1-df8f05be55ba"
         val revenueCatApiKey: String = localProperties.getProperty("REVENUECAT_API_KEY")
-            ?: "goog_TBgLrymHTtfZJQzfyRseRIYlPER"
 
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         buildConfigField("String", "EMAIL_VERIFICATION_URL", "\"$emailVerificationUrl\"")
@@ -63,7 +58,7 @@ android {
         val keystoreProperties = Properties()
         try {
             file(rootProject.file("local.properties")).inputStream()
-                .use { keystoreProperties.load(it) }.let{
+                .use { keystoreProperties.load(it) }.let {
                     create("release") {
                         storeFile = file(keystoreProperties.getProperty("RELEASE_STORE_FILE"))
                         storePassword = keystoreProperties.getProperty("RELEASE_STORE_PASSWORD")
