@@ -8,7 +8,7 @@ versionName = "1.6(2)"
 jvmTarget = "17"
 # dependencies versions
 accompanistPermissions = "0.36.0"
-agp = "8.6.0"
+agp = "8.6.1"
 datastorePreferences = "1.1.1"
 easyvalidationCore = "1.0.4"
 firebaseBom = "33.7.0"
@@ -37,17 +37,17 @@ credentialsPlayServicesAuth = "1.3.0"
 googleid = "1.1.1"
 # Serialization
 runtime = "1.7.6"
-serialization = "2.0.20"
-serialization-json = "1.7.1"
-serialization-core = "1.7.1"
+serialization = "2.0.21"
+serialization-json = "1.7.3"
+serialization-core = "1.7.3"
 # Hilt
 hilt = "2.51.1"
 hilt-work = "1.2.0"
 hilt-compose = "1.2.0"
 # Ktor
 ktorClientAndroid = "2.3.5"
-ktorClientCore = "2.3.12"
-ktorUtils = "2.3.12"
+ktorClientCore = "3.0.0"
+ktorUtils = "3.0.0"
 # Coil
 coilCompose = "2.7.0"
 # Compose Destinations

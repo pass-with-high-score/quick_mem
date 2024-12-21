@@ -226,6 +226,14 @@ interface ApiService {
         @Header("Authorization") token: String
     ): List<AvatarResponseDto>
 
+    @Multipart
+    @POST("upload/avatar/{userId}")
+    suspend fun uploadUserAvatar(
+        @Header("Authorization") token: String,
+        @Part avatar: MultipartBody.Part,
+        @Path("userId") userId: String
+    ): UploadImageResponseDto
+
     // Study Set
     @POST("study-set")
     suspend fun createStudySet(
