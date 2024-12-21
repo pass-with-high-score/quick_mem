@@ -67,12 +67,29 @@ fun Context.getLanguageCode(): String {
 }
 
 fun Context.createImageFile(): File {
-    // Create an image file name
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    return File.createTempFile(
-        "JPEG_${timeStamp}_", // prefix
-        ".jpg", // suffix
-        storageDir // directory
-    )
+    try {
+        // Check available space
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        if (storageDir?.freeSpace ?: 0 < MIN_REQUIRED_SPACE) {
+            throw IOException("Không đủ dung lượng trống")
+        }
+
+        // Create an image file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", // prefix
+            ".jpg", // suffix
+            storageDir // directory
+        ).apply {
+            // Register for deletion when app closes
+            deleteOnExit()
+        }
+    } catch (e: IOException) {
+        throw IOException("Không thể tạo file ảnh tạm thời", e)
+    }
+}
+
+companion object {
+    private const val MIN_REQUIRED_SPACE = 10 * 1024 * 1024L // 10MB
+}
 }
