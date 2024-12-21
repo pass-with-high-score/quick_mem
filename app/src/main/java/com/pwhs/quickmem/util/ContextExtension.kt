@@ -15,6 +15,8 @@ import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.pwhs.quickmem.R
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -70,8 +72,9 @@ fun Context.createImageFile(): File {
     try {
         // Check available space
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        if (storageDir?.freeSpace ?: 0 < MIN_REQUIRED_SPACE) {
-            throw IOException("Không đủ dung lượng trống")
+        if ((storageDir?.freeSpace ?: 0) < (10 * 1024 * 1024L)) {
+            Timber.e(getString(R.string.txt_error_insufficient_storage))
+            throw IOException(getString(R.string.txt_error_insufficient_storage))
         }
 
         // Create an image file name
@@ -85,11 +88,7 @@ fun Context.createImageFile(): File {
             deleteOnExit()
         }
     } catch (e: IOException) {
-        throw IOException("Không thể tạo file ảnh tạm thời", e)
+        Timber.e(e)
+        throw IOException(getString(R.string.txt_error_create_temp_file))
     }
-}
-
-companion object {
-    private const val MIN_REQUIRED_SPACE = 10 * 1024 * 1024L // 10MB
-}
 }

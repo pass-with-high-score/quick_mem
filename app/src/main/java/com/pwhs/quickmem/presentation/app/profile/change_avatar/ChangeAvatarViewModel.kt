@@ -133,7 +133,7 @@ class ChangeAvatarViewModel @Inject constructor(
             val userAvatarUrl = appManager.userAvatarUrl.firstOrNull() ?: ""
 
             // check if link avatar is the same as the current avatar
-            if (userAvatarUrl.contains(selectAvatarUrl)) {
+            if (userAvatarUrl == selectAvatarUrl) {
                 _uiEvent.send(
                     ChangeAvatarUiEvent.AvatarUpdated(_uiState.value.selectedAvatarUrl ?: "")
                 )
@@ -146,7 +146,9 @@ class ChangeAvatarViewModel @Inject constructor(
             }
 
             authRepository.updateAvatar(
-                token, userId, UpdateAvatarRequestModel(selectAvatarUrl)
+                token = token,
+                avatarId = userId,
+                updateAvatarRequestModel = UpdateAvatarRequestModel(selectAvatarUrl)
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
