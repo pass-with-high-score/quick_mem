@@ -34,7 +34,7 @@ fun AvatarItem(
 ) {
     Box(
         modifier = Modifier
-            .padding(4.dp)
+            .padding(8.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onSelected() }
             .border(
@@ -43,7 +43,7 @@ fun AvatarItem(
                 shape = RoundedCornerShape(12.dp)
             )
             .fillMaxWidth()
-            .height(100.dp)
+            .height(110.dp)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)

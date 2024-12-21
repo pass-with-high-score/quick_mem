@@ -117,7 +117,7 @@ class ChangeAvatarViewModel @Inject constructor(
                                     AvatarResponseModel(
                                         url = userAvatarUrl
                                     )
-                                ) + avatarUrls,
+                                ) + avatarUrls.filter { it.url != userAvatarUrl },
                             )
                         }
                     }
