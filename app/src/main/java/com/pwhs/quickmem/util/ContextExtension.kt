@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.graphics.ImageBitmap
@@ -14,9 +15,14 @@ import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.pwhs.quickmem.R
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth")
 
@@ -55,8 +61,34 @@ fun Context.changeLanguage(languageCode: String) {
 
 fun Context.getLanguageCode(): String {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        this.getSystemService(LocaleManager::class.java).applicationLocales[0]?.toLanguageTag()?.split("-")?.first() ?: "en"
+        this.getSystemService(LocaleManager::class.java).applicationLocales[0]?.toLanguageTag()
+            ?.split("-")?.first() ?: "en"
     } else {
         AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag()?.split("-")?.first() ?: "en"
+    }
+}
+
+fun Context.createImageFile(): File {
+    try {
+        // Check available space
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        if ((storageDir?.freeSpace ?: 0) < (10 * 1024 * 1024L)) {
+            Timber.e(getString(R.string.txt_error_insufficient_storage))
+            throw IOException(getString(R.string.txt_error_insufficient_storage))
+        }
+
+        // Create an image file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", // prefix
+            ".jpg", // suffix
+            storageDir // directory
+        ).apply {
+            // Register for deletion when app closes
+            deleteOnExit()
+        }
+    } catch (e: IOException) {
+        Timber.e(e)
+        throw IOException(getString(R.string.txt_error_create_temp_file))
     }
 }

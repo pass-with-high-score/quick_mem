@@ -638,4 +638,11 @@
     <string name="txt_it_s_time_to_study">Đã đến thời gian học rồi!</string>
     <string name="txt_daily_notifications">Thông báo hằng ngày</string>
     <string name="txt_swipe_left">Kéo qua trái</string>
+    <string name="txt_failed_to_get_uri_for_the_file">Không thể lấy URI cho tệp</string>
+    <string name="txt_camera_permission_denied">Quyền truy cập camera bị từ chối</string>
+    <string name="txt_failed_to_open_camera">Không thể mở camera</string>
+    <string name="txt_error_creating_image_file">Lỗi khi tạo tệp hình ảnh</string>
+    <string name="txt_permission_denied">Quyền bị từ chối</string>
+    <string name="txt_error_insufficient_storage">Không đủ dung lượng trống</string>
+    <string name="txt_error_create_temp_file">Không thể tạo file ảnh tạm thời</string>
 </resources>

@@ -1,10 +1,13 @@
 package com.pwhs.quickmem.presentation.app.profile.change_avatar.component
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -24,13 +27,14 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 @Composable
 fun AvatarItem(
     avatarUrl: String? = null,
+    avatarUri: Uri? = null,
     @DrawableRes imageId: Int? = null,
     isSelected: Boolean,
     onSelected: () -> Unit
 ) {
     Box(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(4.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onSelected() }
             .border(
@@ -38,11 +42,18 @@ fun AvatarItem(
                 color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
             )
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(100.dp)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(imageId ?: avatarUrl)
+                .data(
+                    when {
+                        avatarUrl != null -> avatarUrl
+                        avatarUri != null -> avatarUri
+                        else -> imageId
+                    }
+                )
                 .crossfade(true)
                 .memoryCacheKey(imageId?.toString() ?: avatarUrl)
                 .diskCacheKey(imageId?.toString() ?: avatarUrl)

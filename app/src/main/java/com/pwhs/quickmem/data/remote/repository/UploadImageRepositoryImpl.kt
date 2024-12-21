@@ -70,4 +70,39 @@ class UploadImageRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun uploadUserAvatar(
+        token: String,
+        imageUri: Uri,
+        userId: String
+    ): Flow<Resources<UploadImageResponseModel>> {
+        return flow {
+            if (token.isEmpty()) {
+                return@flow
+            }
+            emit(Resources.Loading())
+            try {
+                val realPath = RealPathUtil.getRealPath(context = context, imageUri)
+                val imageFile = realPath?.let { File(it) }
+
+                if (imageFile != null) {
+                    val requestUploadImageFile = MultipartBody.Part.createFormData(
+                        name = "avatar",
+                        filename = imageFile.name,
+                        body = imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    )
+                    val response = apiService.uploadUserAvatar(
+                        token = token,
+                        avatar = requestUploadImageFile,
+                        userId = userId
+                    )
+                    emit(Resources.Success(response.toUploadImageResponseModel()))
+                }
+
+            } catch (e: Exception) {
+                Timber.e(e)
+                emit(Resources.Error(e.message ?: "An error occurred"))
+            }
+        }
+    }
 }

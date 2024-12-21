@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="avatar"
+        path="Android/data/com.pwhs.quickmem/files/Pictures" />
+</paths>

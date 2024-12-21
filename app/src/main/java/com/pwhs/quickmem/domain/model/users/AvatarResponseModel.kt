@@ -1,6 +1,6 @@
 package com.pwhs.quickmem.domain.model.users
 
 data class AvatarResponseModel(
-    val id: Int,
+    val id: Int? = null,
     val url: String
 )

@@ -1,12 +1,15 @@
 package com.pwhs.quickmem.presentation.app.profile.change_avatar
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.AppManager
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
 import com.pwhs.quickmem.domain.model.auth.UpdateAvatarRequestModel
+import com.pwhs.quickmem.domain.model.users.AvatarResponseModel
 import com.pwhs.quickmem.domain.repository.AuthRepository
+import com.pwhs.quickmem.domain.repository.UploadImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChangeAvatarViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val uploadImageRepository: UploadImageRepository,
     private val appManager: AppManager,
     private val tokenManager: TokenManager
 ) : ViewModel() {
@@ -59,12 +63,32 @@ class ChangeAvatarViewModel @Inject constructor(
                 }
             }
 
-            ChangeAvatarUiAction.SaveClicked -> {
+            is ChangeAvatarUiAction.SaveClicked -> {
                 val selectedAvatarUrl = _uiState.value.selectedAvatarUrl
                 if (selectedAvatarUrl != null) {
-                    updateAvatar(selectedAvatarUrl)
+                    val avatarUri = _uiState.value.avatarUri
+                    if (avatarUri != null) {
+                        uploadAvatar(avatarUri)
+                    } else {
+                        updateAvatarUrl(selectedAvatarUrl)
+                    }
                 } else {
                     _uiState.update { it.copy(isLoading = false) }
+                }
+            }
+
+            is ChangeAvatarUiAction.OnImageUriChanged -> {
+                _uiState.update {
+                    it.copy(
+                        avatarUri = event.imageUri,
+                        selectedAvatarUrl = event.imageUri.toString(),
+                        // put image uri to first list
+                        avatarUrls = listOf(
+                            AvatarResponseModel(
+                                url = event.imageUri.toString()
+                            )
+                        ) + it.avatarUrls
+                    )
                 }
             }
         }
@@ -73,6 +97,7 @@ class ChangeAvatarViewModel @Inject constructor(
     private fun getListAvatar() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userAvatarUrl = appManager.userAvatarUrl.firstOrNull() ?: ""
             authRepository.getAvatar(token = token).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
@@ -88,7 +113,11 @@ class ChangeAvatarViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                avatarUrls = avatarUrls,
+                                avatarUrls = listOf(
+                                    AvatarResponseModel(
+                                        url = userAvatarUrl
+                                    )
+                                ) + avatarUrls,
                             )
                         }
                     }
@@ -97,19 +126,14 @@ class ChangeAvatarViewModel @Inject constructor(
         }
     }
 
-    private fun updateAvatar(avatarId: String) {
+    private fun updateAvatarUrl(selectAvatarUrl: String) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
             val userAvatarUrl = appManager.userAvatarUrl.firstOrNull() ?: ""
 
-            if (token.isEmpty() || userId.isEmpty()) {
-                _uiState.update { it.copy(isLoading = false) }
-                return@launch
-            }
-
             // check if link avatar is the same as the current avatar
-            if (userAvatarUrl.contains(avatarId)) {
+            if (userAvatarUrl == selectAvatarUrl) {
                 _uiEvent.send(
                     ChangeAvatarUiEvent.AvatarUpdated(_uiState.value.selectedAvatarUrl ?: "")
                 )
@@ -122,7 +146,9 @@ class ChangeAvatarViewModel @Inject constructor(
             }
 
             authRepository.updateAvatar(
-                token, userId, UpdateAvatarRequestModel(avatarId)
+                token = token,
+                avatarId = userId,
+                updateAvatarRequestModel = UpdateAvatarRequestModel(selectAvatarUrl)
             ).collect { resource ->
                 when (resource) {
                     is Resources.Error -> {
@@ -139,6 +165,46 @@ class ChangeAvatarViewModel @Inject constructor(
 
                     is Resources.Success -> {
                         val newAvatarUrl = resource.data?.avatarUrl ?: ""
+                        appManager.saveUserAvatar(newAvatarUrl)
+                        _uiEvent.send(
+                            ChangeAvatarUiEvent.AvatarUpdated(newAvatarUrl)
+                        )
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun uploadAvatar(imageUri: Uri) {
+        viewModelScope.launch {
+            val token = tokenManager.accessToken.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: ""
+
+            uploadImageRepository.uploadUserAvatar(
+                token = token,
+                imageUri = imageUri,
+                userId = userId
+            ).collect { resource ->
+                when (resource) {
+                    is Resources.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+
+                    is Resources.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resources.Success -> {
+                        val newAvatarUrl = resource.data?.url ?: ""
                         appManager.saveUserAvatar(newAvatarUrl)
                         _uiEvent.send(
                             ChangeAvatarUiEvent.AvatarUpdated(newAvatarUrl)

@@ -641,4 +641,11 @@
     <string name="txt_daily_notifications">Daily Notifications</string>
     <string name="txt_it_s_time_to_study">It\'s time to study!</string>
     <string name="txt_swipe_left">Swipe left</string>
+    <string name="txt_failed_to_get_uri_for_the_file">Failed to get URI for the file</string>
+    <string name="txt_camera_permission_denied">Camera permission denied</string>
+    <string name="txt_failed_to_open_camera">Failed to open camera</string>
+    <string name="txt_error_creating_image_file">Error creating image file</string>
+    <string name="txt_permission_denied">Permission denied</string>
+    <string name="txt_error_insufficient_storage">Insufficient storage space</string>
+    <string name="txt_error_create_temp_file">Unable to create temporary image file</string>
 </resources>

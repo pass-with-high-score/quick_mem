@@ -310,7 +310,7 @@ fun FolderDetail(
             )
         },
         floatingActionButton = {
-            if (isOwner) {
+            if (isOwner && studySets.isNotEmpty()) {
                 FloatingActionButton(
                     onClick = {
                         showStudyFolderBottomSheet = true

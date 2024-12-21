@@ -15,4 +15,10 @@ interface UploadImageRepository {
         token: String,
         imageURL: String
     ): Flow<Resources<Unit>>
+
+    suspend fun uploadUserAvatar(
+        token: String,
+        imageUri: Uri,
+        userId: String
+    ): Flow<Resources<UploadImageResponseModel>>
 }
