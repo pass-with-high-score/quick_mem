@@ -56,14 +56,13 @@ fun FlipFlashCardFinish(
     onRestartClicked: () -> Unit,
     isGetAll: Boolean
 ) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_firework))
     val progress by animateLottieCompositionAsState(
         composition = composition,
         isPlaying = isEndOfList,
     )
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
     ) {
         LottieAnimation(
             composition = composition,
@@ -85,7 +84,9 @@ fun FlipFlashCardFinish(
                         fontWeight = FontWeight.Bold
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .padding(top = 32.dp)
                 )
             }
             item {

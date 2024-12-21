@@ -69,7 +69,7 @@ fun TrueFalseFlashcardFinish(
     onRestartClicked: () -> Unit,
     isGetAll: Boolean
 ) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_firework))
     val progress by animateLottieCompositionAsState(
         composition = composition,
         isPlaying = isEndOfList,
@@ -85,7 +85,6 @@ fun TrueFalseFlashcardFinish(
     var definitionImageUri by remember { mutableStateOf("") }
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
     ) {
         LottieAnimation(
             composition = composition,
@@ -108,6 +107,7 @@ fun TrueFalseFlashcardFinish(
                             fontWeight = FontWeight.Bold
                         ),
                         modifier = Modifier.padding(16.dp)
+                            .padding(top = 32.dp)
                     )
                     StudySetDonutChart(
                         modifier = Modifier

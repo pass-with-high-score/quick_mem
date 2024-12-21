@@ -69,7 +69,7 @@ fun QuizFlashCardFinish(
     onRestartClicked: () -> Unit,
     isGetAll: Boolean
 ) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_firework))
     val progress by animateLottieCompositionAsState(
         composition = composition,
         isPlaying = isEndOfList,
@@ -85,7 +85,6 @@ fun QuizFlashCardFinish(
     var definitionImageUri by remember { mutableStateOf("") }
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
     ) {
         LottieAnimation(
             composition = composition,
@@ -107,7 +106,9 @@ fun QuizFlashCardFinish(
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         ),
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .padding(top = 32.dp)
                     )
                     StudySetDonutChart(
                         modifier = Modifier

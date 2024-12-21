@@ -437,7 +437,7 @@ class FlipFlashCardViewModel @Inject constructor(
     private fun playCompleteSound() {
         val isPlaySound = _uiState.value.isPlaySound
         if (isPlaySound) {
-            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.study_complete)
+            val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.audio_study_complete)
             mediaPlayer.start()
         }
     }

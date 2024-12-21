@@ -92,7 +92,7 @@ fun StandardScaffold(
     var showStreakBottomSheet by remember {
         mutableStateOf(false)
     }
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fire_streak))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_fire_streak))
     val progress by animateLottieCompositionAsState(
         composition = composition,
         iterations = LottieConstants.IterateForever,
