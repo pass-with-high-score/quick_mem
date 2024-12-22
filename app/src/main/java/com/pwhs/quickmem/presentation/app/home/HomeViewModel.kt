@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val firebaseRepository: FirebaseRepository,
     private val tokenManager: TokenManager,
-    private val appManager: AppManager
+    private val appManager: AppManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
@@ -212,7 +212,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getTopSubjects(
         top5Subjects: List<GetTop5SubjectResponseModel>,
-        subjectModels: List<SubjectModel> = SubjectModel.defaultSubjects
+        subjectModels: List<SubjectModel> = SubjectModel.defaultSubjects,
     ): List<SubjectModel> {
         return top5Subjects.map { top5Subject ->
             subjectModels.find { it.id == top5Subject.id }
@@ -310,13 +310,13 @@ class HomeViewModel @Inject constructor(
 
     private fun sendTokenToServer(token: String) {
         viewModelScope.launch {
-            val userId = appManager.userId.firstOrNull() ?: ""
+            val userId = appManager.userId.firstOrNull() ?: return@launch
             val deviceTokenRequest = DeviceTokenRequestModel(
                 userId = userId,
                 deviceToken = token
             )
 
-            val accessToken = tokenManager.accessToken.firstOrNull() ?: ""
+            val accessToken = tokenManager.accessToken.firstOrNull() ?: return@launch
             firebaseRepository.sendDeviceToken(
                 accessToken = accessToken,
                 deviceTokenRequest = deviceTokenRequest
