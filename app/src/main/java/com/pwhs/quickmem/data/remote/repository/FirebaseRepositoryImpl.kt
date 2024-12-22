@@ -11,16 +11,22 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class FirebaseRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
 ) : FirebaseRepository {
     override suspend fun sendDeviceToken(
         accessToken: String,
-        deviceTokenRequest: DeviceTokenRequestModel
+        deviceTokenRequest: DeviceTokenRequestModel,
     ): Flow<Resources<Unit>> {
         return flow {
             emit(Resources.Loading())
+            if (accessToken.isEmpty()) {
+                return@flow
+            }
             try {
-                apiService.sendDeviceToken(accessToken, deviceTokenRequest.toDto())
+                apiService.sendDeviceToken(
+                    authorization = accessToken,
+                    tokenRequest = deviceTokenRequest.toDto()
+                )
                 emit(Resources.Success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
