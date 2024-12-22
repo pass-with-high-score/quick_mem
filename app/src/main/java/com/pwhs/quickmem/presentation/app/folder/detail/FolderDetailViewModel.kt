@@ -13,7 +13,9 @@ import com.pwhs.quickmem.domain.model.study_set.GetStudySetResponseModel
 import com.pwhs.quickmem.domain.repository.FolderRepository
 import com.pwhs.quickmem.presentation.app.folder.detail.FolderDetailUiEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -38,17 +40,28 @@ class FolderDetailViewModel @Inject constructor(
     private val _uiEvent = Channel<FolderDetailUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    var job: Job? = null
+
     init {
         val id: String = savedStateHandle["id"] ?: ""
-        _uiState.update { it.copy(id = id) }
-        getFolderSetById(id)
-        saveRecentAccessFolder(id)
+        val code: String = savedStateHandle["code"] ?: ""
+        _uiState.update {
+            it.copy(
+                id = id,
+                linkShareCode = code
+            )
+        }
+        getFolderSetById(isRefresh = false)
     }
 
     fun onEvent(event: FolderDetailUiAction) {
         when (event) {
             is FolderDetailUiAction.Refresh -> {
-                getFolderSetById(_uiState.value.id)
+                job?.cancel()
+                job = viewModelScope.launch {
+                    delay(500)
+                    getFolderSetById(isRefresh = true)
+                }
             }
 
             FolderDetailUiAction.DeleteFolder -> {
@@ -94,45 +107,106 @@ class FolderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getFolderSetById(id: String) {
+    private fun getFolderSetById(isRefresh: Boolean = false) {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            folderRepository.getFolderById(token, id).collectLatest { resource ->
-                when (resource) {
-                    is Resources.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-
-                    is Resources.Success -> {
-                        resource.data?.let { data ->
-                            val isOwner = appManager.userId.firstOrNull() == data.owner.id
-                            val totalFlashCards =
-                                calculateTotalFlashCards(data.studySets ?: emptyList())
-                            _uiState.update {
-                                it.copy(
-                                    title = data.title,
-                                    linkShareCode = data.linkShareCode ?: "",
-                                    description = data.description,
-                                    isPublic = data.isPublic,
-                                    studySetCount = data.studySetCount,
-                                    user = data.owner,
-                                    studySets = data.studySets ?: emptyList(),
-                                    createdAt = data.createdAt,
-                                    updatedAt = data.updatedAt,
-                                    isLoading = false,
-                                    isOwner = isOwner,
-                                    totalFlashCards = totalFlashCards
-                                )
+            val code = _uiState.value.linkShareCode
+            val id = _uiState.value.id
+            if (token.isEmpty()) {
+                _uiEvent.send(UnAuthorized)
+                return@launch
+            }
+            if (code.isNotEmpty()) {
+                folderRepository.getFolderByLinkCode(token = token, code = code)
+                    .collect { resource ->
+                        when (resource) {
+                            is Resources.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false
+                                    )
+                                }
+                                _uiEvent.send(NotFound)
                             }
-                        } ?: run {
-                            _uiEvent.send(ShowError(R.string.txt_folder_not_found))
-                        }
-                        Timber.d("")
-                    }
 
-                    is Resources.Error -> {
-                        Timber.e(resource.message)
-                        _uiState.update { it.copy(isLoading = false) }
+                            is Resources.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = true
+                                    )
+                                }
+                            }
+
+                            is Resources.Success -> {
+                                resource.data?.let { data ->
+                                    val isOwner = appManager.userId.firstOrNull() == data.owner.id
+                                    val totalFlashCards =
+                                        calculateTotalFlashCards(data.studySets ?: emptyList())
+                                    _uiState.update {
+                                        it.copy(
+                                            title = data.title,
+                                            linkShareCode = data.linkShareCode ?: "",
+                                            description = data.description,
+                                            isPublic = data.isPublic,
+                                            studySetCount = data.studySetCount,
+                                            user = data.owner,
+                                            studySets = data.studySets ?: emptyList(),
+                                            createdAt = data.createdAt,
+                                            updatedAt = data.updatedAt,
+                                            isLoading = false,
+                                            isOwner = isOwner,
+                                            totalFlashCards = totalFlashCards
+                                        )
+                                    }
+                                }
+                                if (!isRefresh && _uiState.value.id.isNotEmpty()) {
+                                    saveRecentAccessFolder()
+                                }
+                            }
+                        }
+                    }
+            } else {
+                folderRepository.getFolderById(
+                    token = token,
+                    folderId = id
+                ).collectLatest { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+
+                        is Resources.Success -> {
+                            resource.data?.let { data ->
+                                val isOwner = appManager.userId.firstOrNull() == data.owner.id
+                                val totalFlashCards =
+                                    calculateTotalFlashCards(data.studySets ?: emptyList())
+                                _uiState.update {
+                                    it.copy(
+                                        title = data.title,
+                                        linkShareCode = data.linkShareCode ?: "",
+                                        description = data.description,
+                                        isPublic = data.isPublic,
+                                        studySetCount = data.studySetCount,
+                                        user = data.owner,
+                                        studySets = data.studySets ?: emptyList(),
+                                        createdAt = data.createdAt,
+                                        updatedAt = data.updatedAt,
+                                        isLoading = false,
+                                        isOwner = isOwner,
+                                        totalFlashCards = totalFlashCards
+                                    )
+                                }
+                            }
+                            if (!isRefresh) {
+                                saveRecentAccessFolder()
+                            }
+                        }
+
+                        is Resources.Error -> {
+                            Timber.e(resource.message)
+                            _uiState.update { it.copy(isLoading = false) }
+                            _uiEvent.send(NotFound)
+                        }
                     }
                 }
             }
@@ -169,10 +243,11 @@ class FolderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveRecentAccessFolder(folderId: String) {
+    private fun saveRecentAccessFolder() {
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
             val userId = appManager.userId.firstOrNull() ?: ""
+            val folderId = _uiState.value.id
             val saveRecentAccessFolderRequestModel = SaveRecentAccessFolderRequestModel(
                 userId = userId,
                 folderId = folderId

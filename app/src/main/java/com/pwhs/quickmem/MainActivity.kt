@@ -31,8 +31,10 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var tokenManager: TokenManager
+
     @Inject
     lateinit var appManager: AppManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -80,10 +82,8 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
-
         }
         @SuppressLint("SourceLockedOrientationActivity")
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
-
 }

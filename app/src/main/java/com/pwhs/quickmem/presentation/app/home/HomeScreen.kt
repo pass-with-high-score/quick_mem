@@ -2,6 +2,7 @@ package com.pwhs.quickmem.presentation.app.home
 
 import android.Manifest
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,10 +44,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -77,6 +80,8 @@ import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.annotation.parameters.DeepLink
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateStudySetScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FolderDetailScreenDestination
@@ -87,20 +92,73 @@ import com.ramcosta.composedestinations.generated.destinations.StudySetDetailScr
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.revenuecat.purchases.CustomerInfo
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Destination<RootGraph>
+@Destination<RootGraph>(
+    deepLinks = [
+        DeepLink(uriPattern = "quickmem://join/class?code={classCode}"),
+        DeepLink(uriPattern = "quickmem://share/folder?code={folderCode}"),
+        DeepLink(uriPattern = "quickmem://share/study-set?code={studySetCode}")
+    ]
+)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
+    studySetCode: String? = null,
+    folderCode: String? = null,
+    classCode: String? = null,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    var ssCode by rememberSaveable { mutableStateOf(studySetCode) }
+    var fCode by rememberSaveable { mutableStateOf(folderCode) }
+    var cCode by rememberSaveable { mutableStateOf(classCode) }
+    LaunchedEffect(key1 = ssCode, key2 = fCode, key3 = cCode) {
+        when {
+            cCode != null -> {
+                cCode = null
+                navigator.navigate(
+                    JoinClassScreenDestination(
+                        code = classCode ?: ""
+                    )
+                )
+            }
+
+            fCode != null -> {
+                fCode = null
+                navigator.navigate(
+                    FolderDetailScreenDestination(
+                        code = folderCode ?: ""
+                    )
+                )
+            }
+
+            ssCode != null -> {
+                ssCode = null
+                navigator.navigate(
+                    StudySetDetailScreenDestination(
+                        code = studySetCode
+                    )
+                )
+            }
+        }
+    }
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-
-                else -> {}
+                HomeUiEvent.UnAuthorized -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_unauthorized), Toast.LENGTH_SHORT
+                    ).show()
+                    navigator.navigate(NavGraphs.root) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                        restoreState = false
+                    }
+                }
             }
         }
     }
@@ -154,7 +212,6 @@ fun HomeScreen(
                 navigator.navigate(
                     JoinClassScreenDestination(
                         code = notification.data.code,
-                        isFromDeepLink = false
                     )
                 )
             }
@@ -177,7 +234,6 @@ fun HomeScreen(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 private fun Home(
@@ -507,7 +563,16 @@ private fun Home(
                 }
             }
         }
-
+        Paywall(
+            isPaywallVisible = isPaywallVisible,
+            onCustomerInfoChanged = { customerInfo ->
+                onCustomerInfoChanged(customerInfo)
+            },
+            onPaywallDismissed = {
+                isPaywallVisible = false
+            },
+            userId = customer?.originalAppUserId ?: ""
+        )
 
     }
 
@@ -520,16 +585,6 @@ private fun Home(
             sheetState = modalBottomSheetState
         )
     }
-
-    Paywall(
-        isPaywallVisible = isPaywallVisible,
-        onCustomerInfoChanged = { customerInfo ->
-            onCustomerInfoChanged(customerInfo)
-        },
-        onPaywallDismissed = {
-            isPaywallVisible = false
-        },
-    )
     LoadingOverlay(isLoading = isLoading)
 }
 

@@ -8,6 +8,7 @@ import com.pwhs.quickmem.util.isInternetAvailable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val appManager: AppManager,
-    application: Application
+    application: Application,
 ) : AndroidViewModel(application) {
 
     private val _uiEvent = Channel<SplashUiEvent>(Channel.BUFFERED)
@@ -44,13 +45,12 @@ class SplashViewModel @Inject constructor(
 
     private fun checkFirstRun() {
         viewModelScope.launch {
-            appManager.isFirstRun.collect { isFirstRun ->
-                if (isFirstRun) {
-                    appManager.saveIsFirstRun(true)
-                    _uiEvent.send(SplashUiEvent.FirstRun)
-                } else {
-                    _uiEvent.send(SplashUiEvent.NotFirstRun)
-                }
+            val isFirstRun = appManager.isFirstRun.firstOrNull() ?: true
+            if (isFirstRun) {
+                appManager.saveIsFirstRun(true)
+                _uiEvent.send(SplashUiEvent.FirstRun)
+            } else {
+                _uiEvent.send(SplashUiEvent.NotFirstRun)
             }
         }
     }

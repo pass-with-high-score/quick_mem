@@ -50,6 +50,7 @@ import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.formatDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.EditFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.FlipFlashCardScreenDestination
@@ -76,7 +77,7 @@ fun FolderDetailScreen(
     resultNavigator: ResultBackNavigator<Boolean>,
     resultEditFolder: ResultRecipient<EditFolderScreenDestination, Boolean>,
     resultStudySetDetail: ResultRecipient<StudySetDetailScreenDestination, Boolean>,
-    resultAddStudySet: ResultRecipient<AddStudySetToFolderScreenDestination, Boolean>
+    resultAddStudySet: ResultRecipient<AddStudySetToFolderScreenDestination, Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -196,6 +197,29 @@ fun FolderDetailScreen(
                             isGetAll = event.isGetAll
                         )
                     )
+                }
+
+                is FolderDetailUiEvent.NotFound -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_folder_not_found),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    resultNavigator.navigateBack(true)
+                }
+
+                is FolderDetailUiEvent.UnAuthorized -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_unauthorized), Toast.LENGTH_SHORT
+                    ).show()
+                    navigator.navigate(NavGraphs.root) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                        restoreState = false
+                    }
                 }
             }
         }

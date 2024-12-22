@@ -88,7 +88,7 @@ fun AuthSocialScreen(
                 AuthSocialUiEvent.SignUpSuccess -> {
                     Timber.d("Sign up success")
                     navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination) {
+                    navigator.navigate(HomeScreenDestination()) {
                         popUpTo(HomeScreenDestination) {
                             inclusive = true
                             launchSingleTop = true

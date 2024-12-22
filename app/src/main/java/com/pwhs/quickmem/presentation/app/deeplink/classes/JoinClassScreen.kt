@@ -41,7 +41,6 @@ import com.pwhs.quickmem.presentation.app.settings.component.SettingTitleSection
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.ClassDetailScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -71,15 +70,7 @@ fun JoinClassScreen(
                             title = event.title,
                             description = event.description
                         )
-                    ) {
-                        if (uiState.isFromDeepLink) {
-                            popUpTo(NavGraphs.root) {
-                                saveState = false
-                            }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
-                    }
+                    )
                 }
 
                 JoinClassUiEvent.UnAuthorized -> {
@@ -87,13 +78,7 @@ fun JoinClassScreen(
                         context,
                         context.getString(R.string.txt_unauthorized), Toast.LENGTH_SHORT
                     ).show()
-                    navigator.navigate(NavGraphs.root) {
-                        popUpTo(NavGraphs.root) {
-                            saveState = false
-                        }
-                        launchSingleTop = true
-                        restoreState = false
-                    }
+                    navigator.navigateUp()
                 }
 
                 JoinClassUiEvent.NotFound -> {
@@ -101,13 +86,7 @@ fun JoinClassScreen(
                         context,
                         context.getString(R.string.txt_class_not_found), Toast.LENGTH_SHORT
                     ).show()
-                    navigator.navigate(NavGraphs.root) {
-                        popUpTo(NavGraphs.root) {
-                            saveState = false
-                        }
-                        launchSingleTop = true
-                        restoreState = false
-                    }
+                    navigator.navigateUp()
                 }
             }
         }
@@ -125,13 +104,7 @@ fun JoinClassScreen(
             )
         },
         onBackHome = {
-            navigator.navigate(NavGraphs.root) {
-                popUpTo(NavGraphs.root) {
-                    saveState = false
-                }
-                launchSingleTop = true
-                restoreState = false
-            }
+            navigator.navigateUp()
         },
         isLoading = uiState.isLoading
     )

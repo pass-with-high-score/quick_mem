@@ -645,4 +645,5 @@
     <string name="txt_permission_denied">Quyền bị từ chối</string>
     <string name="txt_error_insufficient_storage">Không đủ dung lượng trống</string>
     <string name="txt_error_create_temp_file">Không thể tạo file ảnh tạm thời</string>
+    <string name="txt_study_set_not_found">Không tìm thấy bộ học</string>
 </resources>

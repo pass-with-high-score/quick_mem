@@ -8,6 +8,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.pwhs.quickmem.util.dataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
@@ -207,6 +209,7 @@ class AppManager @Inject constructor(private val context: Context) {
     suspend fun clearAllData() {
         context.dataStore.edit { preferences ->
             preferences.clear()
+            preferences[IS_FIRST_RUN] = false
         }
     }
 }

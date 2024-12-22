@@ -58,6 +58,7 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.QuickMemAlertDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToClassesScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AddStudySetToFoldersScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CreateFlashCardScreenDestination
@@ -213,8 +214,7 @@ fun StudySetDetailScreen(
                 }
 
                 is StudySetDetailUiEvent.StudySetDeleted -> {
-                    resultNavigator.setResult(true)
-                    navigator.navigateUp()
+                    resultNavigator.navigateBack(true)
                 }
 
                 is StudySetDetailUiEvent.StudySetProgressReset -> {
@@ -289,14 +289,35 @@ fun StudySetDetailScreen(
                         )
                     )
                 }
+
+                is StudySetDetailUiEvent.NotFound -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_study_set_not_found), Toast.LENGTH_SHORT
+                    ).show()
+                    resultNavigator.navigateBack(false)
+                }
+
+                is StudySetDetailUiEvent.UnAuthorized -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.txt_unauthorized), Toast.LENGTH_SHORT
+                    ).show()
+                    navigator.navigate(NavGraphs.root) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                        restoreState = false
+                    }
+                }
             }
         }
     }
     StudySetDetail(
         modifier = modifier,
         onNavigateBack = {
-            resultNavigator.setResult(true)
-            navigator.navigateUp()
+            resultNavigator.navigateBack(true)
         },
         onAddFlashcard = {
             navigator.navigate(

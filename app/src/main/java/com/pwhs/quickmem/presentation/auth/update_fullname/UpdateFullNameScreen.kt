@@ -65,7 +65,7 @@ fun UpdateFullNameScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UpdateFullNameUiEvent.UpdateSuccess -> {
-                    navigator.navigate(HomeScreenDestination) {
+                    navigator.navigate(HomeScreenDestination()) {
                         popUpTo(UpdateFullNameScreenDestination) {
                             inclusive = true
                         }
@@ -94,7 +94,7 @@ fun UpdateFullNameScreen(
             viewModel.onEvent(UpdateFullNameUiAction.Submit)
         },
         onSkipClick = {
-            navigator.navigate(HomeScreenDestination) {
+            navigator.navigate(HomeScreenDestination()) {
                 popUpTo(HomeScreenDestination) {
                     inclusive = true
                 }

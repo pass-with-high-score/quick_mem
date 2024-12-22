@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FolderDetailArgs (
-    val id: String,
+    val id: String? = null,
+    val code: String? = null,
 )
