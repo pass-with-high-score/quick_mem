@@ -182,7 +182,7 @@ class FolderRepositoryImpl @Inject constructor(
     override suspend fun getFolderByLinkCode(
         token: String,
         code: String
-    ): Flow<Resources<CreateFolderResponseModel>> {
+    ): Flow<Resources<GetFolderResponseModel>> {
         return flow {
             if (token.isEmpty()) {
                 return@flow

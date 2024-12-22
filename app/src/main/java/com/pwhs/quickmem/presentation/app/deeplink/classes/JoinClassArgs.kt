@@ -5,5 +5,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class JoinClassArgs(
     val code: String,
-    val isFromDeepLink: Boolean
 )

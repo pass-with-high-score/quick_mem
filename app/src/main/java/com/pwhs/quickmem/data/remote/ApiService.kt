@@ -481,7 +481,7 @@ interface ApiService {
     suspend fun getFolderByLinkCode(
         @Header("Authorization") token: String,
         @Path("code") code: String
-    ): CreateFolderResponseDto
+    ): GetFolderResponseDto
 
     @POST("folder/recent")
     suspend fun saveRecentFolder(

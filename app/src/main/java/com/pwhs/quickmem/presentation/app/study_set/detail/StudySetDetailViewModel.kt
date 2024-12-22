@@ -48,17 +48,17 @@ class StudySetDetailViewModel @Inject constructor(
 
     init {
         val id: String = savedStateHandle["id"] ?: ""
-        _uiState.update { it.copy(id = id) }
+        val code: String = savedStateHandle["code"] ?: ""
+        _uiState.update { it.copy(id = id, linkShareCode = code) }
         initData()
-        saveRecentAccessStudySet(studySetId = id)
         firebaseAnalytics.logEvent("open_study_set") {
             param("study_set_id", id)
             param("study_set_title", _uiState.value.title)
         }
     }
 
-    private fun initData() {
-        getStudySetById()
+    private fun initData(isRefresh: Boolean = false) {
+        getStudySetDetail(isRefresh = isRefresh)
         getStudyTimeByStudySetId()
     }
 
@@ -67,7 +67,7 @@ class StudySetDetailViewModel @Inject constructor(
             is StudySetDetailUiAction.Refresh -> {
                 job?.cancel()
                 job = viewModelScope.launch {
-                    initData()
+                    initData(isRefresh = true)
                 }
             }
 
@@ -134,42 +134,100 @@ class StudySetDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getStudySetById() {
+    private fun getStudySetDetail(isRefresh: Boolean = false) {
         val id = _uiState.value.id
+        val code = _uiState.value.linkShareCode
         viewModelScope.launch {
             val token = tokenManager.accessToken.firstOrNull() ?: ""
-            studySetRepository.getStudySetById(token, id).collect { resource ->
-                when (resource) {
-                    is Resources.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
+            if (token.isEmpty()) {
+                _uiEvent.send(StudySetDetailUiEvent.UnAuthorized)
+                return@launch
+            }
+            if (code.isNotEmpty()) {
+                studySetRepository.getStudySetByCode(token, code).collect { resource ->
+                    when (resource) {
+                        is Resources.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false
+                                )
+                            }
+                            _uiEvent.send(StudySetDetailUiEvent.NotFound)
+                        }
 
-                    is Resources.Success -> {
-                        val isOwner =
-                            appManager.userId.firstOrNull() == resource.data!!.owner.id
-                        _uiState.update {
-                            it.copy(
-                                title = resource.data.title,
-                                description = resource.data.description ?: "",
-                                color = resource.data.color!!.hexValue.toColor(),
-                                subject = resource.data.subject!!,
-                                flashCardCount = resource.data.flashcardCount,
-                                flashCards = resource.data.flashcards,
-                                isPublic = resource.data.isPublic,
-                                user = resource.data.owner,
-                                createdAt = resource.data.createdAt,
-                                updatedAt = resource.data.updatedAt,
-                                colorModel = resource.data.color,
-                                linkShareCode = resource.data.linkShareCode ?: "",
-                                isLoading = false,
-                                isAIGenerated = resource.data.isAIGenerated ?: false,
-                                isOwner = isOwner,
-                            )
+                        is Resources.Loading -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = true
+                                )
+                            }
+                        }
+
+                        is Resources.Success -> {
+                            val isOwner =
+                                appManager.userId.firstOrNull() == resource.data!!.owner.id
+                            _uiState.update {
+                                it.copy(
+                                    title = resource.data.title,
+                                    description = resource.data.description ?: "",
+                                    color = resource.data.color!!.hexValue.toColor(),
+                                    subject = resource.data.subject!!,
+                                    flashCardCount = resource.data.flashcardCount,
+                                    flashCards = resource.data.flashcards,
+                                    isPublic = resource.data.isPublic,
+                                    user = resource.data.owner,
+                                    createdAt = resource.data.createdAt,
+                                    updatedAt = resource.data.updatedAt,
+                                    colorModel = resource.data.color,
+                                    linkShareCode = resource.data.linkShareCode ?: "",
+                                    isLoading = false,
+                                    isAIGenerated = resource.data.isAIGenerated == true,
+                                    isOwner = isOwner,
+                                )
+                            }
+                            if (!isRefresh && resource.data.id.isNotEmpty()) {
+                                saveRecentAccessStudySet(resource.data.id)
+                            }
                         }
                     }
+                }
+            } else {
+                studySetRepository.getStudySetById(token, id).collect { resource ->
+                    when (resource) {
+                        is Resources.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
 
-                    is Resources.Error -> {
-                        _uiState.update { it.copy(isLoading = false) }
+                        is Resources.Success -> {
+                            val isOwner =
+                                appManager.userId.firstOrNull() == resource.data!!.owner.id
+                            _uiState.update {
+                                it.copy(
+                                    title = resource.data.title,
+                                    description = resource.data.description ?: "",
+                                    color = resource.data.color!!.hexValue.toColor(),
+                                    subject = resource.data.subject!!,
+                                    flashCardCount = resource.data.flashcardCount,
+                                    flashCards = resource.data.flashcards,
+                                    isPublic = resource.data.isPublic,
+                                    user = resource.data.owner,
+                                    createdAt = resource.data.createdAt,
+                                    updatedAt = resource.data.updatedAt,
+                                    colorModel = resource.data.color,
+                                    linkShareCode = resource.data.linkShareCode ?: "",
+                                    isLoading = false,
+                                    isAIGenerated = resource.data.isAIGenerated == true,
+                                    isOwner = isOwner,
+                                )
+                            }
+                            if (!isRefresh) {
+                                saveRecentAccessStudySet(id)
+                            }
+                        }
+
+                        is Resources.Error -> {
+                            _uiState.update { it.copy(isLoading = false) }
+                        }
                     }
                 }
             }

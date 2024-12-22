@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun initData() {
+    fun initData() {
         job?.cancel()
         job = viewModelScope.launch {
 
@@ -73,6 +73,8 @@ class HomeViewModel @Inject constructor(
                 getTop5Subjects(token = token)
                 getCustomerInfo()
                 loadNotifications(token = token, userId = userId)
+            } else {
+                _uiEvent.send(HomeUiEvent.UnAuthorized)
             }
         }
     }
@@ -105,7 +107,7 @@ class HomeViewModel @Inject constructor(
                 markNotificationAsRead(event.notificationId)
             }
 
-            HomeUiAction.RefreshHome -> {
+            is HomeUiAction.RefreshHome -> {
                 initData()
             }
         }

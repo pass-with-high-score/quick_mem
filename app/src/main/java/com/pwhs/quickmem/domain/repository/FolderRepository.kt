@@ -54,7 +54,7 @@ interface FolderRepository {
     suspend fun getFolderByLinkCode(
         token: String,
         code: String
-    ): Flow<Resources<CreateFolderResponseModel>>
+    ): Flow<Resources<GetFolderResponseModel>>
 
     suspend fun saveRecentAccessFolder(
         token: String,

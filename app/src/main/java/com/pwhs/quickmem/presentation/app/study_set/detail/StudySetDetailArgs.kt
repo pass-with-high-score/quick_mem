@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class StudySetDetailArgs (
-    val id: String,
+    val id: String? = null,
+    val code: String? = null,
 )

@@ -71,7 +71,7 @@ fun LoginWithEmailScreen(
                         context,
                         context.getString(R.string.txt_login_success), Toast.LENGTH_SHORT
                     ).show()
-                    navigator.navigate(HomeScreenDestination) {
+                    navigator.navigate(HomeScreenDestination()) {
                         popUpTo(NavGraphs.root) {
                             saveState = false
                         }

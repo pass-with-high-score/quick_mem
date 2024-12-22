@@ -3,8 +3,10 @@ package com.pwhs.quickmem.presentation.app.paywall
 import androidx.compose.runtime.Composable
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Package
+import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.models.StoreTransaction
+import com.revenuecat.purchases.restorePurchasesWith
 import com.revenuecat.purchases.ui.revenuecatui.PaywallDialog
 import com.revenuecat.purchases.ui.revenuecatui.PaywallDialogOptions
 import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
@@ -14,7 +16,8 @@ import timber.log.Timber
 fun Paywall(
     isPaywallVisible: Boolean,
     onCustomerInfoChanged: (CustomerInfo) -> Unit,
-    onPaywallDismissed: () -> Unit
+    onPaywallDismissed: () -> Unit,
+    userId: String = ""
 ) {
     if (isPaywallVisible) {
         PaywallDialog(
@@ -67,7 +70,13 @@ fun Paywall(
                         override fun onRestoreStarted() {
                             super.onRestoreStarted()
                             Timber.tag("PaywallListener").d("Restore Started")
-                            onPaywallDismissed()
+                            Purchases.sharedInstance.restorePurchasesWith { customerInfoRestore ->
+                                if (customerInfoRestore.originalAppUserId == userId) {
+                                    onCustomerInfoChanged(customerInfoRestore)
+                                } else {
+                                    onPaywallDismissed()
+                                }
+                            }
                         }
                     }
                 )

@@ -55,7 +55,7 @@ fun SplashScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is SplashUiEvent.IsLoggedIn -> {
-                    navigator.navigate(HomeScreenDestination) {
+                    navigator.navigate(HomeScreenDestination()) {
                         popUpTo(NavGraphs.root) {
                             saveState = false
                         }

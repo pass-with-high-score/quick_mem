@@ -648,4 +648,5 @@
     <string name="txt_permission_denied">Permission denied</string>
     <string name="txt_error_insufficient_storage">Insufficient storage space</string>
     <string name="txt_error_create_temp_file">Unable to create temporary image file</string>
+    <string name="txt_study_set_not_found">Study set not found</string>
 </resources>
