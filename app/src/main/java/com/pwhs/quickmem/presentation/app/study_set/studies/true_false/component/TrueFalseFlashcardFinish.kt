@@ -67,7 +67,7 @@ fun TrueFalseFlashcardFinish(
     onContinueLearningClicked: () -> Unit,
     listWrongAnswer: List<TrueFalseQuestion>,
     onRestartClicked: () -> Unit,
-    isGetAll: Boolean
+    isGetAll: Boolean,
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_firework))
     val progress by animateLottieCompositionAsState(
@@ -106,7 +106,8 @@ fun TrueFalseFlashcardFinish(
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         ),
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier
+                            .padding(16.dp)
                             .padding(top = 32.dp)
                     )
                     StudySetDonutChart(
@@ -120,7 +121,8 @@ fun TrueFalseFlashcardFinish(
                     Text(
                         text = stringResource(R.string.txt_keep_focusing_on_your_study_set_to_master_it),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
                         ),
                         modifier = Modifier.padding(16.dp)
                     )
@@ -243,7 +245,11 @@ fun TrueFalseFlashcardFinish(
                         ) {
                             Text(
                                 text = when (isGetAll) {
-                                    true -> stringResource(R.string.txt_finish_answers_now)
+                                    true -> stringResource(
+                                        R.string.txt_finish_answers_now,
+                                        wrongAnswerCount
+                                    )
+
                                     false -> stringResource(R.string.txt_continue_learning)
                                 },
                                 style = MaterialTheme.typography.bodyMedium.copy(

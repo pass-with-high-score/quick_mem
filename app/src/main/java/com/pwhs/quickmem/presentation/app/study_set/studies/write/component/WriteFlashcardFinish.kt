@@ -104,7 +104,8 @@ fun WriteFlashcardFinish(
                     Text(
                         text = encouragementMessage,
                         style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
                         ),
                         modifier = Modifier
                             .padding(16.dp)
@@ -121,7 +122,8 @@ fun WriteFlashcardFinish(
                     Text(
                         text = stringResource(R.string.txt_keep_focusing_on_your_study_set_to_master_it),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
                         ),
                         modifier = Modifier.padding(16.dp)
                     )
