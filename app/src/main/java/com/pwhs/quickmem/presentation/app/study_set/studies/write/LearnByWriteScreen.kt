@@ -81,6 +81,7 @@ import com.pwhs.quickmem.presentation.app.study_set.studies.write.component.Writ
 import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.presentation.component.ShowImageDialog
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
+import com.pwhs.quickmem.ui.theme.incorrectColor
 import com.pwhs.quickmem.util.rememberImeState
 import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -99,7 +100,7 @@ import kotlin.random.Random
 fun LearnByWriteScreen(
     modifier: Modifier = Modifier,
     viewModel: LearnByWriteViewModel = hiltViewModel(),
-    resultBackNavigator: ResultBackNavigator<Boolean>
+    resultBackNavigator: ResultBackNavigator<Boolean>,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -200,6 +201,45 @@ fun LearnByWrite(
     val maxRevealCount = writeQuestion?.term?.length ?: 0
     val revealedIndices = remember { mutableSetOf<Int>() }
 
+    fun isAnswerCorrect(
+        userAnswer: String,
+        correctAnswer: String,
+    ): Boolean {
+        return userAnswer.trim()
+            .equals(correctAnswer.trim(), ignoreCase = true)
+    }
+
+    fun levenshtein(a: String, b: String): Int {
+        val costs = IntArray(b.length + 1) { it }
+        for (i in 1..a.length) {
+            var lastValue = i - 1
+            for (j in 1..b.length) {
+                val newValue = min(
+                    min(
+                        costs[j] + 1,
+                        lastValue + if (a[i - 1] == b[j - 1]) 0 else 1
+                    ),
+                    costs[j - 1] + 1
+                )
+                costs[j - 1] = lastValue
+                lastValue = newValue
+            }
+            costs[b.length] = lastValue
+        }
+        return costs[b.length]
+    }
+
+    fun isAnswerSimilar(
+        userAnswer: String,
+        correctAnswer: String,
+        threshold: Int = 2,
+    ): Boolean {
+        return levenshtein(
+            userAnswer.trim(),
+            correctAnswer.trim()
+        ) <= threshold
+    }
+
     LaunchedEffect(writeQuestion) {
         isDontKnowButtonVisible = false
         delay(3000)
@@ -279,7 +319,8 @@ fun LearnByWrite(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val currentProgress by animateFloatAsState(
-                    targetValue = currentCardIndex.toFloat() / flashCardList.size.toFloat().coerceAtLeast(1f),
+                    targetValue = currentCardIndex.toFloat() / flashCardList.size.toFloat()
+                        .coerceAtLeast(1f),
                 )
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
@@ -379,6 +420,19 @@ fun LearnByWrite(
                                         imeAction = ImeAction.Done,
                                         showKeyboardOnFocus = true
                                     ),
+                                    isError = when {
+                                        userAnswer.length > (writeQuestion?.term?.length ?: 0) -> {
+                                            !isAnswerCorrect(
+                                                userAnswer,
+                                                writeQuestion?.term ?: ""
+                                            ) && !isAnswerSimilar(
+                                                userAnswer,
+                                                writeQuestion?.term ?: ""
+                                            )
+                                        }
+
+                                        else -> false
+                                    },
                                     placeholder = {
                                         Text(
                                             text = stringResource(R.string.txt_enter_your_answer),
@@ -423,51 +477,15 @@ fun LearnByWrite(
                                         unfocusedContainerColor = Color.Transparent,
                                         focusedContainerColor = Color.Transparent,
                                         focusedIndicatorColor = studySetColor,
-                                        unfocusedIndicatorColor = studySetColor
+                                        unfocusedIndicatorColor = studySetColor,
+                                        errorContainerColor = Color.Transparent,
+                                        errorTextColor = incorrectColor,
+                                        errorIndicatorColor = incorrectColor
                                     ),
                                     modifier = Modifier
                                         .weight(1f)
                                         .padding(horizontal = 8.dp),
                                 )
-
-                                fun isAnswerCorrect(
-                                    userAnswer: String,
-                                    correctAnswer: String
-                                ): Boolean {
-                                    return userAnswer.trim()
-                                        .equals(correctAnswer.trim(), ignoreCase = true)
-                                }
-
-                                fun levenshtein(a: String, b: String): Int {
-                                    val costs = IntArray(b.length + 1) { it }
-                                    for (i in 1..a.length) {
-                                        var lastValue = i - 1
-                                        for (j in 1..b.length) {
-                                            val newValue = min(
-                                                min(
-                                                    costs[j] + 1,
-                                                    lastValue + if (a[i - 1] == b[j - 1]) 0 else 1
-                                                ),
-                                                costs[j - 1] + 1
-                                            )
-                                            costs[j - 1] = lastValue
-                                            lastValue = newValue
-                                        }
-                                        costs[b.length] = lastValue
-                                    }
-                                    return costs[b.length]
-                                }
-
-                                fun isAnswerSimilar(
-                                    userAnswer: String,
-                                    correctAnswer: String,
-                                    threshold: Int = 2
-                                ): Boolean {
-                                    return levenshtein(
-                                        userAnswer.trim(),
-                                        correctAnswer.trim()
-                                    ) <= threshold
-                                }
 
                                 IconButton(
                                     onClick = {
