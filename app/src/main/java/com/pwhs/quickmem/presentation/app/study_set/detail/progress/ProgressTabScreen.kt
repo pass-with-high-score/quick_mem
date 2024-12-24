@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.study_set.detail.progress
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.pwhs.quickmem.R
 import com.pwhs.quickmem.data.mapper.study_time.toStudyTimeModel
 import com.pwhs.quickmem.domain.model.study_time.GetStudyTimeByStudySetResponseModel
-import com.pwhs.quickmem.presentation.component.LearningBars
+import com.pwhs.quickmem.presentation.component.LearningTimeBars
 
 @Composable
 fun ProgressTabScreen(
@@ -33,7 +34,7 @@ fun ProgressTabScreen(
     studySetsStillLearningCount: Int = 0,
     studySetsKnowCount: Int = 0,
     studyTime: GetStudyTimeByStudySetResponseModel? = null,
-    color: Color = MaterialTheme.colorScheme.primary
+    color: Color = MaterialTheme.colorScheme.primary,
 ) {
     Box(
         modifier = modifier
@@ -105,12 +106,14 @@ fun ProgressTabScreen(
                 }
             }
             item {
-                if (studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.flip != 0) {
-                    LearningBars(
+                AnimatedVisibility(
+                    visible = studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.write != 0,
+                ) {
+                    LearningTimeBars(
                         studyTime = studyTime?.toStudyTimeModel(),
                         color = color,
                         modifier = Modifier
-                            .height(300.dp)
+                            .height(310.dp)
                     )
                 }
             }

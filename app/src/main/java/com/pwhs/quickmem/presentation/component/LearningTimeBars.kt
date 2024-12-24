@@ -29,7 +29,7 @@ import ir.ehsannarmani.compose_charts.models.LabelProperties
 import ir.ehsannarmani.compose_charts.models.LineProperties
 
 @Composable
-fun LearningBars(
+fun LearningTimeBars(
     modifier: Modifier = Modifier,
     studyTime: StudyTimeModel? = null,
     color: Color
@@ -154,7 +154,7 @@ fun LearningBars(
                 stiffness = Spring.StiffnessLow
             ),
         )
-        Spacer(modifier = Modifier.padding(vertical = 20.dp))
+        Spacer(modifier = Modifier.padding(vertical = 30.dp))
         Text(
             text = stringResource(R.string.txt_time_spent_on_each_learning_type),
             style = typography.titleMedium.copy(

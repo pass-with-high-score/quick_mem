@@ -1,5 +1,6 @@
 package com.pwhs.quickmem.presentation.app.profile
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +52,7 @@ import com.pwhs.quickmem.R
 import com.pwhs.quickmem.data.mapper.study_time.toStudyTimeModel
 import com.pwhs.quickmem.domain.model.study_time.GetStudyTimeByUserResponseModel
 import com.pwhs.quickmem.presentation.app.paywall.Paywall
-import com.pwhs.quickmem.presentation.component.LearningBars
+import com.pwhs.quickmem.presentation.component.LearningTimeBars
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.ui.theme.firasansExtraboldFont
 import com.pwhs.quickmem.ui.theme.premiumColor
@@ -70,7 +71,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    resultBackNavigator: ResultRecipient<ChangeAvatarScreenDestination, Boolean>
+    resultBackNavigator: ResultRecipient<ChangeAvatarScreenDestination, Boolean>,
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -125,7 +126,7 @@ fun Profile(
     navigateToSettings: () -> Unit = {},
     onCustomerInfoChanged: (customerInfo: CustomerInfo) -> Unit = {},
     customerInfo: CustomerInfo? = null,
-    studyTime: GetStudyTimeByUserResponseModel? = null
+    studyTime: GetStudyTimeByUserResponseModel? = null,
 ) {
     var isPaywallVisible by remember {
         mutableStateOf(false)
@@ -274,12 +275,14 @@ fun Profile(
                     }
                 }
                 item {
-                    if (studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.flip != 0) {
-                        LearningBars(
+                    AnimatedVisibility(
+                        visible = studyTime?.flip != 0 || studyTime.quiz != 0 || studyTime.total != 0 || studyTime.write != 0,
+                    ) {
+                        LearningTimeBars(
                             studyTime = studyTime?.toStudyTimeModel(),
                             color = colorScheme.primary,
                             modifier = Modifier
-                                .height(300.dp)
+                                .height(310.dp)
                         )
                     }
                 }
