@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.pwhs.quickmem.R
@@ -25,7 +26,8 @@ fun FlashCardTopAppBar(
     onNavigationBack: () -> Unit,
     onSaveFlashCardClicked: () -> Unit,
     enableSaveButton: Boolean,
-    onSettingsClicked: () -> Unit
+    onSettingsClicked: () -> Unit,
+    color: Color,
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -39,12 +41,18 @@ fun FlashCardTopAppBar(
         },
         navigationIcon = {
             IconButton(onClick = onNavigationBack) {
-                Icon(imageVector = Icons.Filled.Clear, contentDescription = stringResource(R.string.txt_back))
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = stringResource(R.string.txt_back)
+                )
             }
         },
         actions = {
             IconButton(onClick = onSettingsClicked) {
-                Icon(imageVector = Icons.Default.Settings, contentDescription = stringResource(R.string.txt_settings))
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.txt_settings)
+                )
             }
             IconButton(
                 onClick = onSaveFlashCardClicked,
@@ -54,7 +62,7 @@ fun FlashCardTopAppBar(
                     imageVector = Icons.Filled.Done,
                     contentDescription = stringResource(R.string.txt_save),
                     tint = if (enableSaveButton) {
-                        colorScheme.primary
+                        color
                     } else {
                         colorScheme.onSurface.copy(alpha = 0.5f)
                     }

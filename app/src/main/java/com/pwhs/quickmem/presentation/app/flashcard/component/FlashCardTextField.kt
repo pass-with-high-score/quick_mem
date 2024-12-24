@@ -15,7 +15,8 @@ fun FlashCardTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    hint: String
+    hint: String,
+    color: Color,
 ) {
     val maxChar = 200
     TextField(
@@ -42,6 +43,8 @@ fun FlashCardTextField(
         modifier = modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
+            focusedIndicatorColor = color,
+            cursorColor = color,
             unfocusedContainerColor = Color.Transparent,
             errorContainerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent,

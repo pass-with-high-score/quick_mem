@@ -8,6 +8,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -18,7 +19,8 @@ fun FlashCardTextFieldContainer(
     term: String,
     onTermChanged: (String) -> Unit,
     definition: String,
-    onDefinitionChanged: (String) -> Unit
+    onDefinitionChanged: (String) -> Unit,
+    color: Color,
 ) {
     Card(
         modifier = modifier
@@ -38,13 +40,15 @@ fun FlashCardTextFieldContainer(
             FlashCardTextField(
                 value = term,
                 onValueChange = onTermChanged,
-                hint = stringResource(R.string.txt_term)
+                hint = stringResource(R.string.txt_term),
+                color = color
             )
 
             FlashCardTextField(
                 value = definition,
                 onValueChange = onDefinitionChanged,
-                hint = stringResource(R.string.txt_definition)
+                hint = stringResource(R.string.txt_definition),
+                color = color
             )
         }
     }

@@ -201,14 +201,22 @@ fun StudySetDetailScreen(
                 is StudySetDetailUiEvent.NavigateToEditFlashCard -> {
                     val flashCard =
                         uiState.flashCards.find { it.id == uiState.idOfFlashCardSelected }
+                    if (flashCard == null) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.txt_flashcard_not_found), Toast.LENGTH_SHORT
+                        ).show()
+                        return@collect
+                    }
                     navigator.navigate(
                         EditFlashCardScreenDestination(
-                            flashcardId = flashCard!!.id,
+                            flashcardId = flashCard.id,
                             term = flashCard.term,
                             definition = flashCard.definition,
                             definitionImageUrl = flashCard.definitionImageURL ?: "",
                             hint = flashCard.hint ?: "",
-                            explanation = flashCard.explanation ?: ""
+                            explanation = flashCard.explanation ?: "",
+                            studySetColorId = uiState.colorModel.id
                         )
                     )
                 }
@@ -222,7 +230,8 @@ fun StudySetDetailScreen(
                 }
 
                 is StudySetDetailUiEvent.StudySetCopied -> {
-                    Toast.makeText(context, "Study set copied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.txt_study_set_copied), Toast.LENGTH_SHORT).show()
                     navigator.navigate(
                         StudySetDetailScreenDestination(
                             id = event.newStudySetId,
@@ -323,7 +332,7 @@ fun StudySetDetailScreen(
             navigator.navigate(
                 CreateFlashCardScreenDestination(
                     studySetId = uiState.id,
-                    studySetTitle = uiState.title
+                    studySetColorId = uiState.colorModel.id
                 )
             )
         },

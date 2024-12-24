@@ -5,10 +5,12 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -49,6 +51,7 @@ import com.pwhs.quickmem.presentation.component.LoadingOverlay
 import com.pwhs.quickmem.ui.theme.QuickMemTheme
 import com.pwhs.quickmem.util.ImageCompressor
 import com.pwhs.quickmem.util.bitmapToUri
+import com.pwhs.quickmem.util.toColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -173,7 +176,8 @@ fun CreateFlashCardScreen(
         onDefinitionImageUrlChanged = {
             viewModel.onEvent(CreateFlashCardUiAction.OnDefinitionImageChanged(it))
         },
-        isSearchImageLoading = uiState.isSearchImageLoading
+        isSearchImageLoading = uiState.isSearchImageLoading,
+        studySetColor = uiState.studyColorModel?.hexValue?.toColor() ?: colorScheme.primary
     )
 }
 
@@ -208,6 +212,7 @@ fun CreateFlashCard(
     onQueryImageChanged: (String) -> Unit = {},
     onDefinitionImageUrlChanged: (String) -> Unit = {},
     isSearchImageLoading: Boolean = false,
+    studySetColor: Color = colorScheme.primary,
 ) {
 
     val bottomSheetSetting = rememberModalBottomSheetState()
@@ -254,7 +259,8 @@ fun CreateFlashCard(
                     onSettingsClicked = {
                         showBottomSheetSetting = true
                     },
-                    title = stringResource(R.string.txt_create_flashcard)
+                    title = stringResource(R.string.txt_create_flashcard),
+                    color = studySetColor
                 )
             },
             modifier = modifier
@@ -265,6 +271,7 @@ fun CreateFlashCard(
                     modifier = modifier
                         .padding(innerPadding)
                         .fillMaxSize()
+                        .imePadding()
                 ) {
                     item {
                         CardSelectImage(
@@ -285,7 +292,8 @@ fun CreateFlashCard(
                             term = term,
                             onTermChanged = onTermChanged,
                             definition = definition,
-                            onDefinitionChanged = onDefinitionChanged
+                            onDefinitionChanged = onDefinitionChanged,
+                            color = studySetColor
                         )
                     }
 
@@ -294,7 +302,8 @@ fun CreateFlashCard(
                             HintCard(
                                 hint = hint,
                                 onHintChanged = onHintChanged,
-                                onShowHintClicked = onShowHintClicked
+                                onShowHintClicked = onShowHintClicked,
+                                color = studySetColor
                             )
                         }
                     }
@@ -304,7 +313,8 @@ fun CreateFlashCard(
                             ExplanationCard(
                                 explanation = explanation,
                                 onExplanationChanged = onExplanationChanged,
-                                onShowExplanationClicked = onShowExplanationClicked
+                                onShowExplanationClicked = onShowExplanationClicked,
+                                color = studySetColor
                             )
                         }
                     }

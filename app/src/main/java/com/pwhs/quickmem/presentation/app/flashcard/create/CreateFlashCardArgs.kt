@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CreateFlashCardArgs (
     val studySetId: String,
-    val studySetTitle: String
+    val studySetColorId: Int,
 )

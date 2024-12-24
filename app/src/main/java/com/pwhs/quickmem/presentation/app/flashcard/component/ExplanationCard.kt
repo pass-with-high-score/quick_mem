@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -23,7 +24,8 @@ fun ExplanationCard(
     modifier: Modifier = Modifier,
     explanation: String,
     onExplanationChanged: (String) -> Unit,
-    onShowExplanationClicked: (Boolean) -> Unit
+    onShowExplanationClicked: (Boolean) -> Unit,
+    color: Color,
 ) {
     Card(
         modifier = modifier
@@ -46,7 +48,8 @@ fun ExplanationCard(
                 FlashCardTextField(
                     value = explanation,
                     onValueChange = onExplanationChanged,
-                    hint = stringResource(R.string.txt_explanation)
+                    hint = stringResource(R.string.txt_explanation),
+                    color = color
                 )
             }
 

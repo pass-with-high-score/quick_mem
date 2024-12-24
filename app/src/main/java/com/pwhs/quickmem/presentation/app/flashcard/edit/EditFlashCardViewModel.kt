@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.pwhs.quickmem.core.datastore.TokenManager
 import com.pwhs.quickmem.core.utils.Resources
+import com.pwhs.quickmem.domain.model.color.ColorModel
 import com.pwhs.quickmem.domain.repository.FlashCardRepository
 import com.pwhs.quickmem.domain.repository.PixaBayRepository
 import com.pwhs.quickmem.domain.repository.UploadImageRepository
@@ -27,7 +28,7 @@ class EditFlashCardViewModel @Inject constructor(
     private val uploadImageRepository: UploadImageRepository,
     private val pixaBayRepository: PixaBayRepository,
     private val tokenManager: TokenManager,
-    application: Application
+    application: Application,
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(EditFlashCardUiState())
     val uiState = _uiState.asStateFlow()
@@ -44,6 +45,7 @@ class EditFlashCardViewModel @Inject constructor(
         val definitionImageUrl: String = savedStateHandle["definitionImageUrl"] ?: ""
         val hint: String = savedStateHandle["hint"] ?: ""
         val explanation: String = savedStateHandle["explanation"] ?: ""
+        val studySetColorId: Int = savedStateHandle["studySetColorId"] ?: 1
         _uiState.update {
             it.copy(
                 flashcardId = flashcardId,
@@ -51,7 +53,8 @@ class EditFlashCardViewModel @Inject constructor(
                 definition = definition,
                 definitionImageURL = definitionImageUrl,
                 hint = hint,
-                explanation = explanation
+                explanation = explanation,
+                studyColorModel = ColorModel.defaultColors.first { it.id == studySetColorId }
             )
         }
     }

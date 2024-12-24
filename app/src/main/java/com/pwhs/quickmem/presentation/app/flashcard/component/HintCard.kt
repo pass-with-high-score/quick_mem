@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pwhs.quickmem.R
@@ -23,7 +24,8 @@ fun HintCard(
     modifier: Modifier = Modifier,
     hint: String,
     onHintChanged: (String) -> Unit,
-    onShowHintClicked: (Boolean) -> Unit
+    onShowHintClicked: (Boolean) -> Unit,
+    color: Color
 ) {
     Card(
         modifier = modifier
@@ -46,7 +48,8 @@ fun HintCard(
                 FlashCardTextField(
                     value = hint,
                     onValueChange = onHintChanged,
-                    hint = stringResource(R.string.txt_hint)
+                    hint = stringResource(R.string.txt_hint),
+                    color = color
                 )
             }
 
